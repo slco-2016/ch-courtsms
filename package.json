@@ -23,6 +23,7 @@
     "jquery": "~1.12.2",
     "keen-js": "^3.4.1",
     "knex": "^0.10.0",
+    "mimelib": "^0.2.19",
     "moment": "^2.13.0",
     "moment-timezone": "^0.5.4",
     "newrelic": "^1.28.0",
