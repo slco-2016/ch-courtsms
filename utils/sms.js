@@ -42,7 +42,7 @@ module.exports = {
       var commid;
 
       // step 1: see if comm device exists
-      sms.get_or_create_comm_device(from).then(get_clients).catch(errReject);
+      sms.get_or_create_comm_device(from, 'cell').then(get_clients).catch(errReject);
       
 
       // step 2: get clients associated with that device
@@ -84,7 +84,7 @@ module.exports = {
     } else { return null; }
   },
   
-  get_or_create_comm_device: function (from) {
+  get_or_create_comm_device: function (from, type) {
     return new Promise (function (fulfill, reject) {
       // acquire commid
       db.select("commid").from("comms").where("value", from).limit(1)
@@ -103,7 +103,7 @@ module.exports = {
           db("comms")
           .returning("commid")
           .insert({
-            "type": "cell",
+            "type": type,
             "value": from,
             "description": description
           }).then(function (commid) {

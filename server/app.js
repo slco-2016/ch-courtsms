@@ -82,6 +82,9 @@ app.use("/capture", auth.isLoggedIn, captureRoutes);
 require("../routes/sms")(app);
 require("../routes/voice")(app);
 
+// Email routes
+require("../routes/email")(app);
+
 // Admin routes
 var adminmgmt = require("../routes/admin");
 app.use("/admin", auth.isAdmin, adminmgmt)
