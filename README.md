@@ -34,8 +34,25 @@ module.exports = {
 ##### Modifying knexfile.js connection settings
 You will also need to configure the `knexfile.js` file. It is necessary to use the PostgreSQL as indicated in the example `development`, `testing`, and `production` objects. The reason for this is that ClientComm utilizes a number of raw SQL queries which include notation that is specific to PostgreSQL. In particular, it will be necessary to update the `connection.user` and `connection.database` values to whatever your configuration is.
 
+### Services that ClientComm currently employs
+##### Gmail
+You don't have to use Gmail, but we currently send email notifications from a dummy Gmail account. The access parameters are set in that `credentials.js` file, under `em` (for email). 
+
+##### Twilio
+This is how we send and receive text messages. Set up an account and reset the phone number variables within the application. Naturally, I need to abstract away the number so that different organizations can have different phone numbers. In such a situation, I imagine that there would also need to either be an abstraction that allows for each organization to pay their own Twilio bill (and thus have their own account identifications) or that we programmatically provision each new organization with their own new address.
+
+
+## Getting developer environment running
 ##### Setting development and production environment defaults
 With those two files set up, you should be good to go. In order to set which environment you are working in, navigate to `server/db.js`. At the top of that file, the variable `env` should be set in the following manner: `var env = "development"`. You can update this variable to whatever object keys you have in you `knexfile.js`. This will allow you to control whether you are working in, for example, a testing environment, a development environment, or a production environment.
 
 ##### Styles
 We use [Gulp](http://gulpjs.com/) for piping Sass into CSS for inclusion in the `public/` directory, included on pages. Make sure to view the `devDependencies` listing to be sure that related dependencies are installed when working with the code base. When developing and modifying Sass stylesheets, make sure to run `gulp sass:watch` to have Gulp automatically pipe changes into the published `public/` directory.
+
+
+## Features coming soon
+##### Email integration
+Roughly, this will use MailGun by Rackspace to allow for `@clientcomm.org` emails. The purpose of this will be to enable the sending and receiving of emails, as well as text messages (as is presently supported).
+
+##### Voice Support
+We will be implementing voice transcription tools provided by Twilio to enable the leaving and sending of voice mails. In order to get around needing a microphone in each case manager's office, we will design the system to "call" the case manager's phone, at which point they will leave their voice message that is then sent to the designate client communication device.

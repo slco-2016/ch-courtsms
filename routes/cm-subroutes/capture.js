@@ -19,7 +19,7 @@ router.get("/", function (req, res) {
                   " JOIN comms ON (comms.commid = msgs.comm) " +
                   " WHERE convos.client IS NULL " + 
                   " AND convos.open = TRUE " +
-                  " ORDER BY msgs.created DESC;";
+                  " ORDER BY msgs.created ASC;";
   
   db.raw(rawQuery).then(function (floaters) {
 

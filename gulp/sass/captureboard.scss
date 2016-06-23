@@ -1,13 +1,220 @@
-$card-text:       #2F8CE8;
-$card-text-light: #92C9FF;
+$color-lightgrey: #898989;
+$color-blue:      #2F8CE8;
+$color-lightblue: #92C9FF;
 
 
 // Modify background color of contents
 .contents {
   background-color: #898989;
+  
+  .title {
+    color: #FFF;
+  }
+
+  .captureboard {
+    margin-left: -25px;
+    margin-right: -25px;
+
+    .headers {
+      padding-left: 25px;
+      padding-right: 25px;
+      font-size: 12px;
+      line-height: 20px;
+
+      div {
+        float: left;
+      }
+      
+      div:nth-child(1) {
+        width: 300px;
+      }
+      
+      div:nth-child(2) {
+        width: 300px;
+      }
+      
+      div:nth-child(3) {
+        width: 200px;
+      }
+
+      &::after {
+        content:"";
+        display:block;
+        clear:both;
+
+      }
+    }
+
+    .convoBlock {
+      overflow: hidden;
+      height: 220px;
+      background-color: #FFF;
+      margin-bottom: 10px;
+
+      .convoStream {
+        width: 640px;
+        height: 100%;
+        overflow-y: scroll;
+
+        .convoRow {
+          .msgInbound {
+            width: 300px;
+            float: left;
+            padding: 10px;
+            font-size: 16px;
+            color: $color-lightgrey;
+
+            .message {
+              width: 100%;
+              border-top: 1px solid #C4C4C4;
+              padding-top: 5px;
+            }
+          }
+          .msgOutbound {
+            width: 300px;
+            float: left;
+            padding: 10px;
+            font-size: 16px;
+            color: $color-blue;
+
+            .message {
+              width: 100%;
+              border-top: 1px solid #C4C4C4;
+              padding-top: 5px;
+              margin-top: -25px;
+            }
+          }
+
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+
+          }
+        }
+      }
+
+      .actionBox {
+        height: 200px;
+        width: 230px;
+        margin: 10px;
+        background-color: #F4F4F4;
+        float: right;
+
+        .claimButton {
+          width: 200px;
+          height: 40px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 10px;
+          border: 1px solid #4A90E2;
+          background-color: #FFF;
+          color: #2F8CE8;
+          text-align: center;
+          font-weight: bold;
+          font-size: 12px;
+          line-height: 40px;
+          border-radius: 5px;
+          cursor: pointer;
+
+          .fa {
+            font-size: 25px;
+            vertical-align: middle;
+          }
+
+          &:hover {
+            background-color: #2F8CE8;
+            color: #FFF;
+          }
+        }
+
+        .tinyInfo {
+          width: 230px;
+
+          .blurb {
+            width: 85px;
+            float: left;
+            padding: 20px;
+
+            .header {
+              font-size: 10px;
+              color: $color-lightgrey;
+              text-decoration: underline;
+            }
+
+            .value {
+              font-size: 12px;
+              font-weight: bold;
+              color: #344289;
+              line-height: 18px;
+            }
+          }
+
+          .blurb:nth-child(2) {
+            padding-left: 0px;
+          }
+
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+
+        .tinyInfoMessages {
+          padding-left: 20px;
+          
+          .header {
+            font-size: 10px;
+            color: $color-lightgrey;
+            text-decoration: underline;
+          }
+          .value {
+            font-size: 12px;
+            font-weight: bold;
+            color: #344289;
+            line-height: 18px;
+          }
+        }
+
+        .suggestButton {
+          width: 200px;
+          height: 30px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-top: 10px;
+          border: 1px solid #4A90E2;
+          color: #2F8CE8;
+          border-radius: 5px;
+          cursor: pointer;
+
+          .left {
+            width: 60px;
+            padding-left: 20px;
+            float: left;
+            font-weight: bold;
+            line-height: 30px;
+            font-size: 12px;
+          }
+          .right {
+            width: 100px;
+            height: 24px;
+            float: left;
+            font-size: 10px;
+            padding: 4px;
+            padding-left: 10px;
+            text-align: left;
+            word-wrap: break-word;
+          }
+          &:hover {
+            background-color: $color-lightgrey;
+            color: #FFF;
+            border: 1px solid #FFF;
+          }
+        }
+
+      }
+    }
+  }
 }
 
-.captureboard {
-  margin-left: -25px;
-  margin-right: -25px;
-}
