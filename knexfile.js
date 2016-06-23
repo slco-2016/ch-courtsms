@@ -3,13 +3,14 @@ var credentials = require("./credentials")["db"];
 var USER = credentials.user;
 var PASS = credentials.password;
 var HOST = credentials.host;
+var localDbUser = credentials.localDbUser;
 
 module.exports = {
 
   development: {
     client: "postgresql",
     connection: {
-      user: "kuanbutts",
+      user: localDbUser,
       database: "cc2"
     }
   },
@@ -17,7 +18,7 @@ module.exports = {
   testing: {
     client: "postgresql",
     connection: {
-      user: "kuanbutts",
+      user: localDbUser,
       database: "cctest"
     }
   },
