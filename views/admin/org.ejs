@@ -455,7 +455,7 @@
     }).map(function (ea) { 
       // Why 5.5? Arbitrary reduction to make typically high performing CMs who are clicking on stuff on the main screen appear to be at 8 hoours
       // TO DO: Fix the duration calculator
-      ea["Hours Logged Using ClientComm (Last 24 Hours)"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
+      ea["Recent Hours Logged Using ClientComm"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
       ea.name = [ea["user.first"], ea["user.last"]].join(" ");
       return ea;
     });
@@ -466,7 +466,7 @@
         json: cms,
         keys: {
           x: "name",
-          value: ["Hours Logged Using ClientComm (This Week)"]
+          value: ["Recent Hours Logged Using ClientComm"]
         },
         type: "bar",
         color: function (color, d) { return "#4BAEFF"; }
