@@ -1,13 +1,8 @@
-
-
-
 // SECRET STUFF
 var credentials = require("../credentials");
 var ACCOUNT_SID = credentials.accountSid;
 var AUTH_TOKEN = credentials.authToken;
 var TWILIO_NUM = credentials.twilioNum;
-
-
 
 // DEPENDENCIES
 // Router
@@ -21,10 +16,9 @@ var db  = require("../server/db");
 var twilio = require("twilio");
 var twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
 
-
-
 // UTILITIES
 var utils = require("../utils/utils.js");
+var mailgun = require("../utils/mailgun")
 
 // Query tools
 var sms = utils["sms"];
@@ -36,8 +30,6 @@ var auth = utils["pass"];
 // Error handling
 var errorHandlers = utils["errorHandlers"];
 var fivehundred   = errorHandlers.fivehundred;
-
-
 
 // LOGIN LANDING PAGE ROUTER
 router.get("/", function (req, res) { 
@@ -891,6 +883,27 @@ router.post("/:cmid/cls/:clid/convos", function (req, res) {
           var content = req.body.content;
           var commid = req.body.commid;
 
+          function messageSendSuccess(id, status) {
+            db("msgs")
+            .insert({
+              convo: convid,
+              comm: commid,
+              content: content,
+              inbound: false,
+              read: true,
+              tw_sid: msg.sid,
+              tw_status: msg.status
+            })
+            .returning("msgid")
+            .then(function (msgs) {
+
+              req.flash("success", "New conversation created.");
+              redirect_loc = redirect_loc + "/convos/" + convid;
+              res.redirect(redirect_loc);
+
+            }).catch(errorRedirect);
+          }
+
           db("comms")
           .where("commid", commid)
           .limit(1)
@@ -898,37 +911,38 @@ router.post("/:cmid/cls/:clid/convos", function (req, res) {
             
             if (comms.length > 0) {
               var comm = comms[0];
-
-              twClient.sendSms({
-                to: comm.value,
-                from: TWILIO_NUM,
-                body: content
-              }, function (err, msg) {
-                if (err) {
-                  console.log("Twilio send error: ", err);
-                  if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
-                  else res.redirect("/500");
-                } else {
-                  db("msgs")
-                  .insert({
-                    convo: convid,
-                    comm: commid,
-                    content: content,
-                    inbound: false,
-                    read: true,
-                    tw_sid: msg.sid,
-                    tw_status: msg.status
-                  })
-                  .returning("msgid")
-                  .then(function (msgs) {
-
-                    req.flash("success", "New conversation created.");
-                    redirect_loc = redirect_loc + "/convos/" + convid;
-                    res.redirect(redirect_loc);
-
-                  }).catch(errorRedirect);
-                }
-              });
+              console.log(comm)
+              if (comm.type == "cell") {
+                twClient.sendSms({
+                  to: comm.value,
+                  from: TWILIO_NUM,
+                  body: content
+                }, function (err, msg) {
+                  if (err) {
+                    console.log("Twilio send error: ", err);
+                    if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
+                    else res.redirect("/500");
+                  } else {
+                    messageSendSuccess(msg.id, msg.status)
+                  }
+                });                
+              } else if (comm.type == "email") {
+                // TODO, generate subject
+                mailgun.sendEmail(
+                  comm.value, 
+                  "test@clientcomm.org", 
+                  "New message from Max McDonnell",
+                  content
+                )
+                .then(function(response) {
+                  console.log(response)
+                })
+                .catch(function(err) {
+                  res.status(500).send(err);
+                })
+              } else {
+                // TODO: error, unsupported type
+              }
 
             } else { res.redirect("/500"); }
           }).catch(errorRedirect);
@@ -1015,41 +1029,63 @@ router.post("/:cmid/cls/:clid/convos/:convid", function (req, res) {
       
       if (comms.length > 0) {
         var comm = comms[0];
+        function messageSendSuccess(id, status) {
+          db("msgs")
+          .insert({
+            convo: convid,
+            comm: commid,
+            content: content,
+            inbound: false,
+            read: true,
+            tw_sid: id,
+            tw_status: status,
+          })
+          .returning("msgid")
+          .then(function (msgs) {
 
-        twClient.sendSms({
-          to: comm.value,
-          from: TWILIO_NUM,
-          body: content
-        }, function (err, msg) {
-          if (err) {
-            console.log("Twilio send error: ", err);
-            if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
-            else res.redirect("/500");
-          } else {
-            db("msgs")
-            .insert({
-              convo: convid,
-              comm: commid,
-              content: content,
-              inbound: false,
-              read: true,
-              tw_sid: msg.sid,
-              tw_status: msg.status
-            })
-            .returning("msgid")
-            .then(function (msgs) {
+            db("convos").where("convid", convid)
+            .update({updated: db.fn.now()})
+            .then(function (success) {
+              console.log(success)
+              req.flash("success", "Sent message.");
+              res.redirect(redirect_loc)
 
-              db("convos").where("convid", convid)
-              .update({updated: db.fn.now()})
-              .then(function (success) {
-                req.flash("success", "Sent message.");
-                res.redirect(redirect_loc)
-
-              }).catch(errorRedirect);
             }).catch(errorRedirect);
-          }
-        });
+          }).catch(errorRedirect);
+        }
 
+        if (comm.type == "cell") {
+          twClient.sendSms({
+            to: comm.value,
+            from: TWILIO_NUM,
+            body: content
+          }, function (err, msg) {
+            if (err) {
+              console.log("Twilio send error: ", err);
+              if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
+              else res.redirect("/500");
+            } else {
+              messageSendSuccess(msg.sid, msg.status)
+            }
+          });          
+        } else if (comm.type == "email") {
+          mailgun.sendEmail(
+            comm.value, 
+            "test@clientcomm.org",  
+            `New message from Max McDonnell`
+            ,content
+          )
+          .then(function(response) {
+            // TODO: better status 
+            messageSendSuccess(response.id, response.message)
+          })
+          .catch(function(err) {
+            res.status(500).send(err);
+          })
+        } else {
+          // TODO wat do?
+        }
+ 
       } else { res.redirect("/404") }
     }).catch(errorRedirect);
 
