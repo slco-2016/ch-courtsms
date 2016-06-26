@@ -25,6 +25,7 @@ var cookieParser = require("cookie-parser");
 var flash = require("connect-flash");
 
 
+var session = require("cookie-session");
 
 // CONFIGURATION 1
 app.set("view engine", "ejs");
@@ -47,10 +48,10 @@ app.use(bodyParser.json());
 
 app.use(flash());
 app.use(session({
-  secret: SESS_SECRET,
-  resave: true,
-  saveUninitialized: true
+  keys: [SESS_SECRET],
+  name: 'CC_session',
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
