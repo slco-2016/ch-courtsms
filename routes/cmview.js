@@ -18,7 +18,6 @@ var twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
 
 // UTILITIES
 var utils = require("../utils/utils.js");
-var mailgun = require("../utils/mailgun")
 
 // Models
 const Convo = require('../models/models').Convo
@@ -873,54 +872,14 @@ router.post("/:cmid/cls/:clid/convos", function (req, res) {
       newConvoId = convoId
       return Communication.findById(commid)
     }).then((communication) => {
-      function messageSendSuccess(id, status) {
-        Message.create({
-          convo: newConvoId,
-          comm: commid,
-          content: content,
-          inbound: false,
-          read: true,
-          tw_sid: sid,
-          tw_status: status,
-        })
-        .then((messageId) => {
-          req.flash("success", "New conversation created.");
-          redirect_loc = redirect_loc + "/convos/" + newConvoId;
-          res.redirect(redirect_loc);
-        }).catch(errorRedirect);
-      }
-      if (communication.type == "cell") {
-        twClient.sendSms({
-          to: communication.value,
-          from: TWILIO_NUM,
-          body: content
-        }, function (err, msg) {
-          if (err) {
-            console.log("Twilio send error: ", err);
-            if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
-            else res.redirect("/500");
-          } else {
-            messageSendSuccess(msg.id, msg.status)
-          }
-        });                
-      } else if (communication.type == "email") {
-        // TODO, generate subject
-        mailgun.sendEmail(
-          communication.value, 
-          "test@clientcomm.org", 
-          "New message from Max McDonnell",
-          content
-        )
-        .then(function(response) {
-          console.log(response)
-        })
-        .catch(function(err) {
-          res.status(500).send(err);
-        })
-      } else {
-        // TODO: error, unsupported type
-      }
-    }).catch(errorRedirect);
+      return communication.sendMessage(newConvoId, content)
+    }).then((messageId) => {
+      req.flash("success", "New conversation created.");
+      redirect_loc = redirect_loc + "/convos/" + newConvoId;
+      res.redirect(redirect_loc);
+    }).catch((err) => {
+      res.status(500).send(err.message)
+    })
   }
 });
 
@@ -993,58 +952,17 @@ router.post("/:cmid/cls/:clid/convos/:convid", function (req, res) {
     Communication.findById(commid)
     .then((communication) => {
       if (communication) {
-        
-        function messageSendSuccess(id, status) {
-          Message.create({
-            convo: convid,
-            comm: commid,
-            content: content,
-            inbound: false,
-            read: true,
-            tw_sid: id,
-            tw_status: status,
-          })
-          .then((messageId) => {
-            db("convos").where("convid", convid)
-            .update({updated: db.fn.now()})
-            .then(function (success) {
-              req.flash("success", "Sent message.");
-              res.redirect(redirect_loc)
-            }).catch(errorRedirect);
+        communication.sendMessage(convid, content)
+        .then((messageId) => {
+          db("convos").where("convid", convid)
+          .update({updated: db.fn.now()})
+          .then(function (success) {
+            req.flash("success", "Sent message.");
+            res.redirect(redirect_loc)
           }).catch(errorRedirect);
-        }
-
-        if (comm.type == "cell") {
-          twClient.sendSms({
-            to: comm.value,
-            from: TWILIO_NUM,
-            body: content
-          }, function (err, msg) {
-            if (err) {
-              console.log("Twilio send error: ", err);
-              if (err.hasOwnProperty("code") && err.code == 21211) res.status(500).send("That number is not a valid phone number.");
-              else res.redirect("/500");
-            } else {
-              messageSendSuccess(msg.sid, msg.status)
-            }
-          });          
-        } else if (comm.type == "email") {
-          mailgun.sendEmail(
-            comm.value, 
-            "test@clientcomm.org",  
-            `New message from Max McDonnell`
-            ,content
-          )
-          .then(function(response) {
-            // TODO: better status 
-            messageSendSuccess(response.id, response.message)
-          })
-          .catch(function(err) {
-            res.status(500).send(err);
-          })
-        } else {
-          // TODO wat do?
-        }
+        }).catch((err) => {
+          res.status(500).send(err.message)
+        })
       } else {
         res.redirect("/404")
       }
