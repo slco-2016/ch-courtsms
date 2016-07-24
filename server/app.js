@@ -20,12 +20,9 @@ var db  = require("./db");
 
 // APP DEPENDENCIES
 var bodyParser = require('body-parser');
-var session = require("express-session");
 var cookieParser = require("cookie-parser");
-var flash = require("connect-flash");
-
-
 var session = require("cookie-session");
+var flash = require("connect-flash");
 
 // CONFIGURATION 1
 app.set("view engine", "ejs");
@@ -75,6 +72,8 @@ require("../routes/access")(app, passport);
 var cmview = require("../routes/cmview");
 app.use("/cms", auth.isLoggedIn, cmview)
 
+// CM-Subroutes here
+// TO DO: Discuss if these should be rolled in under cmview itself
 // Capture view
 var captureRoutes = require("../routes/cm-subroutes/capture");
 app.use("/capture", auth.isLoggedIn, captureRoutes);
@@ -87,8 +86,12 @@ require("../routes/voice")(app);
 require("../routes/email")(app);
 
 // Admin routes
-var adminmgmt = require("../routes/admin");
-app.use("/admin", auth.isAdmin, adminmgmt)
+var adminManagement = require("../routes/admin");
+app.use("/admin", auth.isAdmin, adminManagement)
+
+// Account management GUI routes
+var accountManagement = require("../routes/accountmanagement");
+app.use("/accounts", auth.isSuper, accountManagement)
 
 // Superuser routes
 var supermgmt = require("../routes/super");
@@ -124,13 +127,16 @@ var EMNOTIF = process.env.EMNOTIF;
 
 // EMNOTIF means run email notifications, including regular check up on text messages
 if (EMNOTIF && EMNOTIF == "true") {
-  var dailyTimer = 1000 * 60 * 60 * 24; 
-  var qrtrHrTimer = 1000 * 60 * 15; 
+  var dailyTimer =     1000 * 60 * 60 * 24; 
+  var fifteenMinTimer = 1000 * 60 * 15; 
+  var thirtySecTimer = 1000 * 60 * 0.5; 
 
   // Set activities
   setInterval(function () { require("../utils/em-notify").runEmailUpdates(); }, dailyTimer); 
-  setInterval(function () { require("../utils/sms-status-check").checkSMSstatus(); }, qrtrHrTimer); 
+  setInterval(function () { require("../utils/sms-status-check").checkSMSstatus(); }, thirtySecTimer); 
+  setInterval(function () { require("../utils/timed-notification").checkAndSendNotifications(); }, fifteenMinTimer); 
 }
+
 
 
 

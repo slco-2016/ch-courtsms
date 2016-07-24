@@ -1,0 +1,66 @@
+.list {
+  width: auto; }
+  .list tr th {
+    height: 17px;
+    font-weight: 300;
+    font-size: 12px;
+    text-align: left;
+    background-color: #F4F4F4;
+    color: #898989;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px; }
+  .list tr td {
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 55px;
+    word-wrap: break-word; }
+    .list tr td.fa-icon-holder {
+      text-align: center; }
+      .list tr td.fa-icon-holder .standard-fa-no-stack {
+        font-size: 24px;
+        cursor: pointer; }
+      .list tr td.fa-icon-holder .disabled {
+        opacity: 0.5;
+        font-size: 0.9; }
+      .list tr td.fa-icon-holder button {
+        border: none;
+        outline: none;
+        background: none;
+        cursor: pointer;
+        color: inherit;
+        padding: 0;
+        text-decoration: underline;
+        font-family: inherit;
+        font-size: inherit; }
+    .list tr td:nth-child(1) {
+      width: 50px;
+      min-width: 50px;
+      max-width: 50px; }
+    .list tr td:nth-child(2) {
+      width: 375px;
+      min-width: 375px;
+      max-width: 375px; }
+    .list tr td:nth-child(3) {
+      width: 105px;
+      min-width: 105px;
+      max-width: 105px;
+      word-wrap: break-word; }
+    .list tr td:nth-child(4) {
+      font-size: small;
+      width: 75px;
+      min-width: 75px;
+      max-width: 75px; }
+    .list tr td:nth-child(5) {
+      font-size: small;
+      width: 75px;
+      min-width: 75px;
+      max-width: 75px; }
+    .list tr td:nth-child(6) {
+      font-size: small;
+      width: 50px;
+      min-width: 50px;
+      max-width: 50px; }
+  .list tr:hover {
+    background-color: #4A90E2;
+    color: #FFF; }

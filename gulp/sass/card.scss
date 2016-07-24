@@ -45,6 +45,23 @@ $card-text-light: #92C9FF;
     .fa {
       font-size: 60px;
     }
+
+    // Vector styling
+    .icon {
+      svg {
+        height: 120px;
+      }
+    }
+
+    .text {
+      svg {
+        width: 100%;
+      }
+    }
+
+    path {
+      fill: $card-text;
+    }
   }
 
   .card-title {
@@ -62,6 +79,7 @@ $card-text-light: #92C9FF;
       float: right;
       color: #4A90E2;
     }
+
     .blue-select {
       width: 280px;
       height: 35px;
@@ -72,6 +90,22 @@ $card-text-light: #92C9FF;
       font-size: 16px;
       font-weight: 700;
       color: #344289;
+
+      &.half {
+        width: 130px;
+        float: left;
+        margin-left: 20px;
+        
+        &:nth-child(2) {
+          margin-left: 0px;
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
     }
   }
 
@@ -110,15 +144,6 @@ $card-text-light: #92C9FF;
       background-color: #92C9FF;
       color: #344289;
     }
-  }
-
-  // Vector styling
-  svg {
-    height: 120px;
-  }
-
-  path {
-    fill: $card-text;
   }
 }
 

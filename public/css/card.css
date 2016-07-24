@@ -32,6 +32,12 @@
     color: #2F8CE8; }
     .card .logo .fa {
       font-size: 60px; }
+    .card .logo .icon svg {
+      height: 120px; }
+    .card .logo .text svg {
+      width: 100%; }
+    .card .logo path {
+      fill: #2F8CE8; }
   .card .card-title {
     font-size: 30px;
     text-align: center;
@@ -53,6 +59,16 @@
       font-size: 16px;
       font-weight: 700;
       color: #344289; }
+      .card .form-row .blue-select.half {
+        width: 130px;
+        float: left;
+        margin-left: 20px; }
+        .card .form-row .blue-select.half:nth-child(2) {
+          margin-left: 0px; }
+    .card .form-row::after {
+      content: "";
+      display: block;
+      clear: both; }
   .card .form-label {
     font-size: 12px;
     padding-bottom: 3px; }
@@ -80,7 +96,3 @@
     .card .form-submit:hover {
       background-color: #92C9FF;
       color: #344289; }
-  .card svg {
-    height: 120px; }
-  .card path {
-    fill: #2F8CE8; }

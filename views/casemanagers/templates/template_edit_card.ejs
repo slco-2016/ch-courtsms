@@ -1,0 +1,74 @@
+<% include ../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/cardV2.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+
+<div class="card">
+
+  <div class="card-head">
+
+    <a href="/cms/<%= user.cmid %>/templates">
+      <% include ../../partials/card-exitV2 %>
+    </a>
+
+    <div class="card-title">
+      Edit Template
+    </div>
+
+    <div class="card-subtitle">
+      Modify your template attributes in the below form fields. Click the submit button at the bottom to submit final changes.
+    </div>
+
+  </div>
+
+  <div class="card-body">
+    <form method="post" 
+          action="/cms/<%= user.cmid %>/templates/<%= template.template_id %>/edit">
+
+      <input type="hidden" name="org" value="<%= user.org %>">
+      <input type="hidden" name="casemanager" value="<%= user.cmid %>">
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Modify your templated phrase or message below.
+        </div>
+        <div class="form-input">
+          <textarea name="content"
+                    rows="5"><%= template.content %></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Limit template to specific client (or all clients)
+        </div>
+        <select class="form-select" name="client" required>
+          <option value="null" selected>All Clients</option>
+          <% for (var i = 0; i < clients.length; i++) { %>
+            <option value="<%= clients[i].clid %>"
+              <% if (clients[i].clid == template.client) { %> selected <% } %> >
+              <%= clients[i].first %> <%= clients[i].last %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+
+      <center>
+      <input  type="submit" 
+              class="form-submit" 
+              value="Submit Closed se">
+      </center>
+
+    </form>
+
+  </div>
+
+</div>
+
+</div>
+
+<% include ../../partials/footers/footer %>

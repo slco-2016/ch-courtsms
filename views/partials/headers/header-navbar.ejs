@@ -19,27 +19,30 @@
   
     <div class="nav-right">
     <a href="/cms/<%= user.cmid %>">
-      <small>Clients List</small>
+      <small>Clients Directory</small>
       <% include ../../../public/icons/cllist.svg %>
     </a>
     </div>
 
-    <% if (!(typeof msgs == "undefined" && typeof comms == "undefined")) { %>
+    <% if (!(typeof msgs == "undefined" && typeof comms == "undefined") && typeof convos == "undefined") { %>
       <div class="nav-right">
       <a href="/cms/<%= user.cmid %>/cls/<%= client.clid %>">
-        <small>Client Page</small>
+        <small><%= client.first %> <%= client.last %></small>
         <% include ../../../public/icons/user.svg %>
       </a>
       </div>
     <%} %>
 
   <%} %>
-  
-  <div class="nav-right">
-  <a href="javascript:window.location.href=window.location.href" id="navbarMessageCheckButton">
-    <small>Check for Messages</small>
-    <% include ../../../public/icons/msgcheck.svg %>
-  </a>
-  </div>
+
+  <!--  
+    REMOVED AS WE HAVE AUTO UPDATE FEATURE FOR THE TIME BEING
+    <div class="nav-right">
+    <a href="javascript:window.location.href=window.location.href" id="navbarMessageCheckButton">
+      <small>Check for Messages</small>
+      <% include ../../../public/icons/msgcheck.svg %>
+    </a>
+    </div>
+  -->
 
 </div>

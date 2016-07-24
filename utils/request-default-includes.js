@@ -1,8 +1,8 @@
 var db = require("../server/db");
 
 // FOR EJS DATETIME
-var moment = require('moment');
-var moment_tz = require('moment-timezone');
+var moment = require("moment");
+var moment_tz = require("moment-timezone");
 
 module.exports = function () {
   var email = credentials.db.user;

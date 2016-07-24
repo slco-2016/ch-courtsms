@@ -226,19 +226,18 @@ module.exports = {
           var textPart = text[txt_i];
 
           var insertObj = {
-            "convo": convo,
-            "comm": commid,
-            "content": textPart,
-            "inbound": true,
-            "read": false,
-            "tw_sid": tw_sid,
+            "convo":     convo,
+            "comm":      commid,
+            "content":   textPart,
+            "inbound":   true,
+            "read":      false,
+            "tw_sid":    tw_sid,
             "tw_status": tw_status
+            // "created":   foobar
           }
           insertList.push(insertObj);         
         }
       }
-
-      console.log("insertList", insertList);
 
       db("msgs")
       .insert(insertList)

@@ -66,13 +66,23 @@ router.get("/", function (req, res) {
           }
         };
 
+      // Query 4: Get message activity for each case manager
+      db("notifications")
+      .count("notificationid")
+      .then(function (notifications) {
+        var notificationsCount = notifications[0].count;
+
         // Render organization page
         res.render("admin/org", {
           org: org,
           cms: cms,
-          msgs: m2
+          msgs: m2,
+          stats: {
+            notificationsCount: notificationsCount
+          }
         });
 
+      }).catch(errorRedirect); // Query 4
       }).catch(errorRedirect); // Query 3
       }).catch(errorRedirect); // Query 2
 

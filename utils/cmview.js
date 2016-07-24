@@ -3,7 +3,7 @@ var Promise = require("bluebird");
 
 module.exports = {
 
-  get_convo: function (cmid, clid, convid) {
+  getConvo: function (cmid, clid, convid) {
     return new Promise (function (fulfill, reject) {
       db("clients").where("clid", clid).limit(1)
       .then(function (clients) {

@@ -11,10 +11,12 @@ module.exports = {
         console.log("\n Error occured. \n Timestamp: " + new Date());
         console.log(err);
         console.log("--- \n");
+      } else {
+        err = "Internal Error 500 Something happened.";
       }
 
       // Run the redirect
-      res.redirect("/500"); 
+      res.status(500).send(String(err))
     }
   }
 

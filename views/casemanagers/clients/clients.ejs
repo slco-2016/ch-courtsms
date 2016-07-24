@@ -3,12 +3,26 @@
 
 <div class="contents">
 
+  <!-- Temp solution to deal with tempalte and notification access -->
+  <div class="sort-opts">
+    <a href="/cms/<%= user.cmid %>">
+      <div class="toggle selected"> Client Directory </div>
+    </a>
+    <a href="/cms/<%= user.cmid %>/notifications">
+      <div class="toggle"> Notifications </div>
+    </a>
+    <a href="/cms/<%= user.cmid %>/templates">
+      <div class="toggle"> Templates </div>
+    </a>
+  </div>
+  <hr>
+
   <div class="sort-opts">
     <div class="toggle selected" id="current_tag" onclick="showCurrent()">
       Current Clients
     </div>
     <div class="toggle" id="archive_tag" onclick="showArchive()">
-      Archived
+      Closed Cases
     </div>
   </div>
 
@@ -29,7 +43,7 @@
       <th>Client</th>
       <th>Conversation</th>
       <th>Last Activity</th>
-      <th>Archive</th>
+      <th>Close Out</th>
     </tr>
 
     <tr class="archive">
@@ -46,14 +60,28 @@
         <tr class="<%= clients[i].active ? 'current' : 'archive' %> <%= clients[i].active && !clients[i].open ? 'nonew' : '' %>">
 
           <td class="clientid">
-            <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>">
-              <% include ../../../public/icons/user.svg %>
+
+            <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/colortag %>">
+              <div style="display: inline-block; border-radius: 5px; width: 15px; height: 20px; background-color: <%= clients[i].color_tag %>"></div>
+            </a>
+
+            <% if (clients[i].active) { %>
+              <% if (clients[i].open) { %>
+                <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/convos/<%= clients[i].convid %>">
+              <% } else { %>
+                <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %> %>">
+              <% } %>
+            <% } else { %>
+              <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>">
+            <% } %>
+
               <%=  clients[i].last %>, <%= clients[i].first %> <%= clients[i].middle %>
             </a>
           </td>
 
           <td>
-            <% if (clients[i].clid !== null && clients[i].active) { %>
+          
+            <% if (clients[i].active) { %>
               <% if (clients[i].open) { %>
                 <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/convos/<%= clients[i].convid %>">
               <% } else { %>
@@ -109,15 +137,15 @@
           
           <td class="archiverestore">
             <% if (clients[i].active) { %>
-              <form method="post" action="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/archive">
+              <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/archive">
                 <button type="submit">
                   <% include ../../../public/icons/archive.svg %>
                 </button>
-              </form>
+              </a>
             <% } else { %>
-              <form method="post" action="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/restore">
+              <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/restore">
                 <button type="submit"><i class="fa fa-undo"></i></button>
-              </form>
+              </a>
             <% } %>
           </td>
 

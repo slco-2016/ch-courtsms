@@ -1,0 +1,84 @@
+.list {
+  width: auto;
+
+  tr {
+    th {
+      // This portion should be for all list types
+      // Repetitive to include in each  
+      height: 17px;
+      font-weight: 300;
+      font-size: 12px;
+      text-align: left;
+      background-color: #F4F4F4;
+      color: #898989;
+
+      text-align: left;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    td {
+      padding-left: 10px;
+      padding-right: 10px;
+      height: 55px;
+      word-wrap:break-word;
+
+      &.fa-icon-holder {
+        text-align: center;
+
+        .standard-fa-no-stack {
+          font-size: 24px;
+          cursor: pointer;
+        }
+        .disabled {
+          opacity: 0.5;
+          font-size: 0.9;
+        }
+        button {
+          border: none;
+          outline: none;
+          background: none;
+          cursor: pointer;
+          color: inherit;
+          padding: 0;
+          text-decoration: underline;
+          font-family: inherit;
+          font-size: inherit;
+        }
+      }
+
+      &:nth-child(1) {
+        width: 50px;
+      }
+      &:nth-child(2) {
+        width: 100px;
+      }
+      &:nth-child(3) {
+        width: 300px;
+      }
+      &:nth-child(4) {
+        font-size: small;
+        width: 75px;
+      }
+      &:nth-child(5) {
+        font-size: small;
+        width: 75px;
+      }
+      &:nth-child(6) {
+        font-size: small;
+        width: 50px;
+      }
+      &:nth-child(7) {
+        font-size: small;
+        width: 100px;
+      }
+      &:nth-child(8) {
+        width: 50px;
+      }
+    }
+
+    &:hover {
+      background-color: #4A90E2;
+      color: #FFF;
+    }
+  }
+}

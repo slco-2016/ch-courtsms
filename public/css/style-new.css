@@ -204,7 +204,7 @@
   fill: #FFF;
 }
 
-.contents .cl-list, .contents .comm-list, .contents .capture-list {
+.contents .list, .contents .cl-list, .contents .comm-list, .contents .capture-list {
   width: 100%;
   color: #898989;
   border-collapse: collapse;
@@ -238,12 +238,12 @@
 }
 
 /* SVG align for all within all list options */
-.cl-list svg, .comm-list svg, .capture-list svg {
+.list svg, .cl-list svg, .comm-list svg, .capture-list svg {
   display: inline-block;
   vertical-align: middle;
 }
 
-.cl-list tr, .comm-list tr, .capture-list tr {
+.list tr, .cl-list tr, .comm-list tr, .capture-list tr {
   border-top: 0px;
   border-right: 0px;
   border-bottom: 1px;
@@ -253,23 +253,23 @@
   background-color: #FFF;
 }
 
-.cl-list tr:hover, .comm-list tr:hover, .capture-list tr:hover {
+.list tr:hover, .cl-list tr:hover, .comm-list tr:hover, .capture-list tr:hover {
   background-color: #FBFBFB;
 }
 
-.cl-list tr.archive {
+.list tr.archive, .cl-list tr.archive {
   background-color: #898989;
 }
 
-.cl-list tr.archive:hover {
+.list tr.archive:hover, .cl-list tr.archive:hover {
   background-color: #646464;
 }
 
-.cl-list tr.nonew td {
+.list tr.nonew td, .cl-list tr.nonew td {
   color: #898989;
 }
 
-.cl-list tr .badge, .comm-list tr .badge {
+.list tr .badge, .cl-list tr .badge, .comm-list tr .badge {
   font-size: 10px;
   line-height: 18px;
   vertical-align: middle;
@@ -392,7 +392,7 @@
 }
 
 
-.cl-list tr.archive td {
+.list tr.archive td, .cl-list tr.archive td {
   color: #FFF;
 }
 

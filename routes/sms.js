@@ -13,11 +13,17 @@ module.exports = function (app) {
       var tw_status = req.body.SmsStatus;
       var tw_sid = req.body.MessageSid;
 
+      console.log("Received a message: ", req.body);
+
       // just leaving this in for now while we use free service for testing
       text = text.replace("-Sent free from TextNow.com", "");
 
-      // break the string up into 160 or less char length segments
-      text = text.replace(/["']/g, "").trim().match(/.{1,159}/g);
+      // clean up the text string
+      text = text.replace(/["']/g, "").trim();
+
+      // we used to break up the text into a list of 160 char each but now we can support longer ones
+      // still need to submit as a list
+      text = [text];
       
       sms.process_incoming_msg(from, text, 'cell', tw_status, tw_sid)
       .then(function (msgs) {

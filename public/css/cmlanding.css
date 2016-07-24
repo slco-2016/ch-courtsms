@@ -1,0 +1,165 @@
+.darkblue {
+  background-color: #1c548b; }
+
+.blue {
+  background-color: #2F8CE8; }
+
+.pink {
+  background-color: #BD1F73; }
+
+.darkpink {
+  background-color: #5e0f39; }
+
+.yellow {
+  background-color: #E5D50A; }
+
+.darkblue:hover svg path {
+  fill: #1c548b; }
+
+.pink:hover svg path, .pink:hover svg polygon, .pink:hover svg g {
+  fill: #BD1F73; }
+
+.darkpink:hover svg path, .darkpink:hover svg polygon, .darkpink:hover svg g {
+  fill: #5e0f39; }
+
+.blue:hover svg path {
+  fill: #2F8CE8; }
+
+.yellow:hover svg path {
+  fill: #E5D50A; }
+
+.contents {
+  padding-left: 0px;
+  padding-right: 0px;
+  width: 900px;
+  background-color: #344289; }
+
+.captureBoard {
+  height: 80px;
+  width: 700px;
+  padding: 10px 100px 10px 100px;
+  background-color: #E5D50A; }
+  .captureBoard .icon {
+    float: left;
+    width: 100px; }
+    .captureBoard .icon svg polygon, .captureBoard .icon svg path {
+      fill: #e69500; }
+  .captureBoard .body {
+    float: left;
+    width: 600px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #e69500; }
+
+.top {
+  height: 250px;
+  width: 100%;
+  background-color: #FFF; }
+  .top .left {
+    width: 300px;
+    float: left;
+    padding-left: 100px;
+    padding-right: 50px;
+    padding-top: 75px; }
+    .top .left .head {
+      color: #344289;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px; }
+    .top .left .body {
+      color: #2F8CE8;
+      font-size: 21px; }
+      .top .left .body .gold {
+        color: #D29839;
+        font-weight: 700; }
+  .top .right {
+    width: 120px;
+    padding-left: 120px;
+    padding-right: 200px;
+    padding-top: 60px;
+    float: left; }
+  .top::after {
+    content: "";
+    display: block;
+    clear: both; }
+
+.middle {
+  height: 375px;
+  width: 100%;
+  background-color: #F4F4F4;
+  overflow: hidden; }
+  .middle .left {
+    width: 350px;
+    height: 100%;
+    padding-top: 100px;
+    background-color: #F4F4F4;
+    float: left;
+    padding-left: 50px;
+    padding-right: 50px; }
+    .middle .left .optionBlock:nth-child(2) {
+      padding-left: 50px; }
+  .middle .right {
+    width: 350px;
+    height: 100%;
+    padding-top: 40px;
+    background-color: #E6E7E8;
+    float: left;
+    padding-left: 50px;
+    padding-right: 50px; }
+    .middle .right .notice {
+      width: 100%;
+      height: 20px;
+      line-height: 20px;
+      font-size: 16px;
+      padding-bottom: 40px;
+      text-align: center;
+      color: #4A4A4A; }
+      .middle .right .notice::after {
+        content: "";
+        display: block;
+        clear: both; }
+    .middle .right .optionBlock:nth-child(3) {
+      padding-left: 50px; }
+  .middle .optionBlock {
+    float: left;
+    height: 200px;
+    width: 150px; }
+    .middle .optionBlock .bigcircles {
+      display: block;
+      border-radius: 50%;
+      height: 150px;
+      width: 150px; }
+      .middle .optionBlock .bigcircles svg {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        vertical-align: middle;
+        padding-top: 30px; }
+      .middle .optionBlock .bigcircles:hover {
+        background-color: #FFF;
+        cursor: pointer; }
+    .middle .optionBlock .subtitle {
+      display: block;
+      padding-top: 20px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4A4A4A; }
+
+.bottom {
+  padding: 20px 50px 20px 50px;
+  height: 100px; }
+  .bottom svg {
+    height: 50px;
+    vertical-align: middle; }
+    .bottom svg path, .bottom svg polygon {
+      fill: #558CC9; }
+    .bottom svg:nth-child(2) {
+      height: 30px;
+      padding-left: 20px; }
+  .bottom .number {
+    float: right;
+    color: #2F8CE8;
+    line-height: 60px;
+    font-size: 28px;
+    font-weight: 700; }

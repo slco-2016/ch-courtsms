@@ -1,0 +1,31 @@
+.card {
+  background-color: #92C9FF; }
+  .card .card-title {
+    color: #344289; }
+  .card .comms-link {
+    color: #344289; }
+    .card .comms-link:hover {
+      color: #2f8ce8; }
+  .card .form-label {
+    color: #344289; }
+  .card .form-row .opt {
+    color: #344289; }
+  .card .form-row .blue-select {
+    border: 2px solid #CDE6FF;
+    background-color: #4A90E2;
+    color: #FFF; }
+  .card .form-submit {
+    background-color: #344289;
+    color: #FFF;
+    border: 2px solid #CDE6FF; }
+    .card .form-submit:hover {
+      background-color: #CDE6FF;
+      color: #344289;
+      border: 2px solid #344289; }
+  .card .bottom-nav-dots {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 32px; }
+    .card .bottom-nav-dots #showOtherCard {
+      cursor: pointer; }

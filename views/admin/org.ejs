@@ -86,6 +86,133 @@
 
 
   <!-- Accounts activity overview columns -->
+  <% var departments = [];                  %>
+  <% for (var i = 0; i < cms.length; i++) { %>
+  <%  var d = cms[i].department;            %>
+  <%  if (departments.indexOf(d) < 0) {     %>
+  <%    departments.push(d)                 %>
+  <%  }                                     %>
+  <% }                                      %>
+
+  <div class="accounts">
+    <div class="title">
+      Recent Account Activity
+    </div>
+
+    <div id="cmactivitychart"></div>
+  </div>
+
+
+  <div class="accounts">
+    <div class="title">
+      Organization Stats Overview
+    </div>
+    <div style="display: block; clear: both; position: relative; height: 150px; color: #898989; margin-top: 50px;">
+      <div style="width: 33%; float: left; text-align: center;">
+        <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+          <%= stats.notificationsCount %>
+        </span>
+        <center>Notifications Created</center>
+      </div>
+
+      <div style="width: 33%; float: left; text-align: center;">
+        <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+          <span id="peakDayValue"></span>
+        </span>
+        <center>Top Daily Messaging Activity</center>
+      </div>
+
+      <div style="width: 33%; float: left; text-align: center;">
+        <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+          <span id="activeStaffPercentage"></span>%
+        </span>
+        <center>Portion of Staff Recently Active</center>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="accounts">
+    <div class="title">
+      Staff Accounts (<%= staffCt %> active)
+    </div>
+  </div>
+
+  <% for (var d = 0; d < departments.length; d++) { %>
+    <div class="accounts">
+      <div class="title" style="font-size:16px; height:20px;">
+          <%= departments[d] %> Staff Accounts
+      </div>
+
+      <% for (var i = 0; i < cms.length; i++) { %>
+        <% var showDepartment = departments[d] == cms[i].department; %>
+        <% if (!cms[i].admin && cms[i].active && showDepartment) { %>
+
+          <div class="accountcard">
+
+            <b>
+            <% if (user.cmid !== cms[i].cmid) { %>
+              <a href="/admin/cms/<%= cms[i].cmid %>">
+                <%= cms[i].last %>, <%= cms[i].first %> <%= cms[i].middle %>
+              </a>
+            <% } else { %>
+              <a href="/cms/<%= cms[i].cmid %>">
+                <%= cms[i].last %>, <%= cms[i].first %> <%= cms[i].middle %>
+              </a>
+            <% } %>
+            </b>
+
+            <!-- Mini chart of activity -->
+            <div class="miniaccountchart"><div id="chart-<%= cms[i].cmid %>"></div></div>
+
+            <table style="width:100%">
+              <tr>
+                <td>Email</td>
+                <td><%= cms[i].email %></td>
+              </tr>
+
+              <tr>
+                <td>Position</td>
+                <td><%= cms[i].position %></td>
+              </tr>
+
+              <tr>
+                <td>Department</td>
+                <td><%= cms[i].department %></td>
+              </tr>
+
+              <tr>
+                <td>Last Login</td>
+                <td>
+                  <% try { %>
+                    <% var upd = new Date(cms[i].updated) %>
+                    <%= [upd.getMonth()+1, upd.getDate(), upd.getFullYear()].join("/") + " at " + [upd.getHours(), upd.getMinutes()].join(':') %>
+                  <% } catch (err) { %>
+                    Unknown
+                  <% } %>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Created</td>
+                <td>
+                  <% try { %>
+                    <% var upd = new Date(cms[i].created) %>
+                    <%= [upd.getMonth()+1, upd.getDate(), upd.getFullYear()].join("/") + " at " + [upd.getHours(), upd.getMinutes()].join(':') %>
+                  <% } catch (err) { %>
+                    Unknown
+                  <% } %>
+                </td>
+              </tr>
+            </table>
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+  <% } %>
+
+
+  <!-- Admin accounts -->
   <div class="accounts">
     <div class="title">
       Admin Accounts (<%= adminCt %> active)
@@ -156,80 +283,6 @@
     <% } %>
           
   </div>
-
-  <div class="accounts">
-    <div class="title">
-      Staff Accounts (<%= staffCt %> active)
-    </div>
-
-    <div id="cmactivitychart"></div>
-
-    <% for (var i = 0; i < cms.length; i++) { %>
-      <% if (!cms[i].admin && cms[i].active) { %>
-
-        <div class="accountcard">
-
-          <b>
-          <% if (user.cmid !== cms[i].cmid) { %>
-            <a href="/admin/cms/<%= cms[i].cmid %>">
-              <%= cms[i].last %>, <%= cms[i].first %> <%= cms[i].middle %>
-            </a>
-          <% } else { %>
-            <a href="/cms/<%= cms[i].cmid %>">
-              <%= cms[i].last %>, <%= cms[i].first %> <%= cms[i].middle %>
-            </a>
-          <% } %>
-          </b>
-
-          <!-- Mini chart of activity -->
-          <div class="miniaccountchart"><div id="chart-<%= cms[i].cmid %>"></div></div>
-
-          <table style="width:100%">
-            <tr>
-              <td>Email</td>
-              <td><%= cms[i].email %></td>
-            </tr>
-
-            <tr>
-              <td>Position</td>
-              <td><%= cms[i].position %></td>
-            </tr>
-
-            <tr>
-              <td>Department</td>
-              <td><%= cms[i].department %></td>
-            </tr>
-
-            <tr>
-              <td>Last Login</td>
-              <td>
-                <% try { %>
-                  <% var upd = new Date(cms[i].updated) %>
-                  <%= [upd.getMonth()+1, upd.getDate(), upd.getFullYear()].join("/") + " at " + [upd.getHours(), upd.getMinutes()].join(':') %>
-                <% } catch (err) { %>
-                  Unknown
-                <% } %>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Created</td>
-              <td>
-                <% try { %>
-                  <% var upd = new Date(cms[i].created) %>
-                  <%= [upd.getMonth()+1, upd.getDate(), upd.getFullYear()].join("/") + " at " + [upd.getHours(), upd.getMinutes()].join(':') %>
-                <% } catch (err) { %>
-                  Unknown
-                <% } %>
-              </td>
-            </tr>
-          </table>
-        </div>
-      <% } %>
-    <% } %>
-          
-  </div>
-
 
 
 
@@ -459,7 +512,6 @@
       ea.name = [ea["user.first"], ea["user.last"]].join(" ");
       return ea;
     });
-    console.log(cms)
 
     c3.generate({
       data: {
@@ -477,7 +529,22 @@
       },
       bindto: "#cmactivitychart"
     });
-  }
+  };
+
+  function getPeakDay (msgsReduced) {
+    var keys = Object.keys(msgsReduced);
+    var maxDay = {
+      date: 0,
+      value: 0
+    };
+    keys.forEach(function (ea) {
+      if (msgsReduced[ea] >= maxDay.value) {
+        maxDay.date = ea;
+        maxDay.value = msgsReduced[ea];
+      }
+    });
+    return maxDay
+  };
 
 
   // PAGE LOAD ACTIONS RELATED TO EJS VAR STRING INCLUSION
@@ -486,6 +553,10 @@
     // Clean up EJS string output
     msgs = JSON.parse(msgs.replace(/&#34;/g, '"'));
     msgsReduced = reduceAllMsgHistories(msgs);
+    peakDay = getPeakDay(msgsReduced);
+
+    // Add Peak Day to Number Stats
+    $("#peakDayValue").text(peakDay.value);
 
     // Iterate through each and use that ID as the indicator same as each case manager's cmid
     Object.keys(msgs).forEach(function (ea) { makeChart(ea); });
@@ -513,14 +584,23 @@
         eventCollection: "pagedurations",
         groupBy: [ "user.first", "user.last" ],
         targetProperty: "duration",
-        timeframe: "previous_1_days",
+        timeframe: "this_2_days",
         timezone: "UTC"
       });
 
       // Send off query
       keenQueryClient.run(keenQuery, function (err, res){
         if (err) { console.log("Keen error on query run: ", err); }
-        else { drawCMActivityChart(res); }
+        else { 
+          drawCMActivityChart(res); 
+
+          // Calculate percentage of active case managers
+          window.cms = res.result;
+          var cmsLength = cms.length;
+          var staffCt = Number(<%= staffCt %>);
+          var activeStaffPercentage = Math.round(cmsLength/staffCt * 100);
+          $("#activeStaffPercentage").text(activeStaffPercentage);
+        }
       });
 
     });

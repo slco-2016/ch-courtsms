@@ -1,0 +1,248 @@
+<% include ../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/card.css">
+<link rel="stylesheet" type="text/css" href="/static/css/cardInverse.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+<a href="/cms/<%= user.cmid %>/notifications">
+  <% include ../../partials/card-exit %>
+</a>
+
+<div class="card">
+
+  <div class="card-title">
+    Start Notification
+  </div>
+
+  <div class="comms-link">
+    <small>
+    <a href="/cms/<%= user.cmid %>/notifications">
+      View All Notification
+      <i class="fa fa-list-alt"></i>
+    </a>
+    </small>
+  </div>
+
+  <form method="post" id="newNotification">
+
+    <input type="hidden" name="cmid" value="<%= user.cmid %>">
+    <input type="hidden" name="notiSubj" value="<%= notification.notiSubj %>">
+    <input type="hidden" name="notiCopy" value="<%= notification.notiCopy %>">
+
+    <% if (typeof editView !== "undefined" && editView) { %>
+      <input type="hidden" name="showCardExplicit" value="2">
+    <% } %>
+
+    <div class="form-row">
+      <div class="form-label"> Date to send <small>(YYYY-MM-DD)</small></div>
+      <input class="form-input" type="date" name="sendDate" value="<%= notification.sendDate %>" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label"> Time to send </div>
+
+      <!-- Options are for military hrs of day -->
+      <select class="blue-select half" name="sendTimeHour" required>
+        <option value="00" 
+          <% if (notification.sendTimeHour == 00) { %> selected <% } %> > 
+            00 
+        </option>
+        <option value="01" 
+          <% if (notification.sendTimeHour == 01) { %> selected <% } %> > 
+            01 
+        </option>
+        <option value="02" 
+          <% if (notification.sendTimeHour == 02) { %> selected <% } %> > 
+            02 
+        </option>
+        <option value="03" 
+          <% if (notification.sendTimeHour == 03) { %> selected <% } %> > 
+            03 
+        </option>
+        <option value="04" 
+          <% if (notification.sendTimeHour == 04) { %> selected <% } %> > 
+            04 
+        </option>
+        <option value="05" 
+          <% if (notification.sendTimeHour == 05) { %> selected <% } %> > 
+            05 
+        </option>
+        <option value="06" 
+          <% if (notification.sendTimeHour == 06) { %> selected <% } %> > 
+            06 
+        </option>
+        <option value="07" 
+          <% if (notification.sendTimeHour == 07) { %> selected <% } %> > 
+            07 
+        </option>
+        <option value="08" 
+          <% if (notification.sendTimeHour == 08) { %> selected <% } %> > 
+            08 
+        </option>
+        <option value="09" 
+          <% if (notification.sendTimeHour == 09) { %> selected <% } %> > 
+            09 
+        </option>
+        <option value="10" 
+          <% if (notification.sendTimeHour == 10) { %> selected <% } %> > 
+            10 
+        </option>
+        <option value="11" 
+          <% if (notification.sendTimeHour == 11) { %> selected <% } %> > 
+            11 
+        </option>
+        <option value="12" 
+          <% if (notification.sendTimeHour == 12) { %> selected <% } %> > 
+            12 
+        </option>
+        <option value="13" 
+          <% if (notification.sendTimeHour == 13) { %> selected <% } %> > 
+            13 
+        </option>
+        <option value="14" 
+          <% if (notification.sendTimeHour == 14) { %> selected <% } %> > 
+            14 
+        </option>
+        <option value="15" 
+          <% if (notification.sendTimeHour == 15) { %> selected <% } %> > 
+            15 
+        </option>
+        <option value="16" 
+          <% if (notification.sendTimeHour == 16) { %> selected <% } %> > 
+            16 
+        </option>
+        <option value="17" 
+          <% if (notification.sendTimeHour == 17) { %> selected <% } %> > 
+            17 
+        </option>
+        <option value="18" 
+          <% if (notification.sendTimeHour == 18) { %> selected <% } %> > 
+            18 
+        </option>
+        <option value="19" 
+          <% if (notification.sendTimeHour == 19) { %> selected <% } %> > 
+            19 
+        </option>
+        <option value="20" 
+          <% if (notification.sendTimeHour == 20) { %> selected <% } %> > 
+            20 
+        </option>
+        <option value="21" 
+          <% if (notification.sendTimeHour == 21) { %> selected <% } %> > 
+            21 
+        </option>
+        <option value="22" 
+          <% if (notification.sendTimeHour == 22) { %> selected <% } %> > 
+            22 
+        </option>
+        <option value="23" 
+          <% if (notification.sendTimeHour == 23) { %> selected <% } %> > 
+            23 
+        </option>
+        <option value="24" 
+          <% if (notification.sendTimeHour == 24) { %> selected <% } %> > 
+            24 
+        </option>
+      </select>
+
+      <select class="blue-select half" name="sendTimeMin">
+        <option value="0"
+          <% if (notification.sendTimeMin == 0) { %> selected <% } %> > 
+            :00 
+        </option>
+        <option value="30"
+          <% if (notification.sendTimeMin == 30) { %> selected <% } %> > 
+            :30 
+        </option>
+      </select>
+
+    </div>
+
+    <div class="form-row">
+      <div class="form-label"> Which client to notify  </div>
+      <select class="blue-select" id="clientSelect" name="recipient" required>
+        <option value="" disabled selected> Client </option>
+        <% clients.forEach(function (client) { %>
+          <option value="<%= client.id %>"
+            <% if (notification.recipient == client.id) { %> selected <% } %> > 
+              <%= client.name %> 
+          </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-label"> Which device to send to </div>
+      <select class="blue-select" id="commOptionsForClient" name="recipientComm" required>
+        <option value="" disabled selected> Contact Info </option>
+      </select>
+    </div>
+
+    <input type="submit" class="form-submit" value="Next">
+
+  </form>
+
+  <div class="bottom-nav-dots">
+    <i class="fa fa-circle"></i>
+    <i class="fa fa-circle-thin" id="showOtherCard"></i>
+  </div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+  // Set global variable of all clients information
+  window.clients = <%- JSON.stringify(clients) %>;
+
+  // Bind clients to update of comm list
+  $("#clientSelect").change(function () {
+    // Get new client id value
+    var v = $(this)[0].value;
+    updateClientsAndComms(v)
+  });
+
+  function updateClientsAndComms (v, id) {
+    // Remove all existing children in options
+    $("#commOptionsForClient").empty();
+
+    // Now add all client comms associated with that client
+    clients.forEach(function (client) {
+      // Only add if client matches
+      if (client.id == v) {
+        client.comms.forEach(function (comm) {
+          var newOpt =  '<option value="' + comm.id + '" ';
+
+          // Make selected if it was selected from before
+          if (id && id == comm.id) {
+            newOpt +=  ' selected ';
+          }
+
+          // Append the end content
+          newOpt +=     '">' +
+                        comm.name + " (" + comm.value + ")" +
+                        '</option>';
+
+          $("#commOptionsForClient").append(newOpt);
+        });
+      }
+    });
+  };
+
+  // Special card toggle option
+  $("#showOtherCard").click(function () {
+    var input = $("<input>", { type: "hidden", name: "showCardExplicit", value: "2" }); 
+    $("#newNotification").append($(input));
+    $("#newNotification").submit();
+  });
+
+  // Run once on load to populate defaults
+  <% if (notification.recipient && notification.recipientComm) { %>
+    updateClientsAndComms(<%= notification.recipient %>, <%= notification.recipientComm %>);
+  <% } %>
+
+</script>
+
+<% include ../../partials/footers/footer %>

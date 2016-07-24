@@ -223,51 +223,61 @@ module.exports = function (app, passport) {
   // TO DO: As tool increases in size, we need this to not hit up the actual data base but to show some numbers that are crunches X times a day.
   app.get("/stats", function (req, res) {
 
+    var responseData = {
+      overall: {}
+    }
+
     // Get msg counts, grouped by week
     var rawQuery0 = " SELECT count(msgid), date_trunc('week', created) AS week " + 
                     " FROM msgs GROUP BY week ORDER BY week ASC; ";
     db.raw(rawQuery0).then(function (weeks) {
+      responseData.weeks = weeks.rows;
 
-    // Get msg counts, grouped by hour and out/inbound
-    var rawQuery1 = " SELECT count(msgid), inbound, trunc(EXTRACT(HOUR FROM created)) AS date_hr " + 
-                    " FROM msgs " +
-                    " GROUP BY date_hr, inbound " +
-                    " ORDER BY date_hr ASC; ";
-    db.raw(rawQuery1).then(function (msgs) {
+      // Get msg counts, grouped by hour and out/inbound
+      var rawQuery1 = " SELECT count(msgid), inbound, trunc(EXTRACT(HOUR FROM created)) AS date_hr " + 
+                      " FROM msgs " +
+                      " GROUP BY date_hr, inbound " +
+                      " ORDER BY date_hr ASC; ";
+      return db.raw(rawQuery1)
+    }).then(function (msgs) {
+      responseData.msgs = msgs.rows;
 
-    // Get msg counts by day of week
-    var rawQuery2 = "SELECT COUNT(to_char(created, 'dy')), extract(dow FROM created) AS dow FROM msgs GROUP BY dow ORDER BY dow ASC;";
-    db.raw(rawQuery2).then(function (days) {
+      // Get msg counts by day of week
+      var rawQuery2 = "SELECT COUNT(to_char(created, 'dy')), extract(dow FROM created) AS dow FROM msgs GROUP BY dow ORDER BY dow ASC;";
+      return db.raw(rawQuery2);
+    }).then(function (days) {
+      responseData.days = days.rows;
 
-    // Get total msg count
-    var rawQuery3 = "SELECT count(msgid) FROM msgs;";
-    db.raw(rawQuery3).then(function (msgct) {
+      // Get total msg count
+      var rawQuery3 = "SELECT count(msgid) FROM msgs;";
+      return db.raw(rawQuery3);
+    }).then(function (msgct) {
+      responseData.overall.msgs = msgct.rows[0].count;
 
-    // Get number of currently active convos
-    var rawQuery4 = "SELECT count(convid) FROM convos WHERE convos.open = TRUE;";
-    db.raw(rawQuery4).then(function (convosct) {
+      // Get number of currently active convos
+      var rawQuery4 = "SELECT count(convid) FROM convos WHERE convos.open = TRUE;";
+      return db.raw(rawQuery4);
+    }).then(function (convosct) {
+      responseData.overall.convos = convosct.rows[0].count;
 
-    // Get number of currently active clients
-    var rawQuery5 = "SELECT count(clid) FROM clients WHERE clients.active = TRUE;";
-    db.raw(rawQuery5).then(function (clsct) {
+      // Get number of currently active clients
+      var rawQuery5 = "SELECT count(clid) FROM clients WHERE clients.active = TRUE;";
+      return db.raw(rawQuery5);
+    }).then(function (clsct) {
+      responseData.overall.clients = clsct.rows[0].count;
 
-        res.render("public/stats", {
-          msgs: msgs.rows, 
-          days: days.rows, 
-          weeks: weeks.rows, 
-          overall: { 
-            msgs: msgct.rows[0].count, 
-            convos: convosct.rows[0].count, 
-            clients: clsct.rows[0].count 
-          } 
-        });
+      // Get population of case managers over time
+      // TO DO: We need to control for the fact that cm might have been active in past but not now
+      var rawQuery6 = " SELECT sum(count(cmid)) OVER (ORDER BY date_trunc('week', created)), date_trunc('week', created) AS week " + 
+                      " FROM cms WHERE active = TRUE AND admin = FALSE GROUP BY week ORDER BY week ASC; ";
+      return db.raw(rawQuery6);
+    }).then(function (cmcount) {
+      responseData.caseManagerWeeklyCounts = cmcount.rows;
 
-    }).catch(function (err) { res.redirect("/500"); }); // Query 5
-    }).catch(function (err) { res.redirect("/500"); }); // Query 4
-    }).catch(function (err) { res.redirect("/500"); }); // Query 3
-    }).catch(function (err) { res.redirect("/500"); }); // Query 2
-    }).catch(function (err) { res.redirect("/500"); }); // Query 1
-    }).catch(function (err) { res.redirect("/500"); }); // Query 0
+      return res.render("public/stats", responseData);
+      
+    // A single catch all for all queries
+    }).catch(function (err) { res.redirect("/500"); });
   });
 
 };

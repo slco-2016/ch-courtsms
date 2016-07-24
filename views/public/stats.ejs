@@ -105,12 +105,14 @@
 var msgs = "<%= JSON.stringify(msgs) %>";
 var weeks = "<%= JSON.stringify(weeks) %>";
 var days = "<%= JSON.stringify(days) %>";
+var caseManagerWeeklyCounts = "<%= JSON.stringify(caseManagerWeeklyCounts) %>";
 var dow = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"];
 
 try {
   msgs = JSON.parse(msgs.replace(/&#34;/g, '"'));
   weeks = JSON.parse(weeks.replace(/&#34;/g, '"'));
   days = JSON.parse(days.replace(/&#34;/g, '"'));
+  caseManagerWeeklyCounts = JSON.parse(caseManagerWeeklyCounts.replace(/&#34;/g, '"'));
 
   msgs.map(function (ea, i) { 
     if (ea.date_hr <= 6) ea.date_hr = 17 + ea.date_hr;
@@ -124,12 +126,28 @@ try {
 function makeBigChart () {
 
   // weekly growth graph
-  var weekDates = weeks.map(function (ea) { return ea.week.split("T")[0]; });
-  var weekVals  = weeks.map(function (ea) { return Number(ea.count); });
+  var weekDates    = weeks.map(function (ea) { return ea.week.split("T")[0]; });
+  var weekVals     = weeks.map(function (ea) { return Number(ea.count); });
+
+  var weekValsCMs  = weekDates.map(function (ea) { 
+    var w = caseManagerWeeklyCounts.filter(function (cmw) { return cmw.week.split("T")[0] == ea; });
+    if (w[0]) {
+      return Number(w[0].sum);
+    } else {
+      return null;
+    }
+  });
+
+  for (var i = 1; i < weekValsCMs.length; i++) {
+    if (weekValsCMs[i] == null) {
+      weekValsCMs[i] = weekValsCMs[i-1];
+    }
+  }
   
   // add first week of null
-  weekDates = ["2016-03-14"].concat(weekDates);
-  weekVals  = [0].concat(weekVals);
+  weekDates   = ["2016-03-14"].concat(weekDates);
+  weekVals    = [0].concat(weekVals);
+  weekValsCMs = [0].concat(weekValsCMs);
 
   try {
     var wvlen = weekVals.length;
@@ -144,7 +162,6 @@ function makeBigChart () {
   for (var i = 1; i < weekVals.length; i++) {
     tempY[i] = tempY[i-1] + tempY[i];
   }
-  console.log(findLineByLeastSquares(tempX, weekVals));
   var bestFit = findLineByLeastSquares(tempX, weekVals)[1];
 
   c3.generate({
@@ -153,6 +170,7 @@ function makeBigChart () {
       columns: [
         ["x"].concat(weekDates), 
         ["Activity"].concat(weekVals),
+        ["Case Manager Population"].concat(weekValsCMs),
         ["Best Fit (Linear)"].concat(bestFit)
       ],
       types: {Activity: "area"},

@@ -21,6 +21,7 @@
 
   <div class="msg-head">
 
+
     <% if (convo.open) { %>
       <div class="state-btn">
         <% if (convo.accepted) { %>
@@ -44,11 +45,17 @@
     <% } %>
 
     <div class="subject">
+      <small style="color: #2F8CE8">
+        <%= client.first %>
+        <%= client.last %>
+      </small>
+      <br>
       <%= convo.subject %>
     </div>
   </div>
 
   <div class="msg-stream">
+
     <% for (var i = 0; i < msgs.length; i++) { %>
 
       <% if (i == msgs.length - 1) { most_recent_comm = msgs[i].value } %>

@@ -1,11 +1,11 @@
 var db = require("../server/db");
-var nodemailer = require('nodemailer');
+var nodemailer = require("nodemailer");
 
 var credentials = require("../credentials");
 var empw = credentials.em.password;
 
 // Create reusable transporter object using the default SMTP transport
-var smtps = "smtps://kuan%40codeforamerica.org:" + empw + "@smtp.gmail.com";
+var smtps = "smtps://clientcomm%40codeforamerica.org:" + empw + "@smtp.gmail.com";
 var transporter = nodemailer.createTransport(smtps);
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
                     " If you are having issues accessing your account, send me an email at kuan@codeforamerica.org and I will be happy to assist you any time, day or night!"; 
 
         var mailOptions = {
-          from: '"ClientComm - CJS" <kuan@codeforamerica.org>', 
+          from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>', 
           to: msg.email, 
           subject: "Alert: New Unread ClientComm Messages!", 
           text: text, 
@@ -71,7 +71,7 @@ module.exports = {
     var html = "<p>" + text.split("\n").join("</p><p>") + "</p>";
 
     var mailOptions = {
-      from: '"ClientComm - CJS" <kuan@codeforamerica.org>', 
+      from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>', 
       to: cm.email, 
       subject: "Alert: Error sending message from ClientComm!", 
       text: text, 
@@ -94,7 +94,7 @@ module.exports = {
     var html = "<p>" + text.split("\n").join("</p><p>") + "</p>";
 
     var mailOptions = {
-      from: '"ClientComm - CJS" <kuan@codeforamerica.org>', 
+      from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>', 
       to: cm.email, 
       subject: "CientComm Password Reset Email", 
       text: text, 

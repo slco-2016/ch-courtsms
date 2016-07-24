@@ -1,0 +1,289 @@
+$card-text:       #2F8CE8;
+$card-text-light: #92C9FF;
+$dark-blue:       #344289;
+$light-blue:      #4A90E2;
+$white:           #FFF;
+$light-grey:      #C5C4C4;
+$dark-grey:       #898989;
+
+
+// Body is going to same color as contents, all blue full bleed
+// Contents to be same color so both appear to be same area
+body, .contents {
+  background-color: $dark-blue;
+  background-image: none;
+  box-shadow: none;
+  border: 0;
+}
+
+
+
+// 
+// Rest of the SCSS from original card V1 styles
+// 
+
+.comms-link {
+  color: $card-text;
+  position: absolute;
+  top: 20px;
+  right: 25px;
+
+  &:hover {
+    color: $card-text-light;
+  }
+}
+
+.card {
+  position: relative;
+  background-color: $white;
+  width: 500px;
+  overflow-x: hidden;
+  
+  margin-top: 70px;
+  margin-bottom: 70px;
+  margin-left: auto;
+  margin-right: auto;
+
+  border-radius: 10px;
+
+  box-shadow: 0px 3px 20px rgba(0,0,0,0.5);
+
+  .card-head {
+
+    .exit-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+
+      svg {
+        polygon {
+          fill: $light-grey;
+        }
+        &:hover polygon {
+          fill: #898989;
+        }
+      }
+    }
+
+    .card-title {
+      font-size: 30px;
+      text-align: center;
+      font-weight: 100;
+      color: $dark-blue;
+      padding-top: 15px;
+      padding-bottom: 15px;
+
+      // Float center
+      padding-left: 50px;
+      padding-right: 50px;
+      text-align: center;
+
+      border-bottom: 1px solid $light-grey;
+      box-shadow: 0px 3px 5px rgba(0,0,0,0.075);
+    }
+
+    .card-subtitle {
+      color: $dark-grey;
+      font-size: 14px;
+      padding: 10px 20px 5px 20px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+  }
+
+  .card-body {
+    .form-row {
+      padding: 5px 30px 25px 30px;
+
+      .form-label {
+        font-size: 16px;
+        font-weight: 700;
+        padding-bottom: 3px;
+        color: $dark-blue;
+
+        small {
+          display:block;
+          font-weight: 300;
+          font-size: 12px;
+        }
+      }
+
+      .form-input {
+        color: $dark-blue;
+        font-size: 12;
+
+        .input-option {
+          float: left;
+          margin-right: 20px;
+        }
+
+        textarea {
+          background: $white;
+          width: 100%;
+          height: 50px;
+          max-width: 100%;
+          max-height: 50px;
+          border: 2px solid $light-blue;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+        }
+
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+
+      .form-select {
+        width: 450px;
+        height: 35px;
+        border: 2px solid #2F8CE8;
+        border-radius: 7px;
+        background-color: #92C9FF;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #344289;
+
+        &.half {
+          width: 215px;
+          float: left;
+          
+          &:nth-child(2) {
+            margin-right: 20px;
+          }
+        }
+      }
+
+    }
+
+    .color-selector {
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 50px;      
+
+      // color rules
+      $default: #898989;
+      $green: #43D45B;
+      $yellow: #C5D11C;
+      $red: #D44343;
+
+      .color-option {
+        display: inline-block;
+        margin-left: 5px;
+        margin-right: 5px;
+
+        // Hide the normal radio button displayed
+        input[type="radio"] {
+          display:none;
+        }
+
+        // Style the subtitle content
+        input[type="radio"] + label {
+          color: $dark-grey;
+          font-size:14px;
+        }
+
+        // The "Replacement" radio icon
+        input[type="radio"] + label span {
+          display:inline-block;
+          width: 25px;
+          height: 50px;
+          border: 3px solid $default;
+          border-radius: 40px;
+          cursor:pointer;
+        }
+
+        input[type="radio"] + label span {
+          background-color: none;
+        }
+
+        &.default {
+          input[type="radio"] + label span {
+            border-color: $default;
+          }
+          input[type="radio"]:checked + label span{
+            background-color: $default;
+          }
+        }
+
+        // Custom actions for non-default button colors
+        // TO DO: There has to be a better way of generating this information
+        &.green {
+          input[type="radio"] + label span {
+            border-color: $green;
+          }
+          input[type="radio"]:checked + label span{
+            background-color: $green;
+          }
+        }
+
+        &.yellow {
+          input[type="radio"] + label span {
+            border-color: $yellow;
+          }
+          input[type="radio"]:checked + label span{
+            background-color: $yellow;
+          }
+        }
+
+        &.red {
+          input[type="radio"] + label span {
+            border-color: $red;
+          }
+          input[type="radio"]:checked + label span{
+            background-color: $red;
+          }
+        }
+
+      }
+
+      .client-name-box {
+        width: 350px;
+        height: 50px;
+        background-color: $default;
+
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+
+        line-height: 50px;
+        font-size: 24px;
+        overflow: hidden;
+
+      }
+
+    }
+
+    .form-submit {
+      border: 0px;
+      border-radius: 17px;
+      
+      height: 35px;
+      background-color: $light-blue;
+      color: $white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+
+      padding-left: 20px;
+      padding-right: 20px;
+
+      margin-bottom: 20px;
+      margin-left: auto;
+      margin-right: auto;
+
+      &:hover {
+        border: 2px solid $light-blue;
+        background-color: $white;
+        color: $light-blue;
+      }
+    }
+  }
+
+}
+

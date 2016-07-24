@@ -1,13 +1,113 @@
 
-
+<!-- Loaded audio, only if running the new message check logic -->
+<% if (typeof user !== "undefined") { %>
+  <audio id="newMessageDing" src="/static/sounds/alert.mp3" preload="auto">
+<% } %>
 
 <script type="text/javascript">
 
-  
+  // ALERTS SECTION //
+  // Global to make sure that alert sound only played once per screen
+  window.alertDingSoundPlayedAlready = false;
+
   // Hide alerts after a moment
   setTimeout(function () { $(".alerts").slideUp("slow"); }, 3000);
 
+  // Auto checking if there are new messages across any conversation
+  <% if (typeof user !== "undefined") { %>
+    var setSecondInterval = 2000 * 15;
+    // Auto check for if there is new content
+    setInterval(function () {
+      var cmid =  <%= user.cmid %>;
 
+      // We need to pick which function to run, depending on whether on a convo page or not
+      <% if (typeof client == "undefined" || typeof convo == "undefined") { %>
+        checkForNewMessagesInAllConvos(cmid, function (res) {
+          if (res) {
+            addSuccessAlertBanner(res);
+          } else {
+            console.log("No new messages in all convos.");
+          }
+        });
+
+      <% } else { %>
+        var clid =  <%= client.clid %>;
+        var convo = <%= convo.convid %>;
+        checkForNewMessagesInThisConvo(cmid, clid, convo, function (res1) {
+          if (res1) {
+            addSuccessAlertBanner(res1);
+          } else {
+            console.log("No new messages in this convo.");
+            checkForNewMessagesInAllConvos(cmid, function (res2) {
+              if (res2) {
+                addSuccessAlertBanner(res2);
+              } else {
+                console.log("No new messages in all convos.");
+              }
+            });
+          }
+        });
+      <% } %>
+
+    }, setSecondInterval);
+  <% } %>
+
+  function checkForNewMessagesInThisConvo (cmid, clid, convo, cb) {
+    var url = "/cms/" + cmid + "/alerts/convos/" + convo;
+    $.get(url)
+    .done(function(res) {
+      // Create an alert only if there is a new message
+      if (res.newMessages) {
+        var newAlert =  '<a href="/cms/' + cmid + '/cls/' + clid + '/convos/' + convo + '">' + 
+                        'You received new messages in this conversation, click to view.' + 
+                        '</a>';
+        cb(newAlert);
+      } else {
+        cb(false);
+      }
+    })
+    .fail(function(err) {
+      console.log(err);
+    });
+  };
+
+  function checkForNewMessagesInAllConvos (cmid, cb) {
+    var url = "/cms/" + cmid + "/alerts/";
+    $.get(url)
+    .done(function(res) {
+      // Create an alert only if there is a new message
+      if (res.newMessages) {
+        var newAlert =  '<a href="/cms/' + cmid + '/">' + 
+                        'You received new messages, click to view.' + 
+                        '</a>';
+        cb(newAlert);
+      } else {
+        cb(false);
+      }
+    })
+    .fail(function(err) {
+      console.log(err);
+    });
+  };
+
+  function addSuccessAlertBanner (internalHrefContent) {
+    var alertBanner = '<div class="alerts" ' + 
+                      'style="background-color:#00e500">' +
+                      internalHrefContent +
+                      '</div>';
+    // Dump all the previous alerts showing
+    $(".alerts").remove();
+    // Now just add the new alert
+    $("body").prepend(alertBanner);
+    // And play a ding sound to alert user
+    if (!alertDingSoundPlayedAlready) {
+      alertDingSoundPlayedAlready = true;
+      document.getElementById("newMessageDing").play()
+    }
+  };
+
+
+  // EMBEDDED TOOLS SECTION //
   // Google analytics
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -17,7 +117,7 @@
   ga('send', 'pageview');
 
 
-  // Render Intercom if user is logged in
+  // Render Crisp.im if user is logged in
   <% if (typeof user !== "undefined") { %>
     CRISP_WEBSITE_ID = "54a27220-22bc-4baa-9756-ce636cd6f3de";
     (function() {
@@ -77,10 +177,8 @@
 
   // Tool to notify keen of duration
   function notifyKeenOfPageVisitDuration () {
-    // Establish keenRef for client page visits at 0 if it is not yet defined
-    if (!keenRef.clientPageVisitEvent.duration) keenRef.clientPageVisitEvent.duration = 0;
-    // Add the time difference since the page loaded
-    keenRef.clientPageVisitEvent.duration += new Date().getTime() - keenRef.startTime;
+    // Duration maxes out at 15 minutes
+    keenRef.clientPageVisitEvent.duration = Math.min((new Date().getTime() - keenRef.startTime), 900000);
     // Make the event call to Keen.io
     createKeenClient().addEvent("pagedurations", keenRef.clientPageVisitEvent, function (err, res) { 
       // In callback reset startTime
