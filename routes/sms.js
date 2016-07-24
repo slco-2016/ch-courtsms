@@ -19,7 +19,7 @@ module.exports = function (app) {
       // break the string up into 160 or less char length segments
       text = text.replace(/["']/g, "").trim().match(/.{1,159}/g);
       
-      sms.process_incoming_msg(from, text, tw_status, tw_sid)
+      sms.process_incoming_msg(from, text, 'cell', tw_status, tw_sid)
       .then(function (msgs) {
 
         // we don't handle if multiple messages are created currently how that translates into new message logic

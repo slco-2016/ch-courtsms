@@ -65,7 +65,7 @@ class Communication {
               reject(err)
             }
           } else {
-            return this._createMessage(
+            this._createMessage(
               convid, 
               content, 
               msg.sid, 

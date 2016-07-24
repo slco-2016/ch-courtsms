@@ -35,11 +35,17 @@ module.exports = function (app) {
     
     res.send('ok, thanks');
 
-    sms.get_or_create_comm_device(fromAddress.address, "email")
-      .then((device) => {
-        console.log(device)
-      })
-      .catch((err) => {console.log(err)})
+    sms.process_incoming_msg(
+        fromAddress.address, 
+        cleanBody, 
+        "email",
+        "delivered",
+        messageId
+    ).then((msgs) =>{
+        console.log(msgs)
+    }).catch((err) => {
+        res.status(500).send(err)
+    })
 
   });
 

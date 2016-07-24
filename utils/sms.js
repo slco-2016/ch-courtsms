@@ -35,14 +35,14 @@ module.exports = {
     });
   },
 
-  process_incoming_msg: function (from, text, tw_status, tw_sid) {
+  process_incoming_msg: function (from, text, type, tw_status, tw_sid) {
     var sms = this;
     return new Promise (function (fulfill, reject) {
 
       var commid;
 
       // step 1: see if comm device exists
-      sms.get_or_create_comm_device(from, 'cell').then(get_clients).catch(errReject);
+      sms.get_or_create_comm_device(from, type).then(get_clients).catch(errReject);
       
 
       // step 2: get clients associated with that device
@@ -106,9 +106,7 @@ module.exports = {
             "type": type,
             "value": from,
             "description": description
-          }).then(function (commid) {
-            fulfill(commid);
-          }).catch(function (err) { reject(err); });
+          }).then(fulfill).catch(reject);
         }
 
       }).catch(function (err) { reject(err); });
