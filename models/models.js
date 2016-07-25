@@ -38,6 +38,7 @@ class Communication {
     })
   }
   _createMessage(convid, content, id, status) {
+    console.log(id)
     return Message.create({
       convo: convid,
       comm: this.commid,
@@ -48,7 +49,7 @@ class Communication {
       tw_status: status,
     })
   }
-  sendMessage(convid, content) {
+  sendMessage(convid, content, cmid) {
     return new Promise((fulfill, reject) => {
       if (this.type == "cell") {
         twClient.sendSms({
@@ -74,12 +75,17 @@ class Communication {
           }
         });
       } else if (this.type == "email") {
-        mailgun.sendEmail(
-          this.value, 
-          "test@clientcomm.org", 
-          "New message from Max McDonnell",
-          content
-        ).then((response) => {
+        CaseManager.findById(cmid)
+        .then((caseManager) => {
+          return mailgun.sendEmail(
+            this.value, 
+            caseManager.getClientCommEmail(), 
+            `New message from ${caseManager.getFullName()}`,
+            content
+          )
+        }).then((response) => {
+
+          console.log(response)
           return this._createMessage(
             convid,
             content,
@@ -94,8 +100,9 @@ class Communication {
 
 class Message {
   constructor(databaseObject){
-    this.convid = databaseObject.convid
-    this.commid = databaseObject.commid
+    this.msgid = databaseObject.msgid
+    this.convo = databaseObject.convo
+    this.comm = databaseObject.comm
     this.content = databaseObject.content
     this.inbound = databaseObject.inbound
     this.read = databaseObject.read
@@ -109,6 +116,35 @@ class Message {
       .then((messageIds) => {
         fulfill(messageIds[0])
       }).catch(reject)
+    })
+  }
+  static findByPlatformId(platformId) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+      .where("tw_sid", platformId)
+      .limit(1)
+      .then((msgs) => {
+        if (msgs.length > 0) {
+          let message = new Message(msgs[0])
+          fulfill(message)
+        } else {
+          fulfill()
+        }
+      })
+      .catch(reject)
+    })
+  }
+  save() {
+    return new Promise((fulfill, reject) => {
+      db('msgs')
+        .where("msgid", this.msgid)
+        .limit(1)
+        .update(this) // is this really ok?
+        .then((msgs) => {
+          let message = new Message(msgs[0])
+          fulfill(message)
+        })
+        .catch(reject)
     })
   }
 }
@@ -153,8 +189,56 @@ class Convo {
   }
 }
 
+
+class CaseManager {
+  constructor(databaseObject) {
+    console.log(databaseObject)
+    this.first = databaseObject.first
+    this.middle = databaseObject.middle
+    this.last = databaseObject.last
+    this.email = databaseObject.email
+    this.position = databaseObject.position
+    this.department = databaseObject.department
+  }
+  static clientCommEmail(email) {
+    let parts = email.split('@')
+
+    let emailName = parts[0]
+
+    let domainParts = parts[1].split('.')
+    domainParts.pop()
+    let emailOrg = domainParts.join('.') // foo.bar.com
+
+    return `${emailName}.${emailOrg}@clientcomm.org`
+  }
+  static findById(id) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+      .where("cmid", id)
+      .limit(1)
+      .then(function (cms) {
+        if (cms.length > 0) {
+          let caseManager = new CaseManager(cms[0])
+          fulfill(caseManager)
+        } else {
+          fulfill()
+        }
+      })
+      .catch(reject)      
+    })
+  }
+  getClientCommEmail() {
+    let rawEmail = CaseManager.clientCommEmail(this.email)
+    return `${this.getFullName()} <${rawEmail}>`
+  }
+  getFullName() {
+    return `${this.first} ${this.last}`
+  }
+}
+
 module.exports = {
   Convo: Convo,
   Communication: Communication,
   Message: Message,
+  CaseManager: CaseManager,
 }

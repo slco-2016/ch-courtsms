@@ -11,8 +11,9 @@ module.exports = {
                     formData: {
                         from: from,
                         to: to,
-                        subject: "Test subject for now",
-                        text: content,
+                        subject: subject,
+                        html: content,
+                        "o:tracking-opens":1,
                     },
                     auth: {
                         user: 'api',
@@ -23,7 +24,7 @@ module.exports = {
                 if (error) {
                     reject(error);    
                 } else {
-                    fulfill(body);    
+                    fulfill(JSON.parse(body));    
                 }
             })
         })

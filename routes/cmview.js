@@ -899,7 +899,7 @@ router.post("/:cmid/cls/:clid/convos", function (req, res) {
       newConvoId = convoId
       return Communication.findById(commid)
     }).then((communication) => {
-      return communication.sendMessage(newConvoId, content)
+      return communication.sendMessage(newConvoId, content, cmid)
     }).then((messageId) => {
       req.flash("success", "New conversation created.");
       redirect_loc = redirect_loc + "/convos/" + newConvoId;
@@ -983,7 +983,7 @@ router.post("/:cmid/cls/:clid/convos/:convid", function (req, res) {
     Communication.findById(commid)
     .then((communication) => {
       if (communication) {
-        communication.sendMessage(convid, content)
+        communication.sendMessage(convid, content, cmid)
         .then((messageId) => {
           db("convos").where("convid", convid)
           .update({updated: db.fn.now()})
