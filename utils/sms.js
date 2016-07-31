@@ -57,14 +57,14 @@ module.exports = {
       // step 3: find open conversations for each client
       function get_or_create_convos (clients) {
         if (clients.length > 0) {
-          sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
+          return sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
         } else { errReject("Failed to produce or create at least one client object in function get_clients."); }
       };
 
       // step 4: add messages to those conversations
       function register_message (convos) {
         if (convos.length > 0) {
-          sms.register_message(text, commid, convos, tw_status, tw_sid).then(fulfill).catch(errReject)
+          return sms.register_message(text, commid, convos, tw_status, tw_sid).then(fulfill).catch(errReject)
         } else { errReject("Failed to register message."); }
       };
 
@@ -124,7 +124,7 @@ module.exports = {
       db.raw(rawQuery).then(function (res) {
         var clients = res.rows.map(function (ea) { return {clid: ea.clid, cmid: ea.cm}; });
         if (clients.length == 0) { clients = [{clid: null, cmid: null}]; }
-        console.log("Cient", clients, commid);
+        console.log("Client", clients, commid);
         fulfill(clients);
 
       }).catch(function (err) { reject(err); });
