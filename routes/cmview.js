@@ -31,6 +31,8 @@ var cmview = utils["cmview"];
 // Session status control
 var auth = utils["pass"];
 
+const s3 = require('../utils/s3')
+
 // Error handling
 var errorHandlers = utils["errorHandlers"];
 var fivehundred   = errorHandlers.fivehundred;
@@ -945,9 +947,9 @@ router.get("/:cmid/cls/:clid/convos/:convid", function (req, res) {
 
     }).catch(function (err) {
       if (err == "404") { 
-        res.redirect("/404"); 
+        res.send(err, 404)
       } else { 
-        res.redirect("/500"); 
+        res.send(err.message, 500)
       }
     })
 

@@ -35,21 +35,22 @@ module.exports = {
     });
   },
 
-  process_incoming_msg: function (from, text, type, tw_status, tw_sid) {
+  process_incoming_msg: function (from, to, text, type, tw_status, tw_sid) {
     var sms = this;
     return new Promise (function (fulfill, reject) {
 
       var commid;
 
-      // step 1: see if comm device exists
+      // step 1: see if comm device exists, create it if it does not
       sms.get_or_create_comm_device(from, type).then(get_clients).catch(errReject);
       
+      console.log('are we here?')
 
       // step 2: get clients associated with that device
       function get_clients (device) {
         if (device.length > 0) {
           commid = device[0];
-          sms.get_clients(commid).then(get_or_create_convos).catch(errReject)
+          sms.get_clients(commid, to, type).then(get_or_create_convos).catch(errReject)
         } else { errReject("No devices were found or created for this number."); }
       };
 
@@ -113,7 +114,8 @@ module.exports = {
     });
   },
   
-  get_clients: function (commid) {
+  get_clients: function (commid, to, type) {
+    console.log(to, type, commid)
     return new Promise (function (fulfill, reject) {
       var rawQuery = "SELECT clients.clid, clients.cm FROM clients JOIN (SELECT * FROM commconns WHERE commconns.comm = " + commid + 
                       ") AS commconns ON (commconns.client = clients.clid AND commconns.comm = " + commid + 

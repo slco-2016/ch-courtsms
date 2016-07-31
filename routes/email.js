@@ -4,6 +4,10 @@ const credentials = require('../credentials')
 const request = require('request');
 
 const Message = require('../models/models').Message
+const Email = require('../models/models').Email
+const Attachment = require('../models/models').Attachment
+
+const Promise = require("bluebird");
 
 module.exports = function (app) {
 
@@ -47,19 +51,25 @@ module.exports = function (app) {
       let messageId = req.body['Message-Id']
       Message.findByPlatformId(messageId)
       .then((message) => {
-        message.tw_status = "Delivered"
-        message.save()
+        if (message) {
+          return message.update({tw_status: "Delivered"})          
+        } else {
+          throw `No message found with message id ${messageId}`
+        }
       }).catch((err) => {
         console.log(err)
       })
     } else if (event == "opened") {
       let messageId = `<${req.body['message-id']}>`
       // why, just why
-      
+
       Message.findByPlatformId(messageId)
       .then((message) => {
-        message.tw_status = "Opened"
-        message.save()
+        if (message) {
+          return message.update({tw_status: "Opened"})
+        } else {
+          throw `No message found with message id ${messageId}`
+        }
       }).catch((err) => {
         console.log(err)
       })
@@ -100,20 +110,48 @@ module.exports = function (app) {
     console.log(`Email arrived for ${recipient}`)
     console.log(`Content is \n${cleanBody}`)
     
+    let attachments = []
+    if (req.body.attachments) {
+      attachments = JSON.parse(req.body.attachments)
+    }
+
+    // this is to avoid timeouts. maybe we want timeouts?
+    // attachment uploading takes too long?
     res.send('ok, thanks');
 
-    let attachments = req.body.attachments
+    let msgid
 
     sms.process_incoming_msg(
-        fromAddress.address, 
+        fromAddress.address,
+        toAddresses, 
         [cleanBody], 
         "email",
         "delivered",
         messageId
     ).then((msgs) =>{
-        console.log(msgs)
+        // we're passing an array of 1 item to process_incoming_msg
+        // so should be guaranteed a single returned id
+        msgid = msgs[0]
+
+        return Email.create({
+          raw: JSON.stringify(req.body),
+          from: fromAddress,
+          to: JSON.stringify(toAddresses),
+          cleanBody: cleanBody,
+          msg_id: msgid,
+        })
+
+    }).then((email) => {
+      return new Promise((fulfill, reject) => {
+        fulfill(attachments)
+      })
+    }).map((attachment) => {
+      console.log(attachment)
+      return Attachment.createFromMailgunObject(attachment, msgid)
+    }).then((attachments) => {
+      console.log(attachments)
     }).catch((err) => {
-        res.status(500).send(err)
+      console.log(err)
     })
 
   });

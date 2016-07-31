@@ -8,9 +8,66 @@ const AUTH_TOKEN = credentials.authToken;
 const twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
 
 const mailgun = require("../utils/mailgun")
+const s3 = require("../utils/s3")
 
 const db  = require("../server/db");
 const Promise = require("bluebird");
+
+class Email {
+  constructor(databaseObject) {
+    this.id = databaseObject.id
+    this.cleanBody = databaseObject.cleanBody
+    this.raw = databaseObject.raw
+    this.from = databaseObject.from
+    this.to = databaseObject.to
+    this.msg_id = databaseObject.msg_id
+    this.created = databaseObject.created
+  }
+  static create(emailObject) {
+    return new Promise((fulfill, reject) => {
+      db("emails")
+      .insert(emailObject).returning("*")
+      .then((emails) => {
+        let email = new Email(emails[0])
+        fulfill(email)
+      }).catch(reject)
+    })
+  }
+}
+
+class Attachment {
+  constructor(databaseObject) {
+    this.id = databaseObject.id
+    this.key = databaseObject.key
+    this.created = databaseObject.created
+    this.msg_id = databaseObject.msg_id
+  }
+  static create(attachmentObject) {
+    return new Promise((fulfill, reject) => {
+      db("attachments")
+      .insert(attachmentObject).returning("*")
+      .then((attachments) => {
+        let attachment = new Attachment(attachments[0])
+        fulfill(attachment)
+      }).catch(reject)
+    })
+  }
+  static createFromMailgunObject(mailgunObj, msgid) {
+    return new Promise((fulfill, reject) => {
+      s3.uploadMailGunAttachment(mailgunObj)
+      .then((key) => {
+        return Attachment.create({
+          key: key,
+          contentType: mailgunObj['content-type'],
+          msg_id: msgid,
+        })
+      }).then(fulfill).catch(reject)
+    })
+  }
+  getUrl() {
+    return s3.getTemporaryUrl(this.key)
+  }
+}
 
 class Communication {
   constructor(databaseObject){
@@ -34,7 +91,7 @@ class Communication {
           fulfill()
         }
       })
-      .catch(reject)      
+      .catch(reject)
     })
   }
   _createMessage(convid, content, id, status) {
@@ -67,9 +124,9 @@ class Communication {
             }
           } else {
             this._createMessage(
-              convid, 
-              content, 
-              msg.sid, 
+              convid,
+              content,
+              msg.sid,
               msg.status
             ).then(fulfill).catch(reject)
           }
@@ -78,8 +135,8 @@ class Communication {
         CaseManager.findById(cmid)
         .then((caseManager) => {
           return mailgun.sendEmail(
-            this.value, 
-            caseManager.getClientCommEmail(), 
+            this.value,
+            caseManager.getClientCommEmail(),
             `New message from ${caseManager.getFullName()}`,
             content
           )
@@ -118,6 +175,22 @@ class Message {
       }).catch(reject)
     })
   }
+  static findById(id) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+      .where("msgid", id)
+      .limit(1)
+      .then((msgs) => {
+        if (msgs.length > 0) {
+          let message = new Message(msgs[0])
+          fulfill(message)
+        } else {
+          fulfill()
+        }
+      })
+      .catch(reject)
+    })
+  }
   static findByPlatformId(platformId) {
     return new Promise((fulfill, reject) => {
       db("msgs")
@@ -134,12 +207,13 @@ class Message {
       .catch(reject)
     })
   }
-  save() {
+  update(params) {
     return new Promise((fulfill, reject) => {
       db('msgs')
         .where("msgid", this.msgid)
+        .returning("*")
         .limit(1)
-        .update(this) // is this really ok?
+        .update(params) // is this really ok?
         .then((msgs) => {
           let message = new Message(msgs[0])
           fulfill(message)
@@ -224,7 +298,7 @@ class CaseManager {
           fulfill()
         }
       })
-      .catch(reject)      
+      .catch(reject)
     })
   }
   getClientCommEmail() {
@@ -241,4 +315,6 @@ module.exports = {
   Communication: Communication,
   Message: Message,
   CaseManager: CaseManager,
+  Email: Email,
+  Attachment: Attachment,
 }
