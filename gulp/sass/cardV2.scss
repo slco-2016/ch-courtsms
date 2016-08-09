@@ -5,6 +5,7 @@ $light-blue:      #4A90E2;
 $white:           #FFF;
 $light-grey:      #C5C4C4;
 $dark-grey:       #898989;
+$lime-green:      #50E3C2;
 
 
 // Body is going to same color as contents, all blue full bleed
@@ -14,8 +15,13 @@ body, .contents {
   background-image: none;
   box-shadow: none;
   border: 0;
+  color: $dark-blue;
 }
 
+.alerts {
+  color: $white;
+  width: 100%
+}
 
 
 // 
@@ -118,17 +124,33 @@ body, .contents {
           margin-right: 20px;
         }
 
+        input[type=text] {
+          background: $white;
+          width: 420px;
+          font-size: 12px;
+          line-height: 18px;
+          height: 18px;
+          max-width: 420px;
+          border: 2px solid $light-blue;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px;
+        }
+
         textarea {
           background: $white;
-          width: 100%;
+          width: 420px;
           height: 50px;
-          max-width: 100%;
+          max-width: 420px;
           max-height: 50px;
           border: 2px solid $light-blue;
           border-radius: 4px;
           outline: none;
           resize: none;
           overflow: auto;
+          padding: 5px 10px 5px 10px;
         }
 
         &::after {
@@ -139,15 +161,15 @@ body, .contents {
       }
 
       .form-select {
-        width: 450px;
+        width: 440px;
         height: 35px;
-        border: 2px solid #2F8CE8;
+        border: 2px solid $card-text;
         border-radius: 7px;
-        background-color: #92C9FF;
+        background-color: $card-text-light;
         text-align: center;
         font-size: 16px;
         font-weight: 700;
-        color: #344289;
+        color: $dark-blue;
 
         &.half {
           width: 215px;
@@ -161,10 +183,118 @@ body, .contents {
 
     }
 
+    .template-box {
+      width: 450px;
+      max-height: 400px;
+      border: 2px solid $card-text;
+      border-radius: 7px;
+      background-color: $white;
+      color: $dark-blue;
+      overflow-y: scroll;
+
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+
+      &::-webkit-scrollbar { 
+        display: none; 
+      }
+      
+      .template-row {
+        max-height: 100px;
+        overflow: hidden;
+        cursor: pointer;
+        
+        // border on bottom except for last
+        border-bottom: 1px solid $light-grey;
+        &:nth-last-child(1) {
+          border-bottom: 0px;
+        }
+
+        .use-count {
+          float: right;
+          width: 45px;
+          text-align: center;
+          line-height: 70px;
+          font-size: 18px;
+          font-weight: 700;
+          color: $light-blue;
+        }
+
+        .template-content {
+          float: right;
+          padding: 10px;
+          width: 365px;
+
+          .title-text {
+            font-size: 14px;
+            line-height: 14px;
+            font-weight: bold;
+            word-wrap: break-word;
+            height: 14px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            color: $light-blue;
+            text-decoration: underline;
+          }
+
+          .body-text {
+            word-wrap: break-word;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 14px;
+            max-height: 42px;
+            color: $dark-grey;
+
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
+          .tags {
+            color: $light-grey;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 14px;
+            margin-top: 5px;
+          }
+          
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+
+        &:hover, &.selected {
+          background-color: $light-blue;
+          color: $white;
+
+          .title-text {
+            color: $white;
+          }
+          .use-count {
+            color: $white;            
+          }
+          .body-text {
+            color: $white;            
+          }
+          .tags {
+            color: $white;            
+          }
+        }
+        
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+    }
+
     .color-selector {
       text-align: center;
-      margin-top: 50px;
-      margin-bottom: 50px;      
+      margin-top: 100px;
+      margin-bottom: 100px;      
 
       // color rules
       $default: #898989;
@@ -192,7 +322,7 @@ body, .contents {
         input[type="radio"] + label span {
           display:inline-block;
           width: 25px;
-          height: 50px;
+          height: 65px;
           border: 3px solid $default;
           border-radius: 40px;
           cursor:pointer;
@@ -246,8 +376,9 @@ body, .contents {
         width: 350px;
         height: 50px;
         background-color: $default;
+        color: $white;
 
-        margin-top: 30px;
+        margin-top: 75px;
         margin-left: auto;
         margin-right: auto;
 
@@ -260,27 +391,55 @@ body, .contents {
     }
 
     .form-submit {
+      display: block;
       border: 0px;
       border-radius: 17px;
       
       height: 35px;
-      background-color: $light-blue;
-      color: $white;
       font-size: 14px;
       font-weight: 700;
+      line-height: 27px;
       cursor: pointer;
 
       padding-left: 20px;
       padding-right: 20px;
+      padding-top: 2px;
+      padding-bottom: 2px;
 
       margin-bottom: 20px;
       margin-left: auto;
       margin-right: auto;
 
+      border: 2px solid $light-blue;
+      background-color: $white;
+      color: $light-blue;
+
       &:hover {
-        border: 2px solid $light-blue;
-        background-color: $white;
-        color: $light-blue;
+        background-color: $light-blue;
+        color: $white;
+      }
+
+      &.fixed-width {
+        width: 250px;
+        overflow: hidden;
+      }
+    }
+
+    .or-break {
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+      
+
+      .dash {
+        padding-left: 10px;
+        padding-right: 10px;
+        display:inline-block;
+        -webkit-transform:scale(5,1); /* Safari and Chrome */
+        -moz-transform:scale(5,1); /* Firefox */
+        -ms-transform:scale(5,1); /* IE 9 */
+        -o-transform:scale(5,1); /* Opera */
+        transform:scale(5,1); /* W3C */
       }
     }
   }

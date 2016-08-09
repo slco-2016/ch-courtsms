@@ -70,7 +70,7 @@
           
           <% try { %>
             <% var day = moment.tz(msgs[i].created, local_tz).format("MM/DD"); %>
-            <% var hrs = moment.tz(msgs[i].created, local_tz).format("hh:MM A"); %>
+            <% var hrs = moment.tz(msgs[i].created, local_tz).format("hh:mm A"); %>
             <%= day + " " + hrs %>
           <% } catch (err) { %>
             Unknown
@@ -87,6 +87,15 @@
 
   <div class="msg-resp">
     <% if (convo.open) { %>
+      <a href="/cms/<%= user.cmid %>/cls/<%= cl.clid %>/convos/<%= convo.convid %>/selecttemplate">
+        <div class="form-row">
+          <input  type="button" 
+                  class="form-submit" 
+                  style="float: left; width: auto"
+                  value="New Feature: Load a Prepared Template">
+        </div>
+      </a>
+
       <form method="post">
 
         <div class="form-row">
@@ -128,6 +137,7 @@
           <input type="submit" class="form-submit" value="Submit">
         </div>
       </form>
+
     </div>
 
     <% } else { %>

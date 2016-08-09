@@ -11,8 +11,7 @@
     padding-left: 10px;
     padding-right: 10px; }
   .list tr td {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 3px 10px 3px 10px;
     height: 55px;
     word-wrap: break-word; }
     .list tr td.fa-icon-holder {
@@ -42,20 +41,20 @@
       min-width: 375px;
       max-width: 375px; }
     .list tr td:nth-child(3) {
-      width: 105px;
-      min-width: 105px;
-      max-width: 105px;
+      width: 115px;
+      min-width: 115px;
+      max-width: 115px;
       word-wrap: break-word; }
     .list tr td:nth-child(4) {
       font-size: small;
-      width: 75px;
-      min-width: 75px;
-      max-width: 75px; }
+      width: 70px;
+      min-width: 70px;
+      max-width: 70px; }
     .list tr td:nth-child(5) {
       font-size: small;
-      width: 75px;
-      min-width: 75px;
-      max-width: 75px; }
+      width: 70px;
+      min-width: 70px;
+      max-width: 70px; }
     .list tr td:nth-child(6) {
       font-size: small;
       width: 50px;

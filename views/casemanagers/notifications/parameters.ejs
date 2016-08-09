@@ -19,22 +19,22 @@
 
   <div class="comms-link">
     <small>
-    <a href="/cms/<%= user.cmid %>/notifications">
+    <a href="/cms/<%= user.cmid %>/notifications/new/craftmessage">
       View All Notification
       <i class="fa fa-list-alt"></i>
     </a>
     </small>
   </div>
 
-  <form method="post" id="newNotification">
+  <form method="post" id="newNotification" 
+        <% if (typeof editView == "undefined") { %> 
+          action="/cms/<%= user.cmid %>/notifications/new/craftmessage"
+        <% } %> >
 
     <input type="hidden" name="cmid" value="<%= user.cmid %>">
     <input type="hidden" name="notiSubj" value="<%= notification.notiSubj %>">
     <input type="hidden" name="notiCopy" value="<%= notification.notiCopy %>">
 
-    <% if (typeof editView !== "undefined" && editView) { %>
-      <input type="hidden" name="showCardExplicit" value="2">
-    <% } %>
 
     <div class="form-row">
       <div class="form-label"> Date to send <small>(YYYY-MM-DD)</small></div>
@@ -45,118 +45,106 @@
       <div class="form-label"> Time to send </div>
 
       <!-- Options are for military hrs of day -->
-      <select class="blue-select half" name="sendTimeHour" required>
+      <select class="blue-select" name="sendTimeHour" required>
         <option value="00" 
           <% if (notification.sendTimeHour == 00) { %> selected <% } %> > 
-            00 
+            12:00 AM (Midnight)
         </option>
         <option value="01" 
           <% if (notification.sendTimeHour == 01) { %> selected <% } %> > 
-            01 
+            01:00 AM
         </option>
         <option value="02" 
           <% if (notification.sendTimeHour == 02) { %> selected <% } %> > 
-            02 
+            02:00 AM
         </option>
         <option value="03" 
           <% if (notification.sendTimeHour == 03) { %> selected <% } %> > 
-            03 
+            03:00 AM
         </option>
         <option value="04" 
           <% if (notification.sendTimeHour == 04) { %> selected <% } %> > 
-            04 
+            04:00 AM
         </option>
         <option value="05" 
           <% if (notification.sendTimeHour == 05) { %> selected <% } %> > 
-            05 
+            05:00 AM
         </option>
         <option value="06" 
           <% if (notification.sendTimeHour == 06) { %> selected <% } %> > 
-            06 
+            06:00 AM
         </option>
         <option value="07" 
           <% if (notification.sendTimeHour == 07) { %> selected <% } %> > 
-            07 
+            07:00 AM
         </option>
         <option value="08" 
           <% if (notification.sendTimeHour == 08) { %> selected <% } %> > 
-            08 
+            08:00 AM
         </option>
         <option value="09" 
           <% if (notification.sendTimeHour == 09) { %> selected <% } %> > 
-            09 
+            09:00 AM
         </option>
         <option value="10" 
           <% if (notification.sendTimeHour == 10) { %> selected <% } %> > 
-            10 
+            10:00 AM
         </option>
         <option value="11" 
           <% if (notification.sendTimeHour == 11) { %> selected <% } %> > 
-            11 
+            11:00 AM
         </option>
         <option value="12" 
           <% if (notification.sendTimeHour == 12) { %> selected <% } %> > 
-            12 
+            12:00 PM (Noon)
         </option>
         <option value="13" 
           <% if (notification.sendTimeHour == 13) { %> selected <% } %> > 
-            13 
+            01:00 PM
         </option>
         <option value="14" 
           <% if (notification.sendTimeHour == 14) { %> selected <% } %> > 
-            14 
+            02:00 PM
         </option>
         <option value="15" 
           <% if (notification.sendTimeHour == 15) { %> selected <% } %> > 
-            15 
+            03:00 PM 
         </option>
         <option value="16" 
           <% if (notification.sendTimeHour == 16) { %> selected <% } %> > 
-            16 
+            04:00 PM 
         </option>
         <option value="17" 
           <% if (notification.sendTimeHour == 17) { %> selected <% } %> > 
-            17 
+            05:00 PM 
         </option>
         <option value="18" 
           <% if (notification.sendTimeHour == 18) { %> selected <% } %> > 
-            18 
+            06:00 PM 
         </option>
         <option value="19" 
           <% if (notification.sendTimeHour == 19) { %> selected <% } %> > 
-            19 
+            07:00 PM 
         </option>
         <option value="20" 
           <% if (notification.sendTimeHour == 20) { %> selected <% } %> > 
-            20 
+            08:00 PM 
         </option>
         <option value="21" 
           <% if (notification.sendTimeHour == 21) { %> selected <% } %> > 
-            21 
+            09:00 PM 
         </option>
         <option value="22" 
           <% if (notification.sendTimeHour == 22) { %> selected <% } %> > 
-            22 
+            10:00 PM 
         </option>
         <option value="23" 
           <% if (notification.sendTimeHour == 23) { %> selected <% } %> > 
-            23 
-        </option>
-        <option value="24" 
-          <% if (notification.sendTimeHour == 24) { %> selected <% } %> > 
-            24 
+            11:00 PM 
         </option>
       </select>
 
-      <select class="blue-select half" name="sendTimeMin">
-        <option value="0"
-          <% if (notification.sendTimeMin == 0) { %> selected <% } %> > 
-            :00 
-        </option>
-        <option value="30"
-          <% if (notification.sendTimeMin == 30) { %> selected <% } %> > 
-            :30 
-        </option>
+      <input type="hidden" name="sendTimeMin" value="00">
       </select>
 
     </div>
@@ -181,14 +169,23 @@
       </select>
     </div>
 
-    <input type="submit" class="form-submit" value="Next">
+    <% if (typeof editView == "undefined") { %> 
+      <input  type="button" 
+              class="form-submit" 
+              id="useTemplate"
+              value="Use a Template">
+
+      <div class="or-break" style="text-align: center">
+        <span class="dash">-</span> or <span class="dash">-</span>
+      </div>
+    <% } %>
+
+    <input  type="submit" 
+            class="form-submit" 
+            style="margin-top: 0px" 
+            value="Next">
 
   </form>
-
-  <div class="bottom-nav-dots">
-    <i class="fa fa-circle"></i>
-    <i class="fa fa-circle-thin" id="showOtherCard"></i>
-  </div>
 
 </div>
 </div>
@@ -232,11 +229,51 @@
   };
 
   // Special card toggle option
-  $("#showOtherCard").click(function () {
-    var input = $("<input>", { type: "hidden", name: "showCardExplicit", value: "2" }); 
-    $("#newNotification").append($(input));
-    $("#newNotification").submit();
+  $("#useTemplate").click(function () {
+    tellKeenIOTemplateOptionSelected();
+    goToCard(2);
   });
+
+  $("#notificationCopyView").click(function () {
+    goToCard(3);
+  });
+
+  function goToCard (number) {
+    number = String(number);
+    var input = $("<input>", { type: "hidden", name: "showCardExplicit", value: number }); 
+    $("#newNotification").append($(input));
+
+    if (number == 2) {
+      $("#newNotification").attr("action", "/cms/<%= user.cmid %>/notifications/new/selecttemplate");
+    }
+
+    $("#newNotification").submit(); 
+  };
+
+  function tellKeenIOTemplateOptionSelected () {
+    try {
+      var toggleSwitchClickEvent = {
+        user: {
+          first:  "<%= user.first %>",
+          last:   "<%= user.last %>",
+          email:  "<%= user.email %>",
+          cmid:   "<%= user.cmid %>"
+        },
+        keen: {
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      createKeenClient()
+      .addEvent("load_template_in_notifications", toggleSwitchClickEvent, function (err, res) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   // Run once on load to populate defaults
   <% if (notification.recipient && notification.recipientComm) { %>

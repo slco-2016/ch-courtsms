@@ -3,8 +3,6 @@
 
   tr {
     th {
-      // This portion should be for all list types
-      // Repetitive to include in each  
       height: 17px;
       font-weight: 300;
       font-size: 12px;
@@ -17,8 +15,7 @@
       padding-right: 10px;
     }
     td {
-      padding-left: 10px;
-      padding-right: 10px;
+      padding: 3px 10px 3px 10px;
       height: 55px;
       word-wrap:break-word;
 

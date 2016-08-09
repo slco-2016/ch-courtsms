@@ -11,7 +11,7 @@ module.exports = {
     client: "postgresql",
     connection: {
       user: localDbUser,
-      database: "cc2"
+      database: "clientcomm"
     }
   },
 

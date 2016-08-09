@@ -74,6 +74,30 @@ router.post("/orgs/:orgid/cms/:cmid/setpassword", function (req, res) {
   }
 });
 
+router.get("/orgs/:orgid/cms/:cmid/ghostlogin", function (req, res) {
+  var orgID = Number(req.params.orgid);
+  var caseManagerID = Number(req.params.cmid);
+
+  // req.logout();
+  db("cms")
+  .where("cmid", caseManagerID)
+  .then(function (casemanagers) {
+    if (casemanagers.length > 0) {
+      casemanager = casemanagers[0];
+      req.logIn(casemanager, function (err) {
+        console.log(err);
+        res.redirect("/cms");
+      });
+    } else {
+      res.send("No case manager under that id.");
+    }
+  }).catch(function (error) {
+    console.log(error);
+  });
+
+});
+
+
 
 
 // SHOW ORG WITH MESSAGING ACTIVITY FOR EACH ACCOUNT

@@ -32,17 +32,28 @@
       <input type="hidden" name="org" value="<%= user.org %>">
       <input type="hidden" name="casemanager" value="<%= user.cmid %>">
 
+
+      <div class="form-row">
+        <div class="form-label" style="line-height: 28px;">
+          Template Title
+        </div>
+        <div class="form-input">
+          <input  type="text"
+                  name="title" maxlength="30" required>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="form-label"> 
           Enter your templated phrase or message below.
         </div>
         <div class="form-input">
           <textarea name="content"
-                    rows="5"></textarea>
+                    rows="5" maxlength="160"></textarea>
         </div>
       </div>
 
-      <div class="form-row">
+      <div class="form-row" style="display: none;">
         <div class="form-label"> 
           Limit template to specific client (or all clients)
         </div>
@@ -59,7 +70,7 @@
       <center>
       <input  type="submit" 
               class="form-submit" 
-              value="Submit Closed se">
+              value="Create New Template">
       </center>
 
     </form>
@@ -69,5 +80,6 @@
 </div>
 
 </div>
+
 
 <% include ../../partials/footers/footer %>

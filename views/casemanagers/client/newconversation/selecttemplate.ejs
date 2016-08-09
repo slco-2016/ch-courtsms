@@ -1,0 +1,78 @@
+<% include ../../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/cardV2.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+
+<div class="card">
+
+  <div class="card-head">
+
+    <a href="/cms/<%= user.cmid %>/cls/<%= client.clid %>">
+      <% include ../../../partials/card-exitV2 %>
+    </a>
+
+    <div class="card-title">
+      Select a Templated Message
+    </div>
+
+    <div class="card-subtitle">
+      
+    </div>
+
+  </div>
+
+  <div class="card-body">
+
+    <div class="template-box">
+      <% for (var i=0; i < templates.length; i++) { %>
+        <div class="template-row" template_id="<%= templates[i].template_id %>">
+          
+          <div class="use-count">
+            <%= templates[i].times_used %>
+          </div>
+
+          <div class="template-content">
+            <div class="title-text">
+              <% if (templates[i].title) { %>
+                <%= templates[i].title %>
+              <% } else { %>
+                No title available.
+              <% } %>
+            </div>
+            <div class="body-text">
+              <%= templates[i].content %>
+            </div>
+            <div class="tags">
+              
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+
+    <form method="post" action="/cms/<%= user.cmid %>/cls/<%= client.clid %>/convos/new/selecttemplate">
+      <input type="hidden" name="templateID" id="templateID" value="">
+      <input type="submit" class="form-submit" style="display: none;" value="Select Template">
+    </form>
+
+  </div>
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+  $(".template-row").click(function () {
+    $(".template-row").removeClass("selected");
+    $(this).addClass("selected");
+    $("#templateID").val($(this).attr("template_id"));
+    $(".form-submit").show();
+  });
+</script>
+
+<% include ../../../partials/footers/footer %>

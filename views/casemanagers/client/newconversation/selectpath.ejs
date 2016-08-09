@@ -1,0 +1,55 @@
+<% include ../../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/cardV2.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+
+<div class="card">
+
+  <div class="card-head">
+
+    <a href="/cms/<%= user.cmid %>">
+      <% include ../../../partials/card-exitV2 %>
+    </a>
+
+    <div class="card-title">
+      Contact <%= client.first %>
+    </div>
+
+    <div class="card-subtitle">
+      
+    </div>
+
+  </div>
+
+  <div class="card-body">
+
+    <center>
+      <a href="/cms/<%= user.cmid %>/cls/<%= client.clid %>/convos/new/selecttemplate">
+        <button class="form-submit fixed-width">
+          Use a Template
+        </button>
+      </a>
+
+      <div class="or-break">
+        <span class="dash">-</span> or <span class="dash">-</span>
+      </div>
+
+      <a href="/cms/<%= user.cmid %>/cls/<%= client.clid %>/convos/new/craftmessage">
+        <button class="form-submit fixed-width">
+          Create Custom Message
+        </button>
+      </a>
+    </center>
+
+
+  </div>
+
+</div>
+
+</div>
+
+<% include ../../../partials/footers/footer %>

@@ -124,8 +124,6 @@ module.exports = {
       db.raw(rawQuery).then(function (res) {
         var clients = res.rows.map(function (ea) { return {clid: ea.clid, cmid: ea.cm}; });
         if (clients.length == 0) { clients = [{clid: null, cmid: null}]; }
-        console.log("Client", clients, commid);
-
         fulfill(clients);
 
       }).catch(function (err) { reject(err); });
@@ -218,8 +216,6 @@ module.exports = {
   },
 
   register_message: function (text, commid, convos, tw_status, tw_sid) {
-    console.log("commid: ", commid);
-    console.log("convos: ", convos);
 
     return new Promise (function (fulfill, reject) {
       var insertList = [];
@@ -236,7 +232,6 @@ module.exports = {
             "read":      false,
             "tw_sid":    tw_sid,
             "tw_status": tw_status
-            // "created":   foobar
           }
           insertList.push(insertObj);         
         }
@@ -259,6 +254,55 @@ module.exports = {
         reject(err);
       });
     });
+  },
+
+  logIBMSensitivityAnalysis: function (m) {
+    console.log("----------------------");
+    console.log("msgs response received and ibm process");
+    var ibm = null;
+
+    // Check if we have IBM sentiment analysis
+    if (m.hasOwnProperty("AddOns")) {
+      try {
+        m.AddOns = JSON.parse(m.AddOns);
+      } catch (e) {
+        m.AddOns = {status: null};
+      }
+      
+      var s = m.AddOns.status;
+      if (s && s=="successful") {
+        var r = m.AddOns.results;
+        if (r && r.hasOwnProperty("ibm_watson_sentiment")) {
+          ibm = r.ibm_watson_sentiment;
+        }
+      }
+    }
+
+    if (ibm && ibm.status=="successful") {
+      var requestSID = null;
+      var docSentiment = null;
+
+      try { 
+        var type = ibm.result.docSentiment.type;
+        var requestSID = ibm.request_sid;
+        var tw_sid = m.MessageSid;
+
+        var insertObj = {
+          sentiment: type,
+          ibm_request_sid: requestSID,
+          tw_sid: tw_sid
+        };
+
+        db("ibm_sentiment_analysis")
+        .insert(insertObj)
+        .then(function (success) {
+          console.log("Successfully logged sentiment analysis.");
+        }).catch(function (err) {
+          console.log("Error when isnerting on ibm_sentiment_analysis: ", err);
+        })
+        
+      } catch (e) { console.log(e); }
+    }
   }
 
 }

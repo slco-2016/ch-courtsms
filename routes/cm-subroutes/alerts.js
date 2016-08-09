@@ -26,34 +26,24 @@ var fivehundred   = errorHandlers.fivehundred;
 router.get("/", function (req, res) {
   var errorRedirect = fivehundred(res);
 
-  var cmid = Number(req.params.cmid);
+  var cmid = Number(req.user.cmid);
 
   // Makes sure necessary values are integers
   if (isNaN(cmid)) {
     res.redirect("/404");
 
   } else {
-    // Warning: This is also used when querying for all clients view
-    // TO DO: Consolidate into a single function, make DRY
-    var rawQuery = " SELECT " +
-                    "   count(CASE WHEN msgs.read=FALSE THEN 1 ELSE NULL END) AS msg_ct, " +
-                    "   convos.open, convos.subject, convos.convid, " +
-                    "   clients.*  " +
-                    " FROM clients " + 
-                    " LEFT JOIN (SELECT * FROM convos WHERE convos.updated IN (SELECT MAX(convos.updated) FROM convos WHERE cm = " + String(cmid) + 
-                    "     GROUP BY client) " + 
-                    "     AND cm = " + String(cmid) + ") AS convos " + 
-                    "     ON (convos.client=clients.clid) " +
-                    " LEFT JOIN msgs ON (msgs.convo=convos.convid) " +
-                    " WHERE clients.cm = " + String(cmid) + " " +
-                    " GROUP BY clients.clid, convos.open, convos.subject, convos.convid ORDER BY last ASC; ";
-
-    db.raw(rawQuery).then(function (clients) {
+    db("msgs")
+    .count("msgid")
+    .leftJoin("convos", "msgs.convo", "convos.convid")
+    .where("msgs.read", false)
+    .andWhere("convos.cm", cmid)
+    .then(function (clients) {
       var totalNewMessages = 0;
 
       // See if there are any new messages in any of the conversations
-      clients.rows.forEach(function (ea) {
-        var newMessages = Number(ea.msg_ct);
+      clients.forEach(function (ea) {
+        var newMessages = Number(ea.count);
         if (!isNaN(newMessages)) {
           totalNewMessages += newMessages;
         }

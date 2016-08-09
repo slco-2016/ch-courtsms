@@ -74,6 +74,7 @@ router.post("/:convid", function (req, res) {
   // Make sure all vars that are supposed to be numbers are indeed numbers
   var cmid   = req.body.cmid && !isNaN(req.body.cmid) ? Number(req.body.cmid) : null;
   var clid   = req.body.clid && !isNaN(req.body.clid) ? Number(req.body.clid) : null;
+
   var convid = req.body.convid && !isNaN(req.body.convid) ? Number(req.body.convid) : null;
 
   // Check that text strings are sufficient
@@ -93,13 +94,25 @@ router.post("/:convid", function (req, res) {
   // Proceed if they are and run PgSQL queries
   } else {
 
-    var rawQuery =  " PREPARE convocapture (text, int, int, int) AS " +
+    // TO DO: Is it okay to remove raw query?
+    var rawQuery =  " PREPARE convo_capture (text, int, int, int) AS " +
                     "   UPDATE convos SET subject = $1, cm = $2, client = $3, accepted = TRUE, open = TRUE " + 
                     "   WHERE convid = $4 AND client IS NULL; " +
-                    " EXECUTE convocapture('" + subject + "', " + cmid + ", " + clid + ", " + convid + ");";
+                    " EXECUTE convo_capture('" + subject + "', " + cmid + ", " + clid + ", " + convid + ");";
     
     // Query 1: Update convo with CM and client
-    db.raw(rawQuery).then(function (success) {
+
+    db("convos")
+    .where("convid", convid)
+    .andWhere("client", null)
+    .update({
+      subject: subject,
+      client: clid,
+      cm: cmid,
+      accepted: true,
+      open: true
+    })
+    .then(function (success) {
 
     // Query 2: Close all other conversation that client has open
     db("convos")
@@ -161,10 +174,10 @@ router.post("/:convid", function (req, res) {
         res.redirect(reroute);
       }
 
-    }).catch(function (err) { res.redirect("/500"); }); // Query 4
-    }).catch(function (err) { res.redirect("/500"); }); // Query 3
-    }).catch(function (err) { res.redirect("/500"); }); // Query 2
-    }).catch(function (err) { res.redirect("/500"); }); // Query 1
+    }).catch(function (err) { console.log("Query 4 Error: ", err); res.redirect("/500"); }); // Query 4
+    }).catch(function (err) { console.log("Query 3 Error: ", err); res.redirect("/500"); }); // Query 3
+    }).catch(function (err) { console.log("Query 2 Error: ", err); res.redirect("/500"); }); // Query 2
+    }).catch(function (err) { console.log("Query 1 Error: ", err); res.redirect("/500"); }); // Query 1
 
   }
 });

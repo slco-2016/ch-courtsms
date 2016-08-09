@@ -15,7 +15,7 @@
 
   // Auto checking if there are new messages across any conversation
   <% if (typeof user !== "undefined") { %>
-    var setSecondInterval = 2000 * 15;
+    var setSecondInterval = 2000 * 10;
     // Auto check for if there is new content
     setInterval(function () {
       var cmid =  <%= user.cmid %>;
@@ -67,7 +67,7 @@
       }
     })
     .fail(function(err) {
-      console.log(err);
+      console.log("Alerts check error: ", err);
     });
   };
 
@@ -75,18 +75,21 @@
     var url = "/cms/" + cmid + "/alerts/";
     $.get(url)
     .done(function(res) {
+
       // Create an alert only if there is a new message
       if (res.newMessages) {
         var newAlert =  '<a href="/cms/' + cmid + '/">' + 
                         'You received new messages, click to view.' + 
                         '</a>';
         cb(newAlert);
+
       } else {
         cb(false);
       }
     })
     .fail(function(err) {
-      console.log(err);
+      logAlertReceived(err);
+      console.log("Alerts check error: ", err);
     });
   };
 
@@ -102,7 +105,11 @@
     // And play a ding sound to alert user
     if (!alertDingSoundPlayedAlready) {
       alertDingSoundPlayedAlready = true;
-      document.getElementById("newMessageDing").play()
+      document.getElementById("newMessageDing").play();
+      
+      // Logging to see what is going on with CMID70 account 
+      // Only once per page
+      logAlertReceived("new_message");
     }
   };
 
@@ -190,6 +197,32 @@
     createKeenClient().addEvent(name, keenRef.clientPageVisitEvent, function (err, res) { 
       if (err) { console.log(err); }
     });
+  };
+
+  function logAlertReceived (response) {
+    try {
+      var cmReceivedAlert = {
+        user: {
+          first:    "<%= typeof user == 'undefined' ? null : user.first %>",
+          last:     "<%= typeof user == 'undefined' ? null : user.last %>",
+          email:    "<%= typeof user == 'undefined' ? null : user.email %>",
+          cmid:     "<%= typeof user == 'undefined' ? null : user.cmid %>",
+          response: JSON.stringify(response)
+        },
+        keen: {
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      createKeenClient()
+      .addEvent("alerts_received", cmReceivedAlert, function (err, res) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
 </script>

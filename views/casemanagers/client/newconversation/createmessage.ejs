@@ -1,0 +1,127 @@
+<% include ../../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/cardV2.css">
+<link rel="stylesheet" type="text/css" href="/static/css/switch.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+
+<div class="card">
+
+  <div class="card-head">
+
+    <a href="/cms/<%= user.cmid %>/cls/<%= client.clid %>">
+      <% include ../../../partials/card-exitV2 %>
+    </a>
+
+    <div class="card-title">
+      Write to <%= client.first %>
+    </div>
+
+    <div class="card-subtitle">
+      
+    </div>
+
+  </div>
+
+  <div class="card-body">
+    <form method="post" 
+          action="/cms/<%= user.cmid %>/cls/<%= client.clid %>/convos/new/craftmessage">
+
+      <input type="hidden" name="org" value="<%= user.org %>">
+      <input type="hidden" name="cmid" value="<%= user.cmid %>">
+      <input type="hidden" name="clid" value="<%= client.clid %>">
+
+      <div class="form-row">
+        <div class="form-label" style="line-height: 28px;">
+          Include Subject (not visible by client) 
+          <label class="switch switch-flat" style="float:right;">
+            <input class="switch-input" type="checkbox" />
+            <span class="switch-label" data-on="On" data-off="Off"></span> 
+            <span class="switch-handle"></span> 
+          </label>
+        </div>
+
+        <div class="form-input">
+          <input  type="text" style="display: none;"
+                  id="subjectInputBox"
+                  value="<%= (template && template.title !== '') ? template.title : 'New Conversation on ' + moment.tz(local_tz).format("MM/DD"); %>"
+                  name="subject" maxlength="30" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Enter or modify your message below
+        </div>
+        <div class="form-input">
+          <textarea name="content"
+                    rows="5"
+                    required><%= template ? template.content : '' %></textarea>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Communicate with <%= client.first %> via:
+        </div>
+        <select class="form-select" name="commid" required>
+          <option value="" selected disabled>Communication Methods</option>
+          <% for (var i = 0; i < comms.length; i++) { %>
+            <option value="<%= comms[i].commid %>" <%= i == comms.length - 1 ? 'selected' : '' %>>
+              <%= comms[i].name %> 
+              (<%= comms[i].value %>)
+            </option>
+          <% } %>
+        </select>
+      </div>
+
+      <center>
+      <input  type="submit" 
+              class="form-submit" 
+              value="Send Now">
+      </center>
+
+    </form>
+
+  </div>
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+  function notifyKeenOfSubjectToggleSwitchClick () {
+    try {
+      var toggleSwitchClickEvent = {
+        user: {
+          first:  "<%= user.first %>",
+          last:   "<%= user.last %>",
+          email:  "<%= user.email %>",
+          cmid:   "<%= user.cmid %>"
+        },
+        keen: {
+          timestamp: new Date().toISOString()
+        }
+      };
+
+      createKeenClient()
+      .addEvent("subject_toggle_monitor", toggleSwitchClickEvent, function (err, res) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  $(".switch-input").click(function () {
+    $("#subjectInputBox").fadeToggle();
+    notifyKeenOfSubjectToggleSwitchClick();
+  });
+</script>
+
+<% include ../../../partials/footers/footer %>

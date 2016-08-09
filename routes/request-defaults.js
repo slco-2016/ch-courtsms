@@ -4,8 +4,14 @@ var db = require("../server/db");
 var moment = require('moment');
 var moment_tz = require('moment-timezone');
 
+
 // New Relic Clientside monitoring
-var newrelic = require('newrelic');
+var TESTENV = process.env.TESTENV;
+if (TESTENV && TESTENV == "true") {
+  var newrelic = null;
+} else {
+  var newrelic = require('newrelic');
+}
 
 module.exports = function (app) {
 

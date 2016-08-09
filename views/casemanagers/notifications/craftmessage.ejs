@@ -26,13 +26,14 @@
     </small>
   </div>
 
-  <form method="post" id="newNotification">
+  <form method="post" id="newNotification"
+        action="/cms/<%= user.cmid %>/notifications/new/submit">
 
-    <input type="hidden" name="cmid" value="<%= user.cmid %>">
-    <input type="hidden" name="sendDate" value="<%= notification.sendDate %>">
-    <input type="hidden" name="sendTimeHour" value="<%= notification.sendTimeHour %>">
-    <input type="hidden" name="sendTimeMin" value="<%= notification.sendTimeMin %>">
-    <input type="hidden" name="recipient" value="<%= notification.recipient %>">
+    <input type="hidden" name="cmid"          value="<%= user.cmid %>">
+    <input type="hidden" name="sendDate"      value="<%= notification.sendDate %>">
+    <input type="hidden" name="sendTimeHour"  value="<%= notification.sendTimeHour %>">
+    <input type="hidden" name="sendTimeMin"   value="<%= notification.sendTimeMin %>">
+    <input type="hidden" name="recipient"     value="<%= notification.recipient %>">
     <input type="hidden" name="recipientComm" value="<%= notification.recipientComm %>">
 
     <div class="form-row">
@@ -53,22 +54,9 @@
 
   </form>
 
-  <div class="bottom-nav-dots">
-    <i class="fa fa-circle-thin" id="showOtherCard"></i>
-    <i class="fa fa-circle"></i>
-  </div>
-
 </div>
 </div>
 
-<script type="text/javascript">
-  // Special card toggle option
-  $("#showOtherCard").click(function () {
-    console.log("me");
-    var input = $("<input>", { type: "hidden", name: "showCardExplicit", value: "1" }); 
-    $("#newNotification").append($(input));
-    $("#newNotification").submit();
-  });
-</script>
+
 
 <% include ../../partials/footers/footer %>

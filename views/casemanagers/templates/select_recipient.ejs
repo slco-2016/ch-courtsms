@@ -1,0 +1,79 @@
+<% include ../../partials/headers/header-base %>
+
+<!-- Include Card View specific styling -->
+<link rel="stylesheet" type="text/css" href="/static/css/cardV2.css">
+
+<div class="contents">
+
+<!-- Moved the exit out of the card -->
+
+<div class="card">
+
+  <div class="card-head">
+
+    <a href="/cms/<%= user.cmid %>/templates">
+      <% include ../../partials/card-exitV2 %>
+    </a>
+
+    <div class="card-title">
+      Select Recipient
+    </div>
+
+    <div class="card-subtitle">
+      Choose who you would like to send this templated message to. You will have an opportunity to make modifications before sending.
+    </div>
+
+  </div>
+
+  <div class="card-body">
+    <form method="post">
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Below is the template text you have chosen
+        </div>
+        <div class="form-input">
+          "<%= template.content %>"
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-label"> 
+          Choose which client with which to communicate
+        </div>
+        <select class="form-select" name="client" id="clientSelector" required>
+          <option value="null" disabled selected>Select Client</option>
+          <% for (var i = 0; i < clients.length; i++) { %>
+            <option value="<%= clients[i].clid %>">
+              <%= clients[i].first %> <%= clients[i].last %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+
+      <center>
+      <input  type="submit" style="display: none;"
+              class="form-submit" 
+              value="Select and Continue">
+      </center>
+
+    </form>
+
+  </div>
+
+</div>
+
+</div>
+
+<script type="text/javascript">
+  $("#clientSelector").change(function () {
+    var v = $("#clientSelector").val();
+    if (v && !isNaN(v) && v !== "null") {
+      $(".form-submit").show();
+    } else {
+      $(".form-submit").hide();
+    }
+  });
+</script>
+
+<% include ../../partials/footers/footer %>

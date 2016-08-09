@@ -8,7 +8,7 @@
 
   <% for (var i = 0; i < caseManagers.length; i++) { %>
     <div style="color: #2F8CE8">
-      <a href="cms/<%= caseManagers[i].cmid %>">
+      <a href="/accounts/orgs/<%= caseManagers[i].org %>/cms/<%= caseManagers[i].cmid %>">
         <b><%= caseManagers[i].last %></b>,
         <%= caseManagers[i].first %>
         <small>

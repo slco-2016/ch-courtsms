@@ -12,27 +12,34 @@ Need assistance setting up this tool? Questions about the application structure?
 ### Setting up dependencies and default settings
 `git clone` the repository and then `cd` into it. `npm install` all dependencies. Start with `npm start`. This will run `nodemon` which will listen for changes everywhere but ignore `node_modules` folder. Make sure you have PostgreSQL up and running. Don't have PostgresSQL? Postgres.app is a great solution for Macs. Check it out [here](http://postgresapp.com/).
 
-While in the root directory of this repo, run `touch credentials.js`. Your credentials should resemble the below example:
+While in the root directory of this repo, run `touch credentials.js`. For reference, you can also use the `exampleCredentials.js` as a guide for filling out your own `credentials.js` file. Note the need for two Twilio numbers - one for testing and the other for "production." Also note that, in the future, Twilio numbers will be provisioned on an organization-by-organization basis. Your credentials should resemble the below example:
 
 ```
 module.exports = {
-  accountSid:    "__________________________",
-  authToken:     "__________________________",
-  twilioNum:     "+_________________________",
-  sessionSecret: "__________________________",
+  accountSid:         "__________________________",
+  authToken:          "__________________________",
+  twilioNum:          "+_________________________",
+  sessionSecret:      "__________________________",
   db: {
-    user:        "__________________________",
-    password:    "__________________________",
-    host:        "__________________________"
+    user:             "__________________________",
+    password:         "__________________________",
+    host:             "__________________________"
   },
   em: {
-    password:    "__________________________"
+    password:         "__________________________"
   },
   newrelic: {
-    key:         "__________________________"
+    key:              "__________________________"
+  },
+  aws: {
+    accessKey:        "__________________________"
+    secretAccessKey:  "__________________________"
   }
 }
 ```
+
+##### Which version(s) should I run?
+I'm using NodeJS v4.4.7 as suggested on Node's organization website as the recommended general use version at present (as of August of 2016). `npm` depnedencies are all locked at their recommended versions as well.
 
 ##### Modifying knexfile.js connection settings
 You will also need to configure the `knexfile.js` file. It is necessary to use the PostgreSQL as indicated in the example `development`, `testing`, and `production` objects. The reason for this is that ClientComm utilizes a number of raw SQL queries which include notation that is specific to PostgreSQL. In particular, it will be necessary to update the `connection.user` and `connection.database` values to whatever your configuration is.

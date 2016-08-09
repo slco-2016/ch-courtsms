@@ -152,7 +152,7 @@
 
     </form>
 
-    <% if (clientSurveyAlreadySubmitted) { %>
+    <% if (clientSurveyAlreadySubmitted || true) { %>
       <form method="post" 
         action="/cms/<%= user.cmid %>/cls/<%= client.clid %>/archive">
         <center>

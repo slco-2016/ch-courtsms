@@ -16,13 +16,18 @@
   <% } %>
 
   <hr>
-
   
   <form method="post" action="/accounts/orgs/<%= orgID %>/cms/<%= caseManager.cmid %>/setpassword">
     <b>Set New Password</b>
     <input class="form-input" type="password" name="password" value="" required>
     <input type="submit" value="Submits">
   </form>
+
+  <hr>
+  
+  <a href="/accounts/orgs/<%= orgID %>/cms/<%= caseManager.cmid %>/ghostlogin">
+    <button>Login as this person</button>
+  </a>
 
 </div>
 

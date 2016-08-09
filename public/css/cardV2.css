@@ -2,7 +2,12 @@ body, .contents {
   background-color: #344289;
   background-image: none;
   box-shadow: none;
-  border: 0; }
+  border: 0;
+  color: #344289; }
+
+.alerts {
+  color: #FFF;
+  width: 100%; }
 
 .comms-link {
   color: #2F8CE8;
@@ -66,23 +71,37 @@ body, .contents {
       .card .card-body .form-row .form-input .input-option {
         float: left;
         margin-right: 20px; }
+      .card .card-body .form-row .form-input input[type=text] {
+        background: #FFF;
+        width: 420px;
+        font-size: 12px;
+        line-height: 18px;
+        height: 18px;
+        max-width: 420px;
+        border: 2px solid #4A90E2;
+        border-radius: 4px;
+        outline: none;
+        resize: none;
+        overflow: auto;
+        padding: 5px 10px 5px 10px; }
       .card .card-body .form-row .form-input textarea {
         background: #FFF;
-        width: 100%;
+        width: 420px;
         height: 50px;
-        max-width: 100%;
+        max-width: 420px;
         max-height: 50px;
         border: 2px solid #4A90E2;
         border-radius: 4px;
         outline: none;
         resize: none;
-        overflow: auto; }
+        overflow: auto;
+        padding: 5px 10px 5px 10px; }
       .card .card-body .form-row .form-input::after {
         content: "";
         display: block;
         clear: both; }
     .card .card-body .form-row .form-select {
-      width: 450px;
+      width: 440px;
       height: 35px;
       border: 2px solid #2F8CE8;
       border-radius: 7px;
@@ -96,10 +115,86 @@ body, .contents {
         float: left; }
         .card .card-body .form-row .form-select.half:nth-child(2) {
           margin-right: 20px; }
+  .card .card-body .template-box {
+    width: 450px;
+    max-height: 400px;
+    border: 2px solid #2F8CE8;
+    border-radius: 7px;
+    background-color: #FFF;
+    color: #344289;
+    overflow-y: scroll;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px; }
+    .card .card-body .template-box::-webkit-scrollbar {
+      display: none; }
+    .card .card-body .template-box .template-row {
+      max-height: 100px;
+      overflow: hidden;
+      cursor: pointer;
+      border-bottom: 1px solid #C5C4C4; }
+      .card .card-body .template-box .template-row:nth-last-child(1) {
+        border-bottom: 0px; }
+      .card .card-body .template-box .template-row .use-count {
+        float: right;
+        width: 45px;
+        text-align: center;
+        line-height: 70px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #4A90E2; }
+      .card .card-body .template-box .template-row .template-content {
+        float: right;
+        padding: 10px;
+        width: 365px; }
+        .card .card-body .template-box .template-row .template-content .title-text {
+          font-size: 14px;
+          line-height: 14px;
+          font-weight: bold;
+          word-wrap: break-word;
+          height: 14px;
+          margin-bottom: 5px;
+          overflow: hidden;
+          color: #4A90E2;
+          text-decoration: underline; }
+        .card .card-body .template-box .template-row .template-content .body-text {
+          word-wrap: break-word;
+          overflow: hidden;
+          font-size: 14px;
+          line-height: 14px;
+          max-height: 42px;
+          color: #898989;
+          margin-top: 5px;
+          margin-bottom: 5px; }
+        .card .card-body .template-box .template-row .template-content .tags {
+          color: #C5C4C4;
+          font-size: 12px;
+          font-weight: bold;
+          line-height: 14px;
+          margin-top: 5px; }
+        .card .card-body .template-box .template-row .template-content::after {
+          content: "";
+          display: block;
+          clear: both; }
+      .card .card-body .template-box .template-row:hover, .card .card-body .template-box .template-row.selected {
+        background-color: #4A90E2;
+        color: #FFF; }
+        .card .card-body .template-box .template-row:hover .title-text, .card .card-body .template-box .template-row.selected .title-text {
+          color: #FFF; }
+        .card .card-body .template-box .template-row:hover .use-count, .card .card-body .template-box .template-row.selected .use-count {
+          color: #FFF; }
+        .card .card-body .template-box .template-row:hover .body-text, .card .card-body .template-box .template-row.selected .body-text {
+          color: #FFF; }
+        .card .card-body .template-box .template-row:hover .tags, .card .card-body .template-box .template-row.selected .tags {
+          color: #FFF; }
+      .card .card-body .template-box .template-row::after {
+        content: "";
+        display: block;
+        clear: both; }
   .card .card-body .color-selector {
     text-align: center;
-    margin-top: 50px;
-    margin-bottom: 50px; }
+    margin-top: 100px;
+    margin-bottom: 100px; }
     .card .card-body .color-selector .color-option {
       display: inline-block;
       margin-left: 5px;
@@ -112,7 +207,7 @@ body, .contents {
       .card .card-body .color-selector .color-option input[type="radio"] + label span {
         display: inline-block;
         width: 25px;
-        height: 50px;
+        height: 65px;
         border: 3px solid #898989;
         border-radius: 40px;
         cursor: pointer; }
@@ -138,27 +233,53 @@ body, .contents {
       width: 350px;
       height: 50px;
       background-color: #898989;
-      margin-top: 30px;
+      color: #FFF;
+      margin-top: 75px;
       margin-left: auto;
       margin-right: auto;
       line-height: 50px;
       font-size: 24px;
       overflow: hidden; }
   .card .card-body .form-submit {
+    display: block;
     border: 0px;
     border-radius: 17px;
     height: 35px;
-    background-color: #4A90E2;
-    color: #FFF;
     font-size: 14px;
     font-weight: 700;
+    line-height: 27px;
     cursor: pointer;
     padding-left: 20px;
     padding-right: 20px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     margin-bottom: 20px;
     margin-left: auto;
-    margin-right: auto; }
+    margin-right: auto;
+    border: 2px solid #4A90E2;
+    background-color: #FFF;
+    color: #4A90E2; }
     .card .card-body .form-submit:hover {
-      border: 2px solid #4A90E2;
-      background-color: #FFF;
-      color: #4A90E2; }
+      background-color: #4A90E2;
+      color: #FFF; }
+    .card .card-body .form-submit.fixed-width {
+      width: 250px;
+      overflow: hidden; }
+  .card .card-body .or-break {
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 20px; }
+    .card .card-body .or-break .dash {
+      padding-left: 10px;
+      padding-right: 10px;
+      display: inline-block;
+      -webkit-transform: scale(5, 1);
+      /* Safari and Chrome */
+      -moz-transform: scale(5, 1);
+      /* Firefox */
+      -ms-transform: scale(5, 1);
+      /* IE 9 */
+      -o-transform: scale(5, 1);
+      /* Opera */
+      transform: scale(5, 1);
+      /* W3C */ }

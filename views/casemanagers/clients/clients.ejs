@@ -4,7 +4,7 @@
 <div class="contents">
 
   <!-- Temp solution to deal with tempalte and notification access -->
-  <div class="sort-opts">
+  <div class="sort-opts feature-nav">
     <a href="/cms/<%= user.cmid %>">
       <div class="toggle selected"> Client Directory </div>
     </a>
@@ -15,7 +15,6 @@
       <div class="toggle"> Templates </div>
     </a>
   </div>
-  <hr>
 
   <div class="sort-opts">
     <div class="toggle selected" id="current_tag" onclick="showCurrent()">
@@ -62,7 +61,7 @@
           <td class="clientid">
 
             <a href="/cms/<%= user.cmid %>/cls/<%= clients[i].clid %>/colortag %>">
-              <div style="display: inline-block; border-radius: 5px; width: 15px; height: 20px; background-color: <%= clients[i].color_tag %>"></div>
+              <div class="color-badge" style="display: inline-block; border-radius: 5px; width: 10px; margin-right: 5px; height: 20px; background-color: <%= clients[i].color_tag %>; border: 1px solid #FFF"></div>
             </a>
 
             <% if (clients[i].active) { %>
@@ -171,6 +170,20 @@
     $(".current").hide();
   };
   showCurrent();
+
+  // Bind hover coloring
+  var lastTextColor = "#898989";
+  $("tr").mouseenter(function () {
+    var bc = $(this).find(".color-badge").css("background-color");
+    $(this).css("background-color", bc);
+    lastTextColor = $(this).find("td").css("color");
+    $(this).find("td").css("color", "#FFF");
+    $(this).find(".archiverestore").css("background-color", "#FFF");
+  });
+  $("tr").mouseleave(function () {
+    $(this).css("background-color", "#FFF");
+    $(this).find("td").css("color", lastTextColor);
+  });
 </script>
 
 <% include ../../partials/footers/footer %>

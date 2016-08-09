@@ -833,351 +833,37 @@ router.post("/:cmid/cls/:clid/comms/:commconnid/close", function (req, res) {
 });
 
 
-router.get("/:cmid/cls/:clid/convos", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  
-  // Parameters
-  var clid = Number(req.params.clid);
-  var cmid = Number(req.params.cmid);
-  var cmid2 = Number(req.user.cmid);
-
-  if (cmid !== cmid2) { 
-    res.redirect("/400"); 
-  
-  } else { 
-    db("clients")
-    .where("cm", cmid)
-    .andWhere("clid", clid)
-    .then(function (clients) {
-
-      // Make sure that client with that cm actually exists
-      if (clients.length == 0) { 
-        res.redirect("/404"); 
-
-      // Then proceed to gather current conversations
-      } else { 
-        db("comms")
-        .innerJoin("commconns", "comms.commid", "commconns.comm")
-        .where("commconns.client", clid)
-        .then(function (comms) {
-
-          res.render("casemanagers/client/clientconvo", {
-            client: clients[0], 
-            comms: comms
-          });
-          
-        }).catch(errorRedirect);
-      } 
-    }).catch(errorRedirect);
-  }
-});
+// All convos management
+var convosManagementRoutes = require("./cm-subroutes/convos");
+router.use("/:cmid/cls/:clid/convos", convosManagementRoutes);
 
 
-router.post("/:cmid/cls/:clid/convos", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid;
-
-  var cmid = req.body.cmid;
-  var clid = req.body.clid;
-  var subject = req.body.subject;
-  var content = req.body.content;
-  var commid = req.body.commid;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-  } else {
-
-    var newConvoId;
-
-    Convo.closeAll(cmid, clid)
-    .then(() => {
-      return Convo.create(cmid, clid, subject, true)
-    }).then((convoId) => {
-      newConvoId = convoId
-      return Communication.findById(commid)
-    }).then((communication) => {
-      return communication.sendMessage(newConvoId, content, cmid)
-    }).then((messageId) => {
-      req.flash("success", "New conversation created.");
-      redirect_loc = redirect_loc + "/convos/" + newConvoId;
-      res.redirect(redirect_loc);
-    }).catch((err) => {
-      res.status(500).send(err.message)
-    })
-  }
-});
-
-router.get("/:cmid/cls/:clid/convos/:convid", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.params.cmid + "/cls/" + req.params.clid + "/convos/" + req.params.convid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  if ((Number(cmid) !== Number(req.user.cmid)) && !req.user.superuser) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-
-  } else {
-    cmview.getConvo(cmid, clid, convid)
-    .then(function (obj) {
-
-      var rawQuery = "UPDATE msgs SET read = TRUE WHERE msgid IN ( ";
-      rawQuery += "SELECT msgs.msgid FROM clients ";
-      rawQuery += "LEFT JOIN convos ON (convos.client=clients.clid) ";
-      rawQuery += "LEFT JOIN msgs ON (msgs.convo=convos.convid) ";
-      rawQuery += "WHERE clients.cm=" + cmid  + " AND clients.clid=" + clid + " AND msgs.read=FALSE) ";
-
-      db.raw(rawQuery).then(function (success) {
-
-        db("clients").where("clid", clid).limit(1).then(function (cls) {
-          obj.client = cls[0];
-          res.render("casemanagers/client/msgs", obj);
-        }).catch(errorRedirect);
-
-      }).catch(errorRedirect);
-
-    }).catch(function (err) {
-      if (err == "404") { 
-        res.send(err, 404)
-      } else { 
-        res.send(err.message, 500)
-      }
-    })
-
-  }
-});
+// Sending group messages logic
+var groupManagementRoutes = require("./cm-subroutes/groupmessages");
+router.use("/:cmid/groups", groupManagementRoutes);
 
 
-router.post("/:cmid/cls/:clid/convos/:convid", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid + "/convos/" + req.params.convid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  var commid = req.body.commid;
-  var content = req.body.content;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect("/cms/" + req.user.cmid);
-  } else if (typeof content !== "string" || content == "") {
-    req.flash("warning", "Text entry either too short or not of type string.");
-    res.redirect(redirect_loc)
-  } else if (typeof content == "string" && content.length > 160) {
-    req.flash("warning", "Text entry is too long; limit is 160 characters.");
-    res.redirect(redirect_loc)
-  } else {
-    content = content.trim().substr(0,159);
-
-    Communication.findById(commid)
-    .then((communication) => {
-      if (communication) {
-        communication.sendMessage(convid, content, cmid)
-        .then((messageId) => {
-          db("convos").where("convid", convid)
-          .update({updated: db.fn.now()})
-          .then(function (success) {
-            req.flash("success", "Sent message.");
-            res.redirect(redirect_loc)
-          }).catch(errorRedirect);
-        }).catch((err) => {
-          res.status(500).send(err.message)
-        })
-      } else {
-        res.redirect("/404")
-      }
-    }).catch(errorRedirect);
-  }
-});
-
-router.post("/:cmid/cls/:clid/convos/:convid/close", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid + "/convos/" + req.params.convid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-  } else {
-
-    cmview.getConvo(cmid, clid, convid)
-    .then(function (obj) {
-      
-      db("convos").where("convid", convid).update({open: false, updated: db.fn.now()})
-      .then(function (success) {
-        req.flash("success", "Closed conversation.");
-        res.redirect(redirect_loc);
-
-      }).catch(function (err) {
-        res.redirect("/500");
-      })
-
-    }).catch(function (err) {
-      if (err == "404") {
-        res.redirect("/404");
-      } else {
-        res.redirect("/500");
-      }
-    })
-
-  }
-});
-
-router.post("/:cmid/cls/:clid/convos/:convid/open", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid + "/convos/" + req.params.convid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-  } else {
-
-    db("convos")
-    .where("client", clid)
-    .andWhere("cm", cmid)
-    .andWhere("convos.open", true)
-    .pluck("convid")
-    .then(function (convos) {
-      
-      db("convos").whereIn("convid", convos)
-      .update({ open: false })
-      .then(function (success) {
-
-        cmview.getConvo(cmid, clid, convid)
-        .then(function (obj) {
-          
-          db("convos").where("convid", convid).update({open: true, updated: db.fn.now()})
-          .then(function (success) {
-            req.flash("success", "Conversation reopened.");
-            res.redirect(redirect_loc);
-
-          }).catch(function (err) {
-            res.redirect("/500");
-          })
-
-        }).catch(function (err) {
-          if (err == "404") {
-            res.redirect("/404");
-          } else {
-            res.redirect("/500");
-          }
-        });
-
-      }).catch(errorRedirect);
-    }).catch(errorRedirect);
-  }
-});
-
-router.post("/:cmid/cls/:clid/convos/:convid/accept", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid + "/convos/" + req.params.convid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-  } else {
-
-    cmview.getConvo(cmid, clid, convid)
-    .then(function (obj) {
-      
-      db("convos").where("convid", convid).update({accepted: true, updated: db.fn.now()})
-      .then(function (success) {
-        req.flash("success", "Closed conversation.");
-        res.redirect(redirect_loc);
-
-      }).catch(function (err) {
-        res.redirect("/500");
-      })
-
-    }).catch(function (err) {
-      if (err == "404") {
-        res.redirect("/404");
-      } else {
-        res.redirect("/500");
-      }
-    })
-
-  }
-});
+// Sending group messages logic
+var groupManagementRoutes = require("./cm-subroutes/groupmessages");
+router.use("/:cmid/groups", groupManagementRoutes);
 
 
-router.post("/:cmid/cls/:clid/convos/:convid/reject", function (req, res) {
-  
-  // Reroute
-  var errorRedirect = fivehundred(res);
-  var redirect_loc = "/cms/" + req.user.cmid + "/cls/" + req.params.clid;
-
-  var cmid = req.params.cmid;
-  var clid = req.params.clid;
-  var convid = req.params.convid;
-
-  if (Number(cmid) !== Number(req.user.cmid)) {
-    req.flash("warning", "Mixmatched user cmid and request user cmid insert.");
-    res.redirect(redirect_loc);
-  } else {
-    
-    db("msgs").where("convo", convid).delete()
-    .then(function (success) {
-
-      db("convos").where("convid", convid).delete()
-      .then(function (success) {
-        req.flash("success", "Closed conversation.");
-        res.redirect(redirect_loc);
-
-      }).catch(errorRedirect);
-
-    }).catch(errorRedirect);
-
-  }
-});
-
-
-// Alerts view
+// Alerts logic
 var alertsRoutes = require("./cm-subroutes/alerts");
 router.use("/:cmid/alerts", alertsRoutes);
 
 
-// Notifications view
+// Notifications logic
 var notificationsRoutes = require("./cm-subroutes/notifications");
 router.use("/:cmid/notifications", notificationsRoutes);
 
 
-// Templates view
+// Templates logic
 var templatesRoutes = require("./cm-subroutes/templates");
 router.use("/:cmid/templates", templatesRoutes);
 
 
-// Colors view
+// Colors logic
 var clientColorTagRoutes = require("./cm-subroutes/colortag");
 router.use("/:cmid/cls/:clid/colortag", clientColorTagRoutes);
 

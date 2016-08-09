@@ -1,8 +1,14 @@
 
 
 
-// New Relic monitoring
-require('newrelic');
+// New Relic monitoring ONLY if not test environ
+var TESTENV = process.env.TESTENV;
+if (TESTENV && TESTENV == "true") {
+  console.log("Testing env. No monitoring.");
+} else { 
+  console.log("Production env. New Relic running.");
+  require("newrelic");
+}
 
 
 // SECRET STUFF
@@ -100,6 +106,10 @@ app.use("/orgs", auth.isSuper, supermgmt)
 // Catch-alls
 require("../routes/catchall")(app);
 
+app.get("/*", function (req, res) {
+  res.redirect("/404");
+});
+
 
 
 // START UP CLIENTCOMM
@@ -136,8 +146,4 @@ if (EMNOTIF && EMNOTIF == "true") {
   setInterval(function () { require("../utils/sms-status-check").checkSMSstatus(); }, thirtySecTimer); 
   setInterval(function () { require("../utils/timed-notification").checkAndSendNotifications(); }, fifteenMinTimer); 
 }
-
-
-
-
 

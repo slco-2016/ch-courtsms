@@ -34,6 +34,7 @@ router.get("/", function (req, res) {
   
   // Either this is an active org template
   .where("org", req.user.org)
+  .andWhere("casemanager", null)
   .andWhere("templates.active", true)
   
   // ... or an active case manager template
@@ -48,6 +49,115 @@ router.get("/", function (req, res) {
     });
 
   }).catch(errorRedirect);
+});
+
+
+router.get("/send/:templateID", function (req, res) {
+
+  var errorRedirect = fivehundred(res); 
+
+  var cmid = req.params.cmid;
+  var templateID = req.params.templateID;
+
+  db("templates")
+  .where("template_id", templateID)
+  .limit(1)
+  .then(function (templates) {
+
+    // Make sure that there is indeed a result
+    if (templates.length == 0) {
+      res.redirect("/404");
+
+    // Continue if returned one
+    } else {
+      db("clients")
+      .where("cm", cmid)
+      .andWhere("active", true)
+      .then(function (clients) {
+        res.render("casemanagers/templates/select_recipient", {
+          clients: clients,
+          template: templates[0]
+        });
+      }).catch(errorRedirect);
+    }
+
+  }).catch(errorRedirect);
+});
+
+
+router.post("/send/:templateID", function (req, res) {
+  var clid = Number(req.body.client);
+  var templateID = Number(req.params.templateID);
+  var cmid = req.params.cmid;
+
+  if (isNaN(clid) || isNaN(templateID)) {
+    var redirectLocation = "/cms/" + cmid + "/templates";
+    res.redirect(redirectLocation);
+  } else {
+    var redirectLocation = "/cms/" + cmid + "/templates/send/" + templateID + "/to/" + clid;
+    res.redirect(redirectLocation);
+  }
+  
+});
+
+
+router.get("/send/:templateID/to/:clientID", function (req, res) {
+  // Reroute
+  var errorRedirect = fivehundred(res);
+  
+  var cmid = req.params.cmid;
+  var clientID = req.params.clientID;
+  var templateID = req.params.templateID;
+
+  if (isNaN(templateID)) {
+    var redirectLocation = "/cms/" + cmid + "/templates/send/" + templateID;
+    res.redirect(redirectLocation);
+  
+  } else {
+
+    db("templates")
+    .where("template_id", templateID)
+    .limit(1)
+    .then(function (templates) {
+
+      // Make sure that there is indeed a result
+      if (templates.length == 0) {
+        res.redirect("/404");
+
+      // Continue if returned one
+      } else {
+
+        db("clients")
+        .where("cm", cmid)
+        .andWhere("clid", clientID)
+        .then(function (clients) {
+
+          // Make sure that client with that cm actually exists
+          if (clients.length == 0) { 
+            res.redirect("/404"); 
+
+          // Then proceed to gather current conversations
+          } else { 
+            db("comms")
+            .innerJoin("commconns", "comms.commid", "commconns.comm")
+            .where("commconns.client", clientID)
+            .then(function (comms) {
+
+              res.render("casemanagers/client/newconversation/createmessage", {
+                template: templates[0],
+                client: clients[0],
+                comms: comms
+              });
+              
+            }).catch(errorRedirect);
+          }
+        }).catch(errorRedirect);
+
+      }
+
+    }).catch(errorRedirect);
+  }
+
 });
 
 
@@ -83,6 +193,7 @@ router.post("/create", function (req, res) {
     clid = null;
   }
 
+  var title   = req.body.title;
   var content = req.body.content;
 
   // Make sure that there is enough content
@@ -97,6 +208,7 @@ router.post("/create", function (req, res) {
       org: orgid,
       casemanager: cmid,
       client: clid,
+      title: title,
       content: content
     };
 
@@ -164,11 +276,12 @@ router.post("/:templateID/edit", function (req, res) {
     clid = null;
   }
 
+  var title = req.body.title;
   var content = req.body.content;
 
   // Make sure that there is enough content
-  if (!content || content.length < 1) {
-    req.flash("warning", "Template content is too short.");
+  if ((!content || content.length < 1) || (!title || title.length < 1)) {
+    req.flash("warning", "Template content or title is too short.");
     res.redirect(redirectLoc + "/" + req.params.templateID + "/edit");
 
   // Only continue if content has length
@@ -178,6 +291,7 @@ router.post("/:templateID/edit", function (req, res) {
       org: orgid,
       casemanager: cmid,
       client: clid,
+      title: title,
       content: content,
       updated: db.fn.now()
     };

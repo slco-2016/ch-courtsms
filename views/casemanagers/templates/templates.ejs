@@ -7,7 +7,7 @@
 <div class="contents">
 
   <!-- Temp solution to deal with tempalte and notification access -->
-  <div class="sort-opts">
+  <div class="sort-opts feature-nav">
     <a href="/cms/<%= user.cmid %>">
       <div class="toggle"> Client Directory </div>
     </a>
@@ -18,7 +18,6 @@
       <div class="toggle selected"> Templates </div>
     </a>
   </div>
-  <hr>
 
   <a href="/cms/<%= user.cmid %>/templates/create">
     <div class="newclient"> 
@@ -64,12 +63,28 @@
           </td>
 
           <td>
-            
-            <% if (templates[i].content.length >    80) { %>
-              <%= templates[i].content.substring(0, 80) %>...
+
+            <% if (templates[i].client == null) { %>
+              <a href="/cms/<%= user.cmid %>/templates/send/<%= templates[i].template_id %>">
             <% } else { %>
-              <%= templates[i].content %>
+              <a href="/cms/<%= user.cmid %>/templates/send/<%= templates[i].template_id %>/to/<%= templates[i].client %>">
             <% } %>
+
+              <% if (templates[i].title && templates[i].title !== "") { %>
+                <%= templates[i].title %>
+              <% } else { %>
+                Template missing title
+              <% } %>
+              <br>
+              <small>
+                <% if (templates[i].content.length >    95) { %>
+                  <%= templates[i].content.substring(0, 95) %>...
+                <% } else { %>
+                  <%= templates[i].content %>
+                <% } %>
+              </small>
+            </a>
+
           </td>
 
           <td>
