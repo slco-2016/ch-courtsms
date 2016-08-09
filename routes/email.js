@@ -11,39 +11,6 @@ const Promise = require("bluebird");
 
 module.exports = function (app) {
 
-  app.get("/email/attachment-viewer/", function(req, res) {
-    // test
-    // {
-    //     "url": "https://si.api.mailgun.net/v3/domains/clientcomm.org/messages/eyJwIjpmYWxzZSwiayI6ImFkNzc3ZjY2LWI3ZTEtNGM1Zi05ODIwLWFmMWY2ODNmYmJhOCIsInMiOiIwMmZiY2Q3M2EwIiwiYyI6InNiaWFkIn0=/attachments/0",
-    //     "content-type": "image/png",
-    //     "name": "thumbnail-_0000_Lob-Postcards-1.png",
-    //     "size": 143168
-    // }
-    // http://localhost:4000/email/attachment-viewer/?contentType=image/png&url=https%3A%2F%2Fsi.api.mailgun.net%2Fv3%2Fdomains%2Fclientcomm.org%2Fmessages%2FeyJwIjpmYWxzZSwiayI6ImFkNzc3ZjY2LWI3ZTEtNGM1Zi05ODIwLWFmMWY2ODNmYmJhOCIsInMiOiIwMmZiY2Q3M2EwIiwiYyI6InNiaWFkIn0%3D%2Fattachments%2F0
-
-    // This might be cool, might be horrible
-
-    let url = req.query.url
-    let contentType = req.query.contentType
-    let name = req.query.name
-
-    if (req.user) {
-      res.writeHead(200, {
-        'Content-Type': contentType,
-      });
-      request.get({
-        url: url,
-        auth: {
-            user: 'api',
-            password: credentials.mailgun.apiKey,
-        },
-      }).pipe(res)
-    } else {
-      res.send('404', 404)
-    }
-
-  })
-
   app.post("/email/webhook", function(req, res) {
     let event = req.body.event
     console.log(req.body)

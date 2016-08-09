@@ -125,6 +125,7 @@ module.exports = {
         var clients = res.rows.map(function (ea) { return {clid: ea.clid, cmid: ea.cm}; });
         if (clients.length == 0) { clients = [{clid: null, cmid: null}]; }
         console.log("Client", clients, commid);
+
         fulfill(clients);
 
       }).catch(function (err) { reject(err); });
