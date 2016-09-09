@@ -15,6 +15,7 @@ exports.seed = function(knex, Promise) {
         tz: "America/Denver",
     }
 
+    // "times they are a changin'"
     orgData.map((org) => {
         return knex('orgs').insert(org)
     })
