@@ -39,7 +39,8 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon server/server.js --ignore node_modules/",
-    "coverage": "istanbul cover _mocha ./test/app/ -- -R spec; open coverage/lcov-report/index.html"
+    "coverage": "istanbul cover _mocha ./test/app/ -- -R spec; open coverage/lcov-report/index.html",
+    "test": "CCENV=testing mocha test/app/"
   },
   "devDependencies": {
     "gulp": "3.9.1",

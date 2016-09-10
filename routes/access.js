@@ -20,7 +20,7 @@ module.exports = function (app, passport) {
 
   app.get("/login", function (req, res) {
     // check if the user is already logged in
-    if (req.hasOwnProperty("user")) { res.redirect("/cms"); } 
+    if (req.hasOwnProperty("user")) { res.redirect("/"); } 
     else { res.render("login"); }
   });
 

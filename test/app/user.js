@@ -1,9 +1,5 @@
-
 const assert = require('assert');
 const session = require('supertest-session');
-
-process.env.TESTENV = true
-should = require('should')
 
 const APP = require('../../server/app')
 
@@ -11,8 +7,12 @@ request = session(APP)
 
 // http://mherman.org/blog/2016/04/28/test-driven-development-with-node/
 
-describe('Basic http req tests', function() {
+before(function(done) {
+  console.log("Running test/app/user.js".green)
+  done();
+})
 
+describe('Basic http req tests', function() {
 
   it('should redirect from root', function(done) {
     request.get('/')
@@ -45,8 +45,8 @@ describe('Basic http req tests', function() {
   it('should login with real creds', function(done) {
     request.post('/login')
       .type('form')
-      .send({'email':''})
-      .send({'pass':''})
+      .send({'email':'owner@test.com'})
+      .send({'pass':'123'})
       .expect(302)
       .expect('Location', '/')
       .end(function(err, res) {
@@ -54,7 +54,7 @@ describe('Basic http req tests', function() {
       });
   })
 
-  it('logged in user should redirect to org', function(done) {
+  it('logged in owner user should redirect to org', function(done) {
     request.get('/')
       .expect(302)
       .expect('Location', '/org')
