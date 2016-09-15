@@ -54,6 +54,7 @@ app.use(middleware.templateHelpers);
 app.use(middleware.fetchUserAlertsFeed);
 app.use(middleware.fetchUserOrganization);
 app.use(middleware.fetchUserDepartment);
+app.use(middleware.fetchClient);
 app.use("/org", middleware.setLevelForOrg);
 
 // UTILITIES
@@ -158,6 +159,11 @@ app.post("/org/departments/:departmentId/supervisors",
   departmentsController.supervisorsUpdate);
 app.get("/org/departments/:departmentID/alter/:case", 
   departmentsController.alter);
+
+app.get("/org/clients", clientsController.index);
+app.get("/org/clients/create", clientsController.new);
+app.post("/org/clients/create", clientsController.create);
+
 
 // Redundant catch all
 app.get("/*", (req, res) => {
