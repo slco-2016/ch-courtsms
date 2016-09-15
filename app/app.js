@@ -83,6 +83,7 @@ const departmentsController = require('./controllers/departments');
 const accessController = require('./controllers/access');
 const usersController = require('./controllers/users');
 const dashboardController = require('./controllers/dashboard');
+const templatesController = require('./controllers/templates');
 
 app.get("/", rootController.index);
 
@@ -103,6 +104,37 @@ app.post("/login/reset/:uid", accessController.resetSpecficSubmit);
 app.use("/", require("../../routes/user"));
 app.use("/", require("../../routes/org"));
 
+app.get("/colors", ColorsController.index);
+app.post("/colors", ColorsController.update);
+app.get("/colors/:colorID/remove", ColorsController.destroy);
+
+app.get("/notifications", NotificationsController.index);
+app.get("/notifications/create", NotificationsController.new);
+app.get("/notifications/create/compose", NotificationsController.compose);
+app.post("/notifications/create/compose", NotificationsController.composeCreate);
+app.get("/notifications/create/templates", NotificationsController.templates);
+app.post("/notifications/create", NotificationsController.create);
+app.get("/notifications/:notificationID/edit", NotificationsController.edit);
+app.post("/notifications/:notificationID/edit", NotificationsController.update);
+app.get("/notifications/:notificationID/remove", NotificationsController.destroy);
+
+app.get("/templates", TemplatesController.index);
+app.get("/templates/create", TemplatesController.new);
+app.post("/templates/create", TemplatesController.create);
+app.get("/templates/remove/:templateID", TemplatesController.destroy);
+app.get("/templates/edit/:templateID", TemplatesController.edit);
+app.post("/templates/edit/:templateID", TemplatesController.update);
+
+app.get("/groups", GroupsController.index);
+app.get("/groups/create", GroupsController.new);
+app.post("/groups/create", GroupsController.create);
+app.get("/groups/edit/:groupID", GroupsController.edit);
+app.post("/groups/edit/:groupID", GroupsController.update);
+app.get("/groups/remove/:groupID", GroupsController.destroy);
+app.get("/groups/activate/:groupID", GroupsController.activate);
+app.get("/groups/address/:groupID", GroupsController.address);
+app.post("/groups/address/:groupID", GroupsController.addressUpdate);
+
 app.get("/org/clients", dashboardController.orgIndex);
 
 app.get("/org/users", usersController.index);
@@ -120,19 +152,16 @@ app.get("/org/departments/create", departmentsController.new);
 app.post("/org/departments/create", departmentsController.create);
 app.get("/org/departments/:departmentId/edit", departmentsController.edit);
 app.post("/org/departments/:departmentId/edit", departmentsController.update);
-app.get(
-  "/org/departments/:departmentId/supervisors", 
+app.get("/org/departments/:departmentId/supervisors", 
   departmentsController.supervisorsIndex);
-app.post(
-  "/org/departments/:departmentId/supervisors", 
+app.post("/org/departments/:departmentId/supervisors", 
   departmentsController.supervisorsUpdate);
-app.get(
-  "/org/departments/:departmentID/alter/:case", 
+app.get("/org/departments/:departmentID/alter/:case", 
   departmentsController.alter);
 
 // Redundant catch all
 app.get("/*", (req, res) => {
-  notFound(res);
+  res.notFound()
 });
 
 
