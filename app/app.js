@@ -77,27 +77,44 @@ app.use("/capture", auth.isLoggedIn, captureRoutes);
 require("../../routes/sms")(app);
 require("../../routes/voice")(app);
 
-const rootController = require('./controllers/root')
-const clientsController = require('./controllers/clients')
-const departmentsController = require('./controllers/departments')
+const rootController = require('./controllers/root');
+const clientsController = require('./controllers/clients');
+const departmentsController = require('./controllers/departments');
+const accessController = require('./controllers/access');
 
 app.get("/", rootController.index);
-app.use("/", require("../../routes/user"))
-app.use("/", require("../../routes/org"))
-app.get("/org/departments", departmentsController.index)
-app.get("/org/departments/create", departmentsController.new)
-app.post("/org/departments/create", departmentsController.create)
-app.get("/org/departments/:departmentId/edit", departmentsController.edit)
-app.post("/org/departments/:departmentId/edit", departmentsController.update)
+
+app.get("/login", accessController.login);
+app.post(/\/(login|login-fail)/, 
+  passport.authenticate("local-login", {
+    successRedirect: "/",
+    failureRedirect: "/login-fail"
+  })
+);
+app.get("/login-fail", accessController.loginFail);
+app.get("/logout", auth.isLoggedIn, accessController.logout);
+app.get("/login/reset", accessController.reset);
+app.post("/login/reset", accessController.resetSubmit);
+app.get("/login/reset/:uid", accessController.resetSpecfic);
+app.post("/login/reset/:uid", accessController.resetSpecficSubmit);
+
+app.use("/", require("../../routes/user"));
+app.use("/", require("../../routes/org"));
+
+app.get("/org/departments", departmentsController.index);
+app.get("/org/departments/create", departmentsController.new);
+app.post("/org/departments/create", departmentsController.create);
+app.get("/org/departments/:departmentId/edit", departmentsController.edit);
+app.post("/org/departments/:departmentId/edit", departmentsController.update);
 app.get(
   "/org/departments/:departmentId/supervisors", 
-  departmentsController.supervisorsIndex)
+  departmentsController.supervisorsIndex);
 app.post(
   "/org/departments/:departmentId/supervisors", 
-  departmentsController.supervisorsUpdate)
+  departmentsController.supervisorsUpdate);
 app.get(
   "/org/departments/:departmentID/alter/:case", 
-  departmentsController.alter)
+  departmentsController.alter);
 
 // Redundant catch all
 app.get("/*", (req, res) => {
