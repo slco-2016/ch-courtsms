@@ -29,58 +29,11 @@ let logClientActivity       = logging.logClientActivity;
 let logConversationActivity = logging.logConversationActivity;
 let emailer                 = require("./emailer");
 
-router.get("/org", (req, res) => {
-
-});
 
 
 
 
-router.get("/org/clients/create", (req, res) => {
-  Users.findByOrg(req.user.org)
-  .then((users) => {
-    if (req.user.department) {
-      users = users.filter((u) => { return u.department == req.user.department });
-    }
-    res.render("clients/create", {
-      users: users
-    });
-  }).catch(error500(res));
-});
 
-router.post("/org/clients/create", (req, res) => {
-  let userId = req.body.targetUser;    
-  let first  = req.body.first;    
-  let middle = req.body.middle ? req.body.middle : "";    
-  let last   = req.body.last;   
-  let dob    = req.body.DOB;    
-  let so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
-  let otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
-  Client.create(
-          userId, 
-          first, 
-          middle, 
-          last, 
-          dob, 
-          so,  // note these should be renamed
-          otn // this one as well
-  ).then(() => {
-    res.redirect(`/org/clients`);
-  }).catch(error500(res));
-});
-
-// For all /org/clients/:clientId, include local obj. client
-router.use("/org/clients/:clientId", (req, res, next) => {
-  Client.findByID(req.params.clientId)
-  .then((c) => {
-    if (c) {
-      res.locals.client = c;
-      next();
-    } else {
-      notFound(res);
-    }
-  }).catch(error500(res));
-});
 
 router.get("/org/clients/:clientId", (req, res) => {
   res.send("special org view of client");
@@ -110,7 +63,7 @@ router.post("/org/clients/:clientId/address", (req, res) => {
     logClientActivity(clientId);
     req.flash("success", "Message to client sent.");
     res.redirect(`/org/clients`);
-  }).catch(error500(res));
+  }).catch(res.error500);
 });
 
 router.get("/org/clients/:clientId/alter/:status", (req, res) => {
@@ -121,7 +74,7 @@ router.get("/org/clients/:clientId/alter/:status", (req, res) => {
     logClientActivity(clientId);
     req.flash("success", "Client case status changed.")
     res.redirect(`/org/clients`);
-  }).catch(error500(res));
+  }).catch(res.error500);
 });
 
 router.get("/org/clients/:clientId/edit", (req, res) => {
@@ -148,7 +101,7 @@ router.post("/org/clients/:clientId/edit", (req, res) => {
     logClientActivity(req.params.clientId);
     req.flash("success", "Edited client.");
     res.redirect(`/org/clients`);
-  }).catch(error500(res));
+  }).catch(res.error500);
 });
 
 router.get("/org/clients/:clientId/transfer", (req, res) => {
@@ -165,7 +118,7 @@ router.get("/org/clients/:clientId/transfer", (req, res) => {
       users: users,
       allDepartments: allDep
     });
-  }).catch(error500(res));
+  }).catch(res.error500);
 });
 
 router.post("/org/clients/:clientId/transfer", (req, res) => {
@@ -181,12 +134,12 @@ router.post("/org/clients/:clientId/transfer", (req, res) => {
       .then(() => {
         logClientActivity(clientId);
         res.redirect(`/org/clients`);
-      }).catch(error500(res));
+      }).catch(res.error500);
 
     } else {
       notFound(res);
     }
-  }).catch(error500(res));
+  }).catch(res.error500);
 });
 
 

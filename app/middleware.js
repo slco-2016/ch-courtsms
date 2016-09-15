@@ -1,4 +1,5 @@
 module.exports = {
+
   attachErrorHandlers(req, res, next) {
 
     res.error500 = function (err) { 
@@ -25,6 +26,7 @@ module.exports = {
 
     next();
   },
+
   logging(req, res, next) {
     if (process.env.CCENV !== 'testing') {
       let start = new Date()
@@ -47,6 +49,7 @@ module.exports = {
     }
     return next();
   }, 
+
   templateHelpers(req, res, next) {
     res.locals.leftTab = (name, hub, level, optionsList) => {
       let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
@@ -99,6 +102,7 @@ module.exports = {
 
     next();
   },
+
   fetchUserAlertsFeed(req, res, next) {
     if (req.user) {
       Alerts.findByUser(req.user.cmid)
@@ -110,6 +114,7 @@ module.exports = {
       next();
     }
   },
+
   fetchUserOrganization(req, res, next) {
     if (req.user) {
       Organizations.findByID(req.user.org)
@@ -121,6 +126,7 @@ module.exports = {
       next();
     }
   },
+
   fetchUserDepartment(req, res, next) {
     if (req.user) {
       Departments.findByID(req.user.department)
@@ -141,9 +147,30 @@ module.exports = {
       next();      
     }
   },
+
+  fetchClient(req, res, next) {
+    let p = req.params;
+    let clientId = p.clientId || p.clientID || null;
+    
+    if (clientId) {
+      Client.findByID(clientId)
+      .then((c) => {
+        if (c) {
+          res.locals.client = c;
+          next();
+        } else {
+          notFound(res);
+        }
+      }).catch(res.error500);
+    } else {
+      next();
+    }
+
+  },
+
   setLevelForOrg(req, res, next) {
     res.locals.level = "org"
     next();
-  }
+  },
 
 }
