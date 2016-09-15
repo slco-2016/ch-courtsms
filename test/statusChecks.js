@@ -2,7 +2,7 @@
 
 
 // DEPENDENCIES
-var db = require("../server/db");
+var db = require("../app/db");
 var assert = require("chai").assert;
 var creds = require("../credentials");
 var u = require("./utils");
@@ -32,7 +32,7 @@ function runTests () {
     
     // Start up the server each time (does this mean we have to login each time?)
     beforeEach(function () {
-      server = require("../server/app");
+      server = require("../app/app");
     });
     
     // Drop all row values from the test table

@@ -1,4 +1,4 @@
-var db = require("../server/db");
+var db = require("../app/db");
 
 // DATETIME VARIABLES FOR EJS
 var moment = require('moment');

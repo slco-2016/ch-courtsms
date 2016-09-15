@@ -2,7 +2,7 @@
 
 
 // DEPENDENCIES
-var db = require("../server/db");
+var db = require("../app/db");
 var assert = require("chai").assert;
 var creds = require("../credentials");
 

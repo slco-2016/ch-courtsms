@@ -2,7 +2,7 @@
 
 
 // SECRET STUFF
-var credentials = require("../credentials");
+var credentials = require("../../credentials");
 var ACCOUNT_SID = credentials.accountSid;
 var AUTH_TOKEN = credentials.authToken;
 var TWILIO_NUM = credentials.twilioNum;
@@ -13,7 +13,7 @@ var express = require("express");
 var router = express.Router();
 
 // DB via knex.js to run queries
-var db  = require("../server/db");
+var db  = require("../app/db");
 
 // Twilio tools
 var twilio = require("twilio");

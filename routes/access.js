@@ -3,7 +3,7 @@
 
 // DEPENDENCIES
 // DB via knex.js to run queries
-var db  = require("../server/db");
+var db  = require("../app/db");
 
 var uuid = require("node-uuid");
 var emUtil = require("../utils/em-notify");

@@ -1,7 +1,7 @@
 {
   "name": "ClientComm",
   "description": "Client to case manager communications management service.",
-  "main": "server/app.js",
+  "main": "app/app.js",
   "authors": [
     "Kuan Butts <kuanbutts@gmail.com> (http://kuanbutts.com)"
   ],

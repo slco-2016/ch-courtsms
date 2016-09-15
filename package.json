@@ -6,7 +6,7 @@
   "contributors": [
     "Kuan Butts <kuanbutts@gmail.com> (http://kuanbutts.com)"
   ],
-  "main": "server/app.js",
+  "main": "app/app.js",
   "engines": {
     "node": ">=0.10.0"
   },
@@ -37,7 +37,7 @@
     "twilio": "~3.3.0-edge"
   },
   "scripts": {
-    "start": "./node_modules/.bin/nodemon server/server.js --ignore node_modules/",
+    "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
     "coverage": "istanbul cover _mocha ./test/app/ -- -R spec; open coverage/lcov-report/index.html",
     "test": "CCENV=testing mocha test/app/"
   },

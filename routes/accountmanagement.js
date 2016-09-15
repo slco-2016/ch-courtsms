@@ -8,7 +8,7 @@ var router        = express.Router();
 
 
 // UTILIITES
-var db            = require("../server/db");
+var db            = require("../app/db");
 var utils         = require("../utils/utils.js");
 
 var pass          = utils["pass"];
