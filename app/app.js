@@ -81,6 +81,8 @@ const rootController = require('./controllers/root');
 const clientsController = require('./controllers/clients');
 const departmentsController = require('./controllers/departments');
 const accessController = require('./controllers/access');
+const usersController = require('./controllers/users');
+const dashboardController = require('./controllers/dashboard');
 
 app.get("/", rootController.index);
 
@@ -100,6 +102,18 @@ app.post("/login/reset/:uid", accessController.resetSpecficSubmit);
 
 app.use("/", require("../../routes/user"));
 app.use("/", require("../../routes/org"));
+
+app.get("/org/clients", dashboardController.orgIndex);
+
+app.get("/org/users", usersController.index);
+app.get("/org/users/create", usersController.new);
+app.post("/org/users/create", usersController.create);
+app.get("/org/users/create/check/:email", usersController.check);
+app.get("/org/users/:targetUserID/alter/:case", usersController.alter);
+app.get("/org/users/:targetUser/edit", usersController.edit);
+app.post("/org/users/:targetUser/edit", usersController.update);
+app.get("/org/users/:targetUser/transfer", usersController.transferIndex);
+app.post("/org/users/:targetUser/transfer", usersController.transferUpdate);
 
 app.get("/org/departments", departmentsController.index);
 app.get("/org/departments/create", departmentsController.new);

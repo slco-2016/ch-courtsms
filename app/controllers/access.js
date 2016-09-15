@@ -58,12 +58,12 @@ module.exports = {
             res.render("access/loginresetsent", {cm: cm});
           });
 
-        }).catch(function (err) { res.redirect("/500"); }); // Query 3
-        }).catch(function (err) { res.redirect("/500"); }); // Query 2
+        }).catch(res.error500); // Query 3
+        }).catch(res.error500); // Query 2
 
       }
 
-    }).catch(function (err) { res.redirect("/500"); }); // Query 1
+    }).catch(res.error500); // Query 1
   },
   resetSpecific(req, res) {
     db("pwresets")
@@ -80,7 +80,7 @@ module.exports = {
         res.render("access/loginresetphasetwo", {reset: reset});
       }
 
-    }).catch(function (err) { res.redirect("/500"); });
+    }).catch(res.error500);
   },
   resetSpecificSubmit(req, res) {
     // Redirect options
@@ -143,11 +143,11 @@ module.exports = {
             req.flash("success", "You have updated your account password.");
             res.redirect("/login");
 
-          }).catch(function (err) { res.redirect("/500"); }); // Query 3
-          }).catch(function (err) { res.redirect("/500"); }); // Query 2
+          }).catch(res.error500); // Query 3
+          }).catch(res.error500); // Query 2
 
         }
-      }).catch(function (err) { res.redirect("/500"); });
+      }).catch(res.error500);
     }
   },
 };
