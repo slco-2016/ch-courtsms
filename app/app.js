@@ -52,15 +52,18 @@ app.use(passport.session());
 // Middleware
 const middleware = require('./middleware');
 app.use(middleware.logging);
+app.use(middleware.setLevel);
 app.use(middleware.attachErrorHandlers);
 app.use(middleware.templateHelpers);
+
+// These need specific routes to run correctly
 // TODO: Why are there 4 db queries every time?
 app.use(middleware.fetchUserAlertsFeed);
 app.use(middleware.fetchUserOrganization);
 app.use(middleware.fetchUserDepartment);
-app.use(middleware.fetchClient);
+app.use("/clients/:client", middleware.fetchClient);
+app.use("/org/clients/:client", middleware.fetchClient);
 
-app.use("/", middleware.setLevel);
 
 
 // TO DEPRECATE: Always run before routes
@@ -139,6 +142,8 @@ app.post("/groups/address/:group", GroupsController.addressUpdate);
 app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.client}/messages`); });
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
+app.get("/clients/:client/edit", ClientsController.edit);
+app.get("/clients/:client/alter/:status", ClientsController.alter);
 
 app.get("/org", DashboardController.orgIndex);
 
@@ -168,6 +173,8 @@ app.post("/org/clients/create", ClientsController.create);
 app.get("/org/clients/:client", (req, res) => { res.send("Client overview here...") });
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
+app.get("/org/clients/:client/edit", ClientsController.edit);
+app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

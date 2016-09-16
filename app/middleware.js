@@ -153,11 +153,12 @@ module.exports = {
   },
 
   fetchClient(req, res, next) {
+    console.log("Running", req.params, req.query, req.body);
     let p = req.params;
-    let clientId = p.clientId || p.clientID || null;
+    let client = p.client || p.clientId || p.clientID || null;
     
-    if (clientId) {
-      Client.findByID(clientId)
+    if (client) {
+      Client.findByID(client)
       .then((c) => {
         if (c) {
           res.locals.client = c;

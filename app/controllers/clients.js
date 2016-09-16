@@ -1,4 +1,14 @@
+const Clients = require('../models/clients');
 const Users = require('../models/users');
+
+function _getUser (req, res) {
+  console.log(req.locals.client);
+  let userId = res.locals.client.cm;
+  if (res.locals.level == "user") {
+    userId = req.user.cmid;
+  }
+  return userId;
+};
 
 module.exports = {
   
@@ -46,6 +56,10 @@ module.exports = {
         users: users
       });
     }).catch(res.error500);
+  },
+
+  edit(req, res) {
+    res.render("clients/edit");
   },
 
   create(req, res) {
@@ -98,6 +112,19 @@ module.exports = {
       req.flash("success", "Message to client sent.");
       res.redirect(`/org/clients`);
     }).catch(res.error500);
-  }
+  },
+
+  alter(req, res) {
+    let userId = _getUser(req, res);
+    res.send({user: userId});
+    // let clientId = req.params.clientId;
+    // let status = req.params.status == "open";
+    // Client.alterCase(clientId, status)
+    // .then(() => {
+    //   logClientActivity(clientId);
+    //   req.flash("success", "Client case status changed.")
+    //   res.redirect(`/org/clients`);
+    // }).catch(res.error500);
+  },
 
 };
