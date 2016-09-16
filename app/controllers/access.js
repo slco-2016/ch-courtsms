@@ -53,7 +53,7 @@ module.exports = {
         db("pwresets")
         .where("cmid", cm.cmid)
         .del()
-        .then(()  =>{ 
+        .then(() => {
 
         // Create a new row with current pw request
         db("pwresets")
