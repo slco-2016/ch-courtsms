@@ -1,9 +1,6 @@
 const Users = require('../models/users');
 
 module.exports = {
-  _userId(req) {
-
-  },
   
   index(req, res) {
     let status      = req.query.status == "closed" ? false : true;

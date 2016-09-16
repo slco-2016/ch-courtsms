@@ -70,21 +70,21 @@ require("../routes/request-defaults")(app);
 // require("../routes/sms")(app);
 // require("../routes/voice")(app);
 
-const AccessController = require('./controllers/access');
-const ClientsController = require('./controllers/clients');
-const ColorsController = require('./controllers/colors');
-const DashboardController = require('./controllers/dashboard');
-const DepartmentsController = require('./controllers/departments');
-const GroupsController = require('./controllers/groups');
+const AccessController        = require('./controllers/access');
+const ClientsController       = require('./controllers/clients');
+const ColorsController        = require('./controllers/colors');
+const DashboardController     = require('./controllers/dashboard');
+const DepartmentsController   = require('./controllers/departments');
+const GroupsController        = require('./controllers/groups');
 const NotificationsController = require('./controllers/notifications');
-const RootController = require('./controllers/root');
-const TemplatesController = require('./controllers/templates');
-const UsersController = require('./controllers/users');
+const RootController          = require('./controllers/root');
+const TemplatesController     = require('./controllers/templates');
+const UsersController         = require('./controllers/users');
 
 app.get("/", RootController.index);
 
 app.get("/login", AccessController.login);
-app.post(/\/(login|login-fail)/, 
+app.post("/login", 
   passport.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login-fail"
@@ -96,6 +96,9 @@ app.get("/login/reset", AccessController.reset);
 app.post("/login/reset", AccessController.resetSubmit);
 app.get("/login/reset/:uid", AccessController.resetSpecific);
 app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
+
+// Everything below this, you must be logged in
+app.use(auth.isLoggedIn);
 
 // TO DO: Drop these?
 // app.use("/", require("../../routes/user"));

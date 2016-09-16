@@ -1,0 +1,45 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <div class="cardLogo">
+    <div class="icon"><% include ../../../public/icons/logo.svg %></div>
+    <div class="title"><% include ../../../public/icons/logotext.svg %></div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post" action="/login">
+
+    <div class="formRow">
+      <div class="formLabel"> Email </div>
+      <div class="formInput">
+        <input type="text" name="email" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Password </div>
+      <div class="formInput">
+        <input type="password" name="pass" required>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Submit">
+
+  </form>
+
+  <div style="padding: 20px;">
+    <center><small>
+      Forgot password? 
+      <a href="/login/reset"><b>Reset now.</b></a>
+    </small></center>
+  </div>
+
+
+  <div style="color: #888888; padding: 15px;">
+    <center>Version <%= CLIENTCOMM_APPLICATION.VERSION %></center>
+  </div>
+
+</div>
+
+<% include ../partials/cardFrameBottom %>

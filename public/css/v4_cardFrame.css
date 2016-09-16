@@ -3,16 +3,18 @@ body {
   background-image: none;
   box-shadow: none;
   border: 0;
-  color: #344289; }
+  color: #344289;
+  margin: 0px; }
 
 .card {
   position: relative;
   background-color: #FFF;
   width: 500px;
   overflow-x: hidden;
-  margin-top: 70px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 70px;
+  margin-bottom: 0px;
   border-radius: 10px;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5); }
   .card .cardHead .exitButton {
@@ -22,6 +24,19 @@ body {
     .card .cardHead .exitButton svg polygon {
       fill: #D3D3D3; }
     .card .cardHead .exitButton svg:hover polygon {
+      fill: #344289; }
+  .card .cardHead .cardLogo {
+    font-size: 35px;
+    font-weight: 900;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 60px;
+    color: #2F8CE8; }
+    .card .cardHead .cardLogo .icon svg {
+      height: 120px; }
+    .card .cardHead .cardLogo .title svg {
+      width: 80%; }
+    .card .cardHead .cardLogo path {
       fill: #344289; }
   .card .cardHead .cardTitle {
     font-size: 30px;
@@ -71,7 +86,7 @@ body {
       .card .cardBody .formRow .formInput .inputOption {
         float: left;
         margin-right: 20px; }
-      .card .cardBody .formRow .formInput input[type=text], .card .cardBody .formRow .formInput input[type=email], .card .cardBody .formRow .formInput input[list=suggestionList] {
+      .card .cardBody .formRow .formInput input[type=text], .card .cardBody .formRow .formInput input[type=email], .card .cardBody .formRow .formInput input[list=suggestionList], .card .cardBody .formRow .formInput input[type=password] {
         background: #FFF;
         width: 420px;
         font-size: 12px;

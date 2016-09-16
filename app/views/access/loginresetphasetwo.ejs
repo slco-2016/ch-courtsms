@@ -1,21 +1,9 @@
-<% include ../partials/headers/header-base %>
+<% include ../partials/cardFrameTop %>
 
-<!-- Include Card View specific styling -->
-<link rel="stylesheet" type="text/css" href="/static/css/card.css">
-
-<div class="contents">
-
-  <div class="card">
-
-    <div class="card-title">
-      Create New Password
-    </div>
-
-    <div style="margin-top: 20px; margin-bottom: 40px;">
-      <small>
-        Reset the password for <%= reset.email %>'s account. This action cannot be undone.
-      </small>
-    </div>
+<div class="cardHead">
+  <div class="cardTitle">Password Reset</div>
+    <div class="cardSubtitle">Reset the password for <%= reset.email %>'s account. This action cannot be undone.</div>
+</div>
 
 
     <form method="post">

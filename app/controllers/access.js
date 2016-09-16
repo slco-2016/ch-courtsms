@@ -1,15 +1,23 @@
+const db = require("../db");
+var uuid = require("node-uuid");
+
+var pass = require("../lib/pass");
+var hashPw = pass.hashPw;
+var isLoggedIn = pass.isLoggedIn;
+
 module.exports = {
+
   login(req, res) {
     if (req.hasOwnProperty("user")) { 
       res.redirect("/"); 
     } else { 
-      res.render("login"); 
+      res.render("access/login"); 
     }
   },
 
   loginFail(req, res) {
     req.flash("warning", "Email password combination did not work.");
-    res.render("login");
+    res.render("access/login");
   },
   
   logout(req, res) {
@@ -19,7 +27,7 @@ module.exports = {
   },
   
   reset(req, res) {
-    res.render("loginreset");
+    res.render("access/loginreset");
   },
   
   resetSubmit(req, res) {
@@ -56,11 +64,12 @@ module.exports = {
         })
         .then(() => {
 
-          emUtil.sendPassResetEmail(cm, uid, () => {
-            // Render direction to check email card
+          console.log("EmUtil needs to be fixed...")
+          // emUtil.sendPassResetEmail(cm, uid, () => {
+          //   // Render direction to check email card
             req.flash("success", "Reset password email was sent to " + cm.email );
             res.render("access/loginresetsent", {cm: cm});
-          });
+          // });
 
         }).catch(res.error500); // Query 3
         }).catch(res.error500); // Query 2
@@ -71,21 +80,21 @@ module.exports = {
   },
 
   resetSpecific(req, res) {
-    // db("pwresets")
-    //   .where("uid", req.params.uid)
-    //   .andWhere("expiration", ">", db.fn.now())
-    //   .limit(1)
-    // .then((rows) => {
+    db("pwresets")
+      .where("uid", req.params.uid)
+      .andWhere("expiration", ">", db.fn.now())
+      .limit(1)
+    .then((rows) => {
 
-    //   if (rows.length == 0) { 
-    //     req.flash("warning", "That address does not point to a valid password reset link. Try again.");
-    //     res.redirect("/login/reset");
-    //   } else {
-    //     var reset = rows[0];
-    //     res.render("access/loginresetphasetwo", {reset: reset});
-    //   }
+      if (rows.length == 0) { 
+        req.flash("warning", "That address does not point to a valid password reset link. Try again.");
+        res.redirect("/login/reset");
+      } else {
+        var reset = rows[0];
+        res.render("access/loginresetphasetwo", {reset: reset});
+      }
 
-    // }).catch(res.error500);
+    }).catch(res.error500);
   },
 
   resetSpecficSubmit(req, res) {
