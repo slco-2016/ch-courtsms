@@ -1,8 +1,8 @@
 const Clients = require('../models/clients');
+const Client = require('../models/client');
 const Users = require('../models/users');
 
 function _getUser (req, res) {
-  console.log(req.locals.client);
   let userId = res.locals.client.cm;
   if (res.locals.level == "user") {
     userId = req.user.cmid;
@@ -108,7 +108,7 @@ module.exports = {
     }
 
     method.then(() => {
-      logClientActivity(clientId);
+      req.logActivity.client(clientId);
       req.flash("success", "Message to client sent.");
       res.redirect(`/org/clients`);
     }).catch(res.error500);
@@ -116,15 +116,14 @@ module.exports = {
 
   alter(req, res) {
     let userId = _getUser(req, res);
-    res.send({user: userId});
-    // let clientId = req.params.clientId;
-    // let status = req.params.status == "open";
-    // Client.alterCase(clientId, status)
-    // .then(() => {
-    //   logClientActivity(clientId);
-    //   req.flash("success", "Client case status changed.")
-    //   res.redirect(`/org/clients`);
-    // }).catch(res.error500);
+    let clientId = req.params.client;
+    let status = req.params.status == "open";
+    Client.alterCase(clientId, status)
+    .then(() => {
+      req.logActivity.client(clientId);
+      req.flash("success", "Client case status changed.")
+      res.redirect(`/org/clients`);
+    }).catch(res.error500);
   },
 
 };

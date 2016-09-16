@@ -53,6 +53,7 @@ app.use(passport.session());
 const middleware = require('./middleware');
 app.use(middleware.logging);
 app.use(middleware.setLevel);
+app.use(middleware.attachLoggingTools);
 app.use(middleware.attachErrorHandlers);
 app.use(middleware.templateHelpers);
 

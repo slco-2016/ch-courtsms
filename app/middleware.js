@@ -1,8 +1,35 @@
 const Alerts = require('./models/alerts');
+const Client = require('./models/client');
+const Conversations = require('./models/Conversations');
 const Departments = require('./models/departments');
 const Organizations = require('./models/organizations');
 
 module.exports = {
+
+  attachLoggingTools(req, res, next) {
+
+    req.logActivity = {
+      client: (client) => {
+        Client.logActivity(client)
+        .then(() => {
+          // Log client activity success...
+        }).catch(() => {
+          console.log(err.yellow);
+        });
+      },
+
+      conversation: (conversation) => {
+        Conversations.logActivity(conversation)
+        .then(() => {
+          // Log conversation activity success...
+        }).catch((err) => {
+          console.log(err.yellow);
+        });
+      },
+    };
+    next();
+
+  },
 
   attachErrorHandlers(req, res, next) {
 
@@ -153,7 +180,6 @@ module.exports = {
   },
 
   fetchClient(req, res, next) {
-    console.log("Running", req.params, req.query, req.body);
     let p = req.params;
     let client = p.client || p.clientId || p.clientID || null;
     
