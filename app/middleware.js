@@ -21,11 +21,11 @@ module.exports = {
       }
 
       // Produce a response to the client
-      this.set({'content-type':'text/plain'}).status(500).send(err.stack)
+      res.set({'content-type':'text/plain'}).status(500).send(err.stack)
     };
 
     res.notFound = () => {
-      this.status(404).render('v4/general/404')
+      res.status(404).render('v4/general/404')
     };
 
     next();

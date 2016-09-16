@@ -23,6 +23,8 @@ const colors = require("colors");
 
 // CONFIGURATION 1
 app.set("view engine", "ejs");
+app.set('views', __dirname + '/views');
+
 app.use("/static", express.static("public"));
 app.use("/components", express.static("bower_components"));
 app.use("/modules", express.static("node_modules"));
@@ -59,7 +61,7 @@ app.use(middleware.fetchClient);
 app.use("/org", middleware.setLevelForOrg);
 
 // UTILITIES
-const auth = require('./lib/pass')
+const auth = require('./lib/pass');
 
 // TO DEPRECATE: Always run before routes
 require("../routes/request-defaults")(app);
@@ -68,30 +70,34 @@ require("../routes/request-defaults")(app);
 // require("../routes/sms")(app);
 // require("../routes/voice")(app);
 
-const rootController = require('./controllers/root');
-const clientsController = require('./controllers/clients');
-const departmentsController = require('./controllers/departments');
-const accessController = require('./controllers/access');
-const usersController = require('./controllers/users');
-const dashboardController = require('./controllers/dashboard');
-const templatesController = require('./controllers/templates');
+const AccessController = require('./controllers/access');
+const ClientsController = require('./controllers/clients');
+const ColorsController = require('./controllers/colors');
+const DashboardController = require('./controllers/dashboard');
+const DepartmentsController = require('./controllers/departments');
+const GroupsController = require('./controllers/groups');
+const NotificationsController = require('./controllers/notifications');
+const RootController = require('./controllers/root');
+const TemplatesController = require('./controllers/templates');
+const UsersController = require('./controllers/users');
 
-app.get("/", rootController.index);
+app.get("/", RootController.index);
 
-app.get("/login", accessController.login);
+app.get("/login", AccessController.login);
 app.post(/\/(login|login-fail)/, 
   passport.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login-fail"
   })
 );
-app.get("/login-fail", accessController.loginFail);
-app.get("/logout", auth.isLoggedIn, accessController.logout);
-app.get("/login/reset", accessController.reset);
-app.post("/login/reset", accessController.resetSubmit);
-app.get("/login/reset/:uid", accessController.resetSpecific);
-app.post("/login/reset/:uid", accessController.resetSpecficSubmit);
+app.get("/login-fail", AccessController.loginFail);
+app.get("/logout", auth.isLoggedIn, AccessController.logout);
+app.get("/login/reset", AccessController.reset);
+app.post("/login/reset", AccessController.resetSubmit);
+app.get("/login/reset/:uid", AccessController.resetSpecific);
+app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
+// TO DO: Drop these?
 // app.use("/", require("../../routes/user"));
 // app.use("/", require("../../routes/org"));
 
@@ -126,33 +132,33 @@ app.get("/groups/activate/:groupID", GroupsController.activate);
 app.get("/groups/address/:groupID", GroupsController.address);
 app.post("/groups/address/:groupID", GroupsController.addressUpdate);
 
-app.get("/org/clients", dashboardController.orgIndex);
+app.get("/org/clients", DashboardController.orgIndex);
 
-app.get("/org/users", usersController.index);
-app.get("/org/users/create", usersController.new);
-app.post("/org/users/create", usersController.create);
-app.get("/org/users/create/check/:email", usersController.check);
-app.get("/org/users/:targetUserID/alter/:case", usersController.alter);
-app.get("/org/users/:targetUser/edit", usersController.edit);
-app.post("/org/users/:targetUser/edit", usersController.update);
-app.get("/org/users/:targetUser/transfer", usersController.transferIndex);
-app.post("/org/users/:targetUser/transfer", usersController.transferUpdate);
+app.get("/org/users", UsersController.index);
+app.get("/org/users/create", UsersController.new);
+app.post("/org/users/create", UsersController.create);
+app.get("/org/users/create/check/:email", UsersController.check);
+app.get("/org/users/:targetUserID/alter/:case", UsersController.alter);
+app.get("/org/users/:targetUser/edit", UsersController.edit);
+app.post("/org/users/:targetUser/edit", UsersController.update);
+app.get("/org/users/:targetUser/transfer", UsersController.transferIndex);
+app.post("/org/users/:targetUser/transfer", UsersController.transferUpdate);
 
-app.get("/org/departments", departmentsController.index);
-app.get("/org/departments/create", departmentsController.new);
-app.post("/org/departments/create", departmentsController.create);
-app.get("/org/departments/:departmentId/edit", departmentsController.edit);
-app.post("/org/departments/:departmentId/edit", departmentsController.update);
+app.get("/org/departments", DepartmentsController.index);
+app.get("/org/departments/create", DepartmentsController.new);
+app.post("/org/departments/create", DepartmentsController.create);
+app.get("/org/departments/:departmentId/edit", DepartmentsController.edit);
+app.post("/org/departments/:departmentId/edit", DepartmentsController.update);
 app.get("/org/departments/:departmentId/supervisors", 
-  departmentsController.supervisorsIndex);
+  DepartmentsController.supervisorsIndex);
 app.post("/org/departments/:departmentId/supervisors", 
-  departmentsController.supervisorsUpdate);
+  DepartmentsController.supervisorsUpdate);
 app.get("/org/departments/:departmentID/alter/:case", 
-  departmentsController.alter);
+  DepartmentsController.alter);
 
-app.get("/org/clients", clientsController.index);
-app.get("/org/clients/create", clientsController.new);
-app.post("/org/clients/create", clientsController.create);
+app.get("/org/clients", ClientsController.index);
+app.get("/org/clients/create", ClientsController.new);
+app.post("/org/clients/create", ClientsController.create);
 
 
 // Redundant catch all
