@@ -256,30 +256,6 @@ router.use("/clients/:clientId", (req, res, next) => {
 
 
 
-
-router.get("/clients/:clientID/alter/:activeStatus", (req, res) => {
-  let activeStatus = req.params.activeStatus == "open";
-  Client.alterCase(req.params.clientID, activeStatus)
-  .then(() => {
-    logClientActivity(req.params.clientID);
-    req.flash("success", "Client case status changed.")
-    res.redirect(`/clients`);
-  }).catch(error500(res));
-});
-
-router.get("/clients/:clientID/edit", (req, res) => {
-  Client.findByID(req.params.clientID)
-  .then((client) => {
-    if (client) {
-      res.render("clients/edit", {
-        client: client
-      });
-    } else {
-      notFound(res);
-    }
-  }).catch(error500(res));
-});
-
 router.post("/clients/:clientId/edit", (req, res) => {
   let clientId  = req.params.clientId;
   let first     = req.body.first;
@@ -470,19 +446,8 @@ router.post("/clients/:clientID/notifications/:notificationID/edit", Notificatio
 
 router.post("/clients/:clientID/notifications/:notificationID/edit", NotificationsView.editPost);
 
-router.get("/clients/:clientID/transfer", (req, res) => {
-  let allDep = req.query.allDepartments == "true" ? true : false;
-  Users.findByOrg(req.user.org)
-  .then((users) => {
-    // Limit only to same department transfers
-    if (!allDep) users = users.filter((u) => { return u.department == req.user.department });
 
-    res.render("clients/transfer", {
-      users: users,
-      allDepartments: allDep
-    });
-  }).catch(error500(res));
-});
+
 
 router.post("/clients/:clientId/transfer", (req, res) => {
   const fromUserID = req.user.cmid;

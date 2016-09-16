@@ -118,11 +118,51 @@ module.exports = {
     let userId = _getUser(req, res);
     let clientId = req.params.client;
     let status = req.params.status == "open";
+
     Client.alterCase(clientId, status)
     .then(() => {
       req.logActivity.client(clientId);
       req.flash("success", "Client case status changed.")
       res.redirect(`/org/clients`);
+    }).catch(res.error500);
+  },
+
+  transferSelect(req, res) {
+    let allDep = req.query.allDepartments == "true" ? true : false;
+
+    // Handle situations where an owner has a department attached to her/him
+    if (req.user.class === "owner") { allDep = true; }
+
+    Users.findByOrg(req.user.org)
+    .then((users) => {
+      // Limit only to same department transfers
+      if (!allDep) users = users.filter((u) => { return u.department == req.user.department });
+
+      res.render("clients/transfer", {
+        users: users,
+        allDepartments: allDep
+      });
+    }).catch(res.error500);
+  },
+
+  transferSubmit(req, res) {
+    let fromUser = _getUser(req, res);
+    let toUser = req.body.user;
+    let client = res.locals.client.clid;
+    let bundle = req.body.bundleConversations ? true : false;
+
+    Users.findByID(toUser)
+    .then((u) => {
+      if (u && u.active) {
+        Client.transfer(client, fromUser, u.cmid, bundle)
+        .then(() => {
+          req.logActivity.client(client);
+          res.redirect(`/org/clients`);
+        }).catch(res.error500);
+
+      } else {
+        notFound(res);
+      }
     }).catch(res.error500);
   },
 

@@ -145,6 +145,7 @@ app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
 app.get("/clients/:client/alter/:status", ClientsController.alter);
+app.get("/clients/:client/transfer", ClientsController.transferSelect);
 
 app.get("/org", DashboardController.orgIndex);
 
@@ -176,6 +177,8 @@ app.get("/org/clients/:client/address", ClientsController.addressCraft);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
+app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
+app.post("/org/clients/:clientId/transfer", ClientsController.transferSubmit);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

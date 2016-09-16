@@ -69,12 +69,12 @@ class Conversations {
     });
   }
 
-  static transferUserReference (clientID, fromUserID, toUserID) {
+  static transferUserReference (client, fromUser, toUser) {
     return new Promise((fulfill, reject) => {
       db("convos")
-        .where("cm", fromUserID)
-        .andWhere("client", clientID)
-        .update("cm", "toUserID")
+        .where("cm", fromUser)
+        .andWhere("client", client)
+        .update("cm", toUser)
       .then(() => {
         fulfill();
       }).catch(reject);

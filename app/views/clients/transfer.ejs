@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <input type="hidden" id="targetUserID" name="userID">
+    <input type="hidden" id="targetUser" name="user">
     <input type="submit" class="formSubmit" value="Submit">
 
   </form>
@@ -97,7 +97,7 @@
       if (name == selectedName) selectedUser = u;
     });
     if (selectedUser) {
-      $("#targetUserID").val(selectedUser.cmid)
+      $("#targetUser").val(selectedUser.cmid)
       return true;
     } else {
       event.preventDefault();

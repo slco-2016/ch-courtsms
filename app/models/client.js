@@ -126,23 +126,23 @@ class Client {
     });
   }
 
-  static transfer (clientID, fromUserID, toUserID, bundleConversations) {
-    if (typeof bundleConversations == "undefined") bundleConversations = true;
+  static transfer (client, fromUser, toUser, bundle) {
+    if (typeof bundle == "undefined") bundle = true;
+
     return new Promise((fulfill, reject) => { 
       db("clients")
-        .where("clid", clientID)
-        .andWhere("cm", fromUserID)
-        .update({ cm: toUserID })
+        .where("clid", client)
+        .andWhere("cm", fromUser)
+        .update({ cm: toUser })
       .then(() => {
-      //   return db()
-      // .then(() => {
 
-        if (bundleConversations) {
+        if (bundle) {
           // also switch convos
-          Conversations.transferUserReference(clientID, fromUserID, toUserID)
+          Conversations.transferUserReference(client, fromUser, toUser)
           .then(() => {
             fulfill()
           }).catch(reject);
+
         } else {
           fulfill()
         }
