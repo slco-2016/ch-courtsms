@@ -6,11 +6,11 @@ var moment_tz = require('moment-timezone');
 
 
 // New Relic Clientside monitoring
-var TESTENV = process.env.TESTENV;
-if (TESTENV && TESTENV == "true") {
-  var newrelic = null;
+if (process.env.CCENV && process.env.CCENV == "production") {
+  console.log("Production env. New Relic running.");
+  var newrelic = require('newrelic');
 } else {
-  // var newrelic = require('newrelic');
+  var newrelic = null;
 }
 
 

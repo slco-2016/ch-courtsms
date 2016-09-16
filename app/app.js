@@ -132,7 +132,7 @@ app.get("/groups/activate/:groupID", GroupsController.activate);
 app.get("/groups/address/:groupID", GroupsController.address);
 app.post("/groups/address/:groupID", GroupsController.addressUpdate);
 
-app.get("/org/clients", DashboardController.orgIndex);
+app.get("/org", DashboardController.orgIndex);
 
 app.get("/org/users", UsersController.index);
 app.get("/org/users/create", UsersController.new);
