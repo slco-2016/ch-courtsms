@@ -6,18 +6,22 @@ module.exports = {
       res.render("login"); 
     }
   },
+
   loginFail(req, res) {
     req.flash("warning", "Email password combination did not work.");
     res.render("login");
   },
+  
   logout(req, res) {
     req.logout();
     req.flash("success", "Successfully logged out.");
     res.redirect("/")
   },
+  
   reset(req, res) {
     res.render("loginreset");
   },
+  
   resetSubmit(req, res) {
     var em = req.body.email;
 
@@ -25,7 +29,7 @@ module.exports = {
     db("cms")
     .whereRaw("LOWER(email) = LOWER('" + em + "')")
     .limit(1)
-    .then(function (cms) {
+    .then((cms) => {
 
       // This email is not in the system, they need to try again
       if (cms.length == 0) {
@@ -41,7 +45,7 @@ module.exports = {
         db("pwresets")
         .where("cmid", cm.cmid)
         .del()
-        .then(function () { 
+        .then(()  =>{ 
 
         // Create a new row with current pw request
         db("pwresets")
@@ -50,9 +54,9 @@ module.exports = {
           uid: uid,
           email: cm.email
         })
-        .then(function () {
+        .then(() => {
 
-          emUtil.sendPassResetEmail(cm, uid, function () {
+          emUtil.sendPassResetEmail(cm, uid, () => {
             // Render direction to check email card
             req.flash("success", "Reset password email was sent to " + cm.email );
             res.render("access/loginresetsent", {cm: cm});
@@ -65,25 +69,26 @@ module.exports = {
 
     }).catch(res.error500); // Query 1
   },
+
   resetSpecific(req, res) {
-    db("pwresets")
-    .where("uid", req.params.uid)
-    .andWhere("expiration", ">", db.fn.now())
-    .limit(1)
-    .then(function (rows) {
+    // db("pwresets")
+    //   .where("uid", req.params.uid)
+    //   .andWhere("expiration", ">", db.fn.now())
+    //   .limit(1)
+    // .then((rows) => {
 
-      if (rows.length == 0) { 
-        req.flash("warning", "That address does not point to a valid password reset link. Try again.");
-        res.redirect("/login/reset");
-      } else {
-        var reset = rows[0];
-        res.render("access/loginresetphasetwo", {reset: reset});
-      }
+    //   if (rows.length == 0) { 
+    //     req.flash("warning", "That address does not point to a valid password reset link. Try again.");
+    //     res.redirect("/login/reset");
+    //   } else {
+    //     var reset = rows[0];
+    //     res.render("access/loginresetphasetwo", {reset: reset});
+    //   }
 
-    }).catch(res.error500);
+    // }).catch(res.error500);
   },
-  resetSpecificSubmit(req, res) {
-    // Redirect options
+
+  resetSpecficSubmit(req, res) {
     var retry_loc = "/login/reset/" + req.params.uid;
     var redirect_loc = "/login/reset/";
 
@@ -111,13 +116,13 @@ module.exports = {
     } else {
       // Make sure that is a valid uid being provided
       db("pwresets")
-      .where("uid", uid)
-      .andWhere("cmid", cmid)
-      .andWhere("pwresid", pwresid)
-      .andWhere("expiration", ">", db.fn.now())
-      .limit(1)
-      .returning("email")
-      .then(function (rows) {
+        .where("uid", uid)
+        .andWhere("cmid", cmid)
+        .andWhere("pwresid", pwresid)
+        .andWhere("expiration", ">", db.fn.now())
+        .limit(1)
+        .returning("email")
+      .then((rows) => {
 
         // Form entry is bad, they did include correct hidden components
         if (rows.length == 0) { 
@@ -131,13 +136,13 @@ module.exports = {
           db("cms")
           .where("cmid", cmid)
           .update({pass: hashPw(pass)})
-          .then(function (rows) {
+          .then((rows) => {
             
           // Query 3: We can delete that pw reset row now
           db("pwresets")
           .where("pwresid", pwresid)
           .del()
-          .then(function () {
+          .then(() => {
 
             // Prompt the case manager to log in with new pw
             req.flash("success", "You have updated your account password.");
@@ -149,5 +154,6 @@ module.exports = {
         }
       }).catch(res.error500);
     }
-  },
+  }
+
 };

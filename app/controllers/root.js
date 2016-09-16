@@ -1,4 +1,5 @@
 module.exports = {
+
   index(req, res, next) {
     if (!req.hasOwnProperty("user")) {
       res.redirect('/login');
@@ -8,7 +9,8 @@ module.exports = {
       res.redirect(`/clients`);
     } else {
       // TODO: Who hits this? Seems like this would never hit
-      notFound(res);
+      res.notFound();
     }
   }
-}
+
+};

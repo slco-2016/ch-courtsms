@@ -49,34 +49,24 @@ app.use(passport.session());
 // Middleware
 const middleware = require('./middleware');
 app.use(middleware.logging);
-app.use(middleware.attachErrorHandlers)
+app.use(middleware.attachErrorHandlers);
 app.use(middleware.templateHelpers);
 app.use(middleware.fetchUserAlertsFeed);
 app.use(middleware.fetchUserOrganization);
 app.use(middleware.fetchUserDepartment);
 app.use(middleware.fetchClient);
+
 app.use("/org", middleware.setLevelForOrg);
 
 // UTILITIES
 const auth = require('./lib/pass')
 
-// ALL ROUTES
-// Always run before routes
-
+// TO DEPRECATE: Always run before routes
 require("../routes/request-defaults")(app);
 
-// Login and session management
-require("../routes/access")(app, passport);
-
-// CM-Subroutes here
-// TO DO: Discuss if these should be rolled in under cmview itself
-// Capture view
-var captureRoutes = require("../../routes/cm-subroutes/capture");
-app.use("/capture", auth.isLoggedIn, captureRoutes);
-
 // Twilio-facing routes
-require("../../routes/sms")(app);
-require("../../routes/voice")(app);
+// require("../routes/sms")(app);
+// require("../routes/voice")(app);
 
 const rootController = require('./controllers/root');
 const clientsController = require('./controllers/clients');
@@ -98,11 +88,11 @@ app.get("/login-fail", accessController.loginFail);
 app.get("/logout", auth.isLoggedIn, accessController.logout);
 app.get("/login/reset", accessController.reset);
 app.post("/login/reset", accessController.resetSubmit);
-app.get("/login/reset/:uid", accessController.resetSpecfic);
+app.get("/login/reset/:uid", accessController.resetSpecific);
 app.post("/login/reset/:uid", accessController.resetSpecficSubmit);
 
-app.use("/", require("../../routes/user"));
-app.use("/", require("../../routes/org"));
+// app.use("/", require("../../routes/user"));
+// app.use("/", require("../../routes/org"));
 
 app.get("/org/clients", dashboardController.orgIndex);
 
@@ -138,7 +128,7 @@ app.post("/org/clients/create", clientsController.create);
 
 // Redundant catch all
 app.get("/*", (req, res) => {
-  notFound(res);
+  res.notFound();
 });
 
 

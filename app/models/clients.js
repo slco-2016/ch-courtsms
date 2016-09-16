@@ -4,9 +4,6 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
-// Utilities
-const utilities = require("../utilities")
-const undefinedValuesCheck = utilities.undefinedValuesCheck;
 
 
 const CommConns = require("./commConns");

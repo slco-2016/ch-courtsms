@@ -1,8 +1,12 @@
+const Alerts = require('./models/alerts');
+const Departments = require('./models/departments');
+const Organizations = require('./models/organizations');
+
 module.exports = {
 
   attachErrorHandlers(req, res, next) {
 
-    res.error500 = function (err) { 
+    res.error500 = (err) => {
       // Clean up error if one is provided
       if (typeof err !== "undefined") {
 
@@ -20,7 +24,7 @@ module.exports = {
       this.set({'content-type':'text/plain'}).status(500).send(err.stack)
     };
 
-    res.notFound = function () {
+    res.notFound = () => {
       this.status(404).render('v4/general/404')
     };
 
@@ -109,7 +113,7 @@ module.exports = {
       .then((alerts) => {
         res.locals.ALERTS_FEED = alerts;
         next();
-      }).catch(error500(res));
+      }).catch(res.error500);
     } else {
       next();
     }
@@ -121,7 +125,7 @@ module.exports = {
       .then((org) => {
         res.locals.organization = org;
         next();
-      }).catch(error500(res));
+      }).catch(res.error500);
     } else {
       next();
     }
@@ -142,7 +146,7 @@ module.exports = {
         }
         res.locals.department = department;
         next();
-      }).catch(error500(res));      
+      }).catch(res.error500);      
     } else {
       next();      
     }

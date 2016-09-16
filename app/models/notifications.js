@@ -4,13 +4,6 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
-// Using other models
-
-
-// Utilities
-const utilities = require("../utilities")
-const undefinedValuesCheck = utilities.undefinedValuesCheck;
-
 
 // TO DOS
 // Check if arrays are indeed arrays and that they have length > 0

@@ -5,10 +5,6 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 const moment  = require("moment");
 
-// Utilities
-const utilities = require("../utilities")
-const undefinedValuesCheck = utilities.undefinedValuesCheck;
-
 
 // SECRET STUFF
 var credentials = require("../../credentials");

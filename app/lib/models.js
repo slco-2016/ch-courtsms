@@ -1,6 +1,6 @@
 'use strict';
 const Promise = require("bluebird");
-const db = require("../app/db");
+const db = require("../../app/db");
 
 function undefinedValuesCheck (array) {
   var undefinedExists = false;

@@ -10,7 +10,7 @@ var TESTENV = process.env.TESTENV;
 if (TESTENV && TESTENV == "true") {
   var newrelic = null;
 } else {
-  var newrelic = require('newrelic');
+  // var newrelic = require('newrelic');
 }
 
 

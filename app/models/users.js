@@ -5,9 +5,7 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 
 // Utilities
-const utilities = require("../utilities")
-const BaseModel = require("../lib/model").BaseModel
-const undefinedValuesCheck = utilities.undefinedValuesCheck;
+const BaseModel = require("../lib/models").BaseModel
 const bcrypt = require("bcrypt-nodejs");
 
 

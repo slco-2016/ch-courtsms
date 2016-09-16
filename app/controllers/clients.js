@@ -1,6 +1,10 @@
 const Users = require('../models/users');
 
 module.exports = {
+  _userId(req) {
+
+  },
+  
   index(req, res) {
     let status      = req.query.status == "closed" ? false : true;
     let department  = req.user.department || req.query.departmentId;
@@ -48,7 +52,7 @@ module.exports = {
   },
 
   create(req, res) {
-    let userId = req.body.targetUser;    
+    let userId = req.body.targetUser;
     let first  = req.body.first;    
     let middle = req.body.middle ? req.body.middle : "";    
     let last   = req.body.last;   
@@ -68,5 +72,5 @@ module.exports = {
     }).catch(res.error500);
   },
 
-  
+
 };
