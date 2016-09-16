@@ -28,14 +28,14 @@ module.exports = {
     }).catch(res.error500);
   },
   destroy(req, res) {
-    Templates.removeOne(req.params.templateID)
+    Templates.removeOne(req.params.template)
     .then(() => {
       req.flash("success", "Removed template.")
       res.redirect(`/templates`);
     }).catch(res.error500);
   },
   edit(req, res) {
-    Templates.findByID(req.params.templateID)
+    Templates.findByID(req.params.template)
     .then((template) => {
       if (template) {
         res.render("templates/edit", {
@@ -47,10 +47,10 @@ module.exports = {
     }).catch(res.error500);
   },
   update(req, res) {
-    const templateID = req.params.templateID;
+    const templateId = req.params.template;
     const title   = req.body.title;
     const content = req.body.content;
-    Templates.editOne(templateID, title, content)
+    Templates.editOne(templateId, title, content)
     .then(() => {
       req.flash("success", "Template edited.")
       res.redirect(`/templates`);

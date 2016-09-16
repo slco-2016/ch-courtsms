@@ -71,7 +71,7 @@ module.exports = {
   alter(req, res) {
     let state = req.params.case === "close" ? false : true;
 
-    Users.changeActivityStatus(req.params.targetUserID, state)
+    Users.changeActivityStatus(req.params.targetUser, state)
     .then(() => {
       req.flash("success", "Updated user activity state.");
       res.redirect("/org/users");

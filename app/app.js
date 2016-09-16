@@ -98,15 +98,16 @@ app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);
+
 app.get("/logout", AccessController.logout);
 
-// TO DO: Drop these?
+// TODO: Okay to drop these?
 // app.use("/", require("../../routes/user"));
 // app.use("/", require("../../routes/org"));
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.update);
-app.get("/colors/:colorID/remove", ColorsController.destroy);
+app.get("/colors/:colorId/remove", ColorsController.destroy);
 
 app.get("/notifications", NotificationsController.index);
 app.get("/notifications/create", NotificationsController.new);
@@ -114,26 +115,30 @@ app.get("/notifications/create/compose", NotificationsController.compose);
 app.post("/notifications/create/compose", NotificationsController.composeCreate);
 app.get("/notifications/create/templates", NotificationsController.templates);
 app.post("/notifications/create", NotificationsController.create);
-app.get("/notifications/:notificationID/edit", NotificationsController.edit);
-app.post("/notifications/:notificationID/edit", NotificationsController.update);
-app.get("/notifications/:notificationID/remove", NotificationsController.destroy);
+app.get("/notifications/:notification/edit", NotificationsController.edit);
+app.post("/notifications/:notification/edit", NotificationsController.update);
+app.get("/notifications/:notification/remove", NotificationsController.destroy);
 
 app.get("/templates", TemplatesController.index);
 app.get("/templates/create", TemplatesController.new);
 app.post("/templates/create", TemplatesController.create);
-app.get("/templates/remove/:templateID", TemplatesController.destroy);
-app.get("/templates/edit/:templateID", TemplatesController.edit);
-app.post("/templates/edit/:templateID", TemplatesController.update);
+app.get("/templates/remove/:template", TemplatesController.destroy);
+app.get("/templates/edit/:template", TemplatesController.edit);
+app.post("/templates/edit/:template", TemplatesController.update);
 
 app.get("/groups", GroupsController.index);
 app.get("/groups/create", GroupsController.new);
 app.post("/groups/create", GroupsController.create);
-app.get("/groups/edit/:groupID", GroupsController.edit);
-app.post("/groups/edit/:groupID", GroupsController.update);
-app.get("/groups/remove/:groupID", GroupsController.destroy);
-app.get("/groups/activate/:groupID", GroupsController.activate);
-app.get("/groups/address/:groupID", GroupsController.address);
-app.post("/groups/address/:groupID", GroupsController.addressUpdate);
+app.get("/groups/edit/:group", GroupsController.edit);
+app.post("/groups/edit/:group", GroupsController.update);
+app.get("/groups/remove/:group", GroupsController.destroy);
+app.get("/groups/activate/:group", GroupsController.activate);
+app.get("/groups/address/:group", GroupsController.address);
+app.post("/groups/address/:group", GroupsController.addressUpdate);
+
+app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.client}/messages`); });
+app.get("/clients/:client/address", ClientsController.addressCraft);
+app.post("/clients/:client/address", ClientsController.addressSubmit);
 
 app.get("/org", DashboardController.orgIndex);
 
@@ -141,7 +146,7 @@ app.get("/org/users", UsersController.index);
 app.get("/org/users/create", UsersController.new);
 app.post("/org/users/create", UsersController.create);
 app.get("/org/users/create/check/:email", UsersController.check);
-app.get("/org/users/:targetUserID/alter/:case", UsersController.alter);
+app.get("/org/users/:targetUser/alter/:case", UsersController.alter);
 app.get("/org/users/:targetUser/edit", UsersController.edit);
 app.post("/org/users/:targetUser/edit", UsersController.update);
 app.get("/org/users/:targetUser/transfer", UsersController.transferIndex);
@@ -150,19 +155,19 @@ app.post("/org/users/:targetUser/transfer", UsersController.transferUpdate);
 app.get("/org/departments", DepartmentsController.index);
 app.get("/org/departments/create", DepartmentsController.new);
 app.post("/org/departments/create", DepartmentsController.create);
-app.get("/org/departments/:departmentId/edit", DepartmentsController.edit);
-app.post("/org/departments/:departmentId/edit", DepartmentsController.update);
-app.get("/org/departments/:departmentId/supervisors", 
-  DepartmentsController.supervisorsIndex);
-app.post("/org/departments/:departmentId/supervisors", 
-  DepartmentsController.supervisorsUpdate);
-app.get("/org/departments/:departmentID/alter/:case", 
-  DepartmentsController.alter);
+app.get("/org/departments/:department/edit", DepartmentsController.edit);
+app.post("/org/departments/:department/edit", DepartmentsController.update);
+app.get("/org/departments/:department/supervisors", DepartmentsController.supervisorsIndex);
+app.post("/org/departments/:department/supervisors", DepartmentsController.supervisorsUpdate);
+app.get("/org/departments/:department/alter/:case", DepartmentsController.alter);
 
 app.get("/org/clients", ClientsController.index);
 app.get("/org/clients/create", ClientsController.new);
 app.post("/org/clients/create", ClientsController.create);
 
+app.get("/org/clients/:client", (req, res) => { res.send("Client overview here...") });
+app.get("/org/clients/:client/address", ClientsController.addressCraft);
+app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

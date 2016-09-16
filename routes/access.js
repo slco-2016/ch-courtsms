@@ -6,7 +6,7 @@
 var db  = require("../app/db");
 
 var uuid = require("node-uuid");
-// var emUtil = require("../utils/em-notify");
+var emUtil = require("../utils/em-notify");
 
 // Utility checks if a client is logged in
 var utils = require("../utils/utils.js");

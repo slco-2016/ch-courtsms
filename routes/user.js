@@ -245,45 +245,17 @@ router.use("/clients/:clientId", (req, res, next) => {
   }).catch(error500(res));
 });
 
-router.get("/clients/:clientId", (req, res) => {
-  res.redirect(`/clients/${req.params.clientId}/messages`);
-});
 
-router.get("/clients/:clientId/address", (req, res) => {
-  res.render("clients/address", {
-    template: req.query
-  });
-});
 
-router.get("/clients/:clientId/address/templates", (req, res) => {
-  Templates.findByUser(req.user.cmid)
-  .then((templates) => {
-    res.render("clients/templates", {
-      templates: templates
-    });
-  }).catch(error500(res));
-});
 
-router.post("/clients/:clientID/address", (req, res) => {
-  let userID   = req.user.cmid;
-  let clientID = Number(req.params.clientID);
-  let subject  = req.body.subject;
-  let content  = req.body.content;
-  let commID   = req.body.commID == "null" ? null : req.body.commID;
-  let method;
 
-  if (commID) {
-    method = Messages.startNewConversation(userID, clientID, subject, content, commID);
-  } else {
-    method = Messages.smartSend(userID, clientID, subject, content);
-  }
 
-  method.then(() => {
-    logClientActivity(clientID);
-    req.flash("success", "Message to client sent.");
-    res.redirect(`/clients/${clientID}/messages`);
-  }).catch(error500(res));
-});
+
+
+
+
+
+
 
 router.get("/clients/:clientID/alter/:activeStatus", (req, res) => {
   let activeStatus = req.params.activeStatus == "open";

@@ -81,7 +81,7 @@ module.exports = {
     .then((c) => {
       clients = c;
 
-      return Notifications.findByID(Number(req.params.notificationID))
+      return Notifications.findByID(Number(req.params.notification))
     }).then((n) => {
       if (n) {
         // Remove all closed clients except for if matches with notification
@@ -98,7 +98,7 @@ module.exports = {
     }).catch(res.error500);
   },
   update(req, res) {
-    let notificationID = req.params.notificationID;
+    let notificationId = req.params.notification;
     let clientID       = req.body.clientID;
     let commID         = req.body.commID ? req.body.commID : null;
     let subject        = req.body.subject;
@@ -109,7 +109,7 @@ module.exports = {
                           .format("YYYY-MM-DD HH:mm:ss");
 
     Notifications.editOne(
-                    notificationID, 
+                    notificationId, 
                     clientID, 
                     commID, 
                     send, 
@@ -126,7 +126,7 @@ module.exports = {
   },
   destroy(req, res) {
     let clientID = req.params.clientID;
-    Notifications.removeOne(req.params.notificationID)
+    Notifications.removeOne(req.params.notification)
     .then(() => {
       req.flash("success", "Removed notification.");
       if (clientID) toRedirect = res.redirect(`/clients/${clientID}/notifications`);

@@ -20,7 +20,7 @@ module.exports = {
   },
 
   destroy(req, res) {
-    ColorTags.removeColorTag(req.params.colorID)
+    ColorTags.removeColorTag(req.params.color)
     .then(() => {
       req.flash("success", "Color tag removed.");
       res.redirect("/colors");

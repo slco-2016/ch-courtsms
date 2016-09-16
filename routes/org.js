@@ -35,36 +35,9 @@ let emailer                 = require("./emailer");
 
 
 
-router.get("/org/clients/:clientId", (req, res) => {
-  res.send("special org view of client");
-});
 
-router.get("/org/clients/:clientId/address", (req, res) => {
-  res.render("clients/address", {
-    template: req.query,
-  });
-});
 
-router.post("/org/clients/:clientId/address", (req, res) => {
-  let userId   = res.locals.client.cm;
-  let clientId = req.params.clientId;
-  let subject  = req.body.subject;
-  let content  = req.body.content;
-  let commID   = req.body.commID == "null" ? null : req.body.commID;
-  let method;
 
-  if (commID) {
-    method = Messages.startNewConversation(userId, clientId, subject, content, commID);
-  } else {
-    method = Messages.smartSend(userId, clientId, subject, content);
-  }
-
-  method.then(() => {
-    logClientActivity(clientId);
-    req.flash("success", "Message to client sent.");
-    res.redirect(`/org/clients`);
-  }).catch(res.error500);
-});
 
 router.get("/org/clients/:clientId/alter/:status", (req, res) => {
   let clientId = req.params.clientId;

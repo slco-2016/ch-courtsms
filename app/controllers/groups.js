@@ -35,7 +35,7 @@ module.exports = {
     }).catch(res.error500);
   },
   edit(req, res) {
-    Groups.findByID(Number(req.params.groupID))
+    Groups.findByID(Number(req.params.group))
     .then((group) => {
       if (group) {
         Clients.findByUser(Number(req.user.cmid), true)
@@ -52,7 +52,7 @@ module.exports = {
   },
   update(req, res) {
     let userID = req.user.cmid;
-    let groupID = req.params.groupID;
+    let groupId = req.params.group;
     let name = req.body.name;
 
     // Clean clientIDs
@@ -64,7 +64,7 @@ module.exports = {
       clientIDs
       .map(function (ID) { return Number(ID); })
       .filter(function (ID) { return !(isNaN(ID)); });
-      Groups.editOne(userID, groupID, name, clientIDs)
+      Groups.editOne(userID, groupId, name, clientIDs)
       .then(() => {
         req.flash("success", "Edited group.");
         res.redirect(`/groups`);
@@ -74,13 +74,13 @@ module.exports = {
     }
   },
   destroy(req, res) {
-    Groups.removeOne(Number(req.params.groupID))
+    Groups.removeOne(Number(req.params.group))
     .then(() => {
       res.redirect(`/groups`);
     }).catch(res.error500);
   },
   activate(req, res) {
-    Groups.activateOne(Number(req.params.groupID))
+    Groups.activateOne(Number(req.params.group))
     .then(() => {
       res.redirect(`/groups`);
     }).catch(res.error500);
@@ -92,13 +92,13 @@ module.exports = {
   },
   addressUpdate(req, res) {
     let userID = req.user.cmid;
-    let groupID = Number(req.params.groupID);
+    let groupId = Number(req.params.group);
     let title = req.body.title;
     let content = req.body.content;
 
     if (title == "") title = "New Conversation";
 
-    Groups.addressMembers(userID, groupID, title, content)
+    Groups.addressMembers(userID, groupId, title, content)
     .then(() => {
       req.flash("success", "Messaged group members.");
       res.redirect(`${req.redirectUrlBase}/groups/current`);

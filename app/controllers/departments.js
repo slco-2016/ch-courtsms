@@ -4,6 +4,7 @@ const Users = require('../models/users');
 const DepartmentSupervisors = require('../models/departmentSupervisors');
 
 module.exports = {
+  
   index(req, res) {
     let status = req.query.status === "inactive" ? false : true;
 
@@ -18,6 +19,7 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+  
   new(req, res) {
     PhoneNumbers.findByOrgID(req.user.org)
     .then((phoneNumbers) => {
@@ -26,6 +28,7 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+  
   create(req, res) {
     Departments.createOne(
                   req.user.org,    // organization
@@ -37,8 +40,9 @@ module.exports = {
       res.redirect("/org/departments");
     }).catch(res.error500);
   },
+  
   edit(req, res) {
-    Departments.findByID(req.params.departmentId)
+    Departments.findByID(req.params.department)
     .then((department) => {
       if (department) {
         PhoneNumbers.findByOrgID(req.user.org)
@@ -54,9 +58,10 @@ module.exports = {
       }
     }).catch(res.error500);
   },
+  
   update(req, res) {
     Departments.editOne(
-      req.params.departmentId, // department
+      req.params.department, // department
       req.body.name,           // new name
       req.body.number          // new associated number
     ).then(() => {
@@ -64,9 +69,10 @@ module.exports = {
       res.redirect("/org/departments");
     }).catch(res.error500);
   },
+  
   supervisorsIndex(req, res) {
     let supervisors;
-    DepartmentSupervisors.findByDepartmentIDs(req.params.departmentId)
+    DepartmentSupervisors.findByDepartmentIDs(req.params.department)
     .then((s) => {
       supervisors = s;
       return Users.findByOrg(req.user.org)
@@ -75,7 +81,7 @@ module.exports = {
       // Limit options to only users already added to the department
       // "Promote from within" concept
       let members = users.filter(function (u) {
-        return Number(u.department) == Number(req.params.departmentId);
+        return Number(u.department) == Number(req.params.department);
       });
 
       res.render("departments/supervisors", {
@@ -84,11 +90,12 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+  
   supervisorsUpdate(req, res) {
     if (!Array.isArray(req.body.supervisorIds)) req.body.supervisorIds = [req.body.supervisorIds];
 
     DepartmentSupervisors.updateSupervisors(
-      req.params.departmentId, 
+      req.params.department, 
       req.body.supervisorIds, 
       req.body.revertClass
     ).then(() => {
@@ -96,13 +103,14 @@ module.exports = {
       res.redirect("/org/departments");
     }).catch(res.error500);
   },
+  
   alter(req, res) {
     let state = req.params.case === "close" ? false : true;
 
-    Departments.findMembers(req.params.departmentID)
+    Departments.findMembers(req.params.department)
     .then((members) => {
       if (members.length == 0) {
-        Departments.alterCase(req.params.departmentID, state)
+        Departments.alterCase(req.params.department, state)
         .then(() => {
           req.flash("success", "Changed department activity status.");
           res.redirect("/org/departments");
@@ -113,4 +121,5 @@ module.exports = {
       }
     }).catch(res.error500);
   },
+
 };
