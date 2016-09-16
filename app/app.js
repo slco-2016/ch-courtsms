@@ -34,6 +34,7 @@ app.use(cookieParser());
 const bcrypt = require("bcrypt-nodejs");
 const passport = require("passport");
 require("./passport")(passport);
+const auth = require('./lib/pass');
 
 // CONFIGURATION 2
 app.use(bodyParser.urlencoded({extended:true}));
@@ -53,15 +54,14 @@ const middleware = require('./middleware');
 app.use(middleware.logging);
 app.use(middleware.attachErrorHandlers);
 app.use(middleware.templateHelpers);
+// TODO: Why are there 4 db queries every time?
 app.use(middleware.fetchUserAlertsFeed);
 app.use(middleware.fetchUserOrganization);
 app.use(middleware.fetchUserDepartment);
 app.use(middleware.fetchClient);
 
-app.use("/org", middleware.setLevelForOrg);
+app.use("/", middleware.setLevel);
 
-// UTILITIES
-const auth = require('./lib/pass');
 
 // TO DEPRECATE: Always run before routes
 require("../routes/request-defaults")(app);
@@ -91,7 +91,6 @@ app.post("/login",
   })
 );
 app.get("/login-fail", AccessController.loginFail);
-app.get("/logout", auth.isLoggedIn, AccessController.logout);
 app.get("/login/reset", AccessController.reset);
 app.post("/login/reset", AccessController.resetSubmit);
 app.get("/login/reset/:uid", AccessController.resetSpecific);
@@ -99,6 +98,7 @@ app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);
+app.get("/logout", AccessController.logout);
 
 // TO DO: Drop these?
 // app.use("/", require("../../routes/user"));

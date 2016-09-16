@@ -172,8 +172,11 @@ module.exports = {
 
   },
 
-  setLevelForOrg(req, res, next) {
-    res.locals.level = "org"
+  setLevel(req, res, next) {
+    res.locals.level = "user";
+    if (req.url.indexOf("/org") == 0) {
+      res.locals.level = "org";
+    }
     next();
   },
 
