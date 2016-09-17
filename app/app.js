@@ -144,8 +144,14 @@ app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
+app.get("/clients/:client/edit", ClientsController.update);
 app.get("/clients/:client/alter/:status", ClientsController.alter);
 app.get("/clients/:client/transfer", ClientsController.transferSelect);
+app.post("/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.get("/clients/:client/transcript", ClientsController.transcript);
+app.get("/clients/:client/messages", ClientsController.messageCraft);
+app.post("/clients/:client/messages", ClientsController.messageSubmit);
 
 app.get("/org", DashboardController.orgIndex);
 
@@ -176,9 +182,10 @@ app.get("/org/clients/:client", (req, res) => { res.send("Client overview here..
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
+app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
-app.post("/org/clients/:clientId/transfer", ClientsController.transferSubmit);
+app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 
 // Redundant catch all
 app.get("/*", (req, res) => {
