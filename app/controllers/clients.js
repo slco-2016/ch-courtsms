@@ -1,14 +1,15 @@
 const Clients = require('../models/clients');
 const Client = require('../models/client');
+const ColorTags = require('../models/colorTags');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
 function _getUser (req, res) {
-  let userId = res.locals.client.cm;
+  let id = res.locals.client.cm;
   if (res.locals.level == "user") {
-    userId = req.user.cmid;
+    id = req.user.cmid;
   }
-  return userId;
+  return id;
 };
 
 function _redirectURL (res, rest) {
@@ -24,15 +25,18 @@ module.exports = {
   
   index(req, res) {
     let status      = req.query.status == "closed" ? false : true;
-    let department  = req.user.department || req.query.departmentId;
+    let department  = req.user.department || req.query.department;
+    let user        = req.body.targetUser || req.user.cmid;
 
     // Controls against a case where the owner would accidentally have a department
-    if (req.user.class === "owner" && !req.query.departmentId) {
+    if (req.user.class === "owner" && !req.query.department) {
       department = null;
     }
 
     let method;
-    if (department) {
+    if (res.locals.level == "user") {
+      method = Clients.findByUsers(user, status)
+    } else if (department) {
       method = Clients.findByDepartment(department, status);
     } else {
       method = Clients.findByOrg(req.user.org, status);
@@ -59,7 +63,6 @@ module.exports = {
   new(req, res) {
     let c = req.user.class;
     let l = res.locals.level;
-    console.log("LLLL", l)
     if (l === "user") {
       res.render("clients/create", { users: null });
     } else {
@@ -277,6 +280,30 @@ module.exports = {
       } else {
         notFound(res);
       }
+    }).catch(res.error500);
+  },
+
+  colorSelect(req, res) {
+    ColorTags.selectAllByUser(req.user.cmid)
+    .then((colors) => {
+      if (colors.length > 0) {
+        res.render("clients/colors", {
+          colors: colors,
+          params: req.params
+        });
+      } else {
+        res.redirect(`/colors`);
+      }
+    }).catch(res.error500);
+  },
+
+  colorSubmit(req, res) {
+    let colorID = req.body.colorID == "" ? null : req.body.colorID;
+    Client.udpateColorTag(req.params.client, colorID)
+    .then(() => {
+      req.logActivity.client(req.params.client);
+      req.flash("success", "Changed client color.");
+      res.redirect(`/clients`);
     }).catch(res.error500);
   },
 

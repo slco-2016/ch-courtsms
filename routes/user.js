@@ -183,54 +183,6 @@ class NotificationsView {
 
 }
 
-// Ensure user exists
-router.use((req, res, next) => {
-  if (!req.hasOwnProperty("user")) { 
-    res.status(400).send("not allowed") 
-  } else {
-    next()
-  }
-})
-
-router.get("/clients", (req, res) => {
-  let status = req.query.status === "closed" ? false : true;
-
-  Clients.findByUsers(req.user.cmid, status)
-  .then((clients) => {
-    res.render("clients/index", {
-      hub: {
-        tab: "clients",
-        sel: status ? "open" : "closed",
-      },
-      clients: clients
-    });
-  }).catch(error500(res));  
-});
-
-router.get("/clients/create", (req, res) => {
-  res.render("clients/create", { users: null });
-});
-
-router.post("/clients/create", (req, res) => {
-  let userId = req.user.cmid;    
-  let first  = req.body.first;    
-  let middle = req.body.middle ? req.body.middle : "";    
-  let last   = req.body.last;   
-  let dob    = req.body.dob;    
-  let so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
-  let otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
-  Client.create(
-          userId, 
-          first, 
-          middle, 
-          last, 
-          dob, 
-          so, 
-          otn
-  ).then(() => {
-    res.redirect(`/clients`);
-  }).catch(error500(res));
-});
 
 
 
@@ -240,31 +192,6 @@ router.post("/clients/create", (req, res) => {
 
 
 
-
-
-router.get("/clients/:clientID/edit/color", (req, res) => {
-  ColorTags.selectAllByUser(req.user.cmid)
-  .then((colors) => {
-    if (colors.length > 0) {
-      res.render("clients/colors", {
-        colors: colors,
-        params: req.params
-      });
-    } else {
-      res.redirect(`/colors`);
-    }
-  }).catch(error500(res));
-});
-
-router.post("/clients/:clientID/edit/color", (req, res) => {
-  let colorID = req.body.colorID == "" ? null : req.body.colorID;
-  Client.udpateColorTag(req.params.clientID, colorID)
-  .then(() => {
-    logClientActivity(req.params.clientID);
-    req.flash("success", "Changed client color.");
-    res.redirect(`/clients`);
-  }).catch(error500(res));
-});
 
 
 

@@ -142,7 +142,7 @@ app.post("/groups/address/:group", GroupsController.addressUpdate);
 
 app.get("/clients", ClientsController.index);
 app.get("/clients/create", ClientsController.new);
-// app.post("/clients/create", ClientsController.create);
+app.post("/clients/create", ClientsController.create);
 
 app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.client}/messages`); });
 app.get("/clients/:client/address", ClientsController.addressCraft);
@@ -156,6 +156,8 @@ app.post("/clients/:client/transfer", ClientsController.transferSubmit);
 app.get("/clients/:client/transcript", ClientsController.transcript);
 app.get("/clients/:client/messages", ClientsController.messageCraft);
 app.post("/clients/:client/messages", ClientsController.messageSubmit);
+app.get("/clients/:client/edit/color", ClientsController.colorSelect);
+app.post("/clients/:client/edit/color", ClientsController.colorSubmit);
 
 app.get("/org", DashboardController.orgIndex);
 
