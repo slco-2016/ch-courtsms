@@ -182,8 +182,9 @@ module.exports = {
   fetchClient(req, res, next) {
     let p = req.params;
     let client = p.client || p.clientId || p.clientID || null;
+    let isNumber = !isNaN(client);
     
-    if (client) {
+    if (client && isNumber) {
       Client.findByID(client)
       .then((c) => {
         if (c) {

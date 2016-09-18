@@ -80,49 +80,51 @@
 
   // All code below is also in tranfer.ejs, so we need to have this not be copied...
   // global
-  var users = <%- JSON.stringify(users); %>;
+  <% if (users) { %>
+    var users = <%- JSON.stringify(users); %>;
 
-  var substringMatcher = function (strs) {
-    return function findMatches(q, cb) {
-      var matches = [];
-      var substrRegex = new RegExp(q, 'i');
-      $.each(strs, function(i, s) {
-        var name = `${s.first} ${s.last}`;
-        if (substrRegex.test(name)) matches.push(name);
-      });
+    var substringMatcher = function (strs) {
+      return function findMatches(q, cb) {
+        var matches = [];
+        var substrRegex = new RegExp(q, 'i');
+        $.each(strs, function(i, s) {
+          var name = `${s.first} ${s.last}`;
+          if (substrRegex.test(name)) matches.push(name);
+        });
 
-      cb(matches);
+        cb(matches);
+      };
     };
-  };
 
-  $(".formInput .typeahead")
-  .typeahead({
-      hint: true,
-      highlight: true,
-      minLength: 1
-    },
-    {
-      name: "users",
-      value: "cmid",
-      source: substringMatcher(users),
-      select: function (e, i) { console.log( e, i )}
-  });
-
-  $("#createForm").submit(function (event) {
-    var selectedName = $(".tt-input").val();
-    var selectedUser = null;
-    users.forEach(function (u) {
-      var name = `${u.first} ${u.last}`;
-      if (name == selectedName) selectedUser = u;
+    $(".formInput .typeahead")
+    .typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: "users",
+        value: "cmid",
+        source: substringMatcher(users),
+        select: function (e, i) { console.log( e, i )}
     });
-    if (selectedUser) {
-      $("#targetUser").val(selectedUser.cmid)
-      return true;
-    } else {
-      event.preventDefault();
-      return false;
-    }
-  })
+
+    $("#createForm").submit(function (event) {
+      var selectedName = $(".tt-input").val();
+      var selectedUser = null;
+      users.forEach(function (u) {
+        var name = `${u.first} ${u.last}`;
+        if (name == selectedName) selectedUser = u;
+      });
+      if (selectedUser) {
+        $("#targetUser").val(selectedUser.cmid)
+        return true;
+      } else {
+        event.preventDefault();
+        return false;
+      }
+    });
+  <% } %>
 
 </script>
 

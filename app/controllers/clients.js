@@ -57,15 +57,21 @@ module.exports = {
   },
 
   new(req, res) {
-    Users.findByOrg(req.user.org)
-    .then((users) => {
-      if (req.user.department) {
-        users = users.filter((u) => { return u.department == req.user.department });
-      }
-      res.render("clients/create", {
-        users: users
-      });
-    }).catch(res.error500);
+    let c = req.user.class;
+    let l = res.locals.level;
+    console.log("LLLL", l)
+    if (l === "user") {
+      res.render("clients/create", { users: null });
+    } else {
+      Users.findByOrg(req.user.org)
+      .then((users) => {
+        let d = req.user.department;
+        if (d && c !== "owner") {
+          users = users.filter((u) => { return u.department == d });
+        }
+        res.render("clients/create", { users: users });
+      }).catch(res.error500);
+    }
   },
 
   create(req, res) {
