@@ -1,3 +1,10 @@
+.limitedByBanner {
+  font-size: 12px;
+  line-height: 18px;
+  background-color: #4A90E2;
+  text-align: center;
+  color: #FFF; }
+
 .header {
   height: 20px;
   overflow: hidden;
@@ -10,25 +17,33 @@
     text-align: left;
     cursor: pointer; }
     .header .column:nth-child(1) {
-      width: 5%;
+      width: 10%;
       text-align: center; }
     .header .column:nth-child(2) {
       width: 5%;
       text-align: center; }
     .header .column:nth-child(3) {
-      width: 45%; }
-    .header .column:nth-child(4) {
-      width: 10%;
-      text-align: center; }
-    .header .column:nth-child(5) {
-      width: 20%; }
-    .header .column:nth-child(6) {
       width: 5%;
+      text-align: center; }
+    .header .column:nth-child(4) {
+      width: 20%; }
+    .header .column:nth-child(5) {
+      width: 15%; }
+    .header .column:nth-child(6) {
+      width: 9%;
       text-align: center; }
     .header .column:nth-child(7) {
-      width: 5%;
+      width: 8%;
       text-align: center; }
     .header .column:nth-child(8) {
+      width: 13%; }
+    .header .column:nth-child(9) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(10) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(11) {
       width: 5%;
       text-align: center; }
 
@@ -68,29 +83,40 @@
       max-width: 16px;
       height: 16px;
       max-height: 16px;
-      border-radius: 50%; }
+      border-radius: 50%;
+      text-align: center; }
       .clientRow .column .fa.highlight:hover {
         color: #898989;
         background-color: #FFF; }
     .clientRow .column:nth-child(1) {
-      width: 5%; }
+      width: 10%;
+      text-align: right;
+      font-size: 12px; }
     .clientRow .column:nth-child(2) {
       width: 5%;
-      text-align: center; }
+      text-align: left; }
     .clientRow .column:nth-child(3) {
-      width: 45%; }
-    .clientRow .column:nth-child(4) {
-      width: 10%;
-      text-align: center; }
-    .clientRow .column:nth-child(5) {
-      width: 20%; }
-    .clientRow .column:nth-child(6) {
       width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(4) {
+      width: 20%; }
+    .clientRow .column:nth-child(5) {
+      width: 15%; }
+    .clientRow .column:nth-child(6) {
+      width: 9%;
       text-align: center; }
     .clientRow .column:nth-child(7) {
-      width: 5%;
+      width: 8%;
       text-align: center; }
     .clientRow .column:nth-child(8) {
+      width: 13%; }
+    .clientRow .column:nth-child(9) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(10) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(11) {
       width: 5%;
       text-align: center; }
   .clientRow:nth-child(even) {

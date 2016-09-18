@@ -1,6 +1,5 @@
 const Clients = require('../models/clients');
 const Client = require('../models/client');
-const ColorTags = require('../models/colorTags');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
@@ -280,30 +279,6 @@ module.exports = {
       } else {
         notFound(res);
       }
-    }).catch(res.error500);
-  },
-
-  colorSelect(req, res) {
-    ColorTags.selectAllByUser(req.user.cmid)
-    .then((colors) => {
-      if (colors.length > 0) {
-        res.render("clients/colors", {
-          colors: colors,
-          params: req.params
-        });
-      } else {
-        res.redirect(`/colors`);
-      }
-    }).catch(res.error500);
-  },
-
-  colorSubmit(req, res) {
-    let colorID = req.body.colorID == "" ? null : req.body.colorID;
-    Client.udpateColorTag(req.params.client, colorID)
-    .then(() => {
-      req.logActivity.client(req.params.client);
-      req.flash("success", "Changed client color.");
-      res.redirect(`/clients`);
     }).catch(res.error500);
   },
 

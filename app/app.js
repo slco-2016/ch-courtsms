@@ -156,8 +156,8 @@ app.post("/clients/:client/transfer", ClientsController.transferSubmit);
 app.get("/clients/:client/transcript", ClientsController.transcript);
 app.get("/clients/:client/messages", ClientsController.messageCraft);
 app.post("/clients/:client/messages", ClientsController.messageSubmit);
-app.get("/clients/:client/edit/color", ClientsController.colorSelect);
-app.post("/clients/:client/edit/color", ClientsController.colorSubmit);
+app.get("/clients/:client/edit/color", ColorsController.select);
+app.post("/clients/:client/edit/color", ColorsController.attribute);
 
 app.get("/org", DashboardController.orgIndex);
 
