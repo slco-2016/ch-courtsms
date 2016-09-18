@@ -232,18 +232,6 @@ router.post("/clients/create", (req, res) => {
   }).catch(error500(res));
 });
 
-// For all /clients/:clientId, include local obj. client
-router.use("/clients/:clientId", (req, res, next) => {
-  Client.findByID(req.params.clientId)
-  .then((c) => {
-    if (c) {
-      res.locals.client = c;
-      next();
-    } else {
-      notFound(res);
-    }
-  }).catch(error500(res));
-});
 
 
 
@@ -253,31 +241,6 @@ router.use("/clients/:clientId", (req, res, next) => {
 
 
 
-
-
-
-router.post("/clients/:clientId/edit", (req, res) => {
-  let clientId  = req.params.clientId;
-  let first     = req.body.first;
-  let middle    = req.body.middle;
-  let last      = req.body.last;
-  let dob       = req.body.dob;
-  let so        = req.body.uniqueID1;
-  let otn       = req.body.uniqueID2;
-  Client.editOne(
-          clientId, 
-          first, 
-          middle, 
-          last, 
-          dob, 
-          so, 
-          otn
-  ).then(() => {
-    logClientActivity(req.params.clientId);
-    req.flash("success", "Edited client.");
-    res.redirect(`/clients`);
-  }).catch(error500(res));
-});
 
 router.get("/clients/:clientID/edit/color", (req, res) => {
   ColorTags.selectAllByUser(req.user.cmid)
@@ -303,79 +266,8 @@ router.post("/clients/:clientID/edit/color", (req, res) => {
   }).catch(error500(res));
 });
 
-router.get("/clients/:clientID/messages", (req, res) => {
-  let methodFilter = "all";
-  if (req.query.method == "texts") methodFilter = "cell";
 
-  let convoFilter = Number(req.query.conversation);
-  if (isNaN(convoFilter)) convoFilter = null;
 
-  let conversations, messages;
-  Conversations.findByUserAndClient(req.user.cmid, req.params.clientID)
-  .then((convos) => {
-    conversations = convos;
-    return Messages.findByClientID(req.user.cmid, req.params.clientID)
-  }).then((msgs) => {
-    messages = msgs.filter((msg) => {
-      if (msg.comm_type == methodFilter || methodFilter == "all") {
-        if (msg.convo == convoFilter || convoFilter == null) return true;
-        else return false;
-
-      } else { 
-        return false; 
-      }
-    });
-    return CommConns.findByClientID(req.params.clientID)
-  }).then((communications) => {
-    res.render("clients/messages", {
-      hub: {
-        tab: "messages",
-        sel: req.query.method ? req.query.method : "all"
-      },
-      conversations: conversations,
-      messages: messages,
-      communications: communications,
-      convoFilter: convoFilter
-    });
-  }).catch(error500(res));
-});
-
-router.post("/clients/:clientID/messages", (req, res) => {
-  const clientID = req.params.clientID;
-  const subject  = "New Conversation";
-  const content  = req.body.content;
-  const commID   = req.body.commID;
-
-  Conversations.getMostRecentConversation(req.user.cmid, clientID)
-  .then((conversation) => {
-    // Use existing conversation if exists and recent (lt 5 days)
-    var now, lastUpdated, recentOkay = false;
-    if (conversation) {
-      now = new Date().getTime() - (5 * 24 * 60 * 60 * 1000); // 5 days in past
-      lastUpdated = new Date(conversation.updated).getTime();
-      recentOkay = lastUpdated > now;
-    }
-
-    if (conversation && recentOkay) {
-      Messages.sendOne(commID, content, conversation.convid)
-      .then(() => {
-        logClientActivity(clientID);
-        logConversationActivity(conversation.convid);
-        res.redirect(`/clients/${clientID}/messages`);
-      }).catch(error500(res));
-    
-    // Otherwise create a new conversation
-    } else {
-      Conversations.create(req.user.cmid, clientID, subject, true)
-      .then((conversationID) => {
-        return Messages.sendOne(commID, content, conversationID)
-      }).then(() => {
-        logClientActivity(clientID);
-        res.redirect(`/clients/${clientID}/messages`);
-      }).catch(error500(res));
-    }
-  }).catch(error500(res));
-});
 
 router.get("/clients/:clientId/communications", (req, res) => {
   CommConns.getClientCommunications(req.params.clientId)
@@ -449,44 +341,8 @@ router.post("/clients/:clientID/notifications/:notificationID/edit", Notificatio
 
 
 
-router.post("/clients/:clientId/transfer", (req, res) => {
-  const fromUserID = req.user.cmid;
-  const toUserID   = req.body.userID;
-  const clientId   = req.params.clientId;
-  const bundleConv = req.params.bundleConversations ? true : false;
 
-  Users.findByID(toUserID)
-  .then((user) => {
-    if (user && user.active) {
-      Client.transfer(clientId, fromUserID, toUserID, bundleConv)
-      .then(() => {
-        logClientActivity(clientId);
-        res.redirect(`/clients`);
-      }).catch(error500(res));
 
-    } else {
-      notFound(res);
-    }
-  }).catch(error500(res));
-});
-
-router.get("/clients/:clientId/transcript", (req, res) => {
-  let withUser = req.query.with || null;
-  Messages.findByClientID(withUser, req.params.clientId)
-  .then((messages) => {
-    
-    // Format into a text string
-    messages = messages.map(function (m) {
-      let s = "";
-      Object.keys(m).forEach(function (k) { s += `\n${k}: ${m[k]}`; });
-      return s;
-    }).join("\n\n");
-
-    // Note: this does not render a new page, just initiates a download
-    res.set({"Content-Disposition":"attachment; filename=transcript.txt"});
-    res.send(messages);
-  }).catch(error500(res));
-});
 
 
 

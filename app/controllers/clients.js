@@ -11,6 +11,15 @@ function _getUser (req, res) {
   return userId;
 };
 
+function _redirectURL (res, rest) {
+  let l = res.locals.level;
+  let base = "";
+  if (l === "org") {
+    base = "/org";
+  }
+  return `${base}${rest}`;
+};
+
 module.exports = {
   
   index(req, res) {
@@ -77,7 +86,7 @@ module.exports = {
             so,  // note these should be renamed
             otn  // this one as well
     ).then(() => {
-      res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients`);
+      res.redirect(_redirectURL(res, `/clients`));
     }).catch(res.error500);
   },
 
@@ -104,7 +113,7 @@ module.exports = {
     ).then(() => {
       req.logActivity.client(client);
       req.flash("success", "Edited client.");
-      res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients`);
+      res.redirect(_redirectURL(res, `/clients`));
     }).catch(res.error500);
   },
 
@@ -135,7 +144,7 @@ module.exports = {
     method.then(() => {
       req.logActivity.client(client);
       req.flash("success", "Message to client sent.");
-      res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients`);
+      res.redirect(_redirectURL(res, `/clients`));
     }).catch(res.error500);
   },
 
@@ -197,7 +206,7 @@ module.exports = {
         .then(() => {
           req.logActivity.client(client);
           req.logActivity.conversation(conversation.convid);
-          res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients/${client}/messages`);
+          res.redirect(_redirectURL(res, `/clients/${client}/messages`));
         }).catch(res.error500);
       
       // Otherwise create a new conversation
@@ -207,7 +216,7 @@ module.exports = {
           return Messages.sendOne(commID, content, conversationID)
         }).then(() => {
           req.logActivity.client(client);
-          res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients/${client}/messages`);
+          res.redirect(_redirectURL(res, `/clients/${client}/messages`));
         }).catch(res.error500);
       }
     }).catch(res.error500);
@@ -222,7 +231,7 @@ module.exports = {
     .then(() => {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
-      res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients`);
+      res.redirect(_redirectURL(res, `/clients`));
     }).catch(res.error500);
   },
 
@@ -256,7 +265,7 @@ module.exports = {
         Client.transfer(client, fromUser, u.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
-          res.redirect(`${req.locals.level === "org" ? "/org" : ""}/clients`);
+          res.redirect(_redirectURL(res, `/clients`));
         }).catch(res.error500);
 
       } else {
