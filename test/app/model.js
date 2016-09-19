@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const BaseModel = require('../../models/base').BaseModel
+const BaseModel = require('../../app/lib/models').BaseModel
 
 require('colors');
 const should = require('should');

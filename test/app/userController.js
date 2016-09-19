@@ -3,7 +3,7 @@ const supertest = require('supertest');
 const should = require('should');
 
 const APP = require('../../app/app')
-const Users = require('../../models/models').Users;
+const Users = require('../../app/models/users');
 const owner = supertest.agent(APP)
 const supervisor = supertest.agent(APP)
 const primary = supertest.agent(APP)
