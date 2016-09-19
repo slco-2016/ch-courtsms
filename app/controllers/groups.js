@@ -2,6 +2,7 @@ const Groups = require('../models/groups');
 const Clients = require('../models/clients');
 
 module.exports = {
+
   index(req, res) {
     let status = req.query.status === "deleted" ? false : true;
 
@@ -16,6 +17,7 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+
   new(req, res) {
     Clients.findByUser(Number(req.user.cmid), true)
     .then((clients) => {
@@ -24,6 +26,7 @@ module.exports = {
         });
     }).catch(res.error500);
   },
+
   create(req, res) {
     let userID = Number(req.user.cmid);
     let name = req.body.name;
@@ -34,6 +37,7 @@ module.exports = {
       res.redirect(`${req.redirectUrlBase}/groups/current`);
     }).catch(res.error500);
   },
+
   edit(req, res) {
     Groups.findByID(Number(req.params.group))
     .then((group) => {
@@ -50,6 +54,7 @@ module.exports = {
       }
     }).catch(res.error500);
   },
+
   update(req, res) {
     let userID = req.user.cmid;
     let groupId = req.params.group;
@@ -73,23 +78,27 @@ module.exports = {
       notFound(res);
     }
   },
+
   destroy(req, res) {
     Groups.removeOne(Number(req.params.group))
     .then(() => {
       res.redirect(`/groups`);
     }).catch(res.error500);
   },
+
   activate(req, res) {
     Groups.activateOne(Number(req.params.group))
     .then(() => {
       res.redirect(`/groups`);
     }).catch(res.error500);
   },
+
   address(req, res) {
     res.render("groups/address", {
       parameters: req.params
     });
   },
+
   addressUpdate(req, res) {
     let userID = req.user.cmid;
     let groupId = Number(req.params.group);
@@ -104,4 +113,5 @@ module.exports = {
       res.redirect(`${req.redirectUrlBase}/groups/current`);
     }).catch(res.error500);
   },
+  
 }
