@@ -73,7 +73,8 @@ module.exports = {
     let message  = req.body.message;
     let send     = moment(req.body.sendDate)
                     .tz(res.locals.local_tz)
-                    .add(Number(req.body.sendHour) - 1, "hours")
+                    .startOf("day")
+                    .add(Number(req.body.sendHour), "hours")
                     .format("YYYY-MM-DD HH:mm:ss");
 
     Notifications.create(
@@ -120,9 +121,12 @@ module.exports = {
     let comm           = req.body.commID ? req.body.commID : null;
     let subject        = req.body.subject;
     let message        = req.body.message;
-    let send           = moment(req.body.sendDate)
-                          .tz(res.locals.local_tz)
-                          .add(Number(req.body.sendHour) - 1, "hours")
+    let send           = moment(new Date(req.body.sendDate))
+                          .add(12, "hours")
+                          .tz(res.locals.organization.tz)
+                          .startOf("day")
+                          .add(Number(req.body.sendHour), "hours")
+                          .utc()
                           .format("YYYY-MM-DD HH:mm:ss");
 
     Notifications.editOne(
