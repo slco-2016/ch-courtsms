@@ -117,7 +117,7 @@ module.exports = {
   },
 
   addressSubmit(req, res) {
-    let user = req._getUser();
+    let user = req.getUser();
 
     let client = req.params.client;
     let subject  = req.body.subject;
@@ -139,7 +139,7 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    let user = req._getUser();
+    let user = req.getUser();
     console.log("user", user, "reqUser", req.user.cmid);
     let client = req.params.client;
 
@@ -179,7 +179,7 @@ module.exports = {
   },
 
   messagesSubmit(req, res) {
-    let user = req._getUser();
+    let user = req.getUser();
     let client = req.params.client;
     let subject  = "New Conversation";
     let content  = req.body.content;
@@ -217,7 +217,7 @@ module.exports = {
   },
 
   alter(req, res) {
-    let userId = req._getUser();
+    let userId = req.getUser();
     let client = req.params.client;
     let status = req.params.status == "open";
 
@@ -248,7 +248,7 @@ module.exports = {
   },
 
   transferSubmit(req, res) {
-    let fromUser = req._getUser();
+    let fromUser = req.getUser();
     let toUser = req.body.user;
     let client = res.locals.client.clid;
     let bundle = req.body.bundleConversations ? true : false;

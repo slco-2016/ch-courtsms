@@ -1,0 +1,72 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="/notifications">
+    <% include ../partials/cardExit %>
+  </a>
+  <div class="cardTitle">
+    Notification Message
+  </div>
+  <div class="cardSubtitle">
+    Use notifications to schedule messages to be sent in the future.
+  </div>
+</div>
+
+<div class="cardBody">
+  
+  <div class="formRow">
+    <form action="/notifications/create/templates">
+      <!-- Hidden components hold the send information from previous card view -->
+      <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
+      <input type="hidden" name="commID"   value="<%= parameters.commID %>" > 
+      <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
+      <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" > 
+
+      <input type="submit" id="useTemplate" class="formSubmit inverse" value="Load a template">      
+    </form>
+    </a>
+  </div>
+
+  <form method="post" action="/notifications/create">
+    <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
+    <input type="hidden" name="commID"   value="<%= parameters.commID %>" > 
+    <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
+    <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" > 
+    <div class="formRow <% if (!parameters.title) { %>subdued<% } %>">
+      <div class="formLabel"> Subject <small>(optional, not visible to clients)</small></div>
+      <div class="formInput">
+        <input  type="text" 
+                name="subject" 
+                value="<%= parameters.title %>" 
+                placeholder="Enter a subject for the notification here" 
+                maxlength="100">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Message Body </div>
+      <div class="formInput">
+        <textarea name="message" rows="5" maxlength="160" required><%= parameters.content %></textarea>
+      </div>
+    </div>
+
+    <input 
+      type="submit" 
+      class="formSubmit" 
+      value="Submit Notification Message">
+  </form>
+
+</div>
+
+
+<script type="text/javascript">
+  $(".subdued").click(function () {
+    $(this).removeClass("subdued");
+    $("input[name=subject]").val("");
+  });
+</script>
+
+
+
+<% include ../partials/cardFrameBottom %>

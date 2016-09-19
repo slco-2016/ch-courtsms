@@ -2,15 +2,18 @@ const Notifications = require('../models/notifications');
 const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 
+let moment = require("moment");
+let moment_tz = require("moment-timezone");
+
 module.exports = {
   index(req, res) {
-    let clientId = req.params.clientId || req.params.clientID || null;
+    let client = req.params.clientId || req.params.clientID || null;
     let status = req.query.status || "pending";
     let isSent = status === "sent";
     let strategy;
 
-    if (clientId) {
-      strategy = Notifications.findByClientID(clientId, isSent)
+    if (client) {
+      strategy = Notifications.findByClientID(client, isSent)
     } else {
       strategy = Notifications.findByUser(req.user.cmid, isSent);
     }
@@ -25,26 +28,35 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+
   new(req, res) {
-    Clients.findByUser(req.user.cmid)
+    let user = req.getUser();
+
+    Clients.findByUser(user)
     .then((clients) => {
+      console.log("cli", clients, user);
       res.render("notifications/create", {
         clients: clients
       })
     }).catch(res.error500);
   },
+
   compose(req, res) {
     res.render("notifications/compose", {
       parameters: req.query
     });
   },
+
   composeCreate(req, res) {
     res.render("notifications/compose", {
       parameters: req.body
     });
   },
+
   templates(req, res) {
-    Templates.findByUser(req.user.cmid)
+    let user = req.getUser();
+
+    Templates.findByUser(user)
     .then((templates) => {
       res.render("notifications/templates", {
         templates: templates,
@@ -52,10 +64,11 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+
   create(req, res) {
-    let userID   = req.user.cmid;
-    let clientID = req.body.clientID;
-    let commID   = req.body.commID == "" ? null : req.body.commID;
+    let user     = req.getUser();
+    let client   = req.body.clientID;
+    let comm     = req.body.commID == "" ? null : req.body.commID;
     let subject  = !req.body.subject ? "" : req.body.subject;
     let message  = req.body.message;
     let send     = moment(req.body.sendDate)
@@ -64,9 +77,9 @@ module.exports = {
                     .format("YYYY-MM-DD HH:mm:ss");
 
     Notifications.create(
-                    userID, 
-                    clientID, 
-                    commID, 
+                    user, 
+                    client, 
+                    comm, 
                     subject, 
                     message, 
                     send
@@ -75,13 +88,16 @@ module.exports = {
       res.redirect(`/notifications`);
     }).catch(res.error500);
   },
+
   edit(req, res) {
-    var clients;
-    Clients.findAllByUser(req.user.cmid)
+    let clients;
+    let user = req.getUser();
+    let notification = req.params.notification;
+
+    Clients.findAllByUser(user)
     .then((c) => {
       clients = c;
-
-      return Notifications.findByID(Number(req.params.notification))
+      return Notifications.findByID(Number(notification))
     }).then((n) => {
       if (n) {
         // Remove all closed clients except for if matches with notification
@@ -97,10 +113,11 @@ module.exports = {
       }
     }).catch(res.error500);
   },
+
   update(req, res) {
-    let notificationId = req.params.notification;
-    let clientID       = req.body.clientID;
-    let commID         = req.body.commID ? req.body.commID : null;
+    let notification   = req.params.notification;
+    let client         = req.params.client;
+    let comm           = req.body.commID ? req.body.commID : null;
     let subject        = req.body.subject;
     let message        = req.body.message;
     let send           = moment(req.body.sendDate)
@@ -109,28 +126,26 @@ module.exports = {
                           .format("YYYY-MM-DD HH:mm:ss");
 
     Notifications.editOne(
-                    notificationId, 
-                    clientID, 
-                    commID, 
+                    notification, 
+                    client, 
+                    comm, 
                     send, 
                     subject, 
                     message
-    ).then(() => {
+    ).then((notification) => {
       req.flash("success", "Edited notification.");
-      if (req.params.clientID) {
-        res.redirect(`/clients/${clientID}/notifications`);
-      } else {
-        res.redirect(`/notifications`);
-      }
+      res.redirect(`/clients/${notification.client}/notifications`);
     }).catch(res.error500);
   },
-  destroy(req, res) {
-    let clientID = req.params.clientID;
-    Notifications.removeOne(req.params.notification)
-    .then(() => {
+
+  remove(req, res) {
+    let notification = req.params.notification;
+
+    Notifications.removeOne(notification)
+    .then((notification) => {
       req.flash("success", "Removed notification.");
-      if (clientID) toRedirect = res.redirect(`/clients/${clientID}/notifications`);
-      else          toRedirect = res.redirect(`/notifications`);
+      res.redirect(`/clients/${notification.client}/notifications`);
+
     }).catch(res.error500);
-  },
+  }
 }

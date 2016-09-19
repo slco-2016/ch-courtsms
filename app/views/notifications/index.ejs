@@ -16,9 +16,7 @@
 </div>
 
 
-<% if (notifications.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
+<% if (notifications.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 
 <% notifications.forEach(function (n) { %>

@@ -43,5 +43,24 @@ module.exports = {
       req.flash("success", "Created new communication method.");
       res.redirect(`/clients/${client}/communications`);
     }).catch(error500(res));
+  },
+
+  remove(req, res) {
+    let client = req.params.client;
+    let comm = req.params.communication;
+    CommConns.findByClientID(client)
+    .then((commConns) => {
+      if (commConns.length > 1) {
+        Communications.removeOne(comm)
+        .then(() => {
+          req.flash("success", "Removed communication method.");
+          res.redirect(`/clients/${client}/communications`);
+        }).catch(error500(res));
+
+      } else {
+        req.flash("warning", "Can't remove the only remaining communication method.");
+        res.redirect(`/clients/${client}/communications`);
+      }
+    })
   }
 }

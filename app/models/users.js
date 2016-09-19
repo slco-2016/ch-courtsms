@@ -27,6 +27,10 @@ class Users extends BaseModel {
     })
   }
 
+  static returnUserIdFromResponse(res) {
+
+  }
+
   static findByOrg (orgID, activeStatus) {
     if (typeof activeStatus == "undefined") activeStatus = true;
 

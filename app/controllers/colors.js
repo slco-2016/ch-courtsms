@@ -44,7 +44,7 @@ module.exports = {
     }).catch(res.error500);
   },
 
-  destroy(req, res) {
+  remove(req, res) {
     ColorTags.removeColorTag(req.params.color)
     .then(() => {
       req.flash("success", "Color tag removed.");

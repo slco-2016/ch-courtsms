@@ -113,7 +113,7 @@ app.get("/logout", AccessController.logout);
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.update);
-app.get("/colors/:colorId/remove", ColorsController.destroy);
+app.get("/colors/:colorId/remove", ColorsController.remove);
 
 app.get("/notifications", NotificationsController.index);
 app.get("/notifications/create", NotificationsController.new);
@@ -123,7 +123,7 @@ app.get("/notifications/create/templates", NotificationsController.templates);
 app.post("/notifications/create", NotificationsController.create);
 app.get("/notifications/:notification/edit", NotificationsController.edit);
 app.post("/notifications/:notification/edit", NotificationsController.update);
-app.get("/notifications/:notification/remove", NotificationsController.destroy);
+app.get("/notifications/:notification/remove", NotificationsController.remove);
 
 app.get("/templates", TemplatesController.index);
 app.get("/templates/create", TemplatesController.new);
@@ -164,7 +164,10 @@ app.post("/clients/:client/edit/color", ColorsController.attribute);
 
 app.get("/clients/:client/communications", CommunicationsController.index);
 app.get("/clients/:client/communications/create", CommunicationsController.new);
-app.post("/clients/:clientId/communications/create", CommunicationsController.create);
+app.post("/clients/:client/communications/create", CommunicationsController.create);
+app.get("/clients/:client/communications/:communication/remove", CommunicationsController.remove);
+
+app.get("/clients/:client/notifications", NotificationsController.index);
 
 app.get("/org", DashboardController.orgIndex);
 

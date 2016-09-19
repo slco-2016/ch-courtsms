@@ -75,13 +75,14 @@ class Notifications {
     })
   }
 
-  static removeOne (notificationID) {
+  static removeOne (notification) {
     return new Promise((fulfill, reject) => {
       db("notifications")
         .update({ closed: true })
-        .where("notificationid", notificationID)
-      .then(() => {
-        fulfill()
+        .where("notificationid", notification)
+        .returning("*")
+      .then((n) => {
+        fulfill(n[0])
       }).catch(reject);
     })
   }
@@ -99,8 +100,9 @@ class Notifications {
           send: send
         })
         .where("notificationid", notificationID)
-      .then(() => {
-        fulfill()
+        .returning("*")
+      .then((n) => {
+        fulfill(n[0])
       }).catch(reject);
     })
   }

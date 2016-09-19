@@ -34,13 +34,16 @@ module.exports = {
 
   attachRoutingTools(req, res, next) {
 
-    req._getUser = () => {
+    req.getUser = () => {
       try {
-        let id = res.locals.client.cm;
-        // TODO: does the client object resolve all concerns?
-        // if (res.locals.level == "user") {
-        //   id = req.user.cmid;
-        // }
+        let id = req.user.cmid;
+        let l = res.locals;
+
+        // TODO: Make sure this effectively handles all cases
+        if (l.client) {
+          id = res.locals.client.cm;
+        }
+
         return id;
       } catch(e) {
         return null;
