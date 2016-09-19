@@ -4,8 +4,8 @@
 <link rel="stylesheet" type="text/css" href="/static/css/v4_clientsList.css">
 
 <div class="header">
-  <div class="column">color name</div>
   <div class="column">color</div>
+  <div class="column">color name</div>
   <div class="column">contact</div>
   <div class="column">client name</div>
   <div class="column">case manager</div>
@@ -24,21 +24,21 @@
   <div class="clientRow" data-client-color="<%= client.color_tag %>">
 
     <!-- color tag can only be edited if user level -->
-    <div class="column">
-      <% if (level === "user") { %>
-        <a href="<%=`/clients/${client.clid}/edit/color`%>">
-      <% } %>
-      <%= client.color_name %>
-      <% if (level === "user") { %>
-        </a>
-      <% } %>
-    </div>
-
     <div class="column" value="<%= client.color_name %>">
       <% if (level === "user") { %>
         <a href="<%=`/clients/${client.clid}/edit/color`%>">
       <% } %>
       <div class="colorTag" style="background-color: <%= client.color_tag %>"></div>
+      <% if (level === "user") { %>
+        </a>
+      <% } %>
+    </div>
+    
+    <div class="column">
+      <% if (level === "user") { %>
+        <a href="<%=`/clients/${client.clid}/edit/color`%>">
+      <% } %>
+      <%= client.color_name || `No group` %>
       <% if (level === "user") { %>
         </a>
       <% } %>

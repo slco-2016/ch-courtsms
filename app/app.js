@@ -51,12 +51,6 @@ app.use(passport.session());
 
 // Middleware
 const middleware = require('./middleware');
-app.use(middleware.logging);
-app.use(middleware.setLevel);
-app.use(middleware.attachLoggingTools);
-app.use(middleware.attachErrorHandlers);
-app.use(middleware.templateHelpers);
-
 // These need specific routes to run correctly
 // TODO: Why are there 4 db queries every time?
 app.use(middleware.fetchUserAlertsFeed);
@@ -65,6 +59,13 @@ app.use(middleware.fetchUserDepartment);
 app.use("/clients/:client", middleware.fetchClient);
 app.use("/org/clients/:client", middleware.fetchClient);
 
+// These need to go after the client, dept, user, etc. have been acquired
+app.use(middleware.logging);
+app.use(middleware.setLevel);
+app.use(middleware.attachLoggingTools);
+app.use(middleware.attachRoutingTools);
+app.use(middleware.attachErrorHandlers);
+app.use(middleware.templateHelpers);
 
 
 // TO DEPRECATE: Always run before routes
@@ -74,16 +75,17 @@ require("../routes/request-defaults")(app);
 // require("../routes/sms")(app);
 // require("../routes/voice")(app);
 
-const AccessController        = require('./controllers/access');
-const ClientsController       = require('./controllers/clients');
-const ColorsController        = require('./controllers/colors');
-const DashboardController     = require('./controllers/dashboard');
-const DepartmentsController   = require('./controllers/departments');
-const GroupsController        = require('./controllers/groups');
-const NotificationsController = require('./controllers/notifications');
-const RootController          = require('./controllers/root');
-const TemplatesController     = require('./controllers/templates');
-const UsersController         = require('./controllers/users');
+const AccessController          = require('./controllers/access');
+const ClientsController         = require('./controllers/clients');
+const ColorsController          = require('./controllers/colors');
+const CommunicationsController  = require('./controllers/communications');
+const DashboardController       = require('./controllers/dashboard');
+const DepartmentsController     = require('./controllers/departments');
+const GroupsController          = require('./controllers/groups');
+const NotificationsController   = require('./controllers/notifications');
+const RootController            = require('./controllers/root');
+const TemplatesController       = require('./controllers/templates');
+const UsersController           = require('./controllers/users');
 
 app.get("/", RootController.index);
 
@@ -154,10 +156,15 @@ app.get("/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/clients/:client/transfer", ClientsController.transferSubmit);
 
 app.get("/clients/:client/transcript", ClientsController.transcript);
-app.get("/clients/:client/messages", ClientsController.messageCraft);
-app.post("/clients/:client/messages", ClientsController.messageSubmit);
+app.get("/clients/:client/messages", ClientsController.messagesIndex);
+app.post("/clients/:client/messages", ClientsController.messagesSubmit);
+
 app.get("/clients/:client/edit/color", ColorsController.select);
 app.post("/clients/:client/edit/color", ColorsController.attribute);
+
+app.get("/clients/:client/communications", CommunicationsController.index);
+app.get("/clients/:client/communications/create", CommunicationsController.new);
+app.post("/clients/:clientId/communications/create", CommunicationsController.create);
 
 app.get("/org", DashboardController.orgIndex);
 

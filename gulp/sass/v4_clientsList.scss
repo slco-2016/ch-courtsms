@@ -13,8 +13,8 @@ $lightblue:   #4A90E2;
 $blue:        #3F69B6;
 $darkblue:    #344289;
 
-$width_row1:  10%;
-$width_row2:  5%;
+$width_row1:  5%;
+$width_row2:  10%;
 $width_row3:  5%;
 $width_row4:  20%;
 $width_row5:  15%;
@@ -61,7 +61,7 @@ $width_row11:  5%;
     }
     &:nth-child(2) {
       width: $width_row2;
-      text-align: center;
+      text-align: left;
     }
     &:nth-child(3) {
       width: $width_row3;
@@ -158,12 +158,12 @@ $width_row11:  5%;
 
     &:nth-child(1) {
       width: $width_row1;
-      text-align: right;
-      font-size: 12px;
+      text-align: center;
     }
     &:nth-child(2) {
       width: $width_row2;
       text-align: left;
+      font-size: 12px;
     }
     &:nth-child(3) {
       width: $width_row3;

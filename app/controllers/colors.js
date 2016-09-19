@@ -16,7 +16,7 @@ module.exports = {
     ColorTags.addNewColorTag(req.user.cmid, req.body.color, req.body.name)
     .then(() => {
       req.flash("success", "New color tag created.");
-      res.redirect("/colors");
+      res.redirect(`/colors`);
     }).catch(res.error500);
   },
 

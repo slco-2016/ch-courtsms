@@ -27,6 +27,39 @@ module.exports = {
         });
       },
     };
+
+    next();
+
+  },
+
+  attachRoutingTools(req, res, next) {
+
+    req._getUser = () => {
+      try {
+        let id = res.locals.client.cm;
+        // TODO: does the client object resolve all concerns?
+        // if (res.locals.level == "user") {
+        //   id = req.user.cmid;
+        // }
+        return id;
+      } catch(e) {
+        return null;
+      }
+    };
+
+    res._redirectURL = (path) => {
+      try {
+        let l = res.locals.level;
+        let base = "";
+        if (l === "org") {
+          base = "/org";
+        }
+        return `${base}${path}`;
+      } catch(e) {
+        return null;
+      }
+    };
+
     next();
 
   },
@@ -180,6 +213,9 @@ module.exports = {
   },
 
   fetchClient(req, res, next) {
+    // Set base case that you are viewing a client that is not yours
+    res.locals.userOwnsClient = false;
+
     let p = req.params;
     let client = p.client || p.clientId || p.clientID || null;
     let isNumber = !isNaN(client);
@@ -189,6 +225,12 @@ module.exports = {
       .then((c) => {
         if (c) {
           res.locals.client = c;
+
+          // If client is under user, then update user flag
+          if (c.cm == req.user.cmid) {
+            res.locals.userOwnsClient = true;
+          }
+
           next();
         } else {
           notFound(res);

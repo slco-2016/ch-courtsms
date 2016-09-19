@@ -196,26 +196,7 @@ class NotificationsView {
 
 
 
-router.get("/clients/:clientId/communications", (req, res) => {
-  CommConns.getClientCommunications(req.params.clientId)
-  .then((c) => {
-    if (c.length == 0) {
-      res.redirect(`/clients/${req.params.clientId}/communications/create`);
-    } else {
-      res.render("clients/communications", {
-        hub: {
-          tab: "contactMethods",
-          sel: null
-        },
-        communications: c
-      });
-    }
-  }).catch(error500(res));
-});
 
-router.get("/clients/:clientId/communications/create", (req, res) => {
-  res.render("clients/commConn")
-});
 
 router.post("/clients/:clientId/communications/create", (req, res) => {
   let clientId = req.params.clientId;

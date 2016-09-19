@@ -1,24 +1,9 @@
 const Clients = require('../models/clients');
 const Client = require('../models/client');
+const CommConns = require('../models/commConns');
+const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
-
-function _getUser (req, res) {
-  let id = res.locals.client.cm;
-  if (res.locals.level == "user") {
-    id = req.user.cmid;
-  }
-  return id;
-};
-
-function _redirectURL (res, rest) {
-  let l = res.locals.level;
-  let base = "";
-  if (l === "org") {
-    base = "/org";
-  }
-  return `${base}${rest}`;
-};
 
 module.exports = {
   
@@ -94,7 +79,7 @@ module.exports = {
             so,  // note these should be renamed
             otn  // this one as well
     ).then(() => {
-      res.redirect(_redirectURL(res, `/clients`));
+      res.redirect(res._redirectURL(`/clients`));
     }).catch(res.error500);
   },
 
@@ -121,7 +106,7 @@ module.exports = {
     ).then(() => {
       req.logActivity.client(client);
       req.flash("success", "Edited client.");
-      res.redirect(_redirectURL(res, `/clients`));
+      res.redirect(res._redirectURL(`/clients`));
     }).catch(res.error500);
   },
 
@@ -132,10 +117,7 @@ module.exports = {
   },
 
   addressSubmit(req, res) {
-    let userId   = res.locals.client.cm;
-    if (res.locals.level == "user") {
-      userId = req.user.cmid;
-    }
+    let user = req._getUser();
 
     let client = req.params.client;
     let subject  = req.body.subject;
@@ -144,19 +126,24 @@ module.exports = {
     let method;
 
     if (commID) {
-      method = Messages.startNewConversation(userId, client, subject, content, commID);
+      method = Messages.startNewConversation(user, client, subject, content, commID);
     } else {
-      method = Messages.smartSend(userId, client, subject, content);
+      method = Messages.smartSend(user, client, subject, content);
     }
 
     method.then(() => {
       req.logActivity.client(client);
       req.flash("success", "Message to client sent.");
-      res.redirect(_redirectURL(res, `/clients`));
+      res.redirect(res._redirectURL(`/clients`));
     }).catch(res.error500);
   },
 
-  messageCraft(req, res) {
+  messagesIndex(req, res) {
+    let user = req._getUser();
+    console.log("user", user, "reqUser", req.user.cmid);
+    let client = req.params.client;
+
+    // determine if we should filter by type
     let methodFilter = "all";
     if (req.query.method == "texts") methodFilter = "cell";
 
@@ -164,16 +151,14 @@ module.exports = {
     if (isNaN(convoFilter)) convoFilter = null;
 
     let conversations, messages;
-    Conversations.findByUserAndClient(req.user.cmid, req.params.client)
+    Conversations.findByUserAndClient(user, client)
     .then((convos) => {
       conversations = convos;
-      return Messages.findByClientID(req.user.cmid, req.params.client)
+      return Messages.findByClientID(user, client)
     }).then((msgs) => {
       messages = msgs.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == "all") {
-          if (msg.convo == convoFilter || convoFilter == null) return true;
-          else return false;
-
+          return msg.convo == convoFilter || convoFilter == null;
         } else { 
           return false; 
         }
@@ -193,13 +178,14 @@ module.exports = {
     }).catch(res.error500);
   },
 
-  messageSubmit(req, res) {
+  messagesSubmit(req, res) {
+    let user = req._getUser();
     let client = req.params.client;
     let subject  = "New Conversation";
     let content  = req.body.content;
     let commID   = req.body.commID;
 
-    Conversations.getMostRecentConversation(req.user.cmid, client)
+    Conversations.getMostRecentConversation(user, client)
     .then((conversation) => {
       // Use existing conversation if exists and recent (lt 5 days)
       var now, lastUpdated, recentOkay = false;
@@ -214,24 +200,24 @@ module.exports = {
         .then(() => {
           req.logActivity.client(client);
           req.logActivity.conversation(conversation.convid);
-          res.redirect(_redirectURL(res, `/clients/${client}/messages`));
+          res.redirect(res._redirectURL(`/clients/${client}/messages`));
         }).catch(res.error500);
       
       // Otherwise create a new conversation
       } else {
-        Conversations.create(req.user.cmid, client, subject, true)
+        Conversations.create(user, client, subject, true)
         .then((conversationID) => {
           return Messages.sendOne(commID, content, conversationID)
         }).then(() => {
           req.logActivity.client(client);
-          res.redirect(_redirectURL(res, `/clients/${client}/messages`));
+          res.redirect(res._redirectURL(`/clients/${client}/messages`));
         }).catch(res.error500);
       }
     }).catch(res.error500);
   },
 
   alter(req, res) {
-    let userId = _getUser(req, res);
+    let userId = req._getUser();
     let client = req.params.client;
     let status = req.params.status == "open";
 
@@ -239,7 +225,7 @@ module.exports = {
     .then(() => {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
-      res.redirect(_redirectURL(res, `/clients`));
+      res.redirect(res._redirectURL(`/clients`));
     }).catch(res.error500);
   },
 
@@ -262,7 +248,7 @@ module.exports = {
   },
 
   transferSubmit(req, res) {
-    let fromUser = _getUser(req, res);
+    let fromUser = req._getUser();
     let toUser = req.body.user;
     let client = res.locals.client.clid;
     let bundle = req.body.bundleConversations ? true : false;
@@ -273,7 +259,7 @@ module.exports = {
         Client.transfer(client, fromUser, u.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
-          res.redirect(_redirectURL(res, `/clients`));
+          res.redirect(res._redirectURL(`/clients`));
         }).catch(res.error500);
 
       } else {

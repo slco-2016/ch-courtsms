@@ -60,12 +60,20 @@
     <form method="post"
           id="newMessage" 
           action="<%=`/clients/${client.clid}/messages`%>">
-      <div class="mini">
-        <div class="messageInput">
-          <div class="left">Start typing message...</div>
-          <div class="right"><i class="fa fa-keyboard-o" aria-hidden="true"></i> </div>
+      <% if (userOwnsClient) { %>
+        <div class="mini" id="typeBox">
+          <div class="messageInput">
+            <div class="left">Start typing message...</div>
+            <div class="right"><i class="fa fa-keyboard-o" aria-hidden="true"></i> </div>
+          </div>
         </div>
-      </div>
+      <% } else { %>
+        <div class="mini">
+          <div class="messageInput disabled">
+            Viewing other user's client conversation log, use clients list to send quick messages or transfer client to use conversation view.
+          </div>
+        </div>
+      <% } %>
 
       <div class="full">
         <div class="messageInput">
@@ -102,9 +110,9 @@
 <script type="text/javascript">
   // Toggle Writing View for Message Entry
   function toggleTypeBox () {
-    $(".mini").toggle();
+    $("#typeBox").toggle();
     $(".full").toggle();
-    if ($(".mini").is(":visible")) {
+    if ($("#typeBox").is(":visible")) {
       $(".messageStream").css("margin-bottom", 60);
     } else { 
       $(".messageStream").css("margin-bottom", 150);
@@ -138,7 +146,7 @@
 
   $(window).resize(adjustDivs)
 
-  $(".mini").click(toggleTypeBox);
+  $("#typeBox").click(toggleTypeBox);
   $("#closeTypeBox").click(toggleTypeBox);
 
   $("textarea[name=content]").keyup(checkSubmitValid);

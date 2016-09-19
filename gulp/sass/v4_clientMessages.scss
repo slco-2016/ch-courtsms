@@ -174,7 +174,17 @@ $width_row5:  5%;
           }
         }
 
+        &.disabled {
+          cursor: not-allowed;
+          font-size: 12px;
+
+          &:hover {
+            box-shadow: none;
+          }
+        }
+
         &:hover {
+          background-color: $blue;
           color: $offwhite;
           box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
         }
