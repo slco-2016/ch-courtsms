@@ -14,7 +14,7 @@ var express = require("express");
 var router = express.Router({mergeParams: true});
 
 // DB via knex.js to run queries
-var db  = require("../../server/db");
+var db  = require("../../app/db");
 
 // Twilio tools
 var twilio = require("twilio");

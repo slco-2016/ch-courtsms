@@ -1,4 +1,4 @@
-var db = require("../server/db");
+var db = require("../app/db");
 
   db("cms")
   .limit(1)

@@ -54,7 +54,7 @@ This is how we send and receive text messages. Set up an account and reset the p
 
 ## Getting developer environment running
 ##### Setting development and production environment defaults
-With those two files set up, you should be good to go. In order to set which environment you are working in, navigate to `server/db.js`. At the top of that file, the variable `env` should be set in the following manner: `var env = "development"`. You can update this variable to whatever object keys you have in you `knexfile.js`. This will allow you to control whether you are working in, for example, a testing environment, a development environment, or a production environment.
+With those two files set up, you should be good to go. In order to set which environment you are working in, navigate to `app/db.js`. At the top of that file, the variable `env` should be set in the following manner: `var env = "development"`. You can update this variable to whatever object keys you have in you `knexfile.js`. This will allow you to control whether you are working in, for example, a testing environment, a development environment, or a production environment.
 
 ##### Migrations
 To run migrations, you can run the following script to run to latest migration.

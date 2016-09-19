@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-var db  = require("../server/db");
+var db  = require("../app/db");
 var sms = require("../utils/utils.js")["sms"];
 var pass = require("../utils/utils.js")["pass"];
 var orgtools = require("../utils/utils.js")["orgs"];

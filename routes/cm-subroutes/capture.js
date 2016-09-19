@@ -7,7 +7,7 @@ var express = require("express");
 var router = express.Router();
 
 // DB via knex.js to run queries
-var db  = require("../../server/db");
+var db  = require("../../app/db");
 
 
 

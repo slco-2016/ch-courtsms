@@ -1,0 +1,42 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <div class="cardTitle">Password Reset</div>
+    <div class="cardSubtitle">Reset the password for <%= reset.email %>'s account. This action cannot be undone.</div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post">
+
+    <input type="hidden" name="pwresid" value="<%= reset.pwresid %>">
+    <input type="hidden" name="cmid" value="<%= reset.cmid %>">
+    <input type="hidden" name="uid" value="<%= reset.uid %>">
+
+    <div class="formRow">
+      <div class="formLabel"> Password </div>
+      <div class="formInput">
+        <input class="formInput" type="password" name="pass" value="" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Password (re-enter) </div>
+      <div class="formInput">
+        <input class="formInput" type="password" name="pass2" value="" required>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Update Password">
+
+  </form>
+
+  <div style="padding: 20px;">
+    <center><small>
+      <a href="/login"><b>Return to main Login page.</b></a>
+    </small></center>
+  </div>
+
+</div>
+
+<% include ../partials/cardFrameBottom %>

@@ -28,6 +28,7 @@ body {
   box-shadow: none;
   border: 0;
   color: $darkblue;
+  margin: 0px;
 }
 
 // SCSS
@@ -37,9 +38,10 @@ body {
   width: 500px;
   overflow-x: hidden;
   
-  margin-top: 70px;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 70px;
+  margin-bottom: 0px;
 
   border-radius: 10px;
 
@@ -59,6 +61,29 @@ body {
         &:hover polygon {
           fill: $darkblue;
         }
+      }
+    }
+
+    .cardLogo {
+      font-size: 35px;
+      font-weight: 900;
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 60px;
+      color: #2F8CE8;
+
+      .icon {
+        svg {
+          height: 120px;
+        }
+      }
+      .title {
+        svg {
+          width: 80%;
+        }
+      }
+      path {
+        fill: $darkblue;
       }
     }
 
@@ -143,7 +168,7 @@ body {
           margin-right: 20px;
         }
 
-        input[type=text], input[type=email], input[list=suggestionList] {
+        input[type=text], input[type=email], input[list=suggestionList],  input[type=password] {
           background: $white;
           width: 420px;
           font-size: 12px;

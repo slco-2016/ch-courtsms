@@ -1,4 +1,4 @@
-const db = require("../server/db");
+const db = require("../app/db");
 const nodemailer = require("nodemailer");
 const colors = require("colors");
 

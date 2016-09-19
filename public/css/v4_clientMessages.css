@@ -98,7 +98,13 @@
           text-align: right; }
           .rightContent .responseBox .mini .messageInput .right .fa {
             padding-right: 15px; }
+        .rightContent .responseBox .mini .messageInput.disabled {
+          cursor: not-allowed;
+          font-size: 12px; }
+          .rightContent .responseBox .mini .messageInput.disabled:hover {
+            box-shadow: none; }
         .rightContent .responseBox .mini .messageInput:hover {
+          background-color: #3F69B6;
           color: #E8ECEF;
           box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5); }
     .rightContent .responseBox .full {

@@ -1,4 +1,4 @@
-let db = require("../../../server/db");
+let db = require("../../../app/db");
 let nodemailer = require("nodemailer");
 
 let credentials = require("../../../credentials");

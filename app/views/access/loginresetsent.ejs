@@ -1,0 +1,31 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <div class="cardTitle">Email Sent</div>
+    <div class="cardSubtitle">An email has been sent. Please check your email to reset your password. Enter your address to resent the message, if needed.</div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post">
+
+    <div class="formRow">
+      <div class="formLabel"> Resend to Email Address </div>
+      <div class="formInput">
+        <input class="formInput" type="email" name="email" value="<%= cm.email %>" required>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Resend Email">
+
+  </form>
+
+  <div style="padding: 20px;">
+    <center><small>
+      <a href="/login"><b>Return to main Login page.</b></a>
+    </small></center>
+  </div>
+
+</div>
+
+<% include ../partials/cardFrameBottom %>
