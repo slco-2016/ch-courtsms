@@ -28,7 +28,7 @@
     </div>
     <div class="column">
       <span class="time">
-        <%= moment.tz(n.send, local_tz).format('MMM. Do, hh:mmA') %>
+        <%= moment.tz(n.send, organization.tz).format('MMM. Do, hh:mmA') %>
       </span>
     </div>
     <div class="column">

@@ -11,9 +11,9 @@
   <div class="column">delete</div>
 </div>
 
-<% if (templates.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
+
+<% if (templates.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
 
 <% templates.forEach(function (template) { %>
   <div class="templateRow">

@@ -4,6 +4,8 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+let moment = require("moment");
+let moment_tz = require("moment-timezone");
 
 // TO DOS
 // Check if arrays are indeed arrays and that they have length > 0
@@ -89,6 +91,8 @@ class Notifications {
 
   static editOne (notificationID, clientID, commID, send, subject, message) {
     if (!commID || commID == "null") commID = null;
+    var f = moment(send).format("ha z")
+    console.log("SEND ", f);
     
     return new Promise((fulfill, reject) => {
       db("notifications")

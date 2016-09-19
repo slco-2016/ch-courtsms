@@ -41,9 +41,9 @@ module.exports = {
     }).then((counts) => {
       countsByWeek = counts;
 
-      res.render("dashboard", {
+      res.render("dashboard/index", {
         hub: {
-          tab: "dashboard/index",
+          tab: "dashboard",
           sel: null
         },
         users:            users,
