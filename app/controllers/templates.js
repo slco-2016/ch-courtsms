@@ -1,6 +1,7 @@
 const Templates = require('../models/templates');
 
 module.exports = {
+
   index(req, res) {
     Templates.findByUser(req.user.cmid)
     .then((templates) => {
@@ -13,9 +14,11 @@ module.exports = {
       });
     }).catch(res.error500);
   },
+
   new(req, res) {
     res.render("templates/create");
   },
+
   create(req, res) {
     let orgID   = req.user.org;
     let userID  = req.user.cmid;
@@ -27,6 +30,7 @@ module.exports = {
       res.redirect(`/templates`);
     }).catch(res.error500);
   },
+
   destroy(req, res) {
     Templates.removeOne(req.params.template)
     .then(() => {
@@ -34,6 +38,7 @@ module.exports = {
       res.redirect(`/templates`);
     }).catch(res.error500);
   },
+
   edit(req, res) {
     Templates.findByID(req.params.template)
     .then((template) => {
@@ -46,6 +51,7 @@ module.exports = {
       }
     }).catch(res.error500);
   },
+
   update(req, res) {
     const templateId = req.params.template;
     const title   = req.body.title;
@@ -56,4 +62,5 @@ module.exports = {
       res.redirect(`/templates`);
     }).catch(res.error500);
   },
+  
 }
