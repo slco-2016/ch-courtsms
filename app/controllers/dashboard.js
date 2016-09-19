@@ -4,7 +4,7 @@ const Messages = require('../models/messages');
 
 module.exports = {
 
-  orgIndex(req, res) {
+  org(req, res) {
     let departments;
     let departmentFilter = req.user.department || Number(req.query.department) || null;
     let userFilter = req.query.user || null;
@@ -25,7 +25,7 @@ module.exports = {
       users = u;
 
       if (departmentFilter) {
-        users = users.filter((u) => { return u.department == departmentFilter});
+        users = users.filter((departmentUser) => { return departmentUser.department == departmentFilter});
         return Messages.countsByDepartment(req.user.org, departmentFilter, "day")
       } else {
         return Messages.countsByOrg(req.user.org, "day")

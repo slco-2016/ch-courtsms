@@ -28,8 +28,8 @@ module.exports = {
 
     method.then((clients) => {
       if (req.query.limitByUser) {
-        clients = clients.filter((c) => {
-          return Number(c.cm) === Number(req.query.limitByUser);
+        clients = clients.filter((client) => {
+          return Number(client.cm) === Number(req.query.limitByUser);
         });
       }
 
@@ -45,16 +45,17 @@ module.exports = {
   },
 
   new(req, res) {
-    let c = req.user.class;
-    let l = res.locals.level;
-    if (l === "user") {
+    let userClass = req.user.class;
+    let level = res.locals.level;
+    let org = req.user.org;
+    if (level === "user") {
       res.render("clients/create", { users: null });
     } else {
-      Users.findByOrg(req.user.org)
+      Users.findByOrg(org)
       .then((users) => {
-        let d = req.user.department;
-        if (d && c !== "owner") {
-          users = users.filter((u) => { return u.department == d });
+        let department = req.user.department;
+        if (department && userClass !== "owner") {
+          users = users.filter((user) => { return user.department == department; });
         }
         res.render("clients/create", { users: users });
       }).catch(res.error500);

@@ -169,7 +169,7 @@ app.get("/clients/:client/communications/:communication/remove", CommunicationsC
 
 app.get("/clients/:client/notifications", NotificationsController.index);
 
-app.get("/org", DashboardController.orgIndex);
+app.get("/org", DashboardController.org);
 
 app.get("/org/users", UsersController.index);
 app.get("/org/users/create", UsersController.new);
