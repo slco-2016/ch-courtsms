@@ -236,7 +236,8 @@ module.exports = {
 
           next();
         } else {
-          notFound(res);
+          console.log("Client being looked (and not found): " + client);
+          res.status(404).render('v4/general/404');
         }
       }).catch(res.error500);
     } else {

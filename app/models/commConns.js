@@ -77,8 +77,6 @@ class CommConns {
   }
 
   static createOne (clientID, type, name, value) {
-      console.log("HEY", Communications)
-      console.log("HEY", Communications.findByValue)
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
       .then((comm) => {

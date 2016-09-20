@@ -4,7 +4,7 @@ const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 
 module.exports = {
-  
+
   index(req, res) {
     let client = req.params.client;
     CommConns.getClientCommunications(client)
@@ -45,6 +45,7 @@ module.exports = {
       commConns = commConns.filter((commConn) => {
         return String(value) === String(commConn.value);
       });
+      console.log("received commconns", commConns, value);
       if (commConns.length > 0) {
         req.flash("warning", "Client already has that method.");
         res.redirect(`/clients/${client}/communications`);

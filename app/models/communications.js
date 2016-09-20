@@ -60,7 +60,6 @@ class Communications {
 
   static createOne (type, description, value) {
     return new Promise((fulfill, reject) => {
-      console.log("commIDs");
       db("comms")
         .insert({
           type: type,

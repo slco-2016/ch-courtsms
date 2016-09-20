@@ -79,7 +79,7 @@ module.exports = {
             dob, 
             so,  // note these should be renamed
             otn  // this one as well
-    ).then(() => {
+    ).then((client) => {
       res.redirect(res._redirectURL(`/clients`));
     }).catch(res.error500);
   },

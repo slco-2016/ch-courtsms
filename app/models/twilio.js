@@ -35,7 +35,7 @@ class Twilio {
         } else { reject("Function check_new_unknown_msg failed to return row values correctly.") };
       }).catch(function (err) { reject(err); });
     });
-  },
+  }
 
   static check_last_unread (msg) {
     return new Promise ((fulfill, reject) => {
@@ -47,14 +47,14 @@ class Twilio {
         } else { reject("Function check_last_unread failed to return row values correctly.") };
       }).catch(function (err) { reject(err); });
     });
-  },
+  }
 
   static log_sent_msg (msg, msgid) {
     return new Promise ((fulfill, reject) => {
       var rawQuery = "INSERT INTO msgs (convo, comm, content, inbound, read, created) VALUES ( (SELECT convo FROM msgs WHERE msgs.msgid = " + msgid + "), (SELECT comm FROM msgs WHERE msgs.msgid = " + msgid + "), '" + msg + "', FALSE, FALSE, now() );";
       db.raw(rawQuery).then(function (res) { fulfill(); }).catch(function (err) { reject(err); });
     });
-  },
+  }
 
   static process_incoming_msg (from, text, tw_status, tw_sid) {
     var sms = this;
@@ -92,7 +92,7 @@ class Twilio {
       function errReject (err) { reject(String(err)); };
 
     });
-  },
+  }
 
   static clean_phonenum (from) {
     if (from) {
@@ -103,7 +103,7 @@ class Twilio {
       } else { return null; }
 
     } else { return null; }
-  },
+  }
   
   static get_or_create_comm_device (from) {
     return new Promise ((fulfill, reject) => {
@@ -134,7 +134,7 @@ class Twilio {
 
       }).catch(function (err) { reject(err); });
     });
-  },
+  }
   
   static get_clients (commid) {
     return new Promise ((fulfill, reject) => {
@@ -149,7 +149,7 @@ class Twilio {
 
       }).catch(function (err) { reject(err); });
     });
-  },
+  }
   
   static get_or_create_convos (clients, commid, from) {
     return new Promise ((fulfill, reject) => {
@@ -234,7 +234,7 @@ class Twilio {
         }
       }).catch(function (err) { reject(err); });
     });
-  },
+  }
 
   static register_message (text, commid, convos, tw_status, tw_sid) {
 
@@ -275,7 +275,7 @@ class Twilio {
         reject(err);
       });
     });
-  },
+  }
 
   static logIBMSensitivityAnalysis (m) {
     console.log("----------------------");

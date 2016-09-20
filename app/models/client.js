@@ -36,7 +36,6 @@ class Client {
         .limit(1)
 
       .then(function (clients) {
-
         // Need to make sure there is a default color_tag color
         finalClientsObject = clients.map(function (client) {
           if (!client.color_tag) client.color_tag = "#898989";
@@ -119,9 +118,9 @@ class Client {
           so:     so,
           active: true
         })
-        .returning("clid")
-      .then((clientIDs) => {
-        fulfill(clientIDs[0]);
+        .returning("*")
+      .then((clients) => {
+        fulfill(clients[0]);
       }).catch(reject);
     });
   }

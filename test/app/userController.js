@@ -5,6 +5,7 @@ const should = require('should');
 const APP = require('../../app/app')
 
 const Client = require('../../app/models/client');
+const Clients = require('../../app/models/clients');
 const Users = require('../../app/models/users');
 
 const owner = supertest.agent(APP)
@@ -87,8 +88,8 @@ describe('Basic http req tests', function() {
       });
   });
 
-  it ('logged in primary shoud not be able to create client', function(done) {
-    primary.post('/org/clients/create')
+  it ('logged in primary shoud not be able to create user', function(done) {
+    primary.post('/org/users/create')
       .expect(302)
       .expect('Location', '/login')
       .end(function(err, res) {
@@ -96,7 +97,7 @@ describe('Basic http req tests', function() {
       })
   });
 
-  it('owner should be able to create client', function(done) {
+  it('owner should be able to create user', function(done) {
     owner.post('/org/users/create')
       .send({
         first: 'kuan',
@@ -118,11 +119,28 @@ describe('Basic http req tests', function() {
   });
 
   it('primary user should have option to load templates on quick message', function(done) {
-    primary.get('/clients/1/address')
-      .expect(200)
+    owner.post('/org/clients/create')
+      .send({
+        targetUser: 2,
+        first: "Jim",
+        middle: "K",
+        last: "Halpert",
+        dob: "1990-02-03",
+        uniqueID1: 324,
+        uniqueID2: 23234,
+      })
+      .expect(302)
       .end(function(err, res) {
-        res.text.should.match(/Load a template/)
-        done(err);
+        if (err) {
+          done(err);
+        } else {
+          primary.get('/clients/2/address')
+            .expect(200)
+            .end(function(err, res) {
+              res.text.should.match(/Load a template/)
+              done(err);
+            });
+        }
       });
   });
 
@@ -159,7 +177,7 @@ describe('Basic http req tests', function() {
   });
 
   it('owner should be able to open any client', function(done) {
-    owner.get('/org/clients/1/alter/close')
+    owner.get('/org/clients/1/alter/open')
     .expect(302)
       .end(function(err, res) {
         Client.findByID(1)
@@ -173,6 +191,21 @@ describe('Basic http req tests', function() {
       });
   });
 
+  it('primary can add their own client', function(done) {
+    primary.post('/clients/create')
+      .field('first', 'Harry')
+      .field('middle', 'E')
+      .field('last', 'Kroner')
+      .field('dob', '1927-10-12')
+      .field('so', 3333)
+      .field('otn', 9238)
+    .expect(302)
+    .expect('Location', '/clients')
+      .end(function(err, res) {
+        done(err);
+      });
+  });
+
   it('should be able to add a comm method to a client', function(done) {
     owner.post('/clients/1/communications/create')
       .field('description', 'DummyFoo1')
@@ -180,22 +213,71 @@ describe('Basic http req tests', function() {
       .field('value', '18288384828')
     .expect(302)
       .end(function(err, res) {
-        res.text.should.match(/Created new communication method/);
-        done(err);
+        if (err) {
+          done(err);
+        } else {
+          owner.get('/clients/1/communications')
+          .expect(200)
+            .end(function(err, res) {
+              res.text.should.match(/Created new communication method/);
+              done(err);
+            })
+        }
       });
   });
 
-  it('you should not be able to add the same communication method two times if first is still active', function(done) {
+  it('should not be able to add the same communication method two times if first is still active', function(done) {
     owner.post('/clients/1/communications/create')
-      .field('description', 'DummyFoo2')
-      .field('type', 'cell')
-      .field('value', '18288384828')
+      .send({
+        description: 'DummyFoo2',
+        type: 'cell',
+        value: '4444444444',
+      })
     .expect(302)
       .end(function(err, res) {
-        res.text.should.match(/Client already has that method/);
-        done(err);
+        if (err) {
+          done(err);
+        } else {
+          owner.get('/clients/1/communications')
+          .expect(200)
+            .end(function(err, res) {
+
+              if (err) {
+                done(err);
+              } else {
+                owner.post('/clients/1/communications/create')
+                  .send({
+                    description: 'DummyFoo2',
+                    type: 'cell',
+                    value: '4444444444',
+                  })
+                .expect(302)
+                  .end(function(err, res) {
+                    if (err) {
+                      done(err);
+                    } else {
+                      owner.get('/clients/1/communications')
+                      .expect(200)
+                        .end(function(err, res) {
+                          res.text.should.match(/Client already has that method/);
+                          done(err);
+                        })
+                    }
+                  });
+              }
+            })
+        }
       });
   });
+
+  // it('posting to voice should receive xml voice twilio response object', function(done) {
+  //   anonymous.get('/twilio/voice')
+  //     .expect(200)
+  //     .end(function(err, res) {
+  //       console.log(res.text)
+  //       done(err);
+  //     });
+  // });
 
   // Write a test for clients list page features first
   // Then write features after
