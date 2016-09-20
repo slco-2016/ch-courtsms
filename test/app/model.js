@@ -27,7 +27,7 @@ describe('BaseModel checks', function() {
     done();
   })
 
-  it("BaseModel should be angry if we "+
+  it("BaseModel should be angry if we " +
     "don't have all the correct attributes", function(done) {
       
       should.not.exist(TestModel.tableName)

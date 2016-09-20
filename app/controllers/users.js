@@ -1,6 +1,8 @@
 const Departments = require('../models/departments');
 const Users = require('../models/users');
 
+const emailer = require("../lib/emailer")
+
 module.exports = {
 
   index(req, res) {
