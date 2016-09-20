@@ -37,10 +37,9 @@ module.exports = {
     req.getUser = () => {
       try {
         let id = req.user.cmid;
-        let l = res.locals;
 
         // TODO: Make sure this effectively handles all cases
-        if (l.client) {
+        if (res.locals.client) {
           id = res.locals.client.cm;
         }
 
@@ -50,17 +49,18 @@ module.exports = {
       }
     };
 
-    res._redirectURL = (path) => {
+    res.levelSensitiveRedirect = (path) => {
+      let path = "";
       try {
-        let l = res.locals.level;
         let base = "";
-        if (l === "org") {
+        if (res.locals.level === "org") {
           base = "/org";
         }
-        return `${base}${path}`;
+        path = `${base}${path}`;
       } catch(e) {
-        return null;
+        path = "/";
       }
+      res.redirect(path);
     };
 
     next();

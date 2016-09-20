@@ -104,10 +104,6 @@ app.use(auth.isLoggedIn);
 
 app.get("/logout", AccessController.logout);
 
-// TODO: Okay to drop these?
-// app.use("/", require("../../routes/user"));
-// app.use("/", require("../../routes/org"));
-
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.update);
 app.get("/colors/:colorId/remove", ColorsController.remove);

@@ -34,7 +34,7 @@ module.exports = {
     Groups.insertNew(userID, name, clientIDs)
     .then(() => {
       req.flash("success", "Created new group.");
-      res.redirect(`${req.redirectUrlBase}/groups/current`);
+      res.redirect(`/groups`);
     }).catch(res.error500);
   },
 
@@ -110,7 +110,7 @@ module.exports = {
     Groups.addressMembers(userID, groupId, title, content)
     .then(() => {
       req.flash("success", "Messaged group members.");
-      res.redirect(`${req.redirectUrlBase}/groups/current`);
+      res.redirect(`/groups`);
     }).catch(res.error500);
   },
   
