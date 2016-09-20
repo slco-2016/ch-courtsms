@@ -5,7 +5,7 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 
 
-const CommConns = require("./commConns");
+
 
 
 // Class
@@ -76,4 +76,4 @@ class Communications {
 
 }
 
-module.exports = Communications
+module.exports = Communications;

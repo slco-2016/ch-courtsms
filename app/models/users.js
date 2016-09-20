@@ -44,7 +44,7 @@ class Users extends BaseModel {
       .then((users) => {
         fulfill(users);
       }).catch(reject);
-    })
+    });
   }
 
   static findAllByDepartment (departmentID) {
@@ -73,12 +73,26 @@ class Users extends BaseModel {
     })
   }
 
-  static changeActivityStatus (userID, activeStatus) {
-    if (typeof activeStatus == "undefined") activeStatus = false;
+  static findById (user) {
     return new Promise((fulfill, reject) => {
       db("cms")
-        .where("cmid", userID)
-        .update({ active: activeStatus })
+        .select("cms.*", "departments.name as department_name")
+        .leftJoin("departments", "departments.department_id", "cms.department")
+        .where("cms.cmid", user)
+        .limit(1)
+      .then((users) => {
+        fulfill(users[0]);
+      }).catch(reject);
+    });
+  }
+
+  static changeActivityStatus (user, status) {
+    if (typeof status == "undefined") status = false;
+    
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .where("cmid", user)
+        .update({ active: status })
       .then(() => {
         fulfill();
       }).catch(reject);
