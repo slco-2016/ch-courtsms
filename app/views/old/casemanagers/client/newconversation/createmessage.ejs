@@ -47,7 +47,7 @@
         <div class="form-input">
           <input  type="text" style="display: none;"
                   id="subjectInputBox"
-                  value="<%= (template && template.title !== '') ? template.title : 'New Conversation on ' + moment.tz(local_tz).format("MM/DD"); %>"
+                  value="<%= (template && template.title !== '') ? template.title : 'New Conversation on ' + moment.tz(organization.tz).format("MM/DD"); %>"
                   name="subject" maxlength="30" required>
         </div>
       </div>

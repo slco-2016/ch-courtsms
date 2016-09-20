@@ -63,7 +63,7 @@
     <div class="column">
       <small>
         <i class="fa fa-clock-o" aria-hidden="true"></i>
-        <%= moment.tz(client.updated, local_tz).fromNow() %>
+        <%= moment.tz(client.updated, organization.tz).fromNow() %>
       </small>
     </div>
     <div class="column">

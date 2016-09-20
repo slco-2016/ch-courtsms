@@ -61,15 +61,14 @@ app.use("/org/clients/:client", middleware.fetchClient);
 
 // These need to go after the client, dept, user, etc. have been acquired
 app.use(middleware.logging);
-app.use(middleware.setLevel);
+app.use(middleware.setApplicationDetails);
+app.use(middleware.setUserAndLevel);
+
+app.use(middleware.attachErrorHandlers);
 app.use(middleware.attachLoggingTools);
 app.use(middleware.attachRoutingTools);
-app.use(middleware.attachErrorHandlers);
+app.use(middleware.attachTemplateLibraries);
 app.use(middleware.templateHelpers);
-
-
-// TO DEPRECATE: Always run before routes
-require("../routes/request-defaults")(app);
 
 const AccessController          = require('./controllers/access');
 const ClientsController         = require('./controllers/clients');

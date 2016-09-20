@@ -20,7 +20,7 @@
           <%= department.name %>
         </div>
         <div class="date">
-          <div class="day">Created on <%= moment.tz(department.created, local_tz).format("MM/DD/YY") %></div>
+          <div class="day">Created on <%= moment.tz(department.created, organization.tz).format("MM/DD/YY") %></div>
         </div>
       </div>
     </a>
@@ -38,7 +38,7 @@
             <%= targetUser.last + ', ' + targetUser.first  %>
           </div>
           <div class="date">
-            <div class="day">Updated on <%= moment.tz(targetUser.updated, local_tz).format("MM/DD/YY") %></div>
+            <div class="day">Updated on <%= moment.tz(targetUser.updated, organization.tz).format("MM/DD/YY") %></div>
           </div>
         </div>
       </a>

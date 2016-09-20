@@ -37,7 +37,7 @@
     </div>
     <div class="column">
       <span class="time">
-        <%= moment.tz(number.created, local_tz).format('MMM. Do, YYYY hh:mmA') %>
+        <%= moment.tz(number.created, organization.tz).format('MMM. Do, YYYY hh:mmA') %>
       </span>
     </div>
     <div class="column">

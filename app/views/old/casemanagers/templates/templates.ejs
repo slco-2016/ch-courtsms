@@ -96,11 +96,11 @@
           </td>
 
           <td>
-            <%= moment.tz(templates[i].updated, local_tz).format("MM/DD/YY"); %>
+            <%= moment.tz(templates[i].updated, organization.tz).format("MM/DD/YY"); %>
           </td>
 
           <td>
-            <%= moment.tz(templates[i].created, local_tz).format("MM/DD/YY"); %>
+            <%= moment.tz(templates[i].created, organization.tz).format("MM/DD/YY"); %>
           </td>
 
           <td class="fa-icon-holder">

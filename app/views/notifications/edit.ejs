@@ -57,7 +57,7 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Time to send <small>(Organization timezone: <%= local_tz %>)</small></div>
+      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
       <div class="formInput">
         <select class="blueSelect" id="sendHour" name="sendHour" required>
 
@@ -101,7 +101,7 @@
 <script type="text/javascript">
   // Set global variable of all clients information
   window.clients = <%- JSON.stringify(clients) %>;
-  window.local_tz = "<%= local_tz %>";
+  window.organization.tz = "<%= organization.tz %>";
 
   // Bind clients to update of comm list
   $("#clientID").change(function () {
