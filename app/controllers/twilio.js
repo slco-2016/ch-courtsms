@@ -1,13 +1,10 @@
-const twilio = require("twilio");
-const utilities = require("../lib/utils");
-const sms = utilities.sms;
-const smsguess = utilities.smsguessuser;
+const Twilio = require('../models/twilio');
 
 function sendResponse (msg, msgid) { 
   if (msg && msgid) {
     
     msg = String(msg).replace(/(\r\n|\n|\r)/gm,"");
-    sms.log_sent_msg(msg, msgid).then(function () {
+    Twilio.log_sent_msg(msg, msgid).then(function () {
       let inner = "<Sms>" + msg + "</Sms>";
       res.send("<?xml version='1.0' encoding='UTF-8'?><Response>" + inner + "</Response>");
     }).catch(handleError);
@@ -27,7 +24,7 @@ module.exports = {
   receiveText(req, res) {
 
     try {
-      let fromNumber = sms.clean_phonenum(req.body.From);
+      let fromNumber = Twilio.clean_phonenum(req.body.From);
       let text = req.body.Body;
 
       let tw_status = req.body.SmsStatus;
@@ -44,9 +41,9 @@ module.exports = {
       text = [text];
 
       // Log IBM Sensitivity measures
-      sms.logIBMSensitivityAnalysis(req.body);
+      Twilio.logIBMSensitivityAnalysis(req.body);
       
-      sms.process_incoming_msg(fromNumber, text, tw_status, tw_sid)
+      Twilio.process_incoming_msg(fromNumber, text, tw_status, tw_sid)
       .then(function (msgs) {
 
         // we don't handle if multiple messages are created currently how that translates into new message logic
@@ -56,7 +53,7 @@ module.exports = {
 
         } else {
           let msg = msgs[0];
-          sms.check_new_unknown_msg(msg).then(function (isNew) {
+          Twilio.check_new_unknown_msg(msg).then(function (isNew) {
             
             // if new, then initiate figuring out who person is
             if (isNew) {
@@ -65,7 +62,7 @@ module.exports = {
 
             // if ongoing auto convo, then continue
             } else if (req.session.hasOwnProperty("ccstate") && req.session.ccstate) { 
-              smsguess.logic_tree(req.session.ccstate, req.body.Body, msg).then(function (response) {
+              Twilio.sms_guesser_logic_tree(req.session.ccstate, req.body.Body, msg).then(function (response) {
                 req.session.ccstate = response.state;
                 sendResponse(response.msg, msg);
               }).catch(handleError);
@@ -74,7 +71,7 @@ module.exports = {
             } else { 
               
               // check when last response was
-              sms.check_last_unread(msg).then(function (unreadDate) {
+              Twilio.check_last_unread(msg).then(function (unreadDate) {
                 if (unreadDate) {
                   try {
                     let d1 = new Date(unreadDate);
