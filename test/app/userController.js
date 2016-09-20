@@ -149,7 +149,6 @@ describe('Basic http req tests', function() {
       .end(function(err, res) {
         Client.findByID(1)
         .then((user) => {
-          console.log(user);
           if (user.active) {
             done(new Error("User was not successfully closed."));
           } else {

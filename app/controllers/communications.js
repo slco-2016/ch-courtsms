@@ -4,6 +4,7 @@ const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 
 module.exports = {
+  
   index(req, res) {
     let client = req.params.client;
     CommConns.getClientCommunications(client)

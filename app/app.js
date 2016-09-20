@@ -71,10 +71,6 @@ app.use(middleware.templateHelpers);
 // TO DEPRECATE: Always run before routes
 require("../routes/request-defaults")(app);
 
-// Twilio-facing routes
-// require("../routes/sms")(app);
-// require("../routes/voice")(app);
-
 const AccessController          = require('./controllers/access');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
@@ -85,6 +81,7 @@ const GroupsController          = require('./controllers/groups');
 const NotificationsController   = require('./controllers/notifications');
 const RootController            = require('./controllers/root');
 const TemplatesController       = require('./controllers/templates');
+const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
 
 app.get("/", RootController.index);
@@ -202,6 +199,9 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Redundant catch all
 app.get("/*", (req, res) => {
