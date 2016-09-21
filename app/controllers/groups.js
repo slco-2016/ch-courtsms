@@ -8,7 +8,7 @@ module.exports = {
 
     Groups.findByUser(req.user.cmid, status)
     .then((groups) => {
-      res.render("groups", {
+      res.render("groups/index", {
         hub: {
           tab: "groups",
           sel: status ? "current" : "deleted"

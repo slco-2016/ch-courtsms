@@ -1,0 +1,75 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="/groups">
+    <% include ../partials/cardExit %>
+  </a>
+  <div class="cardTitle">
+    Create Group
+  </div>
+  <div class="cardSubtitle">
+    Use groups to organize client populations.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method = "post"
+        id="createGroup"
+        action = "/groups/create">
+
+    <div class="formRow">
+      <div class="formLabel"> Name of group </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="name" 
+                value=""
+                placeholder="Enter a name of the group" 
+                maxlength="160"
+                required="">
+      </div>
+    </div>
+
+    <div class="scrollListBox">
+      <% clients.forEach(function (client) { %>
+        <div class="scrollListRow" clientID="<%= client.clid %>">
+
+          <div class="colorTag">
+            <div class="tag" style="background-color:<%=client.color_tag%>"></div>
+          </div>
+
+          <div class="scrollListContent">
+            <div class="clientName">
+              <%= client.last + ', ' + client.first + ' ' + client.middle %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Save Group">
+  </form>
+</div>
+
+
+
+<script type="text/javascript">
+  $(".scrollListRow").click(function () {
+    $(this).toggleClass("selected");
+  });
+
+  $("#createGroup").submit(function () {
+    $(".scrollListRow").each(function () {
+      if ($(this).hasClass("selected")) {
+        var clientID = $(this).attr("clientID");
+        $(".scrollListBox").append("<input type='hidden' name='clientIDs' value='" + clientID + "'>")
+      }
+    });
+    return true;
+  });
+</script>
+
+<% include ../partials/cardFrameBottom %>
