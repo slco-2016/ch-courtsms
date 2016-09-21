@@ -32,7 +32,7 @@ module.exports = {
         if (error) console.log(error);
       }); 
     } else {
-      console.log(`Activation alert email would have been sent to ${email}.`);
+      console.log(`\tActivation alert email would have been sent to ${email}.`);
     }
 
   }

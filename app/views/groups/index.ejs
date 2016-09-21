@@ -1,4 +1,4 @@
-<% include ./partials/hubFrameTop %>
+<% include ../partials/hubFrameTop %>
 
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_groups.css">
@@ -13,7 +13,7 @@
 </div>
 
 <% if (groups.length == 0) { %>
-  <% include ./partials/emptyResultsGreeting %>
+  <% include ../partials/emptyResultsGreeting %>
 <% } %>
 
 <% groups.forEach(function (group) { %>
@@ -32,7 +32,7 @@
     </div>
     <div class="column">
       <span class="time">
-        <%= moment.tz(group.last_used, local_tz).format('MMM. Do, hh:mmA') %>
+        <%= moment.tz(group.last_used, organization.tz).format('MMM. Do, hh:mmA') %>
       </span>
     </div>
     <div class="column">
@@ -62,4 +62,4 @@
 <% }) %>
 
 
-<% include ./partials/hubFrameBottom %>
+<% include ../partials/hubFrameBottom %>

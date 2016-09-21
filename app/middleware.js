@@ -36,10 +36,9 @@ module.exports = {
     req.getUser = () => {
       try {
         let id = req.user.cmid;
-        let l = res.locals;
 
         // TODO: Make sure this effectively handles all cases
-        if (l.client) {
+        if (res.locals.client) {
           id = res.locals.client.cm;
         }
 
@@ -49,21 +48,44 @@ module.exports = {
       }
     };
 
-    res._redirectURL = (path) => {
+    res.levelSensitiveRedirect = (path) => {
+      let endPath = "";
       try {
-        let l = res.locals.level;
         let base = "";
-        if (l === "org") {
+        if (res.locals.level === "org") {
           base = "/org";
         }
-        return `${base}${path}`;
+        endPath = `${base}${path}`;
       } catch(e) {
-        return null;
+        endPath = "/";
       }
+      res.redirect(endPath);
     };
 
     next();
 
+  },
+
+  setApplicationDetails(req, res, next) {
+    res.locals.CLIENTCOMM_APPLICATION = {
+      VERSION: require("../package.json").version
+    };
+
+    next();
+  },
+
+  attachTemplateLibraries(req, res, next) {
+    res.locals.moment = require('moment');
+    res.locals.moment_tz = require('moment-timezone');
+    
+    if (process.env.CCENV && process.env.CCENV == "production") {
+      console.log("Production env. New Relic running.");
+      res.locals.newrelic = require("newrelic");
+    } else {
+      res.locals.newrelic = null;
+    }
+
+    next();
   },
 
   attachErrorHandlers(req, res, next) {
@@ -170,6 +192,12 @@ module.exports = {
   },
 
   fetchUserAlertsFeed(req, res, next) {
+    // Two alert types, flash and alerts from feed
+    res.locals.FLASH_ALERTS = {
+      WARNINGS: req.flash("warning"),
+      SUCCESSES: req.flash("success"),
+    };
+
     if (req.user) {
       Alerts.findByUser(req.user.cmid)
       .then((alerts) => {
@@ -235,7 +263,8 @@ module.exports = {
 
           next();
         } else {
-          res.notFound()
+          console.log("Client being looked (and not found): " + client);
+          res.status(404).render('v4/general/404');
         }
         return null
       }).catch(res.error500);
@@ -245,11 +274,13 @@ module.exports = {
 
   },
 
-  setLevel(req, res, next) {
+  setUserAndLevel(req, res, next) {
     res.locals.level = "user";
     if (req.url.indexOf("/org") == 0) {
       res.locals.level = "org";
     }
+
+    res.locals.user = req.user;
     next();
   },
 

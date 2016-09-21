@@ -17,7 +17,7 @@
             <%= department.name %>
           </div>
           <div class="date">
-            <div class="day">Created on <%= moment.tz(department.updated, local_tz).format("DD/MM/YY") %></div>
+            <div class="day">Created on <%= moment.tz(department.updated, organization.tz).format("DD/MM/YY") %></div>
           </div>
         </div>
       </a>

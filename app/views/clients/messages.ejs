@@ -17,8 +17,8 @@
             <%= conversation.subject ? conversation.subject : 'No Subject' %>
           </div>
           <div class="date">
-            <div class="day"><%= moment.tz(conversation.updated, local_tz).format("DD/MM/YY") %></div>
-            <div class="time"><%= moment.tz(conversation.updated, local_tz).format("hh:mm A") %></div>
+            <div class="day"><%= moment.tz(conversation.updated, organization.tz).format("DD/MM/YY") %></div>
+            <div class="time"><%= moment.tz(conversation.updated, organization.tz).format("hh:mm A") %></div>
           </div>
         </div>
       </a>
@@ -48,8 +48,8 @@
 
           <span class="state">
             <%= message.tw_status %> on 
-            <%= moment.tz(message.created, local_tz).format("MM/DD"); %> at 
-            <%= moment.tz(message.created, local_tz).format("hh:mm A"); %>
+            <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at 
+            <%= moment.tz(message.created, organization.tz).format("hh:mm A"); %>
           </span>
         </div>
       </div>

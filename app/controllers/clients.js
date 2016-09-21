@@ -79,8 +79,8 @@ module.exports = {
             dob, 
             so,  // note these should be renamed
             otn  // this one as well
-    ).then(() => {
-      res.redirect(res._redirectURL(`/clients`));
+    ).then((client) => {
+      res.levelSensitiveRedirect(`/clients`);
     }).catch(res.error500);
   },
 
@@ -107,7 +107,7 @@ module.exports = {
     ).then(() => {
       req.logActivity.client(client);
       req.flash("success", "Edited client.");
-      res.redirect(res._redirectURL(`/clients`));
+      res.levelSensitiveRedirect(`/clients`);
     }).catch(res.error500);
   },
 
@@ -135,7 +135,7 @@ module.exports = {
     method.then(() => {
       req.logActivity.client(client);
       req.flash("success", "Message to client sent.");
-      res.redirect(res._redirectURL(`/clients`));
+      res.levelSensitiveRedirect(`/clients`);
     }).catch(res.error500);
   },
 
@@ -201,7 +201,7 @@ module.exports = {
         .then(() => {
           req.logActivity.client(client);
           req.logActivity.conversation(conversation.convid);
-          res.redirect(res._redirectURL(`/clients/${client}/messages`));
+          res.levelSensitiveRedirect(`/clients/${client}/messages`);
         }).catch(res.error500);
       
       // Otherwise create a new conversation
@@ -211,7 +211,7 @@ module.exports = {
           return Messages.sendOne(commID, content, conversationID)
         }).then(() => {
           req.logActivity.client(client);
-          res.redirect(res._redirectURL(`/clients/${client}/messages`));
+          res.levelSensitiveRedirect(`/clients/${client}/messages`);
         }).catch(res.error500);
       }
     }).catch(res.error500);
@@ -226,8 +226,7 @@ module.exports = {
     .then(() => {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
-      res.redirect(res._redirectURL(`/clients`));
-      return null
+      res.levelSensitiveRedirect(`/clients`);
     }).catch(res.error500);
   },
 
@@ -261,7 +260,7 @@ module.exports = {
         Client.transfer(client, fromUser, u.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
-          res.redirect(res._redirectURL(`/clients`));
+          res.levelSensitiveRedirect(`/clients`);
         }).catch(res.error500);
 
       } else {

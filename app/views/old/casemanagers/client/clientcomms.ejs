@@ -80,7 +80,7 @@
         <td>
           <small>
           <% try { %>
-            <% var day = moment.tz(comms[i].created, local_tz).format("MM/DD");%>
+            <% var day = moment.tz(comms[i].created, organization.tz).format("MM/DD");%>
             <%= day %>
           <% } catch (e) { %>
             Unknown

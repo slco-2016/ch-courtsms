@@ -62,18 +62,14 @@ app.use("/org/clients/:client", middleware.fetchClient);
 
 // These need to go after the client, dept, user, etc. have been acquired
 app.use(middleware.logging);
-app.use(middleware.setLevel);
+app.use(middleware.setApplicationDetails);
+app.use(middleware.setUserAndLevel);
+
+app.use(middleware.attachErrorHandlers);
 app.use(middleware.attachLoggingTools);
 app.use(middleware.attachRoutingTools);
+app.use(middleware.attachTemplateLibraries);
 app.use(middleware.templateHelpers);
-
-
-// TO DEPRECATE: Always run before routes
-require("../routes/request-defaults")(app);
-
-// Twilio-facing routes
-// require("../routes/sms")(app);
-// require("../routes/voice")(app);
 
 const AccessController          = require('./controllers/access');
 const ClientsController         = require('./controllers/clients');
@@ -85,6 +81,7 @@ const GroupsController          = require('./controllers/groups');
 const NotificationsController   = require('./controllers/notifications');
 const RootController            = require('./controllers/root');
 const TemplatesController       = require('./controllers/templates');
+const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
 
 app.get("/", RootController.index);
@@ -106,10 +103,6 @@ app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 app.use(auth.isLoggedIn);
 
 app.get("/logout", AccessController.logout);
-
-// TODO: Okay to drop these?
-// app.use("/", require("../../routes/user"));
-// app.use("/", require("../../routes/org"));
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.update);
@@ -202,6 +195,9 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

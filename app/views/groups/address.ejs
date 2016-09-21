@@ -1,0 +1,53 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="/groups">
+    <% include ../partials/cardExit %>
+  </a>
+  <div class="cardTitle">
+    Write to Group Members
+  </div>
+  <div class="cardSubtitle">
+    Write a message to all members of this group. The message will be sent to the most recently used cell device used by each respective client.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post"
+        action="/groups/address/<%= parameters.groupID %>">
+    <div class="formRow subdued">
+      <div class="formLabel"> Subject <small>(optional, not visible to clients)</small></div>
+      <div class="formInput">
+        <input  type="text" 
+                name="title" 
+                value="" 
+                placeholder="Enter a subject for the notification here" 
+                maxlength="100">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Message Body </div>
+      <div class="formInput">
+        <textarea name="content" rows="5" required></textarea>
+      </div>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Send Group Message">
+  </form>
+
+</div>
+
+
+<script type="text/javascript">
+  $(".subdued").click(function () {
+    $(this).removeClass("subdued");
+    $("input[name=subject]").val("");
+  });
+</script>
+
+<% include ../partials/cardFrameBottom %>

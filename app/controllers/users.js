@@ -1,6 +1,5 @@
 const Departments = require('../models/departments');
 const Users = require('../models/users');
-const emailer = require('../../routes/emailer')
 
 const emailer = require("../lib/emailer")
 

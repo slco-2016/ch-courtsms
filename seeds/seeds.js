@@ -24,6 +24,12 @@ exports.seed = function(knex, Promise) {
       return knex('departments').insert(dep)
     }).then(() => {
       return knex('cms').insert(primary)
+    }).then(() => {
+      return knex('clients').insert(client)
+    }).then(() => {
+      return knex('comms').insert(contactMethod)
+    }).then(() => {
+      return knex('commconns').insert(commConn)
     }).catch((err) => {
       throw err
     });        
@@ -85,4 +91,28 @@ let primary = {
   superuser: false,
   class: "primary",
   department: 1,
+}
+
+let client = {
+  cm: 2,
+  first: 'Sandra',
+  middle: 'M',
+  last: 'Arriba',
+  dob: '1977-03-02',
+  so: 123,
+  otn: 456,
+  active: true,
+}
+
+let contactMethod = {
+  description: 'DummyFoo2',
+  type: 'cell',
+  value: '10008384828',
+}
+
+let commConn = {
+  client: 1,
+  comm: 1,
+  name: "Example",
+  retired: null
 }

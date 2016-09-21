@@ -23,7 +23,7 @@
     <div class="column">
       <span class="time">
         <i class="fa fa-clock-o" aria-hidden="true"></i>
-        <%= moment.tz(n.send, local_tz).format('MMM. Do, hh:mm A') %>
+        <%= moment.tz(n.send, organization.tz).format('MMM. Do, hh:mm A') %>
       </span>
     </div>
     <div class="column">
