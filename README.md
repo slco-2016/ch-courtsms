@@ -1,4 +1,4 @@
-Branch version 4.0.0 build status: [![Build Status](https://travis-ci.org/slco-2016/clientcomm.svg?branch=v4)](https://travis-ci.org/slco-2016/clientcomm)
+[![Build Status](https://travis-ci.org/slco-2016/clientcomm.svg?branch=v4)](https://travis-ci.org/slco-2016/clientcomm) (Branch version 4.0.0 build status)
 
 # ClientComm
 Communications interface for case managers at Criminal Justice Services (CJS) in Salt Lake County, Utah. Code for America 2016 Fellowship Project.
