@@ -53,6 +53,7 @@ app.use(passport.session());
 const middleware = require('./middleware');
 // These need specific routes to run correctly
 // TODO: Why are there 4 db queries every time?
+app.use(middleware.attachErrorHandlers);
 app.use(middleware.fetchUserAlertsFeed);
 app.use(middleware.fetchUserOrganization);
 app.use(middleware.fetchUserDepartment);
@@ -64,7 +65,6 @@ app.use(middleware.logging);
 app.use(middleware.setLevel);
 app.use(middleware.attachLoggingTools);
 app.use(middleware.attachRoutingTools);
-app.use(middleware.attachErrorHandlers);
 app.use(middleware.templateHelpers);
 
 

@@ -1,6 +1,7 @@
 const Notifications = require('../models/notifications');
 const Clients = require('../models/clients');
 const Templates = require('../models/templates');
+const CommConns = require('../models/commConns');
 
 module.exports = {
   index(req, res) {
@@ -18,7 +19,7 @@ module.exports = {
           communications: comms
         });
       }
-    }).catch(error500(res));
+    }).catch(res.error500);
   },
 
   new(req, res) {
@@ -42,7 +43,7 @@ module.exports = {
       logClientActivity(client);
       req.flash("success", "Created new communication method.");
       res.redirect(`/clients/${client}/communications`);
-    }).catch(error500(res));
+    }).catch(res.error500);
   },
 
   remove(req, res) {
@@ -55,7 +56,7 @@ module.exports = {
         .then(() => {
           req.flash("success", "Removed communication method.");
           res.redirect(`/clients/${client}/communications`);
-        }).catch(error500(res));
+        }).catch(res.error500);
 
       } else {
         req.flash("warning", "Can't remove the only remaining communication method.");
