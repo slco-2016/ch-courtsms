@@ -80,6 +80,7 @@ const DepartmentsController     = require('./controllers/departments');
 const GroupsController          = require('./controllers/groups');
 const NotificationsController   = require('./controllers/notifications');
 const RootController            = require('./controllers/root');
+const SettingsController        = require('./controllers/settings');
 const TemplatesController       = require('./controllers/templates');
 const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
@@ -195,6 +196,8 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.get("/settings", SettingsController.index);
 
 app.post("/twilio/sms", TwilioController.receiveText);
 app.post("/twilio/voice", TwilioController.receiveVoice);

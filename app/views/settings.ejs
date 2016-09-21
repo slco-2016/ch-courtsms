@@ -1,0 +1,53 @@
+<% include ./partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ./partials/cardExit %></a>
+  <div class="cardTitle">
+    Manage Your Settings
+  </div>
+  <div class="cardSubtitle">
+    Use this page to update your account information, as well as to set preferences and default aspects of your ClientComm experience.
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method="post">
+
+    <div class="formRow">
+      <div class="formLabel"> First </div>
+      <div class="formInput">
+        <input type="text" name="first" value="<%=user.first%>" required>
+      </div>
+    </div>
+
+    <div class="formRow <%if (!user.middle) {%>subdued<%}%>">
+      <div class="formLabel"> Middle <span class="opt">optional</span> </div>
+      <div class="formInput">
+        <input type="text" name="middle" value="<%=user.middle%>">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Last </div>
+      <div class="formInput">
+        <input type="text" name="last" value="<%=user.last%>" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Email </div>
+      <div class="formInput">
+        <input type="email" name="last" value="<%=user.email%>" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> User account type: <%=user.class%> </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Update">
+
+  </form>
+</div>
+
+<% include ./partials/cardFrameBottom %>
