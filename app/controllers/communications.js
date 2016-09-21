@@ -1,8 +1,8 @@
 const Notifications = require('../models/notifications');
-const CommConns = require('../models/commConns');
 const Clients = require('../models/clients');
-const Templates = require('../models/templates');
 const CommConns = require('../models/commConns');
+const Templates = require('../models/templates');
+
 
 module.exports = {
 
