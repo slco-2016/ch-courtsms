@@ -1,6 +1,6 @@
 const Alerts = require('./models/alerts');
 const Client = require('./models/client');
-const Conversations = require('./models/Conversations');
+const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Organizations = require('./models/organizations');
 
@@ -29,7 +29,6 @@ module.exports = {
     };
 
     next();
-
   },
 
   attachRoutingTools(req, res, next) {
@@ -267,6 +266,7 @@ module.exports = {
           console.log("Client being looked (and not found): " + client);
           res.status(404).render('v4/general/404');
         }
+        return null
       }).catch(res.error500);
     } else {
       next();

@@ -157,6 +157,7 @@ class Client {
       .then(() => {
         fulfill();
       }).catch(reject);
+      return null
     });
   }
   
