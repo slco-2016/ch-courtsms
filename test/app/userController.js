@@ -146,13 +146,13 @@ describe('Basic http req tests', function() {
       });
   });
 
-  it('primary user should reroute to create if no comm methods for client', function(done) {
-    primary.get('/clients/1/communications')
-      .expect(302)
-      .end(function(err, res) {
-        done(err);
-      });
-  });
+  // it('primary user should reroute to create if no comm methods for client', function(done) {
+  //   primary.get('/clients/1/communications')
+  //     .expect(302)
+  //     .end(function(err, res) {
+  //       done(err);
+  //     });
+  // });
 
   it('owner user should not have option to load templates on quick message', function(done) {
     owner.get('/org/clients/1/address')
