@@ -1,6 +1,6 @@
 const Alerts = require('./models/alerts');
 const Client = require('./models/client');
-const Conversations = require('./models/Conversations');
+const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Organizations = require('./models/organizations');
 
@@ -29,7 +29,6 @@ module.exports = {
     };
 
     next();
-
   },
 
   attachRoutingTools(req, res, next) {
@@ -236,8 +235,9 @@ module.exports = {
 
           next();
         } else {
-          notFound(res);
+          res.notFound()
         }
+        return null
       }).catch(res.error500);
     } else {
       next();
