@@ -17,6 +17,12 @@ module.exports = {
     }
   },
 
+  checkIsAllowed: function(req, res, next) {
+    // TODO: 
+
+    return next();
+  },
+
   isAdmin: function (req, res, next) {
     var realadmin = req.isAuthenticated() && req.user.active && req.user.admin;
     var realsuper = req.isAuthenticated() && req.user.hasOwnProperty("superuser") && req.user.superuser;
