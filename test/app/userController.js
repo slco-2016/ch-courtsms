@@ -3,7 +3,10 @@ const supertest = require('supertest');
 const should = require('should');
 
 const APP = require('../../app/app')
+
+const Client = require('../../app/models/client');
 const Users = require('../../app/models/users');
+
 const owner = supertest.agent(APP)
 const supervisor = supertest.agent(APP)
 const primary = supertest.agent(APP)
@@ -145,9 +148,53 @@ describe('Basic http req tests', function() {
     owner.get('/org/clients/1/alter/close')
     .expect(302)
       .end(function(err, res) {
-        // TODO: can we check the state of the client here
-        // Use the Users model from line 100
-        console.log(res.text);
+        Client.findByID(1)
+        .then((user) => {
+          console.log(user);
+          if (user.active) {
+            done(new Error("User was not successfully closed."));
+          } else {
+            done(null);
+          }
+        }).catch(done);
+      });
+  });
+
+  it('owner should be able to open any client', function(done) {
+    owner.get('/org/clients/1/alter/close')
+    .expect(302)
+      .end(function(err, res) {
+        Client.findByID(1)
+        .then((user) => {
+          if (!user.active) {
+            done("User was not successfully closed.");
+          } else {
+            done(null);
+          }
+        }).catch(done);
+      });
+  });
+
+  it('should be able to add a comm method to a client', function(done) {
+    owner.post('/clients/1/communications/create')
+      .field('description', 'DummyFoo1')
+      .field('type', 'cell')
+      .field('value', '18288384828')
+    .expect(302)
+      .end(function(err, res) {
+        res.text.should.match(/Created new communication method/);
+        done(err);
+      });
+  });
+
+  it('you should not be able to add the same communication method two times if first is still active', function(done) {
+    owner.post('/clients/1/communications/create')
+      .field('description', 'DummyFoo2')
+      .field('type', 'cell')
+      .field('value', '18288384828')
+    .expect(302)
+      .end(function(err, res) {
+        res.text.should.match(/Client already has that method/);
         done(err);
       });
   });

@@ -2,6 +2,8 @@ const Departments = require('../models/departments');
 const Users = require('../models/users');
 const emailer = require('../../routes/emailer')
 
+const emailer = require("../lib/emailer")
+
 module.exports = {
 
   index(req, res) {
@@ -70,9 +72,9 @@ module.exports = {
   },
 
   alter(req, res) {
-    let state = req.params.case === "close" ? false : true;
+    let status = req.params.case === "close" ? false : true;
 
-    Users.changeActivityStatus(req.params.targetUser, state)
+    Users.changeActivityStatus(req.params.targetUser, status)
     .then(() => {
       req.flash("success", "Updated user activity state.");
       res.redirect("/org/users");

@@ -5,7 +5,7 @@ const db        = require("../../app/db");
 const Promise   = require("bluebird");
 
 
-const Communications = require("./communications");
+const Communications = require("../models/communications");
 
 
 // Class
@@ -77,6 +77,8 @@ class CommConns {
   }
 
   static createOne (clientID, type, name, value) {
+      console.log("HEY", Communications)
+      console.log("HEY", Communications.findByValue)
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
       .then((comm) => {

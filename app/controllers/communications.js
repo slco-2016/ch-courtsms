@@ -1,4 +1,5 @@
 const Notifications = require('../models/notifications');
+const CommConns = require('../models/commConns');
 const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 const CommConns = require('../models/commConns');
@@ -38,12 +39,26 @@ module.exports = {
       if (value.length == 10) { value = "1" + value; }
     }
 
-    CommConns.createOne(client, type, name, value)
-    .then(() => {
-      logClientActivity(client);
-      req.flash("success", "Created new communication method.");
-      res.redirect(`/clients/${client}/communications`);
+    // First check if this client already has this commConn
+    CommConns.findByClientID(client)
+    .then((commConns) => {
+      commConns = commConns.filter((commConn) => {
+        return String(value) === String(commConn.value);
+      });
+      if (commConns.length > 0) {
+        req.flash("warning", "Client already has that method.");
+        res.redirect(`/clients/${client}/communications`);
+
+      } else {
+        CommConns.createOne(client, type, name, value)
+        .then(() => {
+          req.logActivity.client(client);
+          req.flash("success", "Created new communication method.");
+          res.redirect(`/clients/${client}/communications`);
+        }).catch(res.error500);
+      }
     }).catch(res.error500);
+
   },
 
   remove(req, res) {
