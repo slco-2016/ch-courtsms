@@ -108,7 +108,7 @@ app.get("/logout", AccessController.logout);
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.update);
-app.get("/colors/:colorId/remove", ColorsController.remove);
+app.get("/colors/:color/remove", ColorsController.remove);
 
 app.get("/notifications", NotificationsController.index);
 app.get("/notifications/create", NotificationsController.new);

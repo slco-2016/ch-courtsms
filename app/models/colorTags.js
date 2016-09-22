@@ -13,10 +13,10 @@ const Promise = require("bluebird");
 // Class
 class ColorTags {
 
-  static selectAllByUser (userID) {
+  static selectAllByUser (userId) {
     return new Promise((fulfill, reject) => {
       db("color_tags")
-        .where("created_by", userID)
+        .where("created_by", userId)
         .andWhere("active", true)
         .orderBy("name", "asc")
       .then((colorTags) => {
@@ -25,13 +25,13 @@ class ColorTags {
     })
   }
 
-  static addNewColorTag (userID, color, name) {
+  static addNewColorTag (userId, color, name) {
     return new Promise((fulfill, reject) => {
       db("color_tags")
         .insert({
           name: name,
           color: color,
-          created_by: userID,
+          created_by: userId,
           active: true
         })
       .then(() => {
@@ -40,11 +40,11 @@ class ColorTags {
     })
   }
 
-  static removeColorTag (colorTagID) {
+  static removeColorTag (colorTagId) {
     return new Promise((fulfill, reject) => {
       db("color_tags")
         .update({ active: false })
-        .where("color_tag_id", colorTagID)
+        .where("color_tag_id", colorTagId)
       .then(() => {
         fulfill();
       }).catch(reject);

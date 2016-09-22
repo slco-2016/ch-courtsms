@@ -46,9 +46,15 @@
 
     <div class="column">
       <% if (client.active) { %>
-        <a href="<%=`${clientBaseURL}/address`%>">
-          <i class="fa highlight fa-send" aria-hidden="true"></i>
-        </a>
+        <% if (client.communications.length) { %>
+          <a href="<%=`${clientBaseURL}/address`%>">
+            <i class="fa highlight fa-send" aria-hidden="true"></i>
+          </a>
+        <% } else { %>
+          <a href="<%=`${clientBaseURL}/communications/create`%>">
+            <i class="fa highlight fa-phone" aria-hidden="true"></i>
+          </a>
+        <% } %>
       <% } else { %>-<% } %>
     </div>
 
