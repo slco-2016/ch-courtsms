@@ -79,6 +79,7 @@ const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
 const GroupsController          = require('./controllers/groups');
 const NotificationsController   = require('./controllers/notifications');
+const PhoneNumbers              = require('./controllers/phoneNumbers');
 const RootController            = require('./controllers/root');
 const SettingsController        = require('./controllers/settings');
 const TemplatesController       = require('./controllers/templates');
@@ -184,6 +185,9 @@ app.post("/org/departments/:department/edit", DepartmentsController.update);
 app.get("/org/departments/:department/supervisors", DepartmentsController.supervisorsIndex);
 app.post("/org/departments/:department/supervisors", DepartmentsController.supervisorsUpdate);
 app.get("/org/departments/:department/alter/:case", DepartmentsController.alter);
+
+app.get("/org/numbers", PhoneNumbers.index)
+app.get("/org/numbers/create", PhoneNumbers.new)
 
 app.get("/org/clients", ClientsController.index);
 app.get("/org/clients/create", ClientsController.new);

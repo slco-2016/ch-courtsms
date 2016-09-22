@@ -37,16 +37,7 @@ router.get("/numbers/", (req, res) => {
 });
 
 router.get("/numbers/all", (req, res) => {
-  PhoneNumbers.findByOrgID(req.user.org)
-  .then((numbers) => {
-    res.render("v4/owner/numbers/numbers", {
-      hub: {
-        tab: "numbers",
-        sel: null
-      },
-      numbers: numbers
-    });
-  }).catch(error500(res));
+
 });
 
 

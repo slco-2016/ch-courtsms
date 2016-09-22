@@ -14,6 +14,7 @@
 
       <% if (user.class == "owner") { %>
         <%- leftTab('departments', hub, level, ['active', 'inactive']) %>
+        <%- leftTab('numbers', hub, level, null) %>
       <% } %>
 
       <%- leftTab('users', hub, level, ['active', 'inactive']) %>
