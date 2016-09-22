@@ -27,6 +27,8 @@ module.exports = {
       if (user.class == "primary") {
         allowed = false;
       }
+
+      // this would never fire, i dont think because department id from user.department
       if (user.class == "supervisor") {
         if (department.department_id !== user.department) {
           allowed = false;
@@ -36,7 +38,8 @@ module.exports = {
 
     if (client) {
       if (client.cm !== user.cmid) {
-        if (client.department.org !== user.org) {
+
+        if (client.department.org && client.department.org !== user.org) {
           allowed = false;
         }
 
@@ -44,10 +47,8 @@ module.exports = {
           if (["owner", "support", "developer"].indexOf(user.class) < 0) {
             allowed = false;
           }
-          if (user.class == "primary") {
-            allowed = false;
-          }
         }
+
       }
     }
 
