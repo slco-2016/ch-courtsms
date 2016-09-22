@@ -173,6 +173,25 @@ class Messages {
     });
   }
 
+  static markAsRead (messageIds) {
+    if (messageIds && !Array.isArray(messageIds)) {
+      messageIds = [messageIds];
+    }
+
+    return new Promise((fulfill, reject) => {
+      if (messageIds.length) {
+        db("msgs")
+          .update({read: true})
+          .whereIn("msgid", messageIds)
+        .then(() => {
+          fulfill()
+        }).catch(reject);
+      } else {
+        fulfill();
+      }
+    });
+  }
+
   static getLatestNumber (userID, clientID) {
     return new Promise((fulfill, reject) => {
       CommConns.getClientCommunications(clientID)

@@ -140,9 +140,9 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    let user = req.getUser();
-    console.log("user", user, "reqUser", req.user.cmid);
     let client = req.params.client;
+    let method = req.query.method;
+    let user = req.getUser();
 
     // determine if we should filter by type
     let methodFilter = "all";
@@ -164,12 +164,22 @@ module.exports = {
           return false; 
         }
       });
-      return CommConns.findByClientID(req.params.client)
+      
+      // determine if any messages need to be marked as read
+      let messageIds = messages.filter((msg) => {
+        return msg.read === false;
+      }).map((msg) => {
+        return msg.msgid;
+      })
+      return Messages.markAsRead(messageIds)
+    }).then(() => {
+      
+      return CommConns.findByClientID(client)
     }).then((communications) => {
       res.render("clients/messages", {
         hub: {
           tab: "messages",
-          sel: req.query.method ? req.query.method : "all"
+          sel: method ? method : "all"
         },
         conversations: conversations,
         messages: messages,
