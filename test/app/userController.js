@@ -272,6 +272,35 @@ describe('Basic http req tests', function() {
       });
   });
 
+  it('primary user should be able to view settings', function(done) {
+    primary.get('/settings')
+      .expect(200)
+      .end(function(err, res) {
+        done(err)
+      });
+  });
+
+  it('primary user settings updates should propogate', function(done) {
+    primary.post('/settings')
+      .send({
+        first: "Jim",
+        middle: "L",
+        last: "Primary",
+        email: "uniqueJimPrimary@foobar.org",
+        isAway: "true",
+        awayMessage: "Lorem ipsum dolores ipset."
+      })
+      .expect(302)
+      .end(function(err, res) {
+        primary.get('/settings')
+          .expect(200)
+          .end(function(err, res) {
+            res.text.should.match(/Lorem ipsum dolores ipset/);
+            done(err)
+          });
+      });
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)
