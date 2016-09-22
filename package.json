@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
-    "coverage": "istanbul cover _mocha ./test/app/ -- -R spec; open coverage/lcov-report/index.html",
+    "coverage": "CCENV=testing istanbul cover _mocha test/app/ -- -R spec; open coverage/lcov-report/index.html",
     "test": "CCENV=testing mocha test/app/"
   },
   "devDependencies": {
