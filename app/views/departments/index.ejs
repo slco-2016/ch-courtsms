@@ -13,11 +13,7 @@
   <div class="column"><%= hub.sel == 'active' ? 'deactivate' : 'activate' %></div>
 </div>
 
-
-<% if (departments.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
-
+<% if (departments.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% departments.forEach((d) => { %>
   <div class="notificationRow">
@@ -64,6 +60,5 @@
     </div>
   </div>
 <% }) %>
-
 
 <% include ../partials/hubFrameBottom %>

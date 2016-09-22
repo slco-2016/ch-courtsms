@@ -107,61 +107,6 @@
 
 </div>
 
-<script type="text/javascript">
-  // Toggle Writing View for Message Entry
-  function toggleTypeBox () {
-    $("#typeBox").toggle();
-    $(".full").toggle();
-    if ($("#typeBox").is(":visible")) {
-      $(".messageStream").css("margin-bottom", 60);
-    } else { 
-      $(".messageStream").css("margin-bottom", 150);
-      scrollLast()
-    }
-  }
-
-  function adjustDivs () {
-    $(".leftBar").height($(window).height() - 92);
-    $(".rightContent").height($(window).height() - 92);
-  }
-
-  function scrollLast () {
-    $("#lastMessage")[0].scrollIntoView({ 
-      block: "end", 
-      behavior: "smooth"
-    });
-  }
-
-  function checkSubmitValid () {
-    var ok = true;
-    if ($("select[name=commID]").val() == null) ok = false;
-    if ($("textarea[name=content]").val().length == 0) ok = false;
-    if (ok) {
-      $(".submit").removeClass("disabled");
-    } else {
-      $(".submit").addClass("disabled");
-    }
-    return ok;
-  }
-
-  $(window).resize(adjustDivs)
-
-  $("#typeBox").click(toggleTypeBox);
-  $("#closeTypeBox").click(toggleTypeBox);
-
-  $("textarea[name=content]").keyup(checkSubmitValid);
-  $("select[name=commID]").change(checkSubmitValid);
-
-  $(".submit").click(function () {
-    if (checkSubmitValid()) {
-      $("#newMessage").submit();
-    }
-  });
-
-  // On load actions
-  $(window).ready(function () {
-    try { adjustDivs(); scrollLast(); } catch (e) { console.log(e); }
-  });
-</script>
+<script type="text/javascript" class="JSmessagesStream"></script>
 
 <% include ../partials/hubFrameBottom %>

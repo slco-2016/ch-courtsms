@@ -1,9 +1,5 @@
 <% include ../partials/cardFrameTop %>
 
-<!-- use moment.js library -->
-<script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>
-<script type="text/javascript" src="/modules/moment-timezone/moment-timezone.js"></script>
-
 <div class="cardHead">
   <!-- exit button -->
   <a href="/notifications">
@@ -96,40 +92,8 @@
   </form>
 </div>
 
-
-
-<script type="text/javascript">
-  // Set global variable of all clients information
-  window.clients = <%- JSON.stringify(clients) %>;
-  window.organization.tz = "<%= organization.tz %>";
-
-  // Bind clients to update of comm list
-  $("#clientID").change(function () {
-    var v = $(this).val();
-    updateClientsAndComms(v)
-  });
-
-  function updateClientsAndComms (v) {
-    // Remove all existing children in options
-    $("#commConn").empty();
-
-    // Now add all client comms associated with that client
-    clients.forEach(function (client) {
-      // Only add if client matches
-      if (client.clid == v) {
-        client.communications.forEach(function (comm) {
-          var newOpt = '<option value="' + comm.commid + '">' + 
-                        comm.name + " (" + comm.value + ")" + '</option>';
-          $("#commConn").append(newOpt);
-        });
-        var smartSelect = '<option value="null" ' + '">Smart Select</option>';
-        $("#commConn").append(smartSelect);
-      }
-    });
-  };
-
-  // Run once since editing the page
-  updateClientsAndComms(<%= notification.client %>)
-</script>
+<script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/modules/moment-timezone/moment-timezone.js"></script>
+<script type="text/javascript" class="JSclientsEdit"></script>
 
 <% include ../partials/cardFrameBottom %>
