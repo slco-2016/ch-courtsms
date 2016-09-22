@@ -301,6 +301,50 @@ describe('Basic http req tests', function() {
       });
   });
 
+  it('first time user goes to colors for client, should be routed to color manager', function(done) {
+    primary.get('/clients/1/edit/color')
+      .expect(302)
+      .expect('Location', '/colors')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('color manager view should work', function(done) {
+    primary.get('/colors')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('color manager view should not work for not logged in user', function(done) {
+    anonymous.get('/colors')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('creating a new color should have it populate', function(done) {
+    primary.post('/colors')
+      .send({
+        color: "rgb(33,20,200)",
+        name: "Strawberry Red Team"
+      })
+      .expect(302)
+      .expect('Location', '/colors')
+      .end(function(err, res) {
+        primary.get('/colors')
+          .expect(200)
+          .end(function(err, res) {
+            res.text.should.match(/Strawberry Red Team/);
+            done(err);
+          })
+      })
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)

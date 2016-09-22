@@ -107,7 +107,7 @@ app.use(auth.checkIsAllowed);
 app.get("/logout", AccessController.logout);
 
 app.get("/colors", ColorsController.index);
-app.post("/colors", ColorsController.update);
+app.post("/colors", ColorsController.create);
 app.get("/colors/:color/remove", ColorsController.remove);
 
 app.get("/notifications", NotificationsController.index);
