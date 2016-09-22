@@ -6,3 +6,5 @@ addons:
 before_script:
    - "mv exampleCredentials.js credentials.js"
    - createdb cctest
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
