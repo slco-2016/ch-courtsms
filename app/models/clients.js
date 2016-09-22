@@ -4,8 +4,6 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
-
-
 const CommConns = require("./commConns");
 const Users     = require("./users");
 
