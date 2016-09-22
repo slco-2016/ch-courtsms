@@ -92,6 +92,9 @@
 
 <script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>
 <script type="text/javascript" src="/modules/moment-timezone/moment-timezone.js"></script>
-<script type="text/javascript"></script>
+<script type="text/javascript" class="JSnotificationsCreate">
+  window.clients = <%- JSON.stringify(clients) %>;
+  window.organization.tz = "<%= organization.tz %>";
+</script>
 
 <% include ../partials/cardFrameBottom %>

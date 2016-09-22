@@ -71,6 +71,11 @@
 <script src="/components/moment/min/moment.min.js"></script>
 <script src="/components/d3/d3.min.js"></script>
 <script src="/components/c3/c3.min.js"></script>
-<script type="text/javascript" class="JSdashboard"></script>
+<script type="text/javascript" class="JSdashboard">
+  var countsByWeek = <%- JSON.stringify(countsByWeek) %>;
+  var countsByDay = <%- JSON.stringify(countsByDay) %>;
+  var departmentFilter = Number(<%= departmentFilter %>) || null;
+  var userFilter = Number(<%= userFilter %>) || null;
+</script>
 
 <% include ../partials/hubFrameBottom %>

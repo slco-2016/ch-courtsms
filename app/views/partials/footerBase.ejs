@@ -1,4 +1,10 @@
-
+<script type="text/javascript">
+  <% if (typeof user == 'undefined') { %>
+    var SESSION_USER = null;
+  <% } else { %>
+    var SESSION_USER = <%- JSON.stringify(user) %>;
+  <% } %>
+</script>
 <script src="/static/js/app.js"></script>
 </body>
 

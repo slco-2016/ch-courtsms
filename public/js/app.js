@@ -292,8 +292,6 @@ $(function() {
           return dateArray;
         }
 
-        var countsByWeek = <%- JSON.stringify(countsByWeek) %>;
-        var countsByDay = <%- JSON.stringify(countsByDay) %>;
         buildPerformanceChart(countsByWeek, countsByDay);
 
         function buildPerformanceChart (countsByWeek, countsByDay) {
@@ -340,8 +338,6 @@ $(function() {
         };
 
         function buildUserActivityChart(users) {
-          var departmentFilter = Number(<%= departmentFilter %>) || null;
-          var userFilter       = Number(<%= userFilter %>) || null;
           users = users.filter(function (ea) {
             if (departmentFilter) {
               return departmentFilter == Number(ea["user.department"]);
@@ -471,13 +467,8 @@ $(function() {
     },
 
     {
-      cssClass: 'JSclientsEdit',
+      cssClass: 'JSnotificationsEdit',
       execute: function () {
-        // Set global variable of all clients information
-        window.clients = <%- JSON.stringify(clients) %>;
-        window.organization.tz = "<%= organization.tz %>";
-
-        // Bind clients to update of comm list
         $("#clientID").change(function () {
           var v = $(this).val();
           updateClientsAndComms(v)
@@ -503,17 +494,13 @@ $(function() {
         };
 
         // Run once since editing the page
-        updateClientsAndComms(<%= notification.client %>)
+        updateClientsAndComms(clientNotification);
       }
     },
 
     {
-      cssClass: 'JSclientsCreate',
+      cssClass: 'JSnotificationsCreate',
       execute: function () {
-        // Set global variable of all clients information
-        window.clients = <%- JSON.stringify(clients) %>;
-        window.organization.tz = "<%= organization.tz %>";
-
         // Bind clients to update of comm list
         $("#clientID").change(function () {
           var v = $(this).val();
@@ -557,7 +544,7 @@ $(function() {
         // We check if that email already exists before we allow a submission
         $("#createNewUser").submit(function (event) {
           var email = $("input[name=email]").val();
-          $.get("<%= `/users/create/check_email/` %>" + encodeURIComponent(email))
+          $.get("/users/create/check_email/" + encodeURIComponent(email))
           .done(function (res) {
             if (res.user) {
               alert("That email already is being used. Use a different address.");
@@ -570,6 +557,16 @@ $(function() {
         });
       }
     },
+
+    {
+      cssClass: 'JSuserSettings',
+      execute: function () {
+        $(".subdued").click(function () {
+          $(this).removeClass("subdued");
+          $("input[name=middle]").val("");
+        });
+      }
+    }
 
   ];
 
@@ -632,12 +629,12 @@ var keenRef = {
   startTime: new Date().getTime(),
   clientPageVisitEvent: {
     user: {
-      first:      "<%= typeof user == 'undefined' ? null : user.first %>",
-      middle:     "<%= typeof user == 'undefined' ? null : user.middle %>",
-      last:       "<%= typeof user == 'undefined' ? null : user.last %>",
-      email:      "<%= typeof user == 'undefined' ? null : user.email %>",
-      cmid:       "<%= typeof user == 'undefined' ? null : user.cmid %>",
-      department: "<%= typeof user == 'undefined' ? null : user.department %>"
+      first:      SESSION_USER ? null : SESSION_USER.first,
+      middle:     SESSION_USER ? null : SESSION_USER.middle,
+      last:       SESSION_USER ? null : SESSION_USER.last,
+      email:      SESSION_USER ? null : SESSION_USER.email,
+      cmid:       SESSION_USER ? null : SESSION_USER.cmid,
+      department: SESSION_USER ? null : SESSION_USER.department,
     },
     referrer: document.referrer,
     URL:      document.URL,
@@ -673,7 +670,7 @@ function notifyKeenOfPageVisitDuration () {
 
 
 // RENDER Crisp.im IF USER LOGGED IN
-<% if (typeof user !== "undefined") { %>
+if (SESSION_USER) {
   CRISP_WEBSITE_ID = "54a27220-22bc-4baa-9756-ce636cd6f3de";
   (function() {
     d = document;
@@ -682,4 +679,4 @@ function notifyKeenOfPageVisitDuration () {
     s.async=1;
     d.getElementsByTagName("head")[0].appendChild(s);
   })();
-<% } %>
+}
