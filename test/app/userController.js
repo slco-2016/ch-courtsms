@@ -287,6 +287,7 @@ describe('Basic http req tests', function() {
         middle: "L",
         last: "Primary",
         email: "uniqueJimPrimary@foobar.org",
+        alertFrequency: 48,
         isAway: "true",
         awayMessage: "Lorem ipsum dolores ipset."
       })
@@ -296,6 +297,7 @@ describe('Basic http req tests', function() {
           .expect(200)
           .end(function(err, res) {
             res.text.should.match(/Lorem ipsum dolores ipset/);
+            res.text.should.match(/<input type="radio" value="48" name="alertFrequency" checked>/);
             done(err)
           });
       });
