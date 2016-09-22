@@ -85,6 +85,7 @@ module.exports = {
       });
 
       res.render("departments/supervisors", {
+        departmentId: req.params.department,
         supervisors: supervisors,
         members: members
       });
