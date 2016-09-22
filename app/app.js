@@ -72,6 +72,7 @@ app.use(middleware.attachTemplateLibraries);
 app.use(middleware.templateHelpers);
 
 const AccessController          = require('./controllers/access');
+const AlertsController          = require('./controllers/alerts');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
 const CommunicationsController  = require('./controllers/communications');
@@ -106,6 +107,8 @@ app.use(auth.isLoggedIn);
 app.use(auth.checkIsAllowed);
 
 app.get("/logout", AccessController.logout);
+
+app.get("/alerts", AlertsController.checkForNew)
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.create);
@@ -146,7 +149,7 @@ app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
-app.get("/clients/:client/edit", ClientsController.update);
+app.post("/clients/:client/edit", ClientsController.update);
 app.get("/clients/:client/alter/:status", ClientsController.alter);
 app.get("/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/clients/:client/transfer", ClientsController.transferSubmit);

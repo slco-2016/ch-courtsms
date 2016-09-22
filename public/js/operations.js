@@ -16,6 +16,15 @@ function closeOutAlert (alertID) {
   .fail(function (error) { console.log(error.status+": "+error.statusText); });
 };
 
+setInterval(function () {
+  $.get("/alerts")
+    .then(function (res) {
+      console.log("alerts res", res)
+    }).fail(function (error) { 
+      console.log(error.status+": "+error.statusText); 
+    });
+}, 2000);
+
 // Google analytics
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

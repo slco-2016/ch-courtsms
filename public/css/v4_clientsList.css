@@ -74,9 +74,20 @@
       border: 1px solid #FFF;
       border-radius: 75px; }
     .clientRow .column .bigNumber {
-      font-size: 1.5em;
-      font-weight: 700;
-      color: #4A90E2; }
+      display: block;
+      height: 35px;
+      width: 35px;
+      line-height: 35px;
+      -moz-border-radius: 50%;
+      border-radius: 50%;
+      background-color: #FFF;
+      color: #4A90E2;
+      text-align: center;
+      font-size: 28px;
+      margin-top: 7px;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: default; }
     .clientRow .column .fa.highlight {
       padding: 5px;
       width: 16px;

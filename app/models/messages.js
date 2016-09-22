@@ -222,7 +222,27 @@ class Messages {
     });
   }
 
+  static findUnreadsByUser (user) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .count("msgid")
+        .leftJoin("convos", "msgs.convo", "convos.convid")
+        .where("msgs.read", false)
+        .andWhere("convos.cm", user)
+      .then(function (clients) {
+        
+        // See if there are any new messages in any of the conversations
+        let totalNewMessages = 0;
+        clients.forEach(function (ea) {
+          if (!isNaN(ea.count)) {
+            totalNewMessages += Number(ea.count);
+          }
+        });
 
+        fulfill(totalNewMessages > 0);
+      }).catch(reject);
+    });
+  }
 
   static startNewConversation (userID, clientID, subject, content, commID) {
     return new Promise((fulfill, reject) => {
@@ -240,7 +260,7 @@ class Messages {
           fulfill();
         }).catch(reject);
       }).catch(reject);
-    });      
+    }); 
   }
 
   static sendOne (commID, content, conversationID) {
