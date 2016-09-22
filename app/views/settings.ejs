@@ -51,12 +51,18 @@
       </div>
 
       <div class="formInput">
-        <input type="checkbox" name="isAway" value="true" <%if (user.is_away) {%>checked<%}%>> Check to turn away message on
+        <input type="checkbox" name="isAway" value="true" <%if (user.is_away) {%>checked<%}%>> Check to toggle away message on/off
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> User account type: <%=user.class%> </div>
+      <div class="formLabel"> Account </div>
+      <div class="formInput"> 
+        Your have a(n) 
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <b><%=user.class%> </b>
+        account. Changes to this account's status must be made by another administrator.
+      </div>
     </div>
 
     <input type="submit" class="formSubmit" value="Update">

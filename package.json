@@ -1,6 +1,6 @@
 {
   "name": "ClientComm",
-  "version": "3.5.4",
+  "version": "4.0.0",
   "description": "Client to case manager communications management service.",
   "author": "Kuan Butts",
   "contributors": [
