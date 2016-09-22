@@ -67,23 +67,6 @@
 
 </div>
 
-
-<script type="text/javascript">
-  $(".colorList").click(function () {
-    var colorTag = $(this).find(".colorTag");
-    var colorID = colorTag.attr("data-colorID");
-    var colorTagColor = colorTag.css("background-color");
-    var colorTagName = colorTag.attr("data-colorTagName");
-
-    // update selected value
-    $("#chosenColorID").val(colorID);
-
-    // update color and name on the block
-    $(".clientNameBox").css("background-color", colorTagColor);
-    $(".clientColorNameSelected").text(colorTagName)
-  });
-</script>
-
-
+<script type="text/javascript" class="JSclientSelectColor"></script>
 
 <% include ../partials/cardFrameBottom %>

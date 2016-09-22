@@ -151,8 +151,8 @@ class Users extends BaseModel {
           middle: middle,
           last: last,
           email: email,
-          position: position,
           department: department,
+          position: position,
           class: className,
           updated: db.fn.now()
         })

@@ -199,6 +199,7 @@ app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 
 app.get("/settings", SettingsController.index);
+app.post("/settings", SettingsController.update);
 
 app.post("/twilio/sms", TwilioController.receiveText);
 app.post("/twilio/voice", TwilioController.receiveVoice);

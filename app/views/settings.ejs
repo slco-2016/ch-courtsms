@@ -37,7 +37,21 @@
     <div class="formRow">
       <div class="formLabel"> Email </div>
       <div class="formInput">
-        <input type="email" name="last" value="<%=user.email%>" required>
+        <input type="email" name="email" value="<%=user.email%>" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel">
+        Away message status
+      </div>
+
+      <div class="formInput">
+        <textarea name="awayMessage" rows="5" maxlength="320" required><%=user.away_message-%></textarea>
+      </div>
+
+      <div class="formInput">
+        <input type="checkbox" name="isAway" value="true" <%if (user.is_away) {%>checked<%}%>> Check to turn away message on
       </div>
     </div>
 
@@ -49,5 +63,7 @@
 
   </form>
 </div>
+
+<script type="text/javascript" class="JSuserSettings"></script>
 
 <% include ./partials/cardFrameBottom %>

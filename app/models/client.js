@@ -1,19 +1,12 @@
 'use strict';
 
-// Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
-
-
-const CommConns = require("./commConns");
 const Conversations = require("./conversations");
+const CommConns = require("./commConns");
+const Departments = require("./departments");
 
-
-
-
-
-// Class
 class Client {
 
   static findByID (clientID) {
@@ -43,22 +36,37 @@ class Client {
           return client;
         });
 
-        const clientIDs = finalClientsObject.map(function (client) {
+        const clientIDs = finalClientsObject.map((client) => {
           return client.clid;
         });
 
         return CommConns.findByClientIDs(clientIDs)
+      
       }).then((commConns) => {
-        finalClientsObject = finalClientsObject.map(function (client) {
+        finalClientsObject = finalClientsObject.map((client) => {
           client.communications = [];
-          commConns.forEach(function (commconn) {
+          commConns.forEach((commconn) => {
             if (client.clid == commconn.client) {
              client.communications.push(commconn) 
             }
           });
           return client;
         });
-        fulfill(finalClientsObject[0]);
+
+        finalClientsObject = finalClientsObject[0];
+
+        return Departments.findByMember(finalClientsObject.cm)
+      }).then((department) => {
+        if (finalClientsObject) {
+          if (department) {
+            finalClientsObject.department = department;  
+          } else {
+            finalClientsObject.department = {};
+          }
+        } else {
+          finalClientsObject = {};
+        }
+        fulfill(finalClientsObject);
       }).catch(reject);
     })
   }
