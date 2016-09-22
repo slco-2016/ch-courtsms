@@ -1,6 +1,5 @@
 <% include ../partials/hubFrameTop %>
 
-<!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_templates.css">
 
 <div class="header">
@@ -11,9 +10,7 @@
   <div class="column">delete</div>
 </div>
 
-
 <% if (templates.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
-
 
 <% templates.forEach(function (template) { %>
   <div class="templateRow">
@@ -38,6 +35,5 @@
     </div>
   </div>
 <% }) %>
-
 
 <% include ../partials/hubFrameBottom %>

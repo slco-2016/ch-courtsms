@@ -83,23 +83,6 @@
   </form>
 </div>
 
-
-<script type="text/javascript">
-
-  // We check if that email already exists before we allow a submission
-  $("#createNewUser").submit(function (event) {
-    var email = $("input[name=email]").val();
-    $.get("<%= `/users/create/check_email/` %>" + encodeURIComponent(email))
-    .done(function (res) {
-      if (res.user) {
-        alert("That email already is being used. Use a different address.");
-        event.preventDefault();
-        return false;
-      } else {
-        return true;
-      }
-    }).fail(function (err) { console.log(err); });
-  });
-</script>
+<script type="text/javascript" class="JSusersCreate"></script>
 
 <% include ../partials/cardFrameBottom %>

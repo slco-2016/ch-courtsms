@@ -13,9 +13,7 @@
 </div>
 
 
-<% if (communications.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
+<% if (communications.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 
 <% communications.forEach(function (c) { %>

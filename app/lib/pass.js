@@ -1,6 +1,3 @@
-
-
-
 // DEPENDENCIES
 var bcrypt = require("bcrypt-nodejs");
 var credentials = require("../../credentials");
@@ -14,6 +11,50 @@ module.exports = {
     } else { 
       req.flash("warning", "Please log in for access.");
       res.redirect("/login"); 
+    }
+  },
+
+  checkIsAllowed: function(req, res, next) {
+    let allowed = true;
+
+    let client = res.locals.client;
+    let user = res.locals.user;
+    let level = res.locals.level;
+    let organization = res.locals.organization;
+    let department = res.locals.department;
+
+    if (level == "org") {
+      if (user.class == "primary") {
+        allowed = false;
+      }
+      if (user.class == "supervisor") {
+        if (department.department_id !== user.department) {
+          allowed = false;
+        }
+      }
+    }
+
+    if (client) {
+      if (client.cm !== user.cmid) {
+        if (client.department.org !== user.org) {
+          allowed = false;
+        }
+
+        if (client.department.department_id !== user.department) {
+          if (["owner", "support", "developer"].indexOf(user.class) < 0) {
+            allowed = false;
+          }
+          if (user.class == "primary") {
+            allowed = false;
+          }
+        }
+      }
+    }
+
+    if (allowed) {
+      return next();
+    } else {
+      res.redirect("/login");
     }
   },
 
@@ -38,11 +79,11 @@ module.exports = {
     }
   },
 
-  hashPw: function (pw) { 
+  hashPw: function (pw) {
     return bcrypt.hashSync(pw, bcrypt.genSaltSync(8), null); 
   },
 
-  validPw: function (pw1, pw2) { 
+  validPw: function (pw1, pw2) {
     return bcrypt.compareSync(pw1, pw2); 
   }
 }

@@ -71,6 +71,25 @@ class Departments {
     });
   }
 
+  static findByMember (user) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .where("cmid", user)
+      .then((members) => {
+        let member = members[0];
+
+        if (member) {
+          Departments.findByID(member.department)
+          .then((department) => {
+            fulfill(department);
+          }).catch(reject);
+
+        } else {
+          fulfill();
+        }
+      }).catch(reject);
+    });
+  }
 
   static findMembers (departmentID) {
     return new Promise((fulfill, reject) => {

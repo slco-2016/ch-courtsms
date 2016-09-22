@@ -1,6 +1,5 @@
 <% include ../partials/hubFrameTop %>
 
-<!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_users_supervisor.css">
 
 <div class="header">
@@ -16,11 +15,7 @@
   <div class="column"><%= hub.sel == 'active' ? 'deactivate' : 'activate' %></div>
 </div>
 
-
-<% if (users.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
-
+<% if (users.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% users.forEach(function (targetUser) { %>
   <div class="notificationRow">
@@ -78,6 +73,5 @@
     </div>
   </div>
 <% }) %>
-
 
 <% include ../partials/hubFrameBottom %>

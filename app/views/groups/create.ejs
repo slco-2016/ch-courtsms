@@ -54,22 +54,6 @@
   </form>
 </div>
 
-
-
-<script type="text/javascript">
-  $(".scrollListRow").click(function () {
-    $(this).toggleClass("selected");
-  });
-
-  $("#createGroup").submit(function () {
-    $(".scrollListRow").each(function () {
-      if ($(this).hasClass("selected")) {
-        var clientID = $(this).attr("clientID");
-        $(".scrollListBox").append("<input type='hidden' name='clientIDs' value='" + clientID + "'>")
-      }
-    });
-    return true;
-  });
-</script>
+<script type="text/javascript" class="JSgroupsCreate"></script>
 
 <% include ../partials/cardFrameBottom %>

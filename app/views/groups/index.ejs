@@ -12,9 +12,7 @@
   <div class="column">delete</div>
 </div>
 
-<% if (groups.length == 0) { %>
-  <% include ../partials/emptyResultsGreeting %>
-<% } %>
+<% if (groups.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% groups.forEach(function (group) { %>
   <div class="groupRow">
@@ -60,6 +58,5 @@
     </div>
   </div>
 <% }) %>
-
 
 <% include ../partials/hubFrameBottom %>

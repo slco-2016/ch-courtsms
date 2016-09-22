@@ -222,8 +222,9 @@ module.exports = {
   },
 
   fetchUserDepartment(req, res, next) {
+    let department = req.user.department;
     if (req.user) {
-      Departments.findByID(req.user.department)
+      Departments.findByID(department)
       .then((department) => {
         // if no department, provide some dummy attributes
         if (!department) {
@@ -247,6 +248,7 @@ module.exports = {
     res.locals.userOwnsClient = false;
 
     let p = req.params;
+
     let client = p.client || p.clientId || p.clientID || null;
     let isNumber = !isNaN(client);
     
@@ -263,7 +265,6 @@ module.exports = {
 
           next();
         } else {
-          console.log("Client being looked (and not found): " + client);
           res.status(404).render('v4/general/404');
         }
         return null

@@ -1,7 +1,5 @@
 <% include ./partials/cardFrameTop %>
 
-<!-- color picker -->
-<script src="/static/js/jscolor.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/v4_colorSelector.css">
 
 <div class="cardHead">
@@ -58,20 +56,7 @@
 
 </div>
 
-
-<script type="text/javascript">
-  $(".colorTagAdd").click(function () {
-    if ($(".colorTagName").val() !== "") {
-      var i = document.createElement("input");
-      i.type = "hidden";
-      i.name = "color";
-      i.value = $(".jscolor").css("background-color");
-      document.getElementById("addNewColorTagForm").appendChild(i);
-      $("#addNewColorTagForm").submit();
-    }
-  });
-</script>
-
-
+<script src="/static/js/jscolor.min.js"></script>
+<script type="text/javascript" class="JScolorsManager"></script>
 
 <% include ./partials/cardFrameBottom %>

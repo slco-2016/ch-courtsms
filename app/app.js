@@ -102,6 +102,7 @@ app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);
+app.use(auth.checkIsAllowed);
 
 app.get("/logout", AccessController.logout);
 
