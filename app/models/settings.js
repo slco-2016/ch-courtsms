@@ -14,13 +14,31 @@ const colors = require("colors")
 class Settings {
 
   static findById (user) {
-
     return new Promise((fulfill, reject) => {
       Users.findById(user)
       .then((user) => {
         return fulfill(user);
       }).catch(reject);
     });
+  }
+
+  static updateOne (userId, first, middle, last, email, isAway, awayMessage) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .where("cmid", userId)
+        .update({
+          first: first,
+          middle: middle,
+          last: last,
+          email: email,
+          is_away: isAway,
+          away_message: awayMessage,
+          updated: db.fn.now()
+        })
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    })
   }
   
 }
