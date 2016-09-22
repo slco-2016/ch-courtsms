@@ -1,12 +1,9 @@
 <% include ./navBarTop %>
 
-<!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
-
   <div class="navSub">
-
-    <!-- Organization and department-level tabs -->
+  
     <% if (level == "org") { %>
       <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
         <div class="title"><a href="/org">Metrics Dashboard</a></div>

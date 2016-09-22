@@ -347,6 +347,40 @@ describe('Basic http req tests', function() {
       })
   });
 
+  it('primary should not be able to view request new number page', function(done) {
+    primary.get('/org/numbers')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('primary should not be able to view request new number page', function(done) {
+    primary.get('/org/numbers/create')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('owner should be able to view request new number page', function(done) {
+    owner.get('/org/numbers')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('owner should be able to view request new number page', function(done) {
+    owner.get('/org/numbers/create')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)
