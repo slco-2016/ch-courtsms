@@ -272,6 +272,79 @@ describe('Basic http req tests', function() {
       });
   });
 
+  it('primary user should be able to view settings', function(done) {
+    primary.get('/settings')
+      .expect(200)
+      .end(function(err, res) {
+        done(err)
+      });
+  });
+
+  it('primary user settings updates should propogate', function(done) {
+    primary.post('/settings')
+      .send({
+        first: "Jim",
+        middle: "L",
+        last: "Primary",
+        email: "uniqueJimPrimary@foobar.org",
+        isAway: "true",
+        awayMessage: "Lorem ipsum dolores ipset."
+      })
+      .expect(302)
+      .end(function(err, res) {
+        primary.get('/settings')
+          .expect(200)
+          .end(function(err, res) {
+            res.text.should.match(/Lorem ipsum dolores ipset/);
+            done(err)
+          });
+      });
+  });
+
+  it('first time user goes to colors for client, should be routed to color manager', function(done) {
+    primary.get('/clients/1/edit/color')
+      .expect(302)
+      .expect('Location', '/colors')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('color manager view should work', function(done) {
+    primary.get('/colors')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('color manager view should not work for not logged in user', function(done) {
+    anonymous.get('/colors')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('creating a new color should have it populate', function(done) {
+    primary.post('/colors')
+      .send({
+        color: "rgb(33,20,200)",
+        name: "Strawberry Red Team"
+      })
+      .expect(302)
+      .expect('Location', '/colors')
+      .end(function(err, res) {
+        primary.get('/colors')
+          .expect(200)
+          .end(function(err, res) {
+            res.text.should.match(/Strawberry Red Team/);
+            done(err);
+          })
+      })
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)

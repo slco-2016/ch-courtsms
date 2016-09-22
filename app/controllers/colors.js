@@ -12,7 +12,7 @@ module.exports = {
     }).catch(res.error500);
   },
   
-  update(req, res) {
+  create(req, res) {
     ColorTags.addNewColorTag(req.user.cmid, req.body.color, req.body.name)
     .then(() => {
       req.flash("success", "New color tag created.");
