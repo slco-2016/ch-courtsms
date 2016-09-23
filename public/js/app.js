@@ -387,7 +387,11 @@ $(function() {
         function buildUserActivityChart(users) {
           users = users.filter(function (ea) {
             if (departmentFilter) {
-              return departmentFilter == Number(ea["user.department"]);
+              if (userFilter) {
+                return userFilter === Number(ea["user.cmid"]);
+              } else {
+                return departmentFilter == Number(ea["user.department"]);
+              }
             } else if (userFilter) {
               return userFilter === Number(ea["user.cmid"]);
             } else {

@@ -32,7 +32,7 @@
       </div>
     </div>
     <% users.forEach(function(targetUser) { %>
-      <a href="<%= `/org?user=${targetUser.cmid}` %>">
+      <a href="<%= `/org?user=${targetUser.cmid}&department=${targetUser.department}` %>">
         <div class="department <% if (userFilter == targetUser.cmid) { %>selected<% } %>">
           <div class="subject">
             <%= targetUser.last + ', ' + targetUser.first  %>

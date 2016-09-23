@@ -12,7 +12,7 @@ module.exports = {
     let countsByDay, countsByWeek;
 
     // Control against the owner being assigned to an department
-    if (req.user.class == "owner") {
+    if (req.user.class == "owner" && !req.query.department) {
       departmentFilter = null;
     }
 
