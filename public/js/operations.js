@@ -13,7 +13,6 @@ function removeAlert () {
   if (alertId) {
     submitAlertClosure(alertId);
   }
-  console.log($(this), "s");
   $(this).parent().remove(); 
   var nr = $(".numberRemaining");
   nr.text(Number(nr.text())-1); // reduce the remaining alerts by one

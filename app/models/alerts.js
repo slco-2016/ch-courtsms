@@ -12,10 +12,10 @@ const Messages = require("./messages");
 // Class
 class Alerts {
   
-  static findByUser (userID) {
+  static findByUser (userId) {
     return new Promise((fulfill, reject) => {
       db("alerts_feed")
-        .where("user", userID)
+        .where("user", userId)
         .andWhere("open", true)
       .then((alerts) => {
         return fulfill(alerts);
@@ -23,14 +23,24 @@ class Alerts {
     });
   }
 
-  static closeOne (alertID) {
+  static findOne (alertId) {
     return new Promise((fulfill, reject) => {
       db("alerts_feed")
-        .where("alert_id", alertID)
-        .update({ open: false })
-      .then(() => {
-        fulfill();
+        .where("alert_id", alertId)
+        .andWhere("open", true)
+        .limit(1)
+      .then((alerts) => {
+        return fulfill(alerts[0]);
       }).catch(reject);
+    });
+  }
+
+  static closeOne (alertId) {
+    return new Promise((fulfill, reject) => {
+      db("alerts_feed")
+        .where("alert_id", alertId)
+        .update({ open: false })
+      .then(fulfill).catch(reject);
     });
   }
 
