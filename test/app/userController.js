@@ -145,13 +145,31 @@ describe('Basic http req tests', function() {
       });
   });
 
-  // it('primary user should reroute to create if no comm methods for client', function(done) {
-  //   primary.get('/clients/1/communications')
-  //     .expect(302)
-  //     .end(function(err, res) {
-  //       done(err);
-  //     });
-  // });
+  it('client without contact methods should reroute to create comm method', function(done) {
+    primary.post('/org/clients/create')
+      .send({
+        targetUser: 2,
+        first: "Sandro",
+        middle: "N",
+        last: "Orin",
+        dob: "1990-02-03",
+        uniqueID1: 32334,
+        uniqueID2: 2327534,
+      })
+      .expect(302)
+      .end(function(err, res) {
+        if (err) {
+          done(err);
+        } else {
+          primary.get('/clients/2/communications')
+            .expect(302)
+            .expect('Location', '/clients/2/communications/create')
+            .end(function(err, res) {
+              done(err);
+            });
+        }
+      });
+  });
 
   it('owner user should not have option to load templates on quick message', function(done) {
     owner.get('/org/clients/1/address')
