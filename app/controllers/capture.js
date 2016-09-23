@@ -49,17 +49,26 @@ module.exports = {
 
   attachUpdate(req, res) {
     let targetUser = req.body.user;
+    let conversationId = req.params.conversation;
     if (targetUser) {
-      
+      CaptureBoard.findByConversationId(conversationId)
+      .then((conversation) => {
+        if (conversation) {
+          
+        } else {
+          res.notFound();
+        }
+      }).catch(res.error500);
     } else {
-      res.notFound();
+      req.flash("warning", "Could not identify that user, please select another.");
+      res.redirect(`/org/captured/attach/${conversationId}`);
     }
   },
 
   removeConfirm(req, res) {
     let conversationId = Number(req.params.conversation);
     CaptureBoard.findByConversationId(conversationId)
-    .then((conversations) => {
+    .then((conversation) => {
       if (conversation) {
         res.render("capture/removeConfirm", {
           conversation: conversation
