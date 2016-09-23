@@ -73,6 +73,7 @@ app.use(middleware.templateHelpers);
 
 const AccessController          = require('./controllers/access');
 const AlertsController          = require('./controllers/alerts');
+const CaptureBoardController    = require('./controllers/capture');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
 const CommunicationsController  = require('./controllers/communications');
@@ -204,6 +205,8 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.get("/org/capture", CaptureBoardController)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);
