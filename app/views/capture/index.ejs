@@ -3,6 +3,17 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/captureboard.css">
 
+<div class="description">
+  <div class="title">
+  <i class="fa fa-question-circle" aria-hidden="true"></i>
+    What is the purpose of the conversation capture board?
+  </div>
+  <div class="content">
+    Clients can call in with new numbers to the system. The system tries to determine whether or not the contact method is attributed to a client already. If it is not, it does it's best to prompt the user to give us the correct information. If it cannot determine who the user is, it sends the conversation to the capture board.
+  </div>
+</div>
+
+
 <% if (conversations.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% conversations.forEach(function (convo) { %>
@@ -10,7 +21,7 @@
 
     <div class="actionBox">
       
-      <a href="/captured/attach/<%= convo.convo %>">
+      <a href="/org/captured/attach/<%= convo.convo %>">
         <div class="claimButton">
           <i class="fa fa-user-plus"></i>
           Attach Conversation to Client
@@ -67,7 +78,7 @@
           Please be careful! Removing a message is a permanent action.
         </div>
         <div class="right">
-          <a href="/captured/remove/<%= convo.convo %>">Delete</a>
+          <a href="/org/captured/remove/<%= convo.convo %>">Delete</a>
         </div>
       </div>
     </div>

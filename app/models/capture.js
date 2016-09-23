@@ -41,6 +41,17 @@ class CaptureBoard {
       }).catch(reject);
     })
   }
+
+  static removeOne (conversationId) {
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .update({ open: false })
+        .where("convid", conversationId)
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    })
+  }
   
 }
 

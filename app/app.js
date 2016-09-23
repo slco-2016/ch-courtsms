@@ -207,6 +207,8 @@ app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 
 app.get("/org/captured", CaptureBoardController.index)
+app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm)
+app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);

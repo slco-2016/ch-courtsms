@@ -40,15 +40,17 @@ var checkingForNewMessages = setInterval(function () {
 
         $(".numberRemaining").text(number)
         $(".alerts").fadeIn();
-        $(".alertsBody").append(`<div class="alertRow">
-                                  <div class="message">
-                                    You have new unread messages. 
-                                    Click to view.
-                                  </div>
-                                  <div class="close">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                  </div>
-                                </div>`);
+        $(".alertsBody").prepend('<div class="alertRow">' +
+                                  '<div class="message">' +
+                                    '<a href="/clients">' +
+                                      'You have new unread messages. ' +
+                                      'Click to view.' +
+                                    '</a>' +
+                                  '</div>' +
+                                  '<div class="close">' +
+                                    '<i class="fa fa-check-circle" aria-hidden="true"></i>' +
+                                  '</div>' +
+                                '</div>');
         $(".hiddenAlerts .alertRow .close").click(removeAlert); // need to bind action
         clearInterval(checkingForNewMessages);
       }

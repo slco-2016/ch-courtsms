@@ -1,3 +1,16 @@
+.description {
+  background-color: #E8ECEF;
+  padding: 10px 20px;
+  color: #898989; }
+  .description .title {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: bold;
+    border-bottom: 1px solid #898989;
+    margin-bottom: 5px; }
+  .description .content {
+    font-size: 12px; }
+
 .convoBlock {
   overflow: hidden;
   height: 200px;
@@ -113,8 +126,8 @@
         line-height: 30px;
         font-size: 12px; }
       .convoBlock .actionBox .closeButton:hover {
-        background-color: #898989;
-        color: #FFF;
+        background-color: #D3D3D3;
+        color: #898989;
         border: 1px solid #FFF; }
         .convoBlock .actionBox .closeButton:hover .right {
           background-color: #E50000;

@@ -10,6 +10,24 @@ $lightblue:   #4A90E2;
 $blue:        #3F69B6;
 $darkblue:    #344289;
 
+.description {
+  background-color: $offwhite;
+  padding: 10px 20px;
+  color: $grey;
+
+  .title {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: bold;
+    border-bottom: 1px solid $grey;
+    margin-bottom: 5px;
+  }
+
+  .content {
+    font-size: 12px;
+  }
+}
+
 .convoBlock {
   overflow: hidden;
   height: 200px;
@@ -161,8 +179,8 @@ $darkblue:    #344289;
         font-size: 12px;
       }
       &:hover {
-        background-color: $grey;
-        color: $white;
+        background-color: $lightgrey;
+        color: $grey;
         border: 1px solid #FFF;
 
         .right {
