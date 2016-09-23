@@ -1,8 +1,12 @@
+const PublicModel = require('../models/public');
+
 module.exports = {
 
   index(req, res, next) {
     if (!req.hasOwnProperty("user")) {
-      res.redirect(`/login`);
+      PublicModel.splashData().then((data) => {
+        res.render("splash", data);
+      }).catch(res.error500);
     } else if (["owner", "supervisor", "support"].indexOf(req.user.class) > -1) {
       res.redirect(`/org`);
     } else if (["developer", "primary"].indexOf(req.user.class) > -1) {
