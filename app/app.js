@@ -206,7 +206,7 @@ app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 
-app.get("/org/capture", CaptureBoardController)
+app.get("/org/capture", CaptureBoardController.index)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);

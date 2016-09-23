@@ -18,10 +18,9 @@ const anonymous = supertest.agent(APP)
 
 describe('Basic http req tests', function() {
 
-  it('should redirect from root', function(done) {
+  it('should no longer redirect from root and instead show splash', function(done) {
     anonymous.get('/')
-      .expect(302)
-      .expect('Location', '/login')
+      .expect(200)
       .end(function(err, res) {
         done(err);
       });
