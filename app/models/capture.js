@@ -42,6 +42,18 @@ class CaptureBoard {
     })
   }
 
+  static findByConversationId (orgId, conversationId) {
+    return new Promise((fulfill, reject) => {
+      CaptureBoard.findByOrg(orgId)
+      .then((conversations) => {
+        let conversation = conversations.filter((convo) => {
+          return conversationId == convo.convo;
+        })[0];
+        fulfill(conversation)
+      }).catch(reject);
+    })
+  }
+
   static removeOne (conversationId) {
     return new Promise((fulfill, reject) => {
       db("convos")

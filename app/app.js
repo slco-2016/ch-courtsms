@@ -207,6 +207,8 @@ app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 
 app.get("/org/captured", CaptureBoardController.index)
+app.get("/org/captured/attach/:conversation", CaptureBoardController.attachIndex)
+app.post("/org/captured/attach/:conversation", CaptureBoardController.attachUpdate)
 app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm)
 app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 

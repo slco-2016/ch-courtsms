@@ -1,5 +1,5 @@
 const CaptureBoard = require('../models/capture');
-
+const Users = require('../models/users');
 
 module.exports = {
 
@@ -17,14 +17,49 @@ module.exports = {
     }).catch(res.error500);
   },
 
-  removeConfirm(req, res) {
+  attachIndex(req, res) {
     let orgId = req.user.org;
     let conversationId = Number(req.params.conversation);
-    CaptureBoard.findByOrg(orgId)
+    let departmentFilter = null;
+    if (req.user.class === "supervisor") { 
+      departmentFilter = req.user.department; 
+    }
+
+    CaptureBoard.findByConversationId(orgId, conversationId)
+    .then((conversation) => {
+      if (conversation) {
+
+        Users.findByOrg(orgId)
+        .then((users) => {
+          if (departmentFilter) {
+            users = users.filter((u) => { return u.department == departmentFilter });
+          }
+
+          res.render("capture/attach", {
+            conversation: conversation,
+            users: users
+          });
+        }).catch(res.error500);
+
+      } else {
+        res.notFound();
+      }
+    }).catch(res.error500);
+  },
+
+  attachUpdate(req, res) {
+    let targetUser = req.body.user;
+    if (targetUser) {
+      
+    } else {
+      res.notFound();
+    }
+  },
+
+  removeConfirm(req, res) {
+    let conversationId = Number(req.params.conversation);
+    CaptureBoard.findByConversationId(conversationId)
     .then((conversations) => {
-      let conversation = conversations.filter((convo) => {
-        return conversationId == convo.convo;
-      })[0];
       if (conversation) {
         res.render("capture/removeConfirm", {
           conversation: conversation
@@ -32,7 +67,6 @@ module.exports = {
       } else {
         res.notFound();
       }
-
     }).catch(res.error500);
   },
 
