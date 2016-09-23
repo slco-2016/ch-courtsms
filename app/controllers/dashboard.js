@@ -6,10 +6,15 @@ module.exports = {
 
   org(req, res) {
     let departments;
-    let departmentFilter = req.user.department || Number(req.query.department) || null;
+    let departmentFilter = req.user.department || req.query.department || null;
     let userFilter = req.query.user || null;
     let users;
     let countsByDay, countsByWeek;
+
+    // Control against the owner being assigned to an department
+    if (req.user.class == "owner") {
+      departmentFilter = null;
+    }
 
     Departments.findByOrg(req.user.org, true)
     .then((depts) => {
