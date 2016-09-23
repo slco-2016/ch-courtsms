@@ -2,24 +2,56 @@
 setTimeout(function(){$(".FLASH").fadeOut("slow");},1500);
 
 // Alert feed controls
-$(".alertsBindedClickAction").click(function(){$(".hiddenAlerts").toggle();});
-$(".hiddenAlerts .alertRow .close").click(function(){ 
-  closeOutAlert($(this).attr("alertID"));
+$(".alertsBindedClickAction").click(function () {
+  $(".hiddenAlerts").toggle();
+});
+
+$(".hiddenAlerts .alertRow .close").click(removeAlert);
+
+function removeAlert () { 
+  var alertId = $(this).attr("alertID");
+  if (alertId) {
+    submitAlertClosure(alertId);
+  }
+  console.log($(this), "s");
   $(this).parent().remove(); 
   var nr = $(".numberRemaining");
   nr.text(Number(nr.text())-1); // reduce the remaining alerts by one
   if ($(".hiddenAlerts .alertRow").length == 0) $(".alerts").remove();
-});
-
-function closeOutAlert (alertID) {
-  $.get("/alerts/close/" + alertID)
-  .fail(function (error) { console.log(error.status+": "+error.statusText); });
 };
 
-setInterval(function () {
+function submitAlertClosure (alertId) {
+  $.get("/alerts/close/" + alertId)
+  .fail(function (error) { 
+    console.log(error.status+": "+error.statusText); 
+  });
+};
+
+var checkingForNewMessages = setInterval(function () {
   $.get("/alerts")
     .then(function (res) {
-      console.log("alerts res", res)
+      if (res.newMessages) {
+
+        var number = Number($(".numberRemaining").text());
+        if (isNaN(number)) {
+          number = 0;
+        }
+        number = number + 1;
+
+        $(".numberRemaining").text(number)
+        $(".alerts").fadeIn();
+        $(".alertsBody").append(`<div class="alertRow">
+                                  <div class="message">
+                                    You have new unread messages. 
+                                    Click to view.
+                                  </div>
+                                  <div class="close">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                  </div>
+                                </div>`);
+        $(".hiddenAlerts .alertRow .close").click(removeAlert); // need to bind action
+        clearInterval(checkingForNewMessages);
+      }
     }).fail(function (error) { 
       console.log(error.status+": "+error.statusText); 
     });

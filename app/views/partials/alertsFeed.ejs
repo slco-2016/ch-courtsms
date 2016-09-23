@@ -1,28 +1,26 @@
-<% if (ALERTS_FEED.length > 0) { %>
-  <div class="alerts">
-    <div class="alertsBindedClickAction">
-      <div class="exclamationCircle">
-        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-      </div>
-      <span class="numberRemaining"><%=ALERTS_FEED.length%></span> Alerts
+<div class="alerts" <% if (ALERTS_FEED.length == 0) { %>style="display:none;"<% } %>>
+  <div class="alertsBindedClickAction">
+    <div class="exclamationCircle">
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
     </div>
-
-    <div class="hiddenAlerts">
-      <div class="arrowTop"></div>
-
-      <div class="alertsBody">
-        <% ALERTS_FEED.forEach(function (alert) { %>
-          <div class="alertRow">
-            <div class="message">
-              <%= alert.subject %>
-            </div>
-            <div class="close" alertID="<%= alert.alert_id %>">
-              <i class="fa fa-check-circle" aria-hidden="true"></i>
-            </div>
-          </div>
-        <% }) %>
-      </div>
-
-    </div>
+    <span class="numberRemaining"><%=ALERTS_FEED.length%></span> Alerts
   </div>
-<% } %>
+
+  <div class="hiddenAlerts">
+    <div class="arrowTop"></div>
+
+    <div class="alertsBody">
+      <% ALERTS_FEED.forEach(function (alert) { %>
+        <div class="alertRow">
+          <div class="message">
+            <%= alert.subject %>
+          </div>
+          <div class="close" alertID="<%= alert.alert_id %>">
+            <i class="fa fa-check-circle" aria-hidden="true"></i>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+  </div>
+</div>
