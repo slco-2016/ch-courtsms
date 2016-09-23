@@ -348,7 +348,7 @@ $(function() {
             }
           }).map(function (ea) {
             ea["User Activity"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
-            ea.name = [ea["user.last"], ea["user.first"]].join(", ");
+            ea.name = [ea["user.last"], ea["user.first"]].join(", ").substring(0, 15);
             return ea;
           });
           
