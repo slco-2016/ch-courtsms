@@ -15,10 +15,13 @@
       <% } %>
 
       <%- leftTab('users', hub, level, ['active', 'inactive']) %>
-    <% } %>     
+    <% } %>
 
     <%- leftTab('clients', hub, level, ['open', 'closed']) %>
-    <%- leftTab('captured', hub, level, null) %>
+
+    <% if (level == "org") { %>
+      <%- leftTab('captured', hub, level, null) %>
+    <% } %>
 
     <!-- Primary user level tabs -->
     <% if (level == "user") { %>
