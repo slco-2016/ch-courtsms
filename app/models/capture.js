@@ -9,14 +9,14 @@ class CaptureBoard {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .leftJoin("convos", "msgs.convo", "convos.convid")
-        .leftJoin("comms", "commcs.commid", "msgs.comm")
+        .leftJoin("comms", "comms.commid", "msgs.comm")
         .where("convos.client", null)
         .andWhere("convos.open", true)
         .orderBy("msgs.created", "ASC")
       .then((floaters) => {
 
         // Reduce results to just convids, and sort incrementally
-        let convos = floaters.rows.map((ea) => { 
+        let convos = floaters.map((ea) => { 
           return ea.convo; 
         }).reduce((a,b) => { 
           if (a.indexOf(b) < 0) {
@@ -31,7 +31,7 @@ class CaptureBoard {
         });
 
         // Add messages to each identified convo obj
-        floaters.rows.forEach((ea) => { 
+        floaters.forEach((ea) => { 
           for (var i = 0; i < convos.length; i++) {
             if (convos[i].convo == ea.convo) convos[i].msgs.push(ea);
           }

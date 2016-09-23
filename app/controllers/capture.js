@@ -8,6 +8,10 @@ module.exports = {
     CaptureBoard.findByOrg(orgId)
     .then((conversations) => {
       res.render("capture/index", {
+        hub: {
+          tab: "captured",
+          sel: null
+        },
         conversations: conversations
       });
     }).catch(res.error500);

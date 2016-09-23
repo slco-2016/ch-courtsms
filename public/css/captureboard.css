@@ -1,147 +1,121 @@
-.contents {
-  background-color: #898989; }
-  .contents .title {
-    color: #FFF; }
-  .contents .captureboard {
-    margin-left: -25px;
-    margin-right: -25px; }
-    .contents .captureboard .headers {
-      padding-left: 25px;
-      padding-right: 25px;
+.convoBlock {
+  overflow: hidden;
+  height: 200px;
+  background-color: #E8ECEF;
+  border-top: 4px solid #E8ECEF;
+  border-bottom: 4px solid #E8ECEF; }
+  .convoBlock .convoStream {
+    width: 720px;
+    height: 100%;
+    overflow-y: scroll;
+    margin-right: 4px;
+    background-color: #FFF; }
+    .convoBlock .convoStream .convoRow .msgInbound {
+      width: 340px;
+      float: left;
+      padding: 10px;
+      font-size: 16px;
+      color: #898989; }
+      .convoBlock .convoStream .convoRow .msgInbound .message {
+        width: 100%;
+        border-top: 1px solid #C4C4C4;
+        padding-top: 5px; }
+    .convoBlock .convoStream .convoRow .msgOutbound {
+      width: 340px;
+      float: right;
+      padding: 10px;
+      font-size: 16px;
+      color: #3F69B6; }
+      .convoBlock .convoStream .convoRow .msgOutbound .message {
+        width: 100%;
+        border-top: 1px solid #C4C4C4;
+        padding-top: 5px;
+        margin-top: -25px; }
+    .convoBlock .convoStream .convoRow::after {
+      content: "";
+      display: block;
+      clear: both; }
+  .convoBlock .actionBox {
+    height: 200px;
+    width: 300px;
+    background-color: #E8ECEF;
+    float: left; }
+    .convoBlock .actionBox .claimButton {
+      width: 270px;
+      height: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 10px;
+      border: 1px solid #4A90E2;
+      background-color: #FFF;
+      color: #2F8CE8;
+      text-align: center;
+      font-weight: bold;
       font-size: 12px;
-      line-height: 20px; }
-      .contents .captureboard .headers div {
-        float: left; }
-      .contents .captureboard .headers div:nth-child(1) {
-        width: 300px; }
-      .contents .captureboard .headers div:nth-child(2) {
-        width: 300px; }
-      .contents .captureboard .headers div:nth-child(3) {
-        width: 200px; }
-      .contents .captureboard .headers::after {
+      line-height: 40px;
+      border-radius: 5px;
+      cursor: pointer; }
+      .convoBlock .actionBox .claimButton .fa {
+        font-size: 25px;
+        vertical-align: middle; }
+      .convoBlock .actionBox .claimButton:hover {
+        background-color: #2F8CE8;
+        color: #FFF; }
+    .convoBlock .actionBox .tinyInfo {
+      width: 270px;
+      margin-right: auto;
+      margin-left: auto; }
+      .convoBlock .actionBox .tinyInfo .blurb {
+        width: 125px;
+        float: left;
+        padding: 10px 0px 10px 0px; }
+        .convoBlock .actionBox .tinyInfo .blurb .header {
+          font-size: 10px;
+          color: #898989;
+          text-decoration: underline; }
+        .convoBlock .actionBox .tinyInfo .blurb .value {
+          font-size: 12px;
+          font-weight: bold;
+          color: #344289;
+          line-height: 18px;
+          float: right; }
+      .convoBlock .actionBox .tinyInfo .blurb:nth-child(2) {
+        padding-left: 20px; }
+      .convoBlock .actionBox .tinyInfo::after {
         content: "";
         display: block;
         clear: both; }
-    .contents .captureboard .convoBlock {
-      overflow: hidden;
-      height: 220px;
-      background-color: #FFF;
-      margin-bottom: 10px; }
-      .contents .captureboard .convoBlock .convoStream {
-        width: 640px;
-        height: 100%;
-        overflow-y: scroll; }
-        .contents .captureboard .convoBlock .convoStream .convoRow .msgInbound {
-          width: 300px;
-          float: left;
-          padding: 10px;
-          font-size: 16px;
-          color: #898989; }
-          .contents .captureboard .convoBlock .convoStream .convoRow .msgInbound .message {
-            width: 100%;
-            border-top: 1px solid #C4C4C4;
-            padding-top: 5px; }
-        .contents .captureboard .convoBlock .convoStream .convoRow .msgOutbound {
-          width: 300px;
-          float: left;
-          padding: 10px;
-          font-size: 16px;
-          color: #2F8CE8; }
-          .contents .captureboard .convoBlock .convoStream .convoRow .msgOutbound .message {
-            width: 100%;
-            border-top: 1px solid #C4C4C4;
-            padding-top: 5px;
-            margin-top: -25px; }
-        .contents .captureboard .convoBlock .convoStream .convoRow::after {
-          content: "";
-          display: block;
-          clear: both; }
-      .contents .captureboard .convoBlock .actionBox {
-        height: 200px;
-        width: 230px;
-        margin: 10px;
-        background-color: #F4F4F4;
-        float: right; }
-        .contents .captureboard .convoBlock .actionBox .claimButton {
-          width: 200px;
-          height: 40px;
-          margin-left: auto;
-          margin-right: auto;
-          margin-top: 10px;
-          border: 1px solid #4A90E2;
-          background-color: #FFF;
-          color: #2F8CE8;
-          text-align: center;
-          font-weight: bold;
-          font-size: 12px;
-          line-height: 40px;
-          border-radius: 5px;
-          cursor: pointer; }
-          .contents .captureboard .convoBlock .actionBox .claimButton .fa {
-            font-size: 25px;
-            vertical-align: middle; }
-          .contents .captureboard .convoBlock .actionBox .claimButton:hover {
-            background-color: #2F8CE8;
-            color: #FFF; }
-        .contents .captureboard .convoBlock .actionBox .tinyInfo {
-          width: 230px; }
-          .contents .captureboard .convoBlock .actionBox .tinyInfo .blurb {
-            width: 85px;
-            float: left;
-            padding: 20px; }
-            .contents .captureboard .convoBlock .actionBox .tinyInfo .blurb .header {
-              font-size: 10px;
-              color: #898989;
-              text-decoration: underline; }
-            .contents .captureboard .convoBlock .actionBox .tinyInfo .blurb .value {
-              font-size: 12px;
-              font-weight: bold;
-              color: #344289;
-              line-height: 18px; }
-          .contents .captureboard .convoBlock .actionBox .tinyInfo .blurb:nth-child(2) {
-            padding-left: 0px; }
-          .contents .captureboard .convoBlock .actionBox .tinyInfo::after {
-            content: "";
-            display: block;
-            clear: both; }
-        .contents .captureboard .convoBlock .actionBox .tinyInfoMessages {
-          padding-left: 20px; }
-          .contents .captureboard .convoBlock .actionBox .tinyInfoMessages .header {
-            font-size: 10px;
-            color: #898989;
-            text-decoration: underline; }
-          .contents .captureboard .convoBlock .actionBox .tinyInfoMessages .value {
-            font-size: 12px;
-            font-weight: bold;
-            color: #344289;
-            line-height: 18px; }
-        .contents .captureboard .convoBlock .actionBox .suggestButton {
-          width: 200px;
-          height: 30px;
-          margin-left: auto;
-          margin-right: auto;
-          margin-top: 10px;
-          border: 1px solid #4A90E2;
-          color: #2F8CE8;
-          border-radius: 5px;
-          cursor: pointer; }
-          .contents .captureboard .convoBlock .actionBox .suggestButton .left {
-            width: 60px;
-            padding-left: 20px;
-            float: left;
-            font-weight: bold;
-            line-height: 30px;
-            font-size: 12px; }
-          .contents .captureboard .convoBlock .actionBox .suggestButton .right {
-            width: 100px;
-            height: 24px;
-            float: left;
-            font-size: 10px;
-            padding: 4px;
-            padding-left: 10px;
-            text-align: left;
-            word-wrap: break-word; }
-          .contents .captureboard .convoBlock .actionBox .suggestButton:hover {
-            background-color: #898989;
-            color: #FFF;
-            border: 1px solid #FFF; }
+    .convoBlock .actionBox .closeButton {
+      width: 270px;
+      height: 30px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 10px;
+      border: 1px solid #4A90E2;
+      color: #2F8CE8;
+      border-radius: 5px;
+      overflow: hidden; }
+      .convoBlock .actionBox .closeButton .left {
+        width: 150px;
+        height: 24px;
+        float: left;
+        font-size: 10px;
+        padding: 4px 10px 4px 10px;
+        text-align: left;
+        word-wrap: break-word; }
+      .convoBlock .actionBox .closeButton .right {
+        text-align: center;
+        color: #E50000;
+        background-color: #FFF;
+        width: 100px;
+        float: left;
+        font-weight: bold;
+        line-height: 30px;
+        font-size: 12px; }
+      .convoBlock .actionBox .closeButton:hover {
+        background-color: #898989;
+        color: #FFF;
+        border: 1px solid #FFF; }
+        .convoBlock .actionBox .closeButton:hover .right {
+          background-color: #E50000;
+          color: #FFF; }
