@@ -3,6 +3,8 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const CommConns = require("../models/commConns");
+
 class CaptureBoard {
 
   static findByOrg (orgId) {
@@ -10,6 +12,7 @@ class CaptureBoard {
       db("msgs")
         .leftJoin("convos", "msgs.convo", "convos.convid")
         .leftJoin("comms", "comms.commid", "msgs.comm")
+        .leftJoin("commconns", "commconns.commconnid", "comms.commid")
         .where("convos.client", null)
         .andWhere("convos.open", true)
         .orderBy("msgs.created", "ASC")
@@ -32,7 +35,7 @@ class CaptureBoard {
 
         // Add messages to each identified convo obj
         floaters.forEach((ea) => { 
-          for (var i = 0; i < convos.length; i++) {
+          for (let i = 0; i < convos.length; i++) {
             if (convos[i].convo == ea.convo) convos[i].msgs.push(ea);
           }
         });
@@ -50,6 +53,95 @@ class CaptureBoard {
           return conversationId == convo.convo;
         })[0];
         fulfill(conversation)
+      }).catch(reject);
+    })
+  }
+
+  static associateConversation (user, client, conversationId) {
+    return new Promise((fulfill, reject) => {
+      let subject = "Captured Conversation from New Contact";
+      let deviceName = "New Captured Method";
+      
+      // Query 1: Update convo with CM and client
+      db("convos")
+        .where("convid", conversationId)
+        .andWhere("client", null)
+        .update({
+          subject: subject,
+          client: client,
+          cm: user,
+          accepted: true,
+          open: true
+        })
+      .then((success) => {
+
+      // Query 2: Close all other conversation that client has open
+      db("convos")
+        .whereNot("convid", conversationId)
+        .andWhere("cm", user)
+        .andWhere("client", client)
+        .update({ open: false })
+      .then((success) => {
+
+      // Query 3: Gather comm forms used in that conversation (should be only one)
+      db("msgs")
+        .where("convo", conversationId)
+        .andWhere("inbound", true)
+        .pluck("comm")
+      .then((comms) => {
+
+      // Query 4: Gather comms that the CM currently has
+      db("commconns")
+        .where("client", client)
+        .andWhere("retired", null)
+        .pluck("comm")
+      .then((clientcomms) => {
+
+        // Remove duplicates
+        comms = comms.reduce(function (a,b) { 
+          if (a.indexOf(b) < 0 ) {
+            a.push(b);
+          }
+          return a;
+        },[]);
+
+        // Filter so you only have new comms that CM does not have captured yet
+        comms = comms.filter(function (comm) { 
+          return clientcomms.indexOf(comm) == -1; 
+        });
+
+        // Prepare a list of new clientcomm objects
+        let insertList = [];
+        comms.forEach((comm, i) => {
+
+          // If there is more than one commconn being added, name the second ones automatically
+          // TO DO: We need them to be able to name all comm methods in POST (if common)
+          let name = i == 0 ? deviceName : deviceName + "_num_" + String(i + 1);
+          
+          insertList.push({
+            client: client,
+            comm: comm,
+            name: name
+          });
+        });
+
+        // Run query only if there is stuff to enter
+        if (insertList.length > 0) {
+
+          // Query 5: Insert the new commconns
+          db("commconns")
+            .insert(insertList)
+          .then(function () {
+            fulfill();
+          }).catch(reject); // Query 5
+        
+        } else {
+          fulfill();
+        }
+
+      }).catch(reject);
+      }).catch(reject);
+      }).catch(reject);
       }).catch(reject);
     })
   }

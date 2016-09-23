@@ -49,6 +49,53 @@ $(function() {
     },
 
     {
+      cssClass: 'JSfindClient',
+      execute: function() {
+        var substringMatcher = function (strs) {
+          return function findMatches(q, cb) {
+            var matches = [];
+            var substrRegex = new RegExp(q, 'i');
+            $.each(strs, function(i, str) {
+              var name = str.first + " " + str.last;
+              if (substrRegex.test(name)) matches.push(name);
+            });
+
+            cb(matches);
+          };
+        };
+
+        $(".formInput .typeahead")
+        .typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+          },
+          {
+            name: "clients",
+            value: "clid",
+            source: substringMatcher(clients),
+            select: function (e, i) { console.log( e, i )}
+        });
+
+        $("#clientSearch").submit(function (event) {
+          var selectedName = $(".tt-input").val();
+          var selectedClient = null;
+          clients.forEach(function (client) {
+            var name = client.first + " " + client.last;
+            if (name == selectedName) selectedClient = client;
+          });
+          if (selectedClient) {
+            $("#targetClient").val(selectedClient.clid)
+            return true;
+          } else {
+            event.preventDefault();
+            return false;
+          }
+        })
+      }
+    },
+
+    {
       cssClass: 'JSselectTemplateWhenAddressingClient',
       execute: function() {
         $(".scrollListRow").click(function () {
