@@ -109,7 +109,7 @@ module.exports = {
     };
 
     res.notFound = () => {
-      res.status(404).render('v4/general/404')
+      res.status(404).render('general/404')
     };
 
     next();
