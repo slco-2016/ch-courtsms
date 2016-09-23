@@ -145,6 +145,14 @@ describe('Basic http req tests', function() {
       });
   });
 
+  it('owner should not see captured board on clients view', function(done) {
+    owner.get('/clients')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      });
+  });
+
   it('client without contact methods should reroute to create comm method', function(done) {
     primary.post('/org/clients/create')
       .send({
