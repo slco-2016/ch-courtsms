@@ -298,7 +298,12 @@ module.exports = {
   },
 
   clientCard(req, res) {
-    res.send("ok")
+    res.render("clients/profile", {
+      hub: {
+        tab: null,
+        sel: null
+      },
+    });
   }
 
 };
