@@ -31,12 +31,23 @@ module.exports = {
 
   new(req, res) {
     let user = req.getUser();
+    let org = req.user.org;
+    let department = req.user.department;
+    let preSelect = req.query.client || null;
+    let method;
 
-    Clients.findByUser(user)
-    .then((clients) => {
-      console.log("cli", clients, user);
+    if (req.user.class == "primary") {
+      method = Clients.findByUser(user, true);
+    } else if (req.user.class == "supervisor") {
+      method = Clients.findByDepartment(department, true);
+    } else {
+      method = Clients.findByOrg(org, true);
+    }console.log("preSelectpreSelectpreSelect", preSelect)
+
+    method.then((clients) => {
       res.render("notifications/create", {
-        clients: clients
+        clients: clients,
+        preSelect: preSelect
       })
     }).catch(res.error500);
   },

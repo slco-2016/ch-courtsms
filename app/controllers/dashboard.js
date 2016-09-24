@@ -12,7 +12,8 @@ module.exports = {
     let countsByDay, countsByWeek;
 
     // Control against the owner being assigned to an department
-    if (req.user.class == "owner" && !req.query.department) {
+    if (  (req.user.class == "owner" || req.user.class == "support") && 
+          !req.query.department) {
       departmentFilter = null;
     }
     // Hnadles is query is 'department=null'

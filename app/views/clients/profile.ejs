@@ -81,7 +81,7 @@
         <div class="row" style="color:<% if (messages.unreadCount) { %>red<% } else { %>green<% } %>"">
           There are <%= messages.unreadCount %> unread messages associated with this client.
         </div>
-        <div class="row">
+        <div class="row" style="color:<% if (!communications.length) { %>red<% } %>">
           There are <%= communications.length %> contact method(s) linked with this client.
         </div>
       </div>

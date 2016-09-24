@@ -17,11 +17,13 @@
       </div>
     </div>
 
-    <div class="rightTab <%= hub.tab == 'messages' ? 'open' : 'closed' %>">
-      <div class="title"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">Messages</a></div>
-      <div class="option <%= hub.sel == 'all' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">All</a></div>
-      <div class="option <%= hub.sel == 'texts' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=texts`%>">Texts</a></div>
-    </div>
+    <% if (user.class !== "owner") { %>
+      <div class="rightTab <%= hub.tab == 'messages' ? 'open' : 'closed' %>">
+        <div class="title"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">Messages</a></div>
+        <div class="option <%= hub.sel == 'all' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">All</a></div>
+        <div class="option <%= hub.sel == 'texts' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=texts`%>">Texts</a></div>
+      </div>
+    <% } %>
 
     <div class="rightTab <%= hub.tab == 'notifications' ? 'open' : 'closed' %>">
       <div class="title"><a href="<%=`/clients/${client.clid}/notifications`%>">Notifications</a></div>
@@ -44,7 +46,11 @@
     </div>
 
     <div class="rightActions">
-      <a href="<%=`/notifications/create`%>">
+        <% if (typeof client == "undefined") { %>
+          <a href="<%=`/notifications/create`%>">
+        <% } else { %>
+          <a href="<%=`/notifications/create?client=${client.clid}`%>">
+        <% } %>
         <span class="fa-stack fa-lg">
           <i class="fa fa-circle fa-stack-2x"></i>
           <i class="fa fa-bell fa-stack-1x fa-inverse"></i>

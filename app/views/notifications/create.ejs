@@ -1,7 +1,6 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <!-- exit button -->
   <a href="/notifications">
     <% include ../partials/cardExit %>
   </a>
@@ -23,7 +22,7 @@
               required>
         <option value="" disabled selected> Client </option>
         <% clients.forEach(function (client) { %>
-          <option value="<%= client.clid %>">
+          <option value="<%= client.clid %>" <%if (preSelect == client.clid) {%>selected<%}%>>
             <%= client.last + ', ' + client.first + ' ' + client.middle %> 
           </option>
         <% }); %>

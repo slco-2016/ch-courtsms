@@ -25,7 +25,8 @@ module.exports = {
     let user        = req.body.targetUser || req.user.cmid;
 
     // Controls against a case where the owner would accidentally have a department
-    if (req.user.class === "owner" && !req.query.department) {
+    if (  (req.user.class == "owner" || req.user.class == "support") && 
+          !req.query.department) {
       department = null;
     }
 
@@ -390,9 +391,9 @@ module.exports = {
       let averageUserResponseTime = average(userResponseList);
 
       let totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
-      sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100)
-      sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100)
-      sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100)
+      sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100) || 0;
+      sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100) || 0;
+      sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100) || 0;
 
 
       res.render("clients/profile", {

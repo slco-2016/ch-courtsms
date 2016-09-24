@@ -10,7 +10,8 @@ module.exports = {
     let department = req.user.department || req.query.departmentId;
 
     // Controls against a case where the owner would accidentally have a department
-    if (req.user.class === "owner" && !req.query.departmentId) {
+    if (  (req.user.class == "owner" || req.user.class == "support") && 
+          !req.query.department) {
       department = null;
     }
 
