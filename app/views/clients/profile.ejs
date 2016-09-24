@@ -1,15 +1,162 @@
+<% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
+
 <% include ../partials/clientFrameTop %>
 
-<!-- Load in addition CSS -->
-<link rel="stylesheet" type="text/css" href="/static/css/v4_clientCommunications.css">
+<link rel="stylesheet" type="text/css" href="/static/css/v4_clientProfile.css">
 
-<div class="header">
-  <div class="column">name</div>
-  <div class="column">details</div>
-  <div class="column">type</div>
-  <div class="column">use count</div>
-  <div class="column">edit</div>
-  <div class="column">delete</div>
+<div class="profileBlock">
+  <div class="left">
+    <div class="section">
+
+      <div class="heading">
+        General information
+        <a href="<%=`${clientBaseURL}/edit`%>">
+          <div class="action">Edit</div>
+        </a>
+        <a href="<%=`${clientBaseURL}/transfer`%>">
+          <div class="action">Transfer</div>
+        </a>
+      </div>
+      <div class="topDetails">
+        <div class="row">
+          Created 
+          <%= moment.duration(moment().diff(client.created)).humanize() %>
+          ago, on 
+          <%= moment.tz(client.created, organization.tz).format("MMMM DD, YYYY") %>
+        </div>
+        <div class="row">
+          Last updated 
+          <%= moment.duration(moment().diff(client.updated)).humanize() %>
+          ago, on 
+          <%= moment.tz(client.updated, organization.tz).format("MMMM DD, YYYY") %>
+        </div>
+        <div class="row">
+          Case manager is <%= `${client.user_first} ${client.user_last}` %>
+        </div>
+        <div class="row">
+          Born on <%= moment(client.dob).format("MMMM DD, YYYY") %>
+        </div>
+        <div class="row">
+          Unique identifiers: OTN# <%= client.otn || 'none' %>, SO# <%= client.so || 'none' %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="section">
+
+      <div class="heading">
+        Recent Activity
+      </div>
+      <div class="topDetails">
+        <div class="row">
+          <% if (messages.lastInbound) { %>
+            Last inbound message was recieved  
+            <%= moment.duration(moment().diff(messages.lastInbound.created)).humanize() %>
+            ago
+          <% } else { %>
+            No messages received yet from this client.
+          <% } %>
+        </div>
+        <div class="row">
+          <% if (messages.lastOutbound) { %>
+            Last outbound message was send 
+            <%= moment.duration(moment().diff(messages.lastOutbound.created)).humanize() %>
+            ago
+          <% } else { %>
+            No messages sent yet to this client.
+          <% } %>
+        </div>
+        <div class="row">
+          <% if (messages.all.length) { %>
+            Last outbound message was send 
+            <%= moment.duration(moment().diff(messages.all[messages.all.length - 1].created)).humanize() %>
+            ago
+          <% } else { %>
+            No messages have occured on this client account yet.
+          <% } %>
+        </div>
+        <div class="row" style="color:<% if (messages.unreadCount) { %>red<% } else { %>green<% } %>"">
+          There are <%= messages.unreadCount %> unread messages associated with this client.
+        </div>
+        <div class="row">
+          There are <%= communications.length %> contact method(s) linked with this client.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="left">
+    <div class="section">
+
+      <div class="heading">
+        Response Metrics
+      </div>
+      <div class="topDetails">
+
+        <div class="row">
+          <% if (messages.averageClientResponseTime) { %>
+            It takes, on average, 
+            <%= moment.duration(messages.averageClientResponseTime).humanize() %>
+            for the client to respond.
+          <% } else { %>
+            Not enough data to calculate client response times.
+          <% } %>
+        </div>
+
+        <div class="row">
+          <% if (messages.averageClientResponseTime) { %>
+            It takes, on average, 
+            <%= moment.duration(messages.averageUserResponseTime).humanize() %>
+            for the manager to respond.
+          <% } else { %>
+            Not enough data to calculate manager response times.
+          <% } %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="section">
+
+      <div class="heading">
+        Sentiment Analysis
+      </div>
+      <div class="topDetails">
+
+        <div class="row">
+          <% if (messages.sentiment) { %>
+            <%= messages.sentiment.negative %>% of client's messages have a negative tone.
+          <% } else { %>
+            No data on negative inbount message tone yet.
+          <% } %>
+        </div>
+
+        <div class="row">
+          <% if (messages.sentiment) { %>
+            <%= messages.sentiment.neutral %>% of client's messages have a neutral tone.
+          <% } else { %>
+            No data on neutral inbount message tone yet.
+          <% } %>
+        </div>
+
+        <div class="row">
+          <% if (messages.sentiment) { %>
+            <%= messages.sentiment.positive %>% of client's messages have a positive tone.
+          <% } else { %>
+            No data on positive inbount message tone yet.
+          <% } %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 

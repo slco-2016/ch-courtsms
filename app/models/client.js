@@ -14,10 +14,15 @@ class Client {
       var finalClientsObject;
       db("clients")
         .select("clients.*", 
+                "cms.cmid as user_id",
+                "cms.first as user_first",
+                "cms.middle as user_middle",
+                "cms.last as user_last",
+                "cms.department as department",
                 "color_tags.color as color_tag", 
                 "color_tags.name as color_name")
 
-        // Join with color tag table
+        .leftJoin("cms", "clients.cm", "cms.cmid")
         .leftJoin(
           db("color_tags")
             .where("active", true)

@@ -1,0 +1,93 @@
+
+
+// Variables
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+$width_left:  50%;
+$width_right:  50%;
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profileBlock {
+  display: block;
+  background-color: $white;
+  overflow: hidden;
+
+  .left {
+    width: $width_left;
+    float: left;
+  }
+
+  .right {
+    width: $width_right;
+    float: left;
+  }
+
+  .whole {
+    width: 100%;
+  }
+
+  .section {
+    padding: 20px 10px 20px 10px;
+
+    .heading {
+      color: $lightblue;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 28px;
+      margin-bottom: 5px;
+
+      .action {
+        background-color: $lightblue;
+        color: $white;
+        display: inline;
+        float: right;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 3px 10px 3px 10px;
+        margin-top: 6px;
+        margin-left: 5px;
+        border-radius: 2px;
+
+        &:hover {
+          background-color: $blue;
+        }
+      }
+
+    }
+
+    .topDetails {
+
+      .row {
+        padding: 5px 10px 5px 10px;
+        font-size: 16px;
+        line-height: 22px;
+
+        &:nth-child(odd) {
+          background-color: $offwhite;
+        }
+
+        &:hover {
+          background-color: $grey;
+          color: $white;
+        }
+      }
+    }
+  }
+
+}
+

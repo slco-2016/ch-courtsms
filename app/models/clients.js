@@ -114,7 +114,6 @@ class Clients {
 
         .leftJoin("cms", "clients.cm", "cms.cmid")
 
-        // Only where active T/F and case manager matches
         .whereIn("clients.cm", userIDs)
         .andWhere("clients.active", activeStatus)
         .orderBy(

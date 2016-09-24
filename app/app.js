@@ -147,7 +147,7 @@ app.get("/clients", ClientsController.index);
 app.get("/clients/create", ClientsController.new);
 app.post("/clients/create", ClientsController.create);
 
-app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.client}/messages`); });
+app.get("/clients/:client", ClientsController.clientCard);
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);

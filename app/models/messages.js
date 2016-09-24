@@ -54,6 +54,7 @@ class Messages {
 
       db("msgs")
         .select("msgs.*", 
+                "sentiment.sentiment",
                 "commconns.client",
                 "commconns.name as commconn_name", 
                 "commconns.value as comm_value",
@@ -63,6 +64,7 @@ class Messages {
             .join("comms", "commconns.comm", "comms.commid")
             .as("commconns"),
           "commconns.commid", "msgs.comm")
+        .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIDs)
         .andWhere("client", clientID)
         .orderBy("created", "asc")

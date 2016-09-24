@@ -5,6 +5,18 @@ const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
+function average (arr) {
+  let total = 0;
+  for (var i = 0; i < arr.length; i++) {
+    total += arr[i];
+  }
+  if (arr.length) {
+    return total / arr.length;
+  } else {
+    return null
+  }
+}
+
 module.exports = {
   
   index(req, res) {
@@ -298,12 +310,108 @@ module.exports = {
   },
 
   clientCard(req, res) {
-    res.render("clients/profile", {
-      hub: {
-        tab: null,
-        sel: null
-      },
-    });
+    let client = req.params.client;
+    let user = req.getUser();
+
+    let messages;
+
+    Messages.findByClientID(user, client)
+    .then((msgs) => {
+      messages = msgs;
+      return CommConns.findByClientID(client)
+    }).then((communications) => {
+
+      let unreadCount = 0,
+          lastOutbound = {}, 
+          lastInbound = {},
+          clientResponseList = []
+          lastClientMsg = null,
+          lastUserMsg = null,
+          userResponseList = [],
+          sentiment = {
+            negative: 0,
+            neutral: 0,
+            positive: 0
+          };
+
+      messages.forEach((msg, i) => {
+        if (!msg.read) {
+          unreadCount += 1;
+        }
+
+        if (msg.inbound) {
+          lastInbound = msg;
+        } else {
+          lastOutbound = msg;
+        }
+
+        if (msg.sentiment) {
+          try {
+            sentiment[msg.sentiment] += 1;
+          } catch (e) {}
+        }
+
+        if (msg.inbound) {
+          if (lastUserMsg) {
+            if (lastUserMsg.convo == msg.convo) {
+              let a = new Date(msg.created)
+              let b = new Date(lastUserMsg.created)
+              clientResponseList.push(a - b)
+              lastUserMsg = null;
+              lastClientMsg = msg;
+            } else {
+              lastUserMsg = null;
+            }
+          } else {
+            if (!lastClientMsg) {
+              lastClientMsg = msg;
+            }
+          }
+        } else {
+          if (lastClientMsg) {
+            if (lastClientMsg.convo == msg.convo) {
+              let a = new Date(msg.created)
+              let b = new Date(lastClientMsg.created)
+              userResponseList.push(a - b)
+              lastClientMsg = null;
+              lastUserMsg = msg;
+            } else {
+              lastClientMsg = null;
+            }
+          } else {
+            if (!lastUserMsg) {
+              lastUserMsg = msg;
+            }
+          }
+        }
+      });
+
+      let averageClientResponseTime = average(clientResponseList);
+      let averageUserResponseTime = average(userResponseList);
+
+      let totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
+      sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100)
+      sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100)
+      sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100)
+
+
+      res.render("clients/profile", {
+        hub: {
+          tab: null,
+          sel: null
+        },
+        messages: {
+          all: messages,
+          unreadCount: unreadCount,
+          sentiment: sentiment,
+          averageClientResponseTime: averageClientResponseTime,
+          averageUserResponseTime: averageUserResponseTime,
+          lastInbound: lastInbound,
+          lastOutbound: lastOutbound
+        },
+        communications: communications
+      });
+    }).catch(res.error500);
   }
 
 };
