@@ -427,6 +427,42 @@ $(function() {
     },
 
     {
+      cssClass: 'JSclientProfile',
+      execute: function () {
+        if (sentiment.negative == 0 &&
+            sentiment.neutral == 0 &&
+            sentiment.positive == 0) {
+          $("#sentimentAnalysis").remove();
+        }
+        c3.generate({
+          data: {
+            columns: [
+                ['negative', sentiment.negative],
+                ['neutral', sentiment.neutral],
+                ['positive', sentiment.positive]
+            ],
+            type : 'pie',
+          },
+          bindto: "#sentimentAnalysis"
+        });
+
+        if (inboundCount == 0 && outboundCount == 0) {
+          $("#backAndForthRatio").remove();
+        };
+        c3.generate({
+          data: {
+            columns: [
+                ['inbound messages', inboundCount],
+                ['outbound messages', outboundCount]
+            ],
+            type : 'pie',
+          },
+          bindto: "#backAndForthRatio"
+        });
+      }
+    },
+
+    {
       cssClass: 'JSdepartmentSupervisorsManagement',
       execute: function () {
         $(".scrollListRow").click(function () {

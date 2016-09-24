@@ -17,7 +17,7 @@
           <div class="action">Transfer</div>
         </a>
       </div>
-      <div class="topDetails">
+      <div class="details">
         <div class="row">
           Created 
           <%= moment.duration(moment().diff(client.created)).humanize() %>
@@ -50,7 +50,7 @@
       <div class="heading">
         Recent Activity
       </div>
-      <div class="topDetails">
+      <div class="details">
         <div class="row">
           <% if (messages.lastInbound) { %>
             Last inbound message was recieved  
@@ -95,7 +95,8 @@
       <div class="heading">
         Response Metrics
       </div>
-      <div class="topDetails">
+      <div class="graphic" id="backAndForthRatio"></div>
+      <div class="details">
 
         <div class="row">
           <% if (messages.averageClientResponseTime) { %>
@@ -127,7 +128,8 @@
       <div class="heading">
         Sentiment Analysis
       </div>
-      <div class="topDetails">
+      <div class="graphic" id="sentimentAnalysis"></div>
+      <div class="details">
 
         <div class="row">
           <% if (messages.sentiment) { %>
@@ -158,6 +160,17 @@
   </div>
 
 </div>
+
+<link rel="stylesheet" type="text/css" href="/components/c3/c3.min.css">
+<script src="/components/moment/min/moment.min.js"></script>
+<script src="/components/d3/d3.min.js"></script>
+<script src="/components/c3/c3.min.js"></script>
+<script type="text/javascript" class="JSclientProfile">
+  var sentiment = <%- JSON.stringify(messages.sentiment) %>;
+  var inboundCount = <%- JSON.stringify(messages.inboundCount) %>;
+  console.log(inboundCount)
+  var outboundCount = <%- JSON.stringify(messages.outboundCount) %>;
+</script>
 
 
 <% include ../partials/hubFrameBottom %>

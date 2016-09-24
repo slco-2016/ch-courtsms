@@ -395,6 +395,8 @@ module.exports = {
       sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100) || 0;
       sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100) || 0;
 
+      let inboundCount = messages.filter((msg) => { return msg.inbound; }).length;
+      let outboundCount = messages.length - inboundCount;
 
       res.render("clients/profile", {
         hub: {
@@ -404,6 +406,8 @@ module.exports = {
         messages: {
           all: messages,
           unreadCount: unreadCount,
+          inboundCount: inboundCount,
+          outboundCount: outboundCount,
           sentiment: sentiment,
           averageClientResponseTime: averageClientResponseTime,
           averageUserResponseTime: averageUserResponseTime,

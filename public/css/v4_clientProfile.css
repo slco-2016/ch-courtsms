@@ -31,12 +31,14 @@
         border-radius: 2px; }
         .profileBlock .section .heading .action:hover {
           background-color: #3F69B6; }
-    .profileBlock .section .topDetails .row {
+    .profileBlock .section .graphic {
+      min-height: 250px; }
+    .profileBlock .section .details .row {
       padding: 5px 10px 5px 10px;
       font-size: 16px;
       line-height: 22px; }
-      .profileBlock .section .topDetails .row:nth-child(odd) {
+      .profileBlock .section .details .row:nth-child(odd) {
         background-color: #E8ECEF; }
-      .profileBlock .section .topDetails .row:hover {
+      .profileBlock .section .details .row:hover {
         background-color: #898989;
         color: #FFF; }
