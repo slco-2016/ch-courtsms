@@ -49,7 +49,7 @@
         <% if (typeof client == "undefined") { %>
           <a href="<%=`/notifications/create`%>">
         <% } else { %>
-          <a href="<%=`/notifications/create?client=${client.clid}`%>">
+          <a href="<%=`/notifications/create?client=${client.clid}&user=${client.cm}`%>">
         <% } %>
         <span class="fa-stack fa-lg">
           <i class="fa fa-circle fa-stack-2x"></i>

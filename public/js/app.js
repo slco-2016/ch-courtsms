@@ -576,6 +576,10 @@ $(function() {
             }
           });
         };
+
+        if (preSelect) {
+          updateClientsAndComms(preSelect);
+        }
       }
     },
 
