@@ -295,6 +295,10 @@ module.exports = {
       res.set({"Content-Disposition":"attachment; filename=transcript.txt"});
       res.send(messages);
     }).catch(res.error500);
+  },
+
+  clientCard(req, res) {
+    res.send("ok")
   }
 
 };

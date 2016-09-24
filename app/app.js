@@ -198,7 +198,7 @@ app.get("/org/clients", ClientsController.index);
 app.get("/org/clients/create", ClientsController.new);
 app.post("/org/clients/create", ClientsController.create);
 
-app.get("/org/clients/:client", (req, res) => { res.send("Client overview here...") });
+app.get("/org/clients/:client", ClientsController.clientCard);
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
@@ -206,6 +206,8 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+app.get("/org/clients/:client/communications/create", CommunicationsController.new);
+app.post("/org/clients/:client/communications/create", CommunicationsController.create);
 
 app.get("/org/captured", CaptureBoardController.index)
 app.get("/org/captured/attach/:conversation", CaptureBoardController.attachUserIndex)

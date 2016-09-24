@@ -15,6 +15,10 @@ module.exports = {
     if (req.user.class == "owner" && !req.query.department) {
       departmentFilter = null;
     }
+    // Hnadles is query is 'department=null'
+    if (req.query.department && isNaN(req.query.department)) {
+      departmentFilter = null;
+    }
 
     Departments.findByOrg(req.user.org, true)
     .then((depts) => {

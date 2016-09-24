@@ -101,6 +101,7 @@ class Clients {
                 "cms.first as user_first",
                 "cms.middle as user_middle",
                 "cms.last as user_last",
+                "cms.department as department",
                 "color_tags.color as color_tag", 
                 "color_tags.name as color_name")
 
