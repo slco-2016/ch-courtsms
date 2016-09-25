@@ -5,7 +5,7 @@ const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
-function average (arr) {
+const _average = (arr) => {
   let total = 0;
   for (var i = 0; i < arr.length; i++) {
     total += arr[i];
@@ -387,8 +387,8 @@ module.exports = {
         }
       });
 
-      let averageClientResponseTime = average(clientResponseList);
-      let averageUserResponseTime = average(userResponseList);
+      let averageClientResponseTime = _average(clientResponseList);
+      let averageUserResponseTime = _average(userResponseList);
 
       let totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
       sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100) || 0;
