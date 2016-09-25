@@ -1,3 +1,5 @@
+<% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
+
 <% include ./navBarTop %>
 
 <!-- Load in addition CSS -->
@@ -8,12 +10,12 @@
 
     <div class="leftTab">
       <div class="icon">
-        <a href="<%=`/clients/${client.clid}`%>">
+        <a href="<%=`${clientBaseURL}`%>">
           <i class="fa fa-cog" aria-hidden="true"></i>
         </a>
       </div>
       <div class="title">
-        <a href="<%=`/clients/${client.clid}/messages`%>"><%= client.first + ' ' + client.last %></a>
+        <a href="<%=`${clientBaseURL}`%>"><%= client.first + ' ' + client.last %></a>
       </div>
     </div>
 

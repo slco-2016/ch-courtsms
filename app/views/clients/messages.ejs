@@ -70,7 +70,13 @@
       <% } else { %>
         <div class="mini">
           <div class="messageInput disabled">
-            Viewing other user's client conversation log, use clients list to send quick messages or transfer client to use conversation view.
+            Viewing other user's client conversation log, cannot comment directly in thread.
+            <a href="<%=`/org/clients/${client.clid}/address`%>">
+              <span class="miniButton">
+                <i class="fa fa-send"></i> 
+                Send a one-off message
+              </span>
+            </a>
           </div>
         </div>
       <% } %>
