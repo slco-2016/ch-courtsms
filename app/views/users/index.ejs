@@ -2,6 +2,15 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/v4_users_supervisor.css">
 
+<% if (typeof limitByUser !== "undefined" && limitByUser) { %>
+  <div class="viewingAsOtherBanner">
+    You are viewing 
+    <b><%= user.first + ' ' + user.last %>'s</b>
+    clients dashboard.
+  </div>
+  <div class="otherBannerBumber"> </div>
+<% } %>
+
 <div class="header">
   <div class="column">clients</div>
   <div class="column">name</div>
@@ -20,7 +29,7 @@
 <% users.forEach(function (targetUser) { %>
   <div class="notificationRow">
     <div class="column">
-      <a href="<%=`/org/clients?limitByUser=${targetUser.cmid}`%>">
+      <a href="<%=`/org/clients?user=${targetUser.cmid}`%>">
         <i class="fa highlight fa-users" aria-hidden="true"></i>
       </a>
     </div>

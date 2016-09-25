@@ -3,6 +3,13 @@
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_clientsList.css">
 
+<% if (typeof limitByUser !== "undefined" && limitByUser) { %>
+  <div class="viewingAsOtherBanner">
+    You are viewing a subset of the overall clients list, limited by a single case manager.
+  </div>
+  <div class="otherBannerBumber"> </div>
+<% } %>
+
 <div class="header">
   <div class="column">color</div>
   <div class="column">color name</div>
