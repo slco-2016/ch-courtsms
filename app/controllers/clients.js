@@ -250,6 +250,7 @@ module.exports = {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
       res.levelSensitiveRedirect(`/clients`);
+      return null
     }).catch(res.error500);
   },
 

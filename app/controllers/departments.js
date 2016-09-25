@@ -67,6 +67,7 @@ module.exports = {
     ).then(() => {
       req.flash("success", "Updated department.");
       res.redirect("/org/departments");
+      return null
     }).catch(res.error500);
   },
   

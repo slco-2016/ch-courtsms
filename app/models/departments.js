@@ -66,7 +66,7 @@ class Departments {
         .where("department_id", departmentID)
         .limit(1)
       .then((departments) => {
-        fulfill(departments[0]);
+        return fulfill(departments[0]);
       }).catch(reject);
     });
   }
