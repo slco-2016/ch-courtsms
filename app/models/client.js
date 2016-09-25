@@ -9,15 +9,20 @@ const Departments = require("./departments");
 
 class Client {
 
-  static findByID (clientID) {
+  static findByID (clientId) {
     return new Promise((fulfill, reject) => {
       var finalClientsObject;
       db("clients")
         .select("clients.*", 
+                "cms.cmid as user_id",
+                "cms.first as user_first",
+                "cms.middle as user_middle",
+                "cms.last as user_last",
+                "cms.department as department",
                 "color_tags.color as color_tag", 
                 "color_tags.name as color_name")
 
-        // Join with color tag table
+        .leftJoin("cms", "clients.cm", "cms.cmid")
         .leftJoin(
           db("color_tags")
             .where("active", true)
@@ -25,7 +30,7 @@ class Client {
           "color_tags.color_tag_id", "clients.color_tag")
 
         // Only where active T/F and case manager matches
-        .where("clients.clid", clientID)
+        .where("clients.clid", clientId)
         .limit(1)
 
       .then(function (clients) {
@@ -36,11 +41,11 @@ class Client {
           return client;
         });
 
-        const clientIDs = finalClientsObject.map((client) => {
+        const clientIds = finalClientsObject.map((client) => {
           return client.clid;
         });
 
-        return CommConns.findByClientIDs(clientIDs)
+        return CommConns.findByClientIDs(clientIds)
       
       }).then((commConns) => {
         finalClientsObject = finalClientsObject.map((client) => {

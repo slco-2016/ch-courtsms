@@ -31,12 +31,27 @@ module.exports = {
 
   new(req, res) {
     let user = req.getUser();
+    if (req.query.user) {
+      if (!isNaN(req.query.user)) {
+        user = req.query.user;
+      }
+    }
 
-    Clients.findByUser(user)
+    let org = req.user.org;
+    let department = req.user.department;
+    let preSelect = req.query.client || null;
+
+    Clients.findByUser(user, true)
     .then((clients) => {
-      console.log("cli", clients, user);
+      if (preSelect) {
+        clients = clients.filter((client) => {
+          return client.clid == Number(preSelect);
+        });
+      }
+
       res.render("notifications/create", {
-        clients: clients
+        clients: clients,
+        preSelect: preSelect
       })
     }).catch(res.error500);
   },

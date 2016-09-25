@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
 
-
   <head>
 
     <!-- Invoke New Relic monitoring before all else -->
@@ -13,7 +12,14 @@
     <meta name="viewport" 
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>ClientComm</title>
+    <title>
+      ClientComm
+      <% if (typeof client !== "undefined") { %>
+        - Viewing <%= `${client.first} ${client.last}` %>
+      <% } else if (typeof user !== "undefined") { %>
+        - <%= `${user.first} ${user.last}` %>
+      <% } %>
+    </title>
 
     <% include ./favicon %>
 
@@ -28,5 +34,5 @@
 
   <body>
 
-  <div class="headerBaseBarOne"></div>
-  <!-- <div class="headerBaseBarTwo"></div> -->
+  <% include ./flashMessages %>
+  

@@ -18,10 +18,9 @@ const anonymous = supertest.agent(APP)
 
 describe('Basic http req tests', function() {
 
-  it('should redirect from root', function(done) {
+  it('should no longer redirect from root and instead show splash', function(done) {
     anonymous.get('/')
-      .expect(302)
-      .expect('Location', '/login')
+      .expect(200)
       .end(function(err, res) {
         done(err);
       });
@@ -146,13 +145,39 @@ describe('Basic http req tests', function() {
       });
   });
 
-  // it('primary user should reroute to create if no comm methods for client', function(done) {
-  //   primary.get('/clients/1/communications')
-  //     .expect(302)
-  //     .end(function(err, res) {
-  //       done(err);
-  //     });
-  // });
+  it('owner should not see captured board on clients view', function(done) {
+    owner.get('/clients')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      });
+  });
+
+  it('client without contact methods should reroute to create comm method', function(done) {
+    primary.post('/org/clients/create')
+      .send({
+        targetUser: 2,
+        first: "Sandro",
+        middle: "N",
+        last: "Orin",
+        dob: "1990-02-03",
+        uniqueID1: 32334,
+        uniqueID2: 2327534,
+      })
+      .expect(302)
+      .end(function(err, res) {
+        if (err) {
+          done(err);
+        } else {
+          primary.get('/clients/2/communications')
+            .expect(302)
+            .expect('Location', '/clients/2/communications/create')
+            .end(function(err, res) {
+              done(err);
+            });
+        }
+      });
+  });
 
   it('owner user should not have option to load templates on quick message', function(done) {
     owner.get('/org/clients/1/address')
@@ -287,6 +312,7 @@ describe('Basic http req tests', function() {
         middle: "L",
         last: "Primary",
         email: "uniqueJimPrimary@foobar.org",
+        alertFrequency: 48,
         isAway: "true",
         awayMessage: "Lorem ipsum dolores ipset."
       })
@@ -296,6 +322,7 @@ describe('Basic http req tests', function() {
           .expect(200)
           .end(function(err, res) {
             res.text.should.match(/Lorem ipsum dolores ipset/);
+            res.text.should.match(/<input type="radio" value="48" name="alertFrequency" checked>/);
             done(err)
           });
       });
@@ -342,6 +369,40 @@ describe('Basic http req tests', function() {
             res.text.should.match(/Strawberry Red Team/);
             done(err);
           })
+      })
+  });
+
+  it('primary should not be able to view request new number page', function(done) {
+    primary.get('/org/numbers')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('primary should not be able to view request new number page', function(done) {
+    primary.get('/org/numbers/create')
+      .expect(302)
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('owner should be able to view request new number page', function(done) {
+    owner.get('/org/numbers')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('owner should be able to view request new number page', function(done) {
+    owner.get('/org/numbers/create')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
       })
   });
 

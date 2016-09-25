@@ -1,0 +1,693 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+  <head>
+
+    <!-- Invoke New Relic before all else -->
+    <% if (newrelic !== null) { %>
+      <%- newrelic.getBrowserTimingHeader() %>
+    <% } %>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ClientComm</title>
+
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/favicons/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/static/favicons/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/favicons/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/favicons/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/favicons/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/favicons/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/favicons/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/favicons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/static/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/static/favicons/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/static/favicons/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/static/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/static/favicons/manifest.json">
+    <link rel="mask-icon" href="/static/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/static/favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="/static/favicons/mstile-144x144.png">
+    <meta name="msapplication-config" content="/static/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+  </head>
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200,300,400,500,600,700,900" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/modules/font-awesome/css/font-awesome.min.css">
+
+  <style type="text/css">
+    body {
+      background-color: white;
+      font-family: Raleway, Arial, sans-serif;
+      color: #34438A;
+      padding: 0px;
+      margin: 0px;
+      text-align: center;
+    }
+
+    .block {
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      min-height: 32px;
+      line-height: 32px;
+    }
+
+    .grey {
+      background-color: #E5E5E5;
+    }
+
+    .left {
+      float: left;
+      font-size: 12px;
+    }
+
+    .right {
+      float: right;
+      border-radius: 4px;
+      padding: 5px;
+      background-color: red;
+      padding: 0px 20px 0px 20px;
+      background-color: #32A2DB;
+      color: #FFF;
+      cursor: pointer;
+    }
+
+    .signup:hover, .right:hover {
+      background-color: #34438A;
+    }
+
+    .icon {
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 80px;
+      width: 170px;
+    }
+
+    .icon path {
+      fill: #34438A;
+    }
+
+    .icon .logo {
+      border-radius: 100%;
+      padding: 10px;
+      margin-bottom: -30px;
+      padding-bottom: 0px;
+    }
+
+    .circle {
+      width: 500px;
+      height: 500px;
+      border-radius: 100%;
+    }
+    .circle.opened {
+      transform: scale(1);
+    }
+
+    .inside {
+      width: 1050px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .signup { 
+      width: 410px;
+      height: 35px;
+      padding: 1px 10px 2px 4px;
+      background-color: #32A2DB;
+      overflow: hidden;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      margin-top: 50px;
+    }
+
+    .signup input {
+      display: inline;
+      height: 20px;
+      line-height: 20px;
+      width: 290px;
+      padding: 5px;
+      margin: 0px 0px 0px 0px;
+      border: 0px solid #999;
+    }
+
+    .signup .button {
+      display: inline;
+      line-height: 24px;
+      font-size: 18px;
+      padding: 5px 20px 5px 20px;
+      margin: 0px 0px 0px 0px;
+      color: #FFF;
+      cursor: pointer;
+    }
+
+    .bottom {
+      width: 750px;
+      padding-top: 25px;
+      font-size: 12px;
+      min-height: 75px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 50px;
+    }
+
+    .bottomBlock {
+      float: left;
+      width: 250px;
+      line-height: 18px;
+    }
+
+    .bottomBlock .name {
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    .bottomBlock .link {
+      margin-left: 30px;
+      margin-right: 30px;
+      margin-top: 5px;
+      display: block;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: #898989;
+      color: #FFF;
+      
+    }
+
+    .bottomBlock a:hover, .bottomBlock a:visited, .bottomBlock a:link, .bottomBlock a:active {
+      text-decoration: none;
+      color: #FFF;
+    }
+
+    .circleImg {
+      background-color: #FFF;
+      border-radius: 100%;
+      width: 100px;
+      height: 100px;
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 10px;
+    }
+
+    .circleImg img {
+      width: 50%;
+      margin-right: auto;
+      margin-left: auto;
+      padding-bottom: 7%;
+    }
+
+    .statsLinkBtnTop a:hover, .statsLinkBtnTop a:visited, .statsLinkBtnTop a:link, .statsLinkBtnTop a:active {
+      text-decoration: none;
+      color: #FFF;
+    }
+
+    .statsLinkBtn {
+      padding: 10px 20px 10px 20px;
+      background-color: #00cf0e;
+      color: #fff;
+      display: inline;
+      border-radius: 4px;
+    }
+
+    .statsLinkBtn:hover {
+      background-color: #00a10b;
+    }
+
+  </style>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
+
+  <body>
+
+    <div class="block grey">
+      <div class="inside">
+        <span class="left">
+          Email the team at 
+          <a href="mailto:slco@codeforamerica.org?Subject=NAPSA%20Interest">
+            slco@codeforamerica.org
+          </a>
+        </span>
+        <a href="/login">
+          <span class="right">Login</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="block" style="overflow: hidden">
+      <div class="inside" style="padding-top: 20px; padding-bottom: 90px; box-shadow: 0 0 250px 5px rgba(255, 255, 255, 0.55); background-color: rgba(255, 255, 255, 0.55); border-radius: 100%">
+        <div class="icon">
+          <div class="logo"><% include ../../public/icons/logo.svg %></div>
+          <br>
+          <% include ../../public/icons/logotext.svg %>
+        </div>
+
+        <br>
+        
+        <div style="font-size: 20px">
+          <b>ClientComm</b>  makes it quick and easy to communicate with clients and document client supervision. 
+        </div>
+        <div style="font-size: 16px">
+          Use ClientComm to help clients navigate their requirements and graduate from pretrial or probation <b>successfully</b>.
+        </div>
+
+        <div class="signup">
+
+          <div id="emailSignUpBlock">
+            <input type="email" value="" placeholder="Enter your email address for project updates" id="newEmailAddress">
+            <div class="button" onclick="emailSubmit()">
+              Sign Up
+            </div>
+          </div>
+
+          <center id="emailSignUpBlockSuccess" style="line-height: 36px; font-weight: 700; color: #FFF; display: none">
+            Thanks for your interest!
+          </center>
+          
+        </div>
+
+      </div>
+    </div>
+
+    <div class="block grey">
+      <div class="inside" style="margin-top: 30px; margin-bottom: 50px;">
+
+      <center style="font-size: 28px; padding: 20px; margin-bottom: 30px; font-weight: 700">
+        ClientComm Features
+      </center>
+
+      <div style="display: block; clear: both; position: relative; height: 150px; color: #34438A; padding-bottom: 50px">
+
+        <div style="width: 20%; float: left; text-align: center;">
+          <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <div class="circleImg">
+              <img src="/static/icons/png/telephone.png"></img>
+            </div>
+          </span>
+          <center><b>End Phone Tag</b></center>
+          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+            Communicate at your convenience and produce detailed conversation logs automatically.
+          </center>
+        </div>
+
+        <div style="width: 20%; float: left; text-align: center;">
+          <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <div class="circleImg">
+              <img src="/static/icons/png/padlock-1.png"></img>
+            </div>
+          </span>
+          <center><b>Security</b></center>
+          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+            ClientComm’s data is designed to comply with Salt Lake County's digital communications policies.
+          </center>
+        </div>
+
+        <div style="width: 20%; float: left; text-align: center;">
+          <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <div class="circleImg">
+              <img src="/static/icons/png/alarm-clock.png"></img>
+            </div>
+          </span>
+          <center><b>Notifications</b></center>
+          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+            Schedule messages for appointments, court dates, and personal goals in advance.
+          </center>
+        </div>
+
+        <div style="width: 20%; float: left; text-align: center;">
+          <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <div class="circleImg">
+              <img src="/static/icons/png/user-list.png"></img>
+            </div>
+          </span>
+          <center><b>Smart Send</b></center>
+          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+            Communication methods are monitored to infer the best contact method for each client.
+          </center>
+        </div>
+
+        <div style="width: 20%; float: left; text-align: center;">
+          <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <div class="circleImg">
+              <img src="/static/icons/png/interface.png"></img>
+            </div>
+          </span>
+          <center><b>Templates</b></center>
+          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+            Common messages and phrases are stored for quick acess and communication.
+          </center>
+        </div>
+
+      </div>
+
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="inside" style="margin-top: 30px; margin-bottom: 50px;">
+
+      <center style="font-size: 28px; padding: 20px; padding-bottom: 5px; font-weight: 700">
+        ClientComm pilot usage data
+      </center>
+      <center style="font-size: 14px; padding: 0px; margin-bottom: 25px;">
+        Salt Lake County Criminal Justice Services 
+      </center>
+
+      <div style="display: block; clear: both; position: relative; height: 150px; color: #898989">
+        <div style="width: 33%; float: left; text-align: center;">
+          <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <%= overall.msgs %>
+          </span>
+          <center>Sent Messages</center>
+        </div>
+
+        <div style="width: 33%; float: left; text-align: center;">
+          <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <%= overall.convos %>
+          </span>
+          <center>Live Conversations</center>
+        </div>
+
+        <div style="width: 33%; float: left; text-align: center;">
+          <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
+            <%= overall.clients %>
+          </span>
+          <center>Currently Active Clients</center>
+        </div>
+      </div>
+
+      <div class="chart1"><div id="chart-overall"></div></div>
+      <center style="margin-top: -25px; color: #898989; font-size: 18px">Overall Daily Usage Growth</center>
+
+      <center class="statsLinkBtnTop">
+        <br>
+        <a href="http://clientcomm.org/stats">
+          <div class="statsLinkBtn">
+            more live stats
+          </div>
+        </a>
+      </center>
+
+      </div>
+    </div>
+
+    <div class="block grey">
+      <div class="bottom">
+
+        <div class="bottomBlock">
+          <div class="name">Weekly Blog</div>
+          <a href="http://c4a-slc.tumblr.com">
+            <div class="link">
+              c4a-slc.tumblr.com
+            </div>
+          </a>
+        </div>
+
+        <div class="bottomBlock">
+          <div class="name">Research Process</div>
+          <a href="http://slco-2016.github.io/q1_report/">
+            <div class="link">
+              c4a.me/slco-alpha
+            </div>
+          </a>
+        </div>
+
+        <div class="bottomBlock">
+          <div class="name">Development Processs</div>
+          <a href="http://slco-2016.github.io/beta_report">
+            <div class="link">
+              c4a.me/slco-beta
+            </div>
+          </a>
+        </div>
+
+      </div>
+
+      <center style="color: #888; font-size: 12px;">
+        A 2016 Fellowship project by <a href="http://archive.codeforamerica.org/governments/2016-announcement/">Code for America Fellows</a> Kuan Butts, Ben Peterson. <a href="http://codeforamerica.org">Code for America</a> Labs, Inc. is a non-partisan, non-political 501(c)(3) charitable organization.
+      </center>
+    </div>
+
+
+  </body>
+  <script src="/modules/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+
+  <script type="text/javascript">
+   
+
+     window.msgs = "<%= JSON.stringify(msgs) %>";
+  window.msgsReduced = null;
+
+
+  // UTILS: Function utilities called in the above "try" statement
+
+  // Returns the ISO week of the date
+  // Source credit: http://weeknumber.net/how-to/javascript
+  Date.prototype.getWeek = function() {
+    var date = new Date(this.getTime());
+     date.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    // January 4 is always in week 1.
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                          - 3 + (week1.getDay() + 6) % 7) / 7);
+  };
+
+  // Makes the mini charts by each name
+  function makeChart (id) {
+    var dates = msgs[id].dates;
+    var vals = msgs[id].vals;
+    var d = new Date();
+    var today = [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
+
+    if (dates[dates.length] !== today) {
+      dates.push(today);
+      vals.push("0");
+    }
+
+    chart = c3.generate({
+      data: { 
+        x: "x", 
+        columns: [["x"].concat(dates), ["Messages"].concat(vals)], 
+        color: function (color, d) { return "#4BAEFF"; }
+      },
+      axis: { x: { type: "timeseries", tick: { format: "%Y-%m-%d" }, show: false }, y: { show: false, max: 30, min: 0 } },
+      tooltip: { show: true },
+      point: { show: false },
+      legend: { hide: true },
+      grid: { y: { show: false }, x: { show: false } },
+      padding: { top: 0, right: 0, bottom: -25, left: 0, },
+      size: { height: 40, width: 260 },
+      bindto: "#chart-" + id,
+    }); 
+  };
+
+  function reduceAllMsgHistories (msgs) {
+    // Object to be returned
+    var dates = {};
+
+    // Iterate through list of cms's msgs history
+    Object.keys(msgs).forEach(function (cm) {
+      for (var i = 0; i < msgs[cm].dates.length; i++) {
+        var d = msgs[cm].dates[i];
+        var v = msgs[cm].vals[i];
+        if (!dates[d]) { dates[d] = 0; }
+        dates[d] += Number(v);
+      }
+    });
+
+    // Add today if it does not exist
+    // TO DO: Weigh merits of this existing, primarily for dev environ
+    var d = new Date();
+    var today = [d.getFullYear(), d.getMonth()+1, d.getDate()].join("-");
+    if (!dates[today]) { dates[today] = 0; }
+
+    return dates;
+  };
+
+  // Top big chart that combines all msg histories
+  function makeTopOrgWideChart (dates) {
+    var keys = Object.keys(dates).sort(function (a,b) { return new Date(a) - new Date(b); });
+    var vals = keys.map(function (k) { return dates[k]; })
+
+    c3.generate({
+      data: { 
+        x: "x", 
+        columns: [["x"].concat(keys), ["Daily Messaging Volume"].concat(vals)], 
+        color: function (color, d) { return "#4BAEFF"; },
+        types: {"Daily Messaging Volume": "area"}
+      },
+      legend: { hide: true },
+      axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
+      padding: { right: 20, top: 20 },
+      size: { width: 830, height: 230 },
+      grid: { y: { show: false }, x: { show: false } },
+      bindto: "#chart-overall"
+    });
+  };
+
+  // Create a gauge
+  // Why do this? Incentive for supervisors to drive towards increased use
+  function drawGaugeChart (dates) {
+    var weeks = {};
+
+    // Convert dates array into weeks with week counts for each
+    for (var dt in dates) { 
+      var weekNum = "week_" + String(new Date(dt).getWeek()); 
+      if (!weeks.hasOwnProperty(weekNum)) weeks[weekNum] = {count: 0};
+      var ct = Number(dates[dt]);
+      if (!isNaN(ct)) weeks[weekNum].count += ct;
+    }
+
+    // Get the highest performing weeek
+    var highestCount = weeks[Object.keys(weeks).reduce(function(a, b){ return weeks[a].count > weeks[b].count ? a : b })].count;
+    var thisWeeksVal = weeks["week_" + String(new Date().getWeek())].count;
+    var prctgeOfPeak = Math.floor(((thisWeeksVal/highestCount)*1000))/10
+
+    c3.generate({
+        data: {
+          columns: [ ["Proportion of Peak", prctgeOfPeak] ],
+          type: "gauge",
+        },
+        color: {
+          pattern: ["#FF0000", "#F97600", "#F6C600", "#60B044"], // Color levels for the percentage values
+          threshold: { values: [30, 60, 90, 100] }
+        },
+        size: { height: 138, width: 415 },
+        bindto: "#gaugechart"
+    });
+  };
+
+  function drawCMActivityChart(cms) {
+    cms = cms.result;
+    // Convert all times to hours
+    cms = cms.filter(function (ea) {
+      var f = ea["user.first"] !== "" && ea["user.first"] !== "Test Account" && ea["user.first"] !== "Kuan";
+      var l = ea["user.last"] !== "";
+      return (f && l);
+    }).map(function (ea) { 
+      // Why 5.5? Arbitrary reduction to make typically high performing CMs who are clicking on stuff on the main screen appear to be at 8 hoours
+      // TO DO: Fix the duration calculator
+      ea["Recent Hours Logged Using ClientComm"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
+      ea.name = [ea["user.first"], ea["user.last"]].join(" ");
+      return ea;
+    });
+
+    c3.generate({
+      data: {
+        json: cms,
+        keys: {
+          x: "name",
+          value: ["Recent Hours Logged Using ClientComm"]
+        },
+        type: "bar",
+        color: function (color, d) { return "#4BAEFF"; }
+      },
+      axis: {
+        rotated: true,
+        x: { type: "category" }
+      },
+      bindto: "#cmactivitychart"
+    });
+  };
+
+  function getPeakDay (msgsReduced) {
+    var keys = Object.keys(msgsReduced);
+    var maxDay = {
+      date: 0,
+      value: 0
+    };
+    keys.forEach(function (ea) {
+      if (msgsReduced[ea] >= maxDay.value) {
+        maxDay.date = ea;
+        maxDay.value = msgsReduced[ea];
+      }
+    });
+    return maxDay
+  };
+
+
+  // PAGE LOAD ACTIONS RELATED TO EJS VAR STRING INCLUSION
+  // Attempt first to parse content
+  try {
+    // Clean up EJS string output
+    msgs = JSON.parse(msgs.replace(/&#34;/g, '"'));
+    msgsReduced = reduceAllMsgHistories(msgs);
+    peakDay = getPeakDay(msgsReduced);
+
+    // Add Peak Day to Number Stats
+    // $("#peakDayValue").text(peakDay.value);
+
+    // Make the cumulative, organization-wide top chart
+    makeTopOrgWideChart(msgsReduced);
+
+    // Draw gauge chart in top card right
+    drawGaugeChart(msgsReduced);
+
+  // If parse fails, we don't execute any of the chart drawing
+  } catch (e) { console.log(e) }
+
+  // SIGN UP
+  // Keen.io
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+
+  // Keen.io tracking operations
+  function createKeenClient () {
+    var client = new Keen({
+      projectId: "5750a91433e4063ccd5b6c7e",
+      writeKey: "57bd2513349615cb4f61859fbecf3252d67cf5820f085ce7788892b314cc9399e2bfdc084c3b5f5c60712c4c48143e7f31a9eb9e78c0955228e3cf08304bb64fa4e725862dfee3ceb3bb3298600faa954e487950dbe49b2c353167d4ceaa785f"
+    });
+    return client;
+  };
+
+
+  function emailSubmit () {
+    var em = $("#newEmailAddress").val();
+    if (em) {
+      var keenRef = {
+        referrer: document.referrer,
+        URL:      document.URL,
+        interestEmail: em,
+        keen: { timestamp: new Date().toISOString() }
+      }
+      createKeenClient().addEvent("emailinterest", keenRef, function (err, res) { 
+        if (err) { 
+          console.log(err); 
+        } else {
+          emailSubmitAnimation(); // Once submit is done run this animation
+        }
+      });
+      
+    } else {
+      console.log("No email provided...");
+    }
+  }
+
+
+
+  function emailSubmitAnimation () {
+    $("#emailSignUpBlock").fadeOut(function () {
+      $("#emailSignUpBlockSuccess").fadeIn(function () {
+        setTimeout(function () { $("#emailSignUpBlockSuccess").fadeOut(function () {
+          $("#newEmailAddress").val("");
+          $("#emailSignUpBlock").fadeIn();
+        }) }, 2000)
+      });
+    });
+  }
+
+
+  </script>
+</html>
+    
+    
+
+

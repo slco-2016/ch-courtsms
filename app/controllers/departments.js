@@ -67,6 +67,7 @@ module.exports = {
     ).then(() => {
       req.flash("success", "Updated department.");
       res.redirect("/org/departments");
+      return null
     }).catch(res.error500);
   },
   
@@ -85,6 +86,7 @@ module.exports = {
       });
 
       res.render("departments/supervisors", {
+        departmentId: req.params.department,
         supervisors: supervisors,
         members: members
       });

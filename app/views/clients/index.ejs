@@ -68,7 +68,7 @@
 
     <div class="column">
       <% if (level == "org") { %>
-        <a href="<%=`/org?user=${client.user_id}`%>"><span class="clientName">
+        <a href="<%=`/org?user=${client.user_id}&department=${client.department}`%>"><span class="clientName">
       <% } %>
       <%=`${client.user_last}, ${client.user_first}`%>
       <% if (level == "org") { %>

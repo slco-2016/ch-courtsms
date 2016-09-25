@@ -1,0 +1,44 @@
+.profileBlock {
+  display: block;
+  background-color: #FFF;
+  overflow: hidden; }
+  .profileBlock .left {
+    width: 50%;
+    float: left; }
+  .profileBlock .right {
+    width: 50%;
+    float: left; }
+  .profileBlock .whole {
+    width: 100%; }
+  .profileBlock .section {
+    padding: 20px 10px 20px 10px; }
+    .profileBlock .section .heading {
+      color: #4A90E2;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 28px;
+      margin-bottom: 5px; }
+      .profileBlock .section .heading .action {
+        background-color: #4A90E2;
+        color: #FFF;
+        display: inline;
+        float: right;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 3px 10px 3px 10px;
+        margin-top: 6px;
+        margin-left: 5px;
+        border-radius: 2px; }
+        .profileBlock .section .heading .action:hover {
+          background-color: #3F69B6; }
+    .profileBlock .section .graphic {
+      min-height: 250px; }
+    .profileBlock .section .details .row {
+      padding: 5px 10px 5px 10px;
+      font-size: 16px;
+      line-height: 22px; }
+      .profileBlock .section .details .row:nth-child(odd) {
+        background-color: #E8ECEF; }
+      .profileBlock .section .details .row:hover {
+        background-color: #898989;
+        color: #FFF; }

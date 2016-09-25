@@ -174,12 +174,32 @@ $width_row5:  5%;
           }
         }
 
+        .miniButton {
+          display: block;
+          float: right;
+          padding: 5px 10px 5px 15px;
+          color: $blue;
+          background-color: $white;
+          height: 35px;
+          line-height: 35px;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $darkblue;
+            color: $white;
+            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+          }
+        }
+
         &.disabled {
           cursor: not-allowed;
           font-size: 12px;
+          overflow: hidden;
+          background-color: $blue;
 
           &:hover {
             box-shadow: none;
+            background-color: $blue;
           }
         }
 

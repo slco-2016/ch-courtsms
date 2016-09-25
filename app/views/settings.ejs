@@ -42,6 +42,32 @@
     </div>
 
     <div class="formRow">
+      <div class="formLabel"> Email alerts frequency </div>
+      <div class="formInput">
+        Alerts are currently set to every 
+        <i class="fa fa-clock-o" aria-hidden="true"></i>
+        <b><%=user.email_alert_frequency%></b>
+        hours.
+      </div>
+      <div class="formInput">
+        <input type="radio" value="24" name="alertFrequency" <%if (user.email_alert_frequency == 24) {%>checked<%}%>>
+        24 hours (daily)
+      </div>
+      <div class="formInput">
+        <input type="radio" value="48" name="alertFrequency" <%if (user.email_alert_frequency == 48) {%>checked<%}%>>
+        48 hours (every other day)
+      </div>
+      <div class="formInput">
+        <input type="radio" value="168" name="alertFrequency" <%if (user.email_alert_frequency == 168) {%>checked<%}%>>
+        168 hours (weekly)
+      </div>
+      <div class="formInput">
+        <input type="radio" value="null" name="alertFrequency" <%if (user.email_alert_frequency == null) {%>checked<%}%>>
+        Never
+      </div>
+    </div>
+
+    <div class="formRow">
       <div class="formLabel">
         Away message status
       </div>
@@ -51,12 +77,18 @@
       </div>
 
       <div class="formInput">
-        <input type="checkbox" name="isAway" value="true" <%if (user.is_away) {%>checked<%}%>> Check to turn away message on
+        <input type="checkbox" name="isAway" value="true" <%if (user.is_away) {%>checked<%}%>> Check to toggle away message on/off
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> User account type: <%=user.class%> </div>
+      <div class="formLabel"> Account </div>
+      <div class="formInput"> 
+        Your have a(n) 
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <b><%=user.class%> </b>
+        account. Changes to this account's status must be made by another administrator.
+      </div>
     </div>
 
     <input type="submit" class="formSubmit" value="Update">

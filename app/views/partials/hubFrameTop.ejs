@@ -1,12 +1,9 @@
 <% include ./navBarTop %>
 
-<!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
-
   <div class="navSub">
-
-    <!-- Organization and department-level tabs -->
+  
     <% if (level == "org") { %>
       <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
         <div class="title"><a href="/org">Metrics Dashboard</a></div>
@@ -14,12 +11,17 @@
 
       <% if (user.class == "owner") { %>
         <%- leftTab('departments', hub, level, ['active', 'inactive']) %>
+        <%- leftTab('numbers', hub, level, null) %>
       <% } %>
 
       <%- leftTab('users', hub, level, ['active', 'inactive']) %>
-    <% } %>     
+    <% } %>
 
     <%- leftTab('clients', hub, level, ['open', 'closed']) %>
+
+    <% if (level == "org") { %>
+      <%- leftTab('captured', hub, level, null) %>
+    <% } %>
 
     <!-- Primary user level tabs -->
     <% if (level == "user") { %>

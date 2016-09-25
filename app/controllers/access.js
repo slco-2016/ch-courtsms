@@ -8,9 +8,19 @@ var isLoggedIn = pass.isLoggedIn;
 module.exports = {
 
   login(req, res) {
-    if (req.hasOwnProperty("user")) { 
-      res.redirect("/"); 
-    } else { 
+    if (req.hasOwnProperty("user")) {
+
+      if ([ "owner", 
+            "supervisor", 
+            "support", 
+            "developer"
+          ].indexOf(req.user.class) > -1) {
+        res.redirect(`/org`);
+      } else {
+        res.redirect(`/clients`);
+      }
+
+    } else {
       res.render("access/login"); 
     }
   },

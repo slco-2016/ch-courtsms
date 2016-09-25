@@ -54,6 +54,7 @@ class Messages {
 
       db("msgs")
         .select("msgs.*", 
+                "sentiment.sentiment",
                 "commconns.client",
                 "commconns.name as commconn_name", 
                 "commconns.value as comm_value",
@@ -63,6 +64,7 @@ class Messages {
             .join("comms", "commconns.comm", "comms.commid")
             .as("commconns"),
           "commconns.commid", "msgs.comm")
+        .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIDs)
         .andWhere("client", clientID)
         .orderBy("created", "asc")
@@ -173,6 +175,25 @@ class Messages {
     });
   }
 
+  static markAsRead (messageIds) {
+    if (messageIds && !Array.isArray(messageIds)) {
+      messageIds = [messageIds];
+    }
+
+    return new Promise((fulfill, reject) => {
+      if (messageIds.length) {
+        db("msgs")
+          .update({read: true})
+          .whereIn("msgid", messageIds)
+        .then(() => {
+          fulfill()
+        }).catch(reject);
+      } else {
+        fulfill();
+      }
+    });
+  }
+
   static getLatestNumber (userID, clientID) {
     return new Promise((fulfill, reject) => {
       CommConns.getClientCommunications(clientID)
@@ -203,7 +224,27 @@ class Messages {
     });
   }
 
+  static findUnreadsByUser (user) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .count("msgid")
+        .leftJoin("convos", "msgs.convo", "convos.convid")
+        .where("msgs.read", false)
+        .andWhere("convos.cm", user)
+      .then(function (clients) {
+        
+        // See if there are any new messages in any of the conversations
+        let totalNewMessages = 0;
+        clients.forEach(function (ea) {
+          if (!isNaN(ea.count)) {
+            totalNewMessages += Number(ea.count);
+          }
+        });
 
+        fulfill(totalNewMessages > 0);
+      }).catch(reject);
+    });
+  }
 
   static startNewConversation (userID, clientID, subject, content, commID) {
     return new Promise((fulfill, reject) => {
@@ -221,7 +262,7 @@ class Messages {
           fulfill();
         }).catch(reject);
       }).catch(reject);
-    });      
+    }); 
   }
 
   static sendOne (commID, content, conversationID) {

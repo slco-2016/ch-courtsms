@@ -14,6 +14,13 @@ module.exports = {
   update(req, res) {
     let awayMessage = req.body.awayMessage;
     let isAway = req.body.isAway ? true : false;
+    
+    let alertFrequency = req.body.alertFrequency
+    if (alertFrequency == "null") {
+      alertFrequency = null;
+    } else if (isNaN(alertFrequency)) {
+      alertFrequency = 24;
+    }
 
     Settings.updateOne(
             req.user.cmid, 
@@ -21,6 +28,7 @@ module.exports = {
             req.body.middle, 
             req.body.last, 
             req.body.email,
+            alertFrequency,
             isAway,
             awayMessage 
     ).then(() => {

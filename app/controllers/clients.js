@@ -5,6 +5,18 @@ const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
+const _average = (arr) => {
+  let total = 0;
+  for (var i = 0; i < arr.length; i++) {
+    total += arr[i];
+  }
+  if (arr.length) {
+    return total / arr.length;
+  } else {
+    return null
+  }
+}
+
 module.exports = {
   
   index(req, res) {
@@ -13,7 +25,8 @@ module.exports = {
     let user        = req.body.targetUser || req.user.cmid;
 
     // Controls against a case where the owner would accidentally have a department
-    if (req.user.class === "owner" && !req.query.department) {
+    if (  (req.user.class == "owner" || req.user.class == "support") && 
+          !req.query.department) {
       department = null;
     }
 
@@ -140,9 +153,9 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    let user = req.getUser();
-    console.log("user", user, "reqUser", req.user.cmid);
     let client = req.params.client;
+    let method = req.query.method;
+    let user = req.getUser();
 
     // determine if we should filter by type
     let methodFilter = "all";
@@ -164,12 +177,22 @@ module.exports = {
           return false; 
         }
       });
-      return CommConns.findByClientID(req.params.client)
+      
+      // determine if any messages need to be marked as read
+      let messageIds = messages.filter((msg) => {
+        return msg.read === false;
+      }).map((msg) => {
+        return msg.msgid;
+      })
+      return Messages.markAsRead(messageIds)
+    }).then(() => {
+      
+      return CommConns.findByClientID(client)
     }).then((communications) => {
       res.render("clients/messages", {
         hub: {
           tab: "messages",
-          sel: req.query.method ? req.query.method : "all"
+          sel: method ? method : "all"
         },
         conversations: conversations,
         messages: messages,
@@ -227,6 +250,7 @@ module.exports = {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
       res.levelSensitiveRedirect(`/clients`);
+      return null
     }).catch(res.error500);
   },
 
@@ -284,6 +308,115 @@ module.exports = {
       // Note: this does not render a new page, just initiates a download
       res.set({"Content-Disposition":"attachment; filename=transcript.txt"});
       res.send(messages);
+    }).catch(res.error500);
+  },
+
+  clientCard(req, res) {
+    let client = req.params.client;
+    let user = req.getUser();
+
+    let messages;
+
+    Messages.findByClientID(user, client)
+    .then((msgs) => {
+      messages = msgs;
+      return CommConns.findByClientID(client)
+    }).then((communications) => {
+
+      let unreadCount = 0,
+          lastOutbound = {}, 
+          lastInbound = {},
+          clientResponseList = []
+          lastClientMsg = null,
+          lastUserMsg = null,
+          userResponseList = [],
+          sentiment = {
+            negative: 0,
+            neutral: 0,
+            positive: 0
+          };
+
+      messages.forEach((msg, i) => {
+        if (!msg.read) {
+          unreadCount += 1;
+        }
+
+        if (msg.inbound) {
+          lastInbound = msg;
+        } else {
+          lastOutbound = msg;
+        }
+
+        if (msg.sentiment) {
+          try {
+            sentiment[msg.sentiment] += 1;
+          } catch (e) {}
+        }
+
+        if (msg.inbound) {
+          if (lastUserMsg) {
+            if (lastUserMsg.convo == msg.convo) {
+              let a = new Date(msg.created)
+              let b = new Date(lastUserMsg.created)
+              clientResponseList.push(a - b)
+              lastUserMsg = null;
+              lastClientMsg = msg;
+            } else {
+              lastUserMsg = null;
+            }
+          } else {
+            if (!lastClientMsg) {
+              lastClientMsg = msg;
+            }
+          }
+        } else {
+          if (lastClientMsg) {
+            if (lastClientMsg.convo == msg.convo) {
+              let a = new Date(msg.created)
+              let b = new Date(lastClientMsg.created)
+              userResponseList.push(a - b)
+              lastClientMsg = null;
+              lastUserMsg = msg;
+            } else {
+              lastClientMsg = null;
+            }
+          } else {
+            if (!lastUserMsg) {
+              lastUserMsg = msg;
+            }
+          }
+        }
+      });
+
+      let averageClientResponseTime = _average(clientResponseList);
+      let averageUserResponseTime = _average(userResponseList);
+
+      let totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
+      sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100) || 0;
+      sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100) || 0;
+      sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100) || 0;
+
+      let inboundCount = messages.filter((msg) => { return msg.inbound; }).length;
+      let outboundCount = messages.length - inboundCount;
+
+      res.render("clients/profile", {
+        hub: {
+          tab: null,
+          sel: null
+        },
+        messages: {
+          all: messages,
+          unreadCount: unreadCount,
+          inboundCount: inboundCount,
+          outboundCount: outboundCount,
+          sentiment: sentiment,
+          averageClientResponseTime: averageClientResponseTime,
+          averageUserResponseTime: averageUserResponseTime,
+          lastInbound: lastInbound,
+          lastOutbound: lastOutbound
+        },
+        communications: communications
+      });
     }).catch(res.error500);
   }
 

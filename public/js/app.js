@@ -49,6 +49,53 @@ $(function() {
     },
 
     {
+      cssClass: 'JSfindClient',
+      execute: function() {
+        var substringMatcher = function (strs) {
+          return function findMatches(q, cb) {
+            var matches = [];
+            var substrRegex = new RegExp(q, 'i');
+            $.each(strs, function(i, str) {
+              var name = str.first + " " + str.last;
+              if (substrRegex.test(name)) matches.push(name);
+            });
+
+            cb(matches);
+          };
+        };
+
+        $(".formInput .typeahead")
+        .typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+          },
+          {
+            name: "clients",
+            value: "clid",
+            source: substringMatcher(clients),
+            select: function (e, i) { console.log( e, i )}
+        });
+
+        $("#clientSearch").submit(function (event) {
+          var selectedName = $(".tt-input").val();
+          var selectedClient = null;
+          clients.forEach(function (client) {
+            var name = client.first + " " + client.last;
+            if (name == selectedName) selectedClient = client;
+          });
+          if (selectedClient) {
+            $("#targetClient").val(selectedClient.clid)
+            return true;
+          } else {
+            event.preventDefault();
+            return false;
+          }
+        })
+      }
+    },
+
+    {
       cssClass: 'JSselectTemplateWhenAddressingClient',
       execute: function() {
         $(".scrollListRow").click(function () {
@@ -340,7 +387,11 @@ $(function() {
         function buildUserActivityChart(users) {
           users = users.filter(function (ea) {
             if (departmentFilter) {
-              return departmentFilter == Number(ea["user.department"]);
+              if (userFilter) {
+                return userFilter === Number(ea["user.cmid"]);
+              } else {
+                return departmentFilter == Number(ea["user.department"]);
+              }
             } else if (userFilter) {
               return userFilter === Number(ea["user.cmid"]);
             } else {
@@ -348,7 +399,7 @@ $(function() {
             }
           }).map(function (ea) {
             ea["User Activity"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
-            ea.name = [ea["user.last"], ea["user.first"]].join(", ");
+            ea.name = [ea["user.last"], ea["user.first"]].join(", ").substring(0, 15);
             return ea;
           });
           
@@ -372,6 +423,42 @@ $(function() {
             bindto: "#userActivity"
           });
         };
+      }
+    },
+
+    {
+      cssClass: 'JSclientProfile',
+      execute: function () {
+        if (sentiment.negative == 0 &&
+            sentiment.neutral == 0 &&
+            sentiment.positive == 0) {
+          $("#sentimentAnalysis").remove();
+        }
+        c3.generate({
+          data: {
+            columns: [
+                ['negative', sentiment.negative],
+                ['neutral', sentiment.neutral],
+                ['positive', sentiment.positive]
+            ],
+            type : 'pie',
+          },
+          bindto: "#sentimentAnalysis"
+        });
+
+        if (inboundCount == 0 && outboundCount == 0) {
+          $("#backAndForthRatio").remove();
+        };
+        c3.generate({
+          data: {
+            columns: [
+                ['inbound messages', inboundCount],
+                ['outbound messages', outboundCount]
+            ],
+            type : 'pie',
+          },
+          bindto: "#backAndForthRatio"
+        });
       }
     },
 
@@ -525,6 +612,10 @@ $(function() {
             }
           });
         };
+
+        if (preSelect) {
+          updateClientsAndComms(preSelect);
+        }
       }
     },
 
@@ -582,101 +673,4 @@ $(function() {
     }
   };
 
-})
-
-// BELOW: All of the below is stuff that is moved over from bundled ejs file
-// REMOVE ALERTS AFTER A SEC
-setTimeout(function () { $(".FLASH").fadeOut("slow"); }, 1500);
-$(".alertsBindedClickAction").click(function () { $(".hiddenAlerts").toggle(); });
-$(".hiddenAlerts .alertRow .close").click(function () { 
-  closeOutAlert($(this).attr("alertID"));
-  $(this).parent().remove(); 
-  var nr = $(".numberRemaining");
-  nr.text(Number(nr.text())-1); // reduce the remaining alerts by one
-  if ($(".hiddenAlerts .alertRow").length == 0) $(".alerts").remove();
 });
-
-function closeOutAlert (alertID) {
-  $.get("/alerts/close/" + alertID)
-  .fail(function (error) { console.log(error.status+": "+error.statusText); });
-};
-
-// EMBEDDED TOOLS SECTION //
-// Google analytics
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-74523546-1', 'auto');
-ga('send', 'pageview');
-
-
-// KEENIO SECTION //
-// Keen.io
-!function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
-
-// Keen.io tracking operations
-function createKeenClient () {
-  var client = new Keen({
-    projectId: "5750a91433e4063ccd5b6c7e",
-    writeKey: "57bd2513349615cb4f61859fbecf3252d67cf5820f085ce7788892b314cc9399e2bfdc084c3b5f5c60712c4c48143e7f31a9eb9e78c0955228e3cf08304bb64fa4e725862dfee3ceb3bb3298600faa954e487950dbe49b2c353167d4ceaa785f"
-  });
-  return client;
-};
-
-// Add page event
-var keenRef = {
-  startTime: new Date().getTime(),
-  clientPageVisitEvent: {
-    user: {
-      first:      SESSION_USER ? null : SESSION_USER.first,
-      middle:     SESSION_USER ? null : SESSION_USER.middle,
-      last:       SESSION_USER ? null : SESSION_USER.last,
-      email:      SESSION_USER ? null : SESSION_USER.email,
-      cmid:       SESSION_USER ? null : SESSION_USER.cmid,
-      department: SESSION_USER ? null : SESSION_USER.department,
-    },
-    referrer: document.referrer,
-    URL:      document.URL,
-    keen: {
-      timestamp: new Date().toISOString()
-    }
-  }
-};
-
-// Send the event to Keen.io
-createKeenClient().addEvent("pageviews", keenRef.clientPageVisitEvent, function (err, res) { if (err) console.log(err); });
-
-// Event bind on page unload to notify Keen of page spent duration
-$(window).on("beforeunload", notifyKeenOfPageVisitDuration);
-document.body.addEventListener("mousedown", notifyKeenOfPageVisitDuration, true);
-
-// Bind exit button actions ot Keen.io call
-$(".exit").click(function () { notifyKeenOfUserAction("cardexit"); });
-
-// Bind message check button actions ot Keen.io call
-$("#navbarMessageCheckButton").click(function () { notifyKeenOfUserAction("messagecheck"); });
-
-// Tool to notify keen of duration
-function notifyKeenOfPageVisitDuration () {
-  // Duration maxes out at 15 minutes
-  keenRef.clientPageVisitEvent.duration = Math.min((new Date().getTime() - keenRef.startTime), 900000);
-  // Make the event call to Keen.io
-  createKeenClient().addEvent("pagedurations", keenRef.clientPageVisitEvent, function (err, res) { 
-    // In callback reset startTime
-    keenRef.startTime = new Date().getTime();
-  });
-};
-
-
-// RENDER Crisp.im IF USER LOGGED IN
-if (SESSION_USER) {
-  CRISP_WEBSITE_ID = "54a27220-22bc-4baa-9756-ce636cd6f3de";
-  (function() {
-    d = document;
-    s = d.createElement("script");
-    s.src="https://client.crisp.im/l.js";
-    s.async=1;
-    d.getElementsByTagName("head")[0].appendChild(s);
-  })();
-}

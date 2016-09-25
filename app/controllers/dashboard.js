@@ -6,10 +6,20 @@ module.exports = {
 
   org(req, res) {
     let departments;
-    let departmentFilter = req.user.department || Number(req.query.department) || null;
+    let departmentFilter = req.user.department || req.query.department || null;
     let userFilter = req.query.user || null;
     let users;
     let countsByDay, countsByWeek;
+
+    // Control against the owner being assigned to an department
+    if (  (req.user.class == "owner" || req.user.class == "support") && 
+          !req.query.department) {
+      departmentFilter = null;
+    }
+    // Hnadles is query is 'department=null'
+    if (req.query.department && isNaN(req.query.department)) {
+      departmentFilter = null;
+    }
 
     Departments.findByOrg(req.user.org, true)
     .then((depts) => {

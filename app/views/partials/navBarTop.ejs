@@ -3,10 +3,7 @@
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_navBarTop.css">
 
-
-<% include ./flashMessages %>
 <% include ./alertsFeed %>
-
 
 <!-- Structure -->
 <div class="applicationFrame">
@@ -30,7 +27,7 @@
 
     <div class="rightLogout">
 
-      <% if (typeof user !== "undefined" && ["owner", "supervisor", "developer"].indexOf(user.class) > -1) { %>
+      <% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
         <a href="/org">
           <span class="button">
             <i class="fa fa-lg fa-tachometer" aria-hidden="true"></i>

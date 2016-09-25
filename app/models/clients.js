@@ -5,7 +5,7 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 
 const CommConns = require("./commConns");
-const Users     = require("./users");
+const Users = require("./users");
 
 const colors = require("colors")
 
@@ -101,6 +101,7 @@ class Clients {
                 "cms.first as user_first",
                 "cms.middle as user_middle",
                 "cms.last as user_last",
+                "cms.department as department",
                 "color_tags.color as color_tag", 
                 "color_tags.name as color_name")
 
@@ -113,7 +114,6 @@ class Clients {
 
         .leftJoin("cms", "clients.cm", "cms.cmid")
 
-        // Only where active T/F and case manager matches
         .whereIn("clients.cm", userIDs)
         .andWhere("clients.active", activeStatus)
         .orderBy(

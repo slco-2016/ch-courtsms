@@ -72,6 +72,8 @@ app.use(middleware.attachTemplateLibraries);
 app.use(middleware.templateHelpers);
 
 const AccessController          = require('./controllers/access');
+const AlertsController          = require('./controllers/alerts');
+const CaptureBoardController    = require('./controllers/capture');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
 const CommunicationsController  = require('./controllers/communications');
@@ -79,6 +81,7 @@ const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
 const GroupsController          = require('./controllers/groups');
 const NotificationsController   = require('./controllers/notifications');
+const PhoneNumbers              = require('./controllers/phoneNumbers');
 const RootController            = require('./controllers/root');
 const SettingsController        = require('./controllers/settings');
 const TemplatesController       = require('./controllers/templates');
@@ -105,6 +108,9 @@ app.use(auth.isLoggedIn);
 app.use(auth.checkIsAllowed);
 
 app.get("/logout", AccessController.logout);
+
+app.get("/alerts", AlertsController.checkForNewMessages)
+app.get("/alerts/:alert/close", AlertsController.close)
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.create);
@@ -141,11 +147,11 @@ app.get("/clients", ClientsController.index);
 app.get("/clients/create", ClientsController.new);
 app.post("/clients/create", ClientsController.create);
 
-app.get("/clients/:client", (req, res) => { res.redirect(`/clients/${req.params.client}/messages`); });
+app.get("/clients/:client", ClientsController.clientCard);
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
-app.get("/clients/:client/edit", ClientsController.update);
+app.post("/clients/:client/edit", ClientsController.update);
 app.get("/clients/:client/alter/:status", ClientsController.alter);
 app.get("/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/clients/:client/transfer", ClientsController.transferSubmit);
@@ -185,11 +191,14 @@ app.get("/org/departments/:department/supervisors", DepartmentsController.superv
 app.post("/org/departments/:department/supervisors", DepartmentsController.supervisorsUpdate);
 app.get("/org/departments/:department/alter/:case", DepartmentsController.alter);
 
+app.get("/org/numbers", PhoneNumbers.index)
+app.get("/org/numbers/create", PhoneNumbers.new)
+
 app.get("/org/clients", ClientsController.index);
 app.get("/org/clients/create", ClientsController.new);
 app.post("/org/clients/create", ClientsController.create);
 
-app.get("/org/clients/:client", (req, res) => { res.send("Client overview here...") });
+app.get("/org/clients/:client", ClientsController.clientCard);
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
@@ -197,6 +206,16 @@ app.get("/org/clients/:client/edit", ClientsController.update);
 app.get("/org/clients/:client/alter/:status", ClientsController.alter);
 app.get("/org/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
+app.get("/org/clients/:client/communications/create", CommunicationsController.new);
+app.post("/org/clients/:client/communications/create", CommunicationsController.create);
+
+app.get("/org/captured", CaptureBoardController.index)
+app.get("/org/captured/attach/:conversation", CaptureBoardController.attachUserIndex)
+app.post("/org/captured/attach/:conversation", CaptureBoardController.attachUserSelect)
+app.get("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachClientIndex)
+app.post("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachUpdate)
+app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm)
+app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);

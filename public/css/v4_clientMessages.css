@@ -98,11 +98,27 @@
           text-align: right; }
           .rightContent .responseBox .mini .messageInput .right .fa {
             padding-right: 15px; }
+        .rightContent .responseBox .mini .messageInput .miniButton {
+          display: block;
+          float: right;
+          padding: 5px 10px 5px 15px;
+          color: #3F69B6;
+          background-color: #FFF;
+          height: 35px;
+          line-height: 35px;
+          cursor: pointer; }
+          .rightContent .responseBox .mini .messageInput .miniButton:hover {
+            background-color: #344289;
+            color: #FFF;
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5); }
         .rightContent .responseBox .mini .messageInput.disabled {
           cursor: not-allowed;
-          font-size: 12px; }
+          font-size: 12px;
+          overflow: hidden;
+          background-color: #3F69B6; }
           .rightContent .responseBox .mini .messageInput.disabled:hover {
-            box-shadow: none; }
+            box-shadow: none;
+            background-color: #3F69B6; }
         .rightContent .responseBox .mini .messageInput:hover {
           background-color: #3F69B6;
           color: #E8ECEF;

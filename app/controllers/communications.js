@@ -56,8 +56,10 @@ module.exports = {
           req.logActivity.client(client);
           req.flash("success", "Created new communication method.");
           res.redirect(`/clients/${client}/communications`);
+          return null
         }).catch(res.error500);
       }
+      return null
     }).catch(res.error500);
 
   },
