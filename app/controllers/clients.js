@@ -23,6 +23,7 @@ module.exports = {
     let status      = req.query.status == "closed" ? false : true;
     let department  = req.user.department || req.query.department;
     let user        = req.body.targetUser || req.user.cmid;
+    let limitByUser = req.query.user || null;
 
     // Controls against a case where the owner would accidentally have a department
     if (  (req.user.class == "owner" || req.user.class == "support") && 
@@ -40,9 +41,9 @@ module.exports = {
     }
 
     method.then((clients) => {
-      if (req.query.limitByUser) {
+      if (limitByUser) {
         clients = clients.filter((client) => {
-          return Number(client.cm) === Number(req.query.limitByUser);
+          return Number(client.cm) === Number(limitByUser);
         });
       }
 
@@ -52,7 +53,7 @@ module.exports = {
           sel: status ? "open" : "closed"
         },
         clients: clients,
-        limitByUser: req.query.limitByUser || null
+        limitByUser: limitByUser || null
       });
     }).catch(res.error500);
   },
@@ -250,7 +251,6 @@ module.exports = {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
       res.levelSensitiveRedirect(`/clients`);
-      return null
     }).catch(res.error500);
   },
 
