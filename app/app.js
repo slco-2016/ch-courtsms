@@ -110,7 +110,7 @@ app.use(auth.checkIsAllowed);
 app.get("/logout", AccessController.logout);
 
 app.get("/alerts", AlertsController.checkForNewMessages)
-app.get("/alerts/close/:alert", AlertsController.close)
+app.get("/alerts/:alert/close", AlertsController.close)
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.create);
