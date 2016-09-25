@@ -22,8 +22,10 @@ module.exports = {
         Conversations.logActivity(conversation)
         .then(() => {
           // Log conversation activity success...
+          return null
         }).catch((err) => {
           console.log(err.yellow);
+          return null
         });
       },
     };
@@ -203,6 +205,7 @@ module.exports = {
       .then((alerts) => {
         res.locals.ALERTS_FEED = alerts;
         next();
+        return null
       }).catch(res.error500);
     } else {
       next();
@@ -215,6 +218,7 @@ module.exports = {
       .then((org) => {
         res.locals.organization = org;
         next();
+        return null
       }).catch(res.error500);
     } else {
       next();
@@ -224,7 +228,7 @@ module.exports = {
   fetchUserDepartment(req, res, next) {
     if (req.user) {
       let department = req.user.department;
-      Departments.findByID(department)
+      return Departments.findByID(department)
       .then((department) => {
         // if no department, provide some dummy attributes
         if (!department) {
@@ -237,7 +241,8 @@ module.exports = {
         }
         res.locals.department = department;
         next();
-      }).catch(res.error500);      
+        return null
+      }).catch(res.error500);     
     } else {
       next();      
     }

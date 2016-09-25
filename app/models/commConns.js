@@ -105,6 +105,7 @@ class CommConns {
             }).catch(reject);
           }).catch(reject);
         }
+        return null
       }).catch(reject);
 
 

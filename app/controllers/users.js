@@ -61,6 +61,7 @@ module.exports = {
           res.redirect("/org/users");
         }).catch(res.error500);
       }
+      return null
     }).catch(res.error500);
   },
 
