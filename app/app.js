@@ -104,6 +104,12 @@ app.post("/login/reset", AccessController.resetSubmit);
 app.get("/login/reset/:uid", AccessController.resetSpecific);
 app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
+app.post("/email/webhook", EmailsController.webhook);
+app.post("/email", EmailsController.receive);
+
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
+
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);
 app.use(auth.checkIsAllowed);
@@ -220,12 +226,6 @@ app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);
-
-app.post("/twilio/sms", TwilioController.receiveText);
-app.post("/twilio/voice", TwilioController.receiveVoice);
-
-app.post("/email/webhook", EmailsController.webhook);
-app.post("/email", EmailsController.receive);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

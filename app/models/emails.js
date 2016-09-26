@@ -20,6 +20,9 @@ class Emails extends BaseModel{
       ]
     })
   }
+  static findByFrom(from) {
+    return this.findByAttribute("from", from)
+  }
   static create(emailObject) {
     return new Promise((fulfill, reject) => {
       db("emails")

@@ -46,13 +46,13 @@ module.exports = {
     res.send('ok, thanks');
   },
   receive(req, res) {
-        // mailgun's philosophy here seems to be that if they can populate a section they
+    // mailgun's philosophy here seems to be that if they can populate a section they
     // will, or they will omit it. This can be very confusing.
     // eg: if there is one recipient they will populate "recipient", but they
     // will populate "reciepients" if there are multiple.
     // would keep this in mind when trusing these values.
 
-    console.log(req.body)
+    // console.log(req.body)
 
     var domain = req.body.domain;
     var headers = req.body['message-headers'];

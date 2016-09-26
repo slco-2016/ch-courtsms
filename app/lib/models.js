@@ -79,6 +79,19 @@ class BaseModel {
     })
   }
 
+  static findByAttribute(attributeName, value) {
+    this._checkModelValidity()
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+      .where(attributeName, value)
+      .limit(1)
+      .then((objects) => {
+        return this._getSingleResponse(objects, fulfill, reject)
+      }).catch(reject)
+    })
+
+  }
+
   static findByEmail (email) {
     this._checkForTableName()
     return new Promise((fulfill, reject) => {

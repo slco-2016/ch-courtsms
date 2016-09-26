@@ -4,6 +4,8 @@
 const db      = require("../db");
 const Promise = require("bluebird");
 
+const Communications = require('../models/communications')
+
 var twilio = require("twilio");
 var twiml = new twilio.TwimlResponse();
 
