@@ -1,5 +1,4 @@
 const Clients = require('../models/clients');
-const Client = require('../models/client');
 const CommConns = require('../models/commConns');
 const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');

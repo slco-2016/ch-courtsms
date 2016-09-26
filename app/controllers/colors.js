@@ -1,5 +1,5 @@
 const ColorTags = require('../models/colorTags')
-const Client = require('../models/client');
+const Clients = require('../models/clients');
 
 module.exports = {
 
