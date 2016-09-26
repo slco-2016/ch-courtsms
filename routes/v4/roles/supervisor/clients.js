@@ -104,7 +104,7 @@ router.post("/clients/create", (req, res) => {
   let so = req.body.uniqueID1 ? req.body.otn : null;
   let otn = req.body.uniqueID2 ? req.body.so : null;
 
-  Client.create(userID, first, middle, last, dob, otn, so)
+  Clients.create(userID, first, middle, last, dob, otn, so)
   .then(() => {
     res.redirect(req.redirectUrlBase);
   }).catch(error500(res));
@@ -113,7 +113,7 @@ router.post("/clients/create", (req, res) => {
 
 router.get("/clients/address/:clientID", (req, res) => {
   let clientID = Number(req.params.clientID);
-  Client.findByID(clientID)
+  Clients.findByID(clientID)
   .then((client) => {
     if (client) {
       res.render("v4/supervisor/clients/address", {
@@ -143,7 +143,7 @@ router.get("/clients/address/:clientID/selecttemplate/:templateID", (req, res) =
   let userID = req.user.cmid;
   let clientID = Number(req.params.clientID);
 
-  Client.findByID(clientID)
+  Clients.findByID(clientID)
   .then((client) => {
     if (client) { 
       Templates.findByID(templateID)
@@ -175,7 +175,7 @@ router.post("/clients/address/:clientID", (req, res) => {
   let content = req.body.content;
   let commID = req.body.commID;
 
-  Client.findByID(clientID)
+  Clients.findByID(clientID)
   .then((client) => {
     if (client) {
       

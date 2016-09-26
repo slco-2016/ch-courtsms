@@ -88,7 +88,7 @@ module.exports = {
     let so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
     let otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
 
-    Client.create(
+    Clients.create(
             userId, 
             first, 
             middle, 
@@ -113,7 +113,7 @@ module.exports = {
     let dob       = req.body.dob;
     let so        = req.body.uniqueID1;
     let otn       = req.body.uniqueID2;
-    Client.editOne(
+    Clients.editOne(
             client, 
             first, 
             middle, 
@@ -249,7 +249,7 @@ module.exports = {
     let client = req.params.client;
     let status = req.params.status == "open";
 
-    Client.alterCase(client, status)
+    Clients.alterCase(client, status)
     .then(() => {
       req.logActivity.client(client);
       req.flash("success", "Client case status changed.")
@@ -284,7 +284,7 @@ module.exports = {
     Users.findByID(toUser)
     .then((u) => {
       if (u && u.active) {
-        Client.transfer(client, fromUser, u.cmid, bundle)
+        Clients.transfer(client, fromUser, u.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect(`/clients`);

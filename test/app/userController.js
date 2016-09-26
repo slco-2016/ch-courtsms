@@ -192,7 +192,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/clients/1/alter/close')
     .expect(302)
       .end(function(err, res) {
-        Client.findByID(1)
+        Clients.findByID(1)
         .then((user) => {
           if (user.active) {
             done(new Error("User was not successfully closed."));
@@ -207,7 +207,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/clients/1/alter/open')
     .expect(302)
       .end(function(err, res) {
-        Client.findByID(1)
+        Clients.findByID(1)
         .then((user) => {
           if (!user.active) {
             done("User was not successfully closed.");
