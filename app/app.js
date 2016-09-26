@@ -87,6 +87,7 @@ const SettingsController        = require('./controllers/settings');
 const TemplatesController       = require('./controllers/templates');
 const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
+const EmailsController          = require('./controllers/emails');
 
 app.get("/", RootController.index);
 
@@ -222,6 +223,9 @@ app.post("/settings", SettingsController.update);
 
 app.post("/twilio/sms", TwilioController.receiveText);
 app.post("/twilio/voice", TwilioController.receiveVoice);
+
+app.post("/email/webhook", EmailsController.webhook);
+app.post("/email", EmailsController.receive);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

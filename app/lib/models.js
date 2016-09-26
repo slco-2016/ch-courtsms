@@ -22,6 +22,18 @@ class BaseModel {
     })
   }
 
+  static _cleanParams(obj) {
+    let out = {};
+    let instance = new this({});
+    let columnNames = instance._info.columns;
+    for (let i=0; i < columnNames.length; i++) {
+      if (obj[columnNames[i]]) {
+        out[columnNames[i]] = obj[columnNames[i]]        
+      }
+    }
+    return out
+  }
+
   static _checkModelValidity() {
     this._checkForTableName()
     this._checkForPrimaryId()
