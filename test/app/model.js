@@ -45,6 +45,12 @@ describe('BaseModel checks', function() {
       done()
   })
 
+  it("BaseModel should clean parameters", function(done) {
+    newParams = TestModel._cleanParams({org: 1, created: "nah"})
+    should.deepEqual(newParams, {org: 1})
+    done();
+  })
+
   it("BaseModel getSingle response should handle edge cases", function(done) {
     let fulfill = (isNull) => {
       should.not.exist(isNull)
@@ -62,7 +68,7 @@ describe('BaseModel checks', function() {
       instance.should.have.property('_info')
       instance.cmid.should.be.exactly(1)
     }
-    TestModel._getSingleResponse([{cmid: 1, ord: "Org Name"}], fulfill, null)
+    TestModel._getSingleResponse([{cmid: 1, org: "Org Name"}], fulfill, null)
     done()
   })
 
