@@ -6,6 +6,7 @@ const Promise = require("bluebird");
 
 const CommConns = require("./commConns");
 const Users = require("./users");
+const Departments = require("./departments");
 
 const colors = require("colors")
 

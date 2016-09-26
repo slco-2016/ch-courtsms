@@ -1,5 +1,5 @@
 const Alerts = require('./models/alerts');
-const Client = require('./models/client');
+const Clients = require('./models/clients');
 const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Organizations = require('./models/organizations');
@@ -10,7 +10,7 @@ module.exports = {
 
     req.logActivity = {
       client: (client) => {
-        Client.logActivity(client)
+        Clients.logActivity(client)
         .then(() => {
           // Log client activity success...
         }).catch(() => {
@@ -258,7 +258,7 @@ module.exports = {
     let isNumber = !isNaN(client);
     
     if (client && isNumber) {
-      Client.findByID(client)
+      Clients.findByID(client)
       .then((c) => {
         if (c) {
           res.locals.client = c;
