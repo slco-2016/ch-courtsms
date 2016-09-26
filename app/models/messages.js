@@ -253,8 +253,8 @@ class Messages {
       Conversations.closeAllForClient(userID, clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
-      }).then((convoID) => {
-        newConvoId = convoID;
+      }).then((conversations) => {
+        newConvoId = conversations.convid;
         return Communications.findById(commID)
       }).then((communication) => {
         Messages.sendOne(commID, content, newConvoId)

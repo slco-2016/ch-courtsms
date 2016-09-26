@@ -65,9 +65,9 @@ class Twilio {
       Communications.getOrCreateFromValue(from, "cell")
       .then((communication) => {
         return Clients.findByCommId(communication.id)
-      .then((clients) => {
+      }).then((clients) => {
         return get_or_create_convos(clients)
-      }).catch(errReject)
+      }).catch(errReject);
 
       // step 2: get clients associated with that device
       function get_clients (device) {
