@@ -4,12 +4,23 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const BaseModel = require("../lib/models").BaseModel
 
 
+class Communications extends BaseModel {
 
-
-// Class
-class Communications {
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "commid",
+        "type",
+        "value",
+        "description",
+        "updated", "created",
+      ]
+    })
+  }
 
   static findById (commID) {
     return new Promise((fulfill, reject) => {
@@ -23,13 +34,32 @@ class Communications {
     })
   }
 
+  static getOrCreateFromValue(value, type) {
+    if (!type) {
+      type = "cell";
+    }
+    return new Promise((fulfill, reject) => {
+      this.findByValue(value)
+      .then((communication) => {
+        if (communication) {
+          fulfill(communication)
+        } else {
+          let description = `Unknown device`
+          return this.createOne(type, description, value)
+        }
+      })
+      .then(fulfill)
+      .catch(reject)
+    })
+  }
+
   static findByValue (value) {
     return new Promise((fulfill, reject) => {
       db("comms")
         .whereRaw("LOWER(value) = LOWER('" + String(value) + "')")
         .limit(1)
-      .then(function (comms) {
-        fulfill(comms[0])
+      .then((comms) => {
+        this._getSingleResponse(comms, fulfill)
       })
       .catch(reject);
     })
@@ -61,18 +91,21 @@ class Communications {
   static createOne (type, description, value) {
     return new Promise((fulfill, reject) => {
       db("comms")
-        .insert({
-          type: type,
-          value: value,
-          description: description
-        })
-        .returning("commid")
-      .then((commIDs) => {
-        fulfill(commIDs[0]);
+      .insert({
+        type: type,
+        value: value,
+        description: description
+      })
+      .returning("*")
+      .then((comms) => {
+        this._getSingleResponse(comms, fulfill)
       }).catch(reject);
     }); 
   }
 
 }
+
+Communications.primaryId = "cmid"
+Communications.tableName = "comms"
 
 module.exports = Communications;

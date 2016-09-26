@@ -36,8 +36,8 @@ module.exports = {
       // clean up the text string
       text = text.replace(/["']/g, "").trim();
 
-      // we used to break up the text into a list of 160 char each but now we can support longer ones
-      // still need to submit as a list
+      // we used to break up the text into a list of 160 char each but now we 
+      // can support longer ones still need to submit as a list
       text = [text];
 
       // Log IBM Sensitivity measures
@@ -46,8 +46,9 @@ module.exports = {
       Twilio.process_incoming_msg(fromNumber, text, tw_status, tw_sid)
       .then(function (msgs) {
 
-        // we don't handle if multiple messages are created currently how that translates into new message logic
-        // we need to enhance later code to incorporate this
+        // we don't handle if multiple messages are created currently how that 
+        // translates into new message logic we need to enhance later code to 
+        // incorporate this
         if (msgs.length !== 1) {
           sendResponse();
 
@@ -106,12 +107,12 @@ module.exports = {
     
     } catch (e) {
       console.log("Error with SMS POST: ", e)
+      console.log(e.trace)
     };
   },
 
   receiveVoice(req, res) {
-    res.send(`
-              <?xml version='1.0' encoding='UTF-8'?>
+    res.send(`<?xml version='1.0' encoding='UTF-8'?>
               <Response>
                 <Say voice='woman'>
                   Client Comm is a text only number currently. 

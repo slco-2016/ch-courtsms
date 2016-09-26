@@ -62,9 +62,10 @@ class Twilio {
 
       var commid;
 
-      // step 1: see if comm device exists
-      sms.get_or_create_comm_device(from).then(get_clients).catch(errReject);
-      
+      Communications.getOrCreateFromValue(from, "cell")
+      .then((communication) => {
+        return get_clients([communication.id])
+      }).catch(errReject)
 
       // step 2: get clients associated with that device
       function get_clients (device) {
@@ -118,7 +119,7 @@ class Twilio {
 
         // create and return a comm
         } else {
-          var today = new Date(Date.now()).toISOString().split("T")[0];
+          var today = 
           var description = "Unknown device (created " + today + ")";
 
           db("comms")

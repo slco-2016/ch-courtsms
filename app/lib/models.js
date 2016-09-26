@@ -39,7 +39,7 @@ class BaseModel {
       }
   }
 
-  static _getSingleResponse(objects, fulfill, reject) {
+  static _getSingleResponse(objects, fulfill) {
     if (!objects || objects.length === 0) {
       fulfill(null)
     } else {
@@ -47,6 +47,12 @@ class BaseModel {
       let instance = new this(objects[0])
       fulfill(instance)
     }
+  }
+
+  static _getMultiResponse(objects, fulfill) {
+    fulfill(objects.map((object) => {
+      return new this(object)
+    }))
   }
 
   static findByID (id) {
