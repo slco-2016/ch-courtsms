@@ -6,7 +6,6 @@ const Promise = require("bluebird");
 
 const BaseModel = require("../lib/models").BaseModel
 
-
 class Communications extends BaseModel {
 
   constructor(data) {

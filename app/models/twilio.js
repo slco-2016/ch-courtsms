@@ -64,7 +64,9 @@ class Twilio {
 
       Communications.getOrCreateFromValue(from, "cell")
       .then((communication) => {
-        return get_clients([communication.id])
+        return Clients.findByCommId(communication.id)
+      .then((clients) => {
+        return get_or_create_convos(clients)
       }).catch(errReject)
 
       // step 2: get clients associated with that device
@@ -104,52 +106,6 @@ class Twilio {
       } else { return null; }
 
     } else { return null; }
-  }
-  
-  static get_or_create_comm_device (from) {
-    return new Promise ((fulfill, reject) => {
-      // acquire commid
-      db.select("commid").from("comms").where("value", from).limit(1)
-      .then(function (comms) {
-
-        // return list of comms
-        if (comms.length > 0) {
-          comms = comms.map(function (ea) { return ea.commid; });
-          fulfill(comms);
-
-        // create and return a comm
-        } else {
-          var today = 
-          var description = "Unknown device (created " + today + ")";
-
-          db("comms")
-          .returning("commid")
-          .insert({
-            "type": "cell",
-            "value": from,
-            "description": description
-          }).then(function (commid) {
-            fulfill(commid);
-          }).catch(function (err) { reject(err); });
-        }
-
-      }).catch(function (err) { reject(err); });
-    });
-  }
-  
-  static get_clients (commid) {
-    return new Promise ((fulfill, reject) => {
-      var rawQuery = "SELECT clients.clid, clients.cm FROM clients JOIN (SELECT * FROM commconns WHERE commconns.comm = " + commid + 
-                      ") AS commconns ON (commconns.client = clients.clid AND commconns.comm = " + commid + 
-                      " AND commconns.retired IS NULL) GROUP BY clid, cm;";
-
-      db.raw(rawQuery).then(function (res) {
-        var clients = res.rows.map(function (ea) { return {clid: ea.clid, cmid: ea.cm}; });
-        if (clients.length == 0) { clients = [{clid: null, cmid: null}]; }
-        fulfill(clients);
-
-      }).catch(function (err) { reject(err); });
-    });
   }
   
   static get_or_create_convos (clients, commid, from) {

@@ -30,6 +30,14 @@ exports.seed = function(knex, Promise) {
       return knex('comms').insert(contactMethod)
     }).then(() => {
       return knex('commconns').insert(commConn)
+    }).then(() => {
+      return knex('cms').insert(secondPrimary)
+    }).then(() => {
+      return knex('clients').insert(secondClient)
+    }).then(() => {
+      return knex('comms').insert(secondContactMethod)
+    }).then(() => {
+      return knex('commconns').insert(secondCommConn)
     }).catch((err) => {
       throw err
     });        
@@ -79,11 +87,24 @@ let dep = {
 }
 
 let primary = {
-  // cmid: 2,
   org: 1,
   first: "Test Account",
   last: "To Remove",
   email: "primary@test.com",
+  pass: "$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti", //123
+  position: "Officer",
+  admin: false,
+  active: true,
+  superuser: false,
+  class: "primary",
+  department: 1,
+}
+
+let secondPrimary = {
+  org: 1,
+  first: "Other",
+  last: "Fellah",
+  email: "jamsession334@test.com",
   pass: "$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti", //123
   position: "Officer",
   admin: false,
@@ -104,15 +125,39 @@ let client = {
   active: true,
 }
 
+let secondClient = {
+  cm: 2,
+  first: 'Harry',
+  middle: 'K',
+  last: 'Arson',
+  dob: '1937-05-09',
+  so: 134,
+  otn: 989086,
+  active: true,
+}
+
 let contactMethod = {
   description: 'DummyFoo2',
   type: 'cell',
   value: '10008384828',
 }
 
+let secondContactMethod = {
+  description: 'HurtLocker',
+  type: 'cell',
+  value: '12048384828',
+}
+
 let commConn = {
   client: 1,
   comm: 1,
   name: "Example",
+  retired: null
+}
+
+let secondCommConn = {
+  client: 2,
+  comm: 1,
+  name: "RedundantMaybe",
   retired: null
 }

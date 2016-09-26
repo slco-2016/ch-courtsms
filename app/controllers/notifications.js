@@ -110,7 +110,7 @@ module.exports = {
     let user = req.getUser();
     let notification = req.params.notification;
 
-    Clients.findAllByUser(user)
+    Clients.findAllByUsers([user])
     .then((c) => {
       clients = c;
       return Notifications.findByID(Number(notification))
