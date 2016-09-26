@@ -26,7 +26,7 @@ if (process.env.CCENV && process.env.CCENV == "production") {
 // Models
 const Conversations = require("./conversations");
 const Communications = require("./communications");
-const Client = require("./client");
+const Clients = require("./clients");
 const CommConns = require("./commConns");
 
 
