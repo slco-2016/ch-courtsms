@@ -35,35 +35,36 @@ module.exports = {
     });
   },
 
-  process_incoming_msg: function (from, text, tw_status, tw_sid) {
+  process_incoming_msg: function (from, to, text, type, tw_status, tw_sid) {
     var sms = this;
     return new Promise (function (fulfill, reject) {
 
       var commid;
 
-      // step 1: see if comm device exists
-      sms.get_or_create_comm_device(from).then(get_clients).catch(errReject);
+      // step 1: see if comm device exists, create it if it does not
+      sms.get_or_create_comm_device(from, type).then(get_clients).catch(errReject);
       
+      console.log('are we here?')
 
       // step 2: get clients associated with that device
       function get_clients (device) {
         if (device.length > 0) {
           commid = device[0];
-          sms.get_clients(commid).then(get_or_create_convos).catch(errReject)
+          sms.get_clients(commid, to, type).then(get_or_create_convos).catch(errReject)
         } else { errReject("No devices were found or created for this number."); }
       };
 
       // step 3: find open conversations for each client
       function get_or_create_convos (clients) {
         if (clients.length > 0) {
-          sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
+          return sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
         } else { errReject("Failed to produce or create at least one client object in function get_clients."); }
       };
 
       // step 4: add messages to those conversations
       function register_message (convos) {
         if (convos.length > 0) {
-          sms.register_message(text, commid, convos, tw_status, tw_sid).then(fulfill).catch(errReject)
+          return sms.register_message(text, commid, convos, tw_status, tw_sid).then(fulfill).catch(errReject)
         } else { errReject("Failed to register message."); }
       };
 
@@ -84,7 +85,7 @@ module.exports = {
     } else { return null; }
   },
   
-  get_or_create_comm_device: function (from) {
+  get_or_create_comm_device: function (from, type) {
     return new Promise (function (fulfill, reject) {
       // acquire commid
       db.select("commid").from("comms").where("value", from).limit(1)
@@ -103,19 +104,18 @@ module.exports = {
           db("comms")
           .returning("commid")
           .insert({
-            "type": "cell",
+            "type": type,
             "value": from,
             "description": description
-          }).then(function (commid) {
-            fulfill(commid);
-          }).catch(function (err) { reject(err); });
+          }).then(fulfill).catch(reject);
         }
 
       }).catch(function (err) { reject(err); });
     });
   },
   
-  get_clients: function (commid) {
+  get_clients: function (commid, to, type) {
+    console.log(to, type, commid)
     return new Promise (function (fulfill, reject) {
       var rawQuery = "SELECT clients.clid, clients.cm FROM clients JOIN (SELECT * FROM commconns WHERE commconns.comm = " + commid + 
                       ") AS commconns ON (commconns.client = clients.clid AND commconns.comm = " + commid + 

@@ -8,6 +8,7 @@ module.exports = function (app) {
 
     try {
       var from = sms.clean_phonenum(req.body.From);
+      var to = sms.clean_phonenum(req.body.To);
       var text = req.body.Body;
 
       var tw_status = req.body.SmsStatus;
@@ -26,7 +27,7 @@ module.exports = function (app) {
       // Log IBM Sensitivity measures
       sms.logIBMSensitivityAnalysis(req.body);
       
-      sms.process_incoming_msg(from, text, tw_status, tw_sid)
+      sms.process_incoming_msg(from, to, text, 'cell', tw_status, tw_sid)
       .then(function (msgs) {
 
         // we don't handle if multiple messages are created currently how that translates into new message logic

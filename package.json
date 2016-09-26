@@ -11,6 +11,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.4.10",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
@@ -24,6 +25,7 @@
     "jquery": "1.12.3",
     "keen-js": "3.4.1",
     "knex": "0.10.0",
+    "mimelib": "0.2.19",
     "moment": "2.13.0",
     "moment-timezone": "0.5.4",
     "newrelic": "1.28.0",
@@ -33,6 +35,7 @@
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "pg": "4.5.1",
+    "request": "2.72.0",
     "twilio": "3.3.0-edge"
   },
   "scripts": {

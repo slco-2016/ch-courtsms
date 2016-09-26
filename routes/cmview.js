@@ -1,6 +1,3 @@
-
-
-
 // SECRET STUFF
 var credentials = require("../credentials");
 var ACCOUNT_SID = credentials.accountSid;
@@ -34,11 +31,11 @@ var cmview = utils["cmview"];
 // Session status control
 var auth = utils["pass"];
 
+const s3 = require('../utils/s3')
+
 // Error handling
 var errorHandlers = utils["errorHandlers"];
 var fivehundred   = errorHandlers.fivehundred;
-
-
 
 // LOGIN LANDING PAGE ROUTER
 router.get("/", function (req, res) { 
@@ -834,7 +831,6 @@ router.post("/:cmid/cls/:clid/comms/:commconnid/close", function (req, res) {
 
   }
 });
-
 
 
 // All convos management
