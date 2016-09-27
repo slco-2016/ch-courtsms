@@ -32,7 +32,7 @@ class Twilio {
                                     MessageStatus);
       }).then((messages) => {
         conversations = conversations.map((conversation) => {
-          messages.forEach(message) => {
+          messages.forEach((message) => {
             if (message.convo == conversation.convid) {
               conversation.messages = message;
             }
@@ -43,7 +43,7 @@ class Twilio {
       }).catch(reject);
     });
   }
-  
+
 }
 
 module.exports = Twilio;
