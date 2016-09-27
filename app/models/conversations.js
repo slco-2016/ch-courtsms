@@ -10,6 +10,22 @@ const Messages = require("./messages");
 // Class
 class Conversations extends BaseModel {
 
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "convid",
+        "cm",
+        "client",
+        "subject",
+        "open",
+        "accepted",
+        "updated",
+        "created"
+      ]
+    })
+  }
+
   static findByUser (userID) {
     return new Promise((fulfill, reject) => {
       db("convos")
@@ -134,7 +150,7 @@ class Conversations extends BaseModel {
             .returning("*");
         }
       }).then(function (conversations) {
-        fulfill(convos);
+        this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })
   }
@@ -147,7 +163,7 @@ class Conversations extends BaseModel {
         .orderBy("updated", "desc")
         .limit(1)
       .then((convos) => {
-        fulfill(convos[0]);
+        this._getSingleResponse(convos, fulfill);
       }).catch(reject);
     }); 
   }
@@ -158,7 +174,7 @@ class Conversations extends BaseModel {
         .where("convo", conversationID)
         .orderBy("created", "asc")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill);
       }).catch(reject);
     });
   }
@@ -176,7 +192,7 @@ class Conversations extends BaseModel {
   }
 
   static create(userID, clientID, subject, open) {
-    if (!open) open = true;
+    if (typeof open == "undefined") open = true;
     return new Promise((fulfill, reject) => {
       db("convos")
         .insert({
@@ -186,8 +202,9 @@ class Conversations extends BaseModel {
           open: open,
           accepted: true,
         })
+        .returning("*")
       .then((conversations) => {
-        fulfill(conversations[0]);
+        this._getSingleResponse(conversations, fulfill);
       }).catch(reject)
     })
   }
