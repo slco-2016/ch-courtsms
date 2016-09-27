@@ -7,6 +7,10 @@ const Promise = require("bluebird");
 var twilio = require("twilio");
 var twiml = new twilio.TwimlResponse();
 
+const Clients = require("./clients");
+const Conversations = require("./conversations");
+const Communications = require("./communications");
+
 function success_update (cm, cl) {
   var rawQuery2 = "UPDATE convos SET cm=" + cm + ", client=" + cl + ", accepted = TRUE WHERE convos.convid = (SELECT convos.convid FROM msgs INNER JOIN convos ON (msgs.convo = convos.convid) WHERE msgs.msgid=" + msg + ");";
   db.raw(rawQuery2).then(function (success) {
@@ -56,7 +60,7 @@ class Twilio {
     });
   }
 
-  static process_incoming_msg (from, text, tw_status, tw_sid) {
+  static processIncoming (from, text, tw_status, tw_sid) {
     var sms = this;
     return new Promise ((fulfill, reject) => {
 
@@ -66,23 +70,27 @@ class Twilio {
       .then((communication) => {
         return Clients.findByCommId(communication.id)
       }).then((clients) => {
-        return get_or_create_convos(clients)
+        return Conversations.findOrCreate(clients)
+      }).then((conversations) => {
+        conversations.forEach((conversation) => {
+          text
+        });
       }).catch(errReject);
 
       // step 2: get clients associated with that device
-      function get_clients (device) {
-        if (device.length > 0) {
-          commid = device[0];
-          sms.get_clients(commid).then(get_or_create_convos).catch(errReject)
-        } else { errReject("No devices were found or created for this number."); }
-      };
+      // function get_clients (device) {
+      //   if (device.length > 0) {
+      //     commid = device[0];
+      //     sms.get_clients(commid).then(get_or_create_convos).catch(errReject)
+      //   } else { errReject("No devices were found or created for this number."); }
+      // };
 
       // step 3: find open conversations for each client
-      function get_or_create_convos (clients) {
-        if (clients.length > 0) {
-          sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
-        } else { errReject("Failed to produce or create at least one client object in function get_clients."); }
-      };
+      // function get_or_create_convos (clients) {
+      //   if (clients.length > 0) {
+      //     sms.get_or_create_convos(clients, commid, from).then(register_message).catch(errReject)
+      //   } else { errReject("Failed to produce or create at least one client object in function get_clients."); }
+      // };
 
       // step 4: add messages to those conversations
       function register_message (convos) {
@@ -95,17 +103,6 @@ class Twilio {
       function errReject (err) { reject(String(err)); };
 
     });
-  }
-
-  static clean_phonenum (from) {
-    if (from) {
-      from = from.replace(/\D+/g, "");
-      if (from.length == 10) { from = "1" + from; }
-
-      if (from.length == 11) { return from;
-      } else { return null; }
-
-    } else { return null; }
   }
   
   static get_or_create_convos (clients, commid, from) {

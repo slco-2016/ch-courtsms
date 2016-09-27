@@ -11,7 +11,7 @@ const Users = require("./users");
 
 const colors = require("colors")
 
-const BaseModel = require("../lib/models").BaseModel
+const BaseModel = require("../lib/models").BaseModel;
 
 class Clients extends BaseModel {
 

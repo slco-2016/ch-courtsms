@@ -4,10 +4,10 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
-
+const BaseModel = require("../lib/models").BaseModel
 
 // Class
-class Conversations {
+class Conversations extends BaseModel {
 
   static findByUser (userID) {
     return new Promise((fulfill, reject) => {

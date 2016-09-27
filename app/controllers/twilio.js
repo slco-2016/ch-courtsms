@@ -24,21 +24,13 @@ module.exports = {
   receiveText(req, res) {
 
     try {
-      let fromNumber = Twilio.clean_phonenum(req.body.From);
-      let text = req.body.Body;
-
+      let fromNumber = from.replace(/\D+/g, "");
+      if (fromNumber.length == 10) { 
+        from = "1" + from; 
+      }
+      let text = req.body.Body.replace(/["']/g, "").trim();
       let tw_status = req.body.SmsStatus;
       let tw_sid = req.body.MessageSid;
-
-      // just leaving this in for now while we use free service for testing
-      text = text.replace("-Sent free from TextNow.com", "");
-
-      // clean up the text string
-      text = text.replace(/["']/g, "").trim();
-
-      // we used to break up the text into a list of 160 char each but now we 
-      // can support longer ones still need to submit as a list
-      text = [text];
 
       // Log IBM Sensitivity measures
       Twilio.logIBMSensitivityAnalysis(req.body);
