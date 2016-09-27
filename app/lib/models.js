@@ -79,7 +79,7 @@ class BaseModel {
     })
   }
 
-  static findByAttribute(attributeName, value) {
+  static findOneByAttribute(attributeName, value) {
     this._checkModelValidity()
     return new Promise((fulfill, reject) => {
       db(this.tableName)
@@ -89,19 +89,10 @@ class BaseModel {
         return this._getSingleResponse(objects, fulfill, reject)
       }).catch(reject)
     })
-
   }
 
   static findByEmail (email) {
-    this._checkForTableName()
-    return new Promise((fulfill, reject) => {
-      db(this.tableName)
-        .where("email", email)
-        .limit(1)
-      .then((objects) => {
-        return this._getSingleResponse(objects, fulfill, reject)
-      }).catch(reject);
-    })
+    return this.findOneByAttribute('email', email)
   }
 
 }

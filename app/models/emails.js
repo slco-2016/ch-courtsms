@@ -17,11 +17,11 @@ class Emails extends BaseModel{
         'to',
         'msg_id',
         'created',
-      ]
+      ],
     })
   }
   static findByFrom(from) {
-    return this.findByAttribute("from", from)
+    return this.findOneByAttribute("from", from)
   }
   static create(emailObject) {
     return new Promise((fulfill, reject) => {
