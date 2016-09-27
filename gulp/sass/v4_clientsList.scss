@@ -14,16 +14,15 @@ $blue:        #3F69B6;
 $darkblue:    #344289;
 
 $width_row1:  5%;
-$width_row2:  10%;
-$width_row3:  5%;
-$width_row4:  20%;
+$width_row2:  5%;
+$width_row3:  25%;
+$width_row4:  5%;
 $width_row5:  15%;
-$width_row6:  9%;
-$width_row7:  8%;
-$width_row8:  13%;
+$width_row6:  25%;
+$width_row7:  5%;
+$width_row8:  5%;
 $width_row9:  5%;
-$width_row10:  5%;
-$width_row11:  5%;
+$width_row10: 5%;
 
 
 
@@ -61,21 +60,20 @@ $width_row11:  5%;
     }
     &:nth-child(2) {
       width: $width_row2;
-      text-align: left;
+      text-align: center;
     }
     &:nth-child(3) {
       width: $width_row3;
-      text-align: center;
     }
     &:nth-child(4) {
       width: $width_row4;
+      text-align: center;
     }
     &:nth-child(5) {
       width: $width_row5;
     }
     &:nth-child(6) {
       width: $width_row6;
-      text-align: center;
     }
     &:nth-child(7) {
       width: $width_row7;
@@ -83,6 +81,7 @@ $width_row11:  5%;
     }
     &:nth-child(8) {
       width: $width_row8;
+      text-align: center;
     }
     &:nth-child(9) {
       width: $width_row9;
@@ -90,10 +89,6 @@ $width_row11:  5%;
     }
     &:nth-child(10) {
       width: $width_row10;
-      text-align: center;
-    }
-    &:nth-child(11) {
-      width: $width_row11;
       text-align: center;
     }
   }
@@ -105,6 +100,8 @@ $width_row11:  5%;
   overflow: hidden;
   color: $grey;
   background-color: $white;
+  border-bottom: 1px solid $offwhite;
+
 
   &:hover {
     color: $white;
@@ -178,22 +175,20 @@ $width_row11:  5%;
     }
     &:nth-child(2) {
       width: $width_row2;
-      text-align: left;
-      font-size: 12px;
+      text-align: center;
     }
     &:nth-child(3) {
       width: $width_row3;
-      text-align: center;
     }
     &:nth-child(4) {
       width: $width_row4;
+      text-align: center;
     }
     &:nth-child(5) {
       width: $width_row5;
     }
     &:nth-child(6) {
       width: $width_row6;
-      text-align: center;
     }
     &:nth-child(7) {
       width: $width_row7;
@@ -201,6 +196,7 @@ $width_row11:  5%;
     }
     &:nth-child(8) {
       width: $width_row8;
+      text-align: center;
     }
     &:nth-child(9) {
       width: $width_row9;
@@ -210,13 +206,10 @@ $width_row11:  5%;
       width: $width_row10;
       text-align: center;
     }
-    &:nth-child(11) {
-      width: $width_row11;
-      text-align: center;
-    }
   }
 
-  &:nth-child(even) {
+  &.inactive {
     background-color: $offwhite;
+    border-bottom: 1px solid $white;
   }
 }
