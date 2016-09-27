@@ -49,7 +49,7 @@ module.exports = {
       let endPath = "";
       try {
         let base = "";
-        if (res.locals.level === "org") {
+        if (res.locals.level == "org") {
           base = "/org";
         }
         endPath = `${base}${path}`;

@@ -33,12 +33,14 @@ const CommConns = require("./commConns");
 // Class
 class Messages {
 
-  static findByClientID (userID, clientID) {
+  static findBetweenUserAndClient (userId, clientId) {
     return new Promise((fulfill, reject) => {
-      Conversations.findByUser(userID)
+      Conversations.findByUser(userId)
       .then((conversations) => {
-        let conversationIds = conversations.map(function (conversation) {
+        let conversationIds = conversations.map((conversation) => {
           return conversation.convid;
+        }).filter((conversation) => {
+          return conversation.client == clientId;
         });
         return Messages.findByConversations(conversationIds)
       }).then((messages) => {
@@ -264,10 +266,10 @@ class Messages {
     }); 
   }
 
-  static sendOne (commID, content, conversationID) {
+  static sendOne (commId, content, conversationId) {
     return new Promise((fulfill, reject) => {
       var contentArray = content.match(/.{1,1599}/g);
-      Communications.findById(commID)
+      Communications.findById(commId)
       .then((communication) => {
         contentArray.forEach(function (contentPortion, contentIndex) {
           twClient.sendMessage({
@@ -278,9 +280,13 @@ class Messages {
             if (err) {
               reject(err)
             } else {
-              const MessageSID = msg.sid;
+              const MessageSid = msg.sid;
               const MessageStatus = msg.status;
-              Messages.create(conversationID, commID, contentPortion, MessageSID, MessageStatus)
+              Messages.create(conversationId, 
+                              commId, 
+                              contentPortion, 
+                              MessageSid, 
+                              MessageStatus)
               .then(() => {
                 if (contentIndex == contentArray.length - 1) fulfill();
               }).catch(reject);
@@ -325,9 +331,9 @@ class Messages {
           tw_sid: MessageSid,
           tw_status: MessageStatus
         })
-        .returning("msgid")
-      .then((messageIDs) => {
-        fulfill(messageIDs[0]);
+        .returning("*")
+      .then((messages) => {
+        fulfill(messages);
       }).catch(reject)
     })
   }

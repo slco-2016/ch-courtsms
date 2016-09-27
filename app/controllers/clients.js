@@ -171,7 +171,7 @@ module.exports = {
     Conversations.findByUserAndClient(user, client)
     .then((convos) => {
       conversations = convos;
-      return Messages.findByClientID(user, client)
+      return Messages.findBetweenUserAndClient(user, client)
     }).then((msgs) => {
       messages = msgs.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == "all") {
@@ -276,7 +276,6 @@ module.exports = {
 
   transferSubmit(req, res) {
     let fromUser = req.getUser();
-    console.log("!!!!", fromUser, req.user.cmid);
     let toUser = req.body.user;
     let client = res.locals.client.clid;
     let bundle = req.body.bundleConversations ? true : false;
@@ -298,7 +297,7 @@ module.exports = {
 
   transcript(req, res) {
     let withUser = req.query.with || null;
-    Messages.findByClientID(withUser, req.params.client)
+    Messages.findBetweenUserAndClient(withUser, req.params.client)
     .then((messages) => {
       
       // Format into a text string
@@ -320,7 +319,7 @@ module.exports = {
 
     let messages;
 
-    Messages.findByClientID(user, client)
+    Messages.findBetweenUserAndClient(user, client)
     .then((msgs) => {
       messages = msgs;
       return CommConns.findByClientID(client)
