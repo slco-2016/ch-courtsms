@@ -36,17 +36,12 @@ module.exports = {
   attachRoutingTools(req, res, next) {
 
     req.getUser = () => {
+      let id = req.user.cmid;
       try {
-        let id = req.user.cmid;
-
-        // TODO: Make sure this effectively handles all cases
-        if (res.locals.client) {
-          id = res.locals.clients.cm;
-        }
-
+        id = res.locals.client.cm;
         return id;
       } catch(e) {
-        return null;
+        return id;
       }
     };
 

@@ -10,6 +10,9 @@ $(function() {
             var substrRegex = new RegExp(q, 'i');
             $.each(strs, function(i, str) {
               var name = str.first + " " + str.last;
+              if (str.department_name) {
+                name += " (" + str.department_name + ")";
+              }
               if (substrRegex.test(name)) matches.push(name);
             });
 
@@ -35,6 +38,9 @@ $(function() {
           var selectedUser = null;
           users.forEach(function (u) {
             var name = u.first + " " + u.last;
+            if (u.department_name) {
+              name += " (" + u.department_name + ")";
+            }
             if (name == selectedName) selectedUser = u;
           });
           if (selectedUser) {

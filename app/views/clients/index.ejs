@@ -110,7 +110,11 @@
     </div>
 
     <div class="column">
-      <a href="<%= `${clientBaseURL}/transfer` %>">
+      <% if (user.class == "owner" || user.class == "support") { %>
+        <a href="<%= `${clientBaseURL}/transfer?allDepartments=true` %>">
+      <% } else { %>
+        <a href="<%= `${clientBaseURL}/transfer` %>">
+      <% } %>
         <i class="fa highlight fa-mail-forward" aria-hidden="true"></i>
       </a>
     </div>

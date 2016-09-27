@@ -5,9 +5,11 @@
   <div class="navSub">
   
     <% if (level == "org") { %>
-      <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
-        <div class="title"><a href="/org">Metrics Dashboard</a></div>
-      </div>
+      <% if (user.class !== "support") { %>
+        <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
+          <div class="title"><a href="/org">Metrics Dashboard</a></div>
+        </div>
+      <% } %>
 
       <% if (user.class == "owner") { %>
         <%- leftTab('departments', hub, level, ['active', 'inactive']) %>

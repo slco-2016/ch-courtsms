@@ -276,6 +276,7 @@ module.exports = {
 
   transferSubmit(req, res) {
     let fromUser = req.getUser();
+    console.log("!!!!", fromUser, req.user.cmid);
     let toUser = req.body.user;
     let client = res.locals.client.clid;
     let bundle = req.body.bundleConversations ? true : false;
