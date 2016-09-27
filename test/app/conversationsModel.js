@@ -1,6 +1,7 @@
 const assert = require('assert');
 
 const Conversations = require('../../app/models/conversations');
+const Clients = require('../../app/models/clients');
 
 require('colors');
 const should = require('should');
@@ -17,13 +18,14 @@ describe('Conversations checks', function() {
   })
 
   it('Should be able to create communication', function(done) {
-    Conversations.findOrCreate([2, 3])
-    .then((conversations) => {
+    Clients.findAllByUsers(2)
+    .then((clients) => {
+      return Conversations.findOrCreate(clients)
+    }).then((conversations) => {
       conversations.forEach((conversation) => {
-        conversation.hasOwnProperty("messages").should.be.exactly(true);
-        Array.isArray(conversation.messages).should.be.exactly(true);
-      })
-      done()
+        conversation.cm.should.be.exactly(2);
+      });
+      done();
     }).catch(done)
   })
   

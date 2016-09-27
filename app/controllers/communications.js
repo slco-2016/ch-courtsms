@@ -51,7 +51,7 @@ module.exports = {
         res.redirect(`/clients/${client}/communications`);
 
       } else {
-        CommConns.createOne(client, type, name, value)
+        CommConns.create(client, type, name, value)
         .then(() => {
           req.logActivity.client(client);
           req.flash("success", "Created new communication method.");
@@ -61,7 +61,6 @@ module.exports = {
       }
       return null
     }).catch(res.error500);
-
   },
 
   remove(req, res) {

@@ -11,7 +11,7 @@ let phone = '12345678906';
 describe('Communications checks', function() {
 
   it('Should be able to create communication', function(done) {
-    Communications.createOne('cell', 'none', '12345678900')
+    Communications.create('cell', 'none', '12345678900')
     .then((communication) => {
       communication.type.should.be.exactly('cell')
       communication.value.should.be.exactly('12345678900')
