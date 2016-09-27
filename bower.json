@@ -1,5 +1,5 @@
 {
-  "name": "ClientComm",
+  "name": "client-comm",
   "description": "Client to case manager communications management service.",
   "main": "app/app.js",
   "authors": [
