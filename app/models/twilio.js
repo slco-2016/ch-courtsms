@@ -15,14 +15,14 @@ class Twilio {
     let communication, conversations;
     return new Promise ((fulfill, reject) => {
       Communications.getOrCreateFromValue(fromNumber, "cell")
-      .then((comm) => {
-        communication = comm;
-        return Clients.findByCommId(comm.id);
+      .then((resp) => {
+        communication = resp;
+        return Clients.findByCommId(communication.id);
       }).then((clients) => {
         return Conversations.findOrCreate(clients, communication.commid);
-      }).then((convos) => {
-        conversations = convos;
-        let conversationIds = convos.map((conversation) => {
+      }).then((resp) => {
+        conversations = resp;
+        let conversationIds = conversations.map((conversation) => {
           return conversation.convid;
         });
         return Messages.createMany( conversationIds,

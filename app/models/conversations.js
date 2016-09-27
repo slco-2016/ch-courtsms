@@ -149,7 +149,7 @@ class Conversations extends BaseModel {
             .insert(insertList)
             .returning("*");
         }
-      }).then(function (conversations) {
+      }).then((conversations) => {
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })

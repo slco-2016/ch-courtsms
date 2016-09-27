@@ -1,13 +1,10 @@
-const Twilio = require('../models/twilio');
 const Conversations = require('../models/conversations');
 const SentimentAnalysis = require('../models/sentiment');
+const sms = require('../lib/sms');
 
 module.exports = {
 
   receiveText(req, res) {
-    // Send a blank response before proceeding with logic
-    res.send("<?xml version='1.0' encoding='UTF-8'?><Response></Response>");
-
     let fromNumber = from.replace(/\D+/g, "");
     if (fromNumber.length == 10) { 
       from = "1" + from; 
@@ -19,7 +16,7 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    Twilio.processIncoming(fromNumber, text, MessageStatus, MessageSID)
+    sms.processIncoming(fromNumber, text, MessageStatus, MessageSID)
     .then((conversations) => {
 
       let conversationIds = conversations.map((conversation) => {
@@ -81,6 +78,9 @@ module.exports = {
             });
           }
         });
+
+        // Send a blank response
+        res.send("<?xml version='1.0' encoding='UTF-8'?><Response></Response>");
       });
   },
 
