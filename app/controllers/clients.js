@@ -4,6 +4,9 @@ const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Users = require('../models/users');
 
+let moment = require("moment");
+let moment_tz = require("moment-timezone");
+
 const _average = (arr) => {
   let total = 0;
   for (var i = 0; i < arr.length; i++) {
@@ -230,8 +233,8 @@ module.exports = {
       // Otherwise create a new conversation
       } else {
         Conversations.create(user, client, subject, true)
-        .then((conversationID) => {
-          return Messages.sendOne(commID, content, conversationID)
+        .then((conversation) => {
+          return Messages.sendOne(commID, content, conversation.convid)
         }).then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect(`/clients/${client}/messages`);
@@ -323,17 +326,43 @@ module.exports = {
     }).then((communications) => {
 
       let unreadCount = 0,
+
+          // getting the last messages
           lastOutbound = {}, 
           lastInbound = {},
-          clientResponseList = []
+
+          // for measuring avg response times
           lastClientMsg = null,
+          clientResponseList = []
           lastUserMsg = null,
           userResponseList = [],
           sentiment = {
             negative: 0,
             neutral: 0,
             positive: 0
-          };
+          },
+
+          // counting by day
+          countsOutbound = [],
+          countsInbound = [];
+
+      function _addNewMessageEvent (arr, date) {
+        let added = false;
+        date = moment(date).format("YYYY-MM-DD");
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].date == date) {
+            arr[i].count += 1;
+            added = true;
+          }
+        }
+        if (!added) {
+          arr.push({
+            date: date,
+            count: 1
+          });
+        }
+        return arr;
+      }
 
       messages.forEach((msg, i) => {
         if (!msg.read) {
@@ -342,8 +371,10 @@ module.exports = {
 
         if (msg.inbound) {
           lastInbound = msg;
+          countsInbound = _addNewMessageEvent(countsInbound, msg.created);
         } else {
           lastOutbound = msg;
+          countsOutbound = _addNewMessageEvent(countsOutbound, msg.created);
         }
 
         if (msg.sentiment) {

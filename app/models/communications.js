@@ -44,7 +44,7 @@ class Communications extends BaseModel {
           fulfill(communication)
         } else {
           let description = `Unknown device`
-          return this.createOne(type, description, value)
+          return this.create(type, description, value)
         }
       })
       .then(fulfill)
@@ -87,7 +87,7 @@ class Communications extends BaseModel {
     }); 
   }
 
-  static createOne (type, description, value) {
+  static create (type, description, value) {
     return new Promise((fulfill, reject) => {
       db("comms")
       .insert({

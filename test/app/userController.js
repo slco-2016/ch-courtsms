@@ -4,7 +4,6 @@ const should = require('should');
 
 const APP = require('../../app/app')
 
-const Client = require('../../app/models/client');
 const Clients = require('../../app/models/clients');
 const Users = require('../../app/models/users');
 
@@ -169,9 +168,9 @@ describe('Basic http req tests', function() {
         if (err) {
           done(err);
         } else {
-          primary.get('/clients/2/communications')
+          primary.get('/clients/3/communications')
             .expect(302)
-            .expect('Location', '/clients/2/communications/create')
+            .expect('Location', '/clients/3/communications/create')
             .end(function(err, res) {
               done(err);
             });
@@ -192,7 +191,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/clients/1/alter/close')
     .expect(302)
       .end(function(err, res) {
-        Client.findByID(1)
+        Clients.findByID(1)
         .then((user) => {
           if (user.active) {
             done(new Error("User was not successfully closed."));
@@ -207,7 +206,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/clients/1/alter/open')
     .expect(302)
       .end(function(err, res) {
-        Client.findByID(1)
+        Clients.findByID(1)
         .then((user) => {
           if (!user.active) {
             done("User was not successfully closed.");
@@ -234,16 +233,16 @@ describe('Basic http req tests', function() {
   });
 
   it('should be able to add a comm method to a client', function(done) {
-    owner.post('/clients/1/communications/create')
-      .field('description', 'DummyFoo1')
+    primary.post('/clients/1/communications/create')
+      .field('description', 'DummyFoo176')
       .field('type', 'cell')
-      .field('value', '18288384828')
+      .field('value', '18280384828')
     .expect(302)
       .end(function(err, res) {
         if (err) {
           done(err);
         } else {
-          owner.get('/clients/1/communications')
+          primary.get('/clients/1/communications')
           .expect(200)
             .end(function(err, res) {
               res.text.should.match(/Created new communication method/);

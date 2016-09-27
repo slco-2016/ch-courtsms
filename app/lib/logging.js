@@ -5,7 +5,7 @@ const Conversations = modelsImport.Conversations;
 module.exports = {
 
   logClientActivity: function (clientID) {
-    Client.logActivity(clientID).then(() => { }).catch(() => { });
+    Clients.logActivity(clientID).then(() => { }).catch(() => { });
   },
 
   logConversationActivity: function (conversationID) {

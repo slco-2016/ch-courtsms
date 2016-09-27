@@ -26,7 +26,7 @@ if (process.env.CCENV && process.env.CCENV == "production") {
 // Models
 const Conversations = require("./conversations");
 const Communications = require("./communications");
-const Client = require("./client");
+const Clients = require("./clients");
 const CommConns = require("./commConns");
 
 
@@ -47,7 +47,7 @@ class Messages {
     });
   }
 
-  static findByConversations (clientID, conversationIDs) {
+  static findByConversations (conversationIDs) {
     if (!Array.isArray(conversationIDs)) conversationIDs = [conversationIDs];
     
     return new Promise((fulfill, reject) => {
@@ -66,7 +66,6 @@ class Messages {
           "commconns.commid", "msgs.comm")
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIDs)
-        .andWhere("client", clientID)
         .orderBy("created", "asc")
       .then((messages) => {
         fulfill(messages)
@@ -253,8 +252,8 @@ class Messages {
       Conversations.closeAllForClient(userID, clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
-      }).then((convoID) => {
-        newConvoId = convoID;
+      }).then((conversations) => {
+        newConvoId = conversations.convid;
         return Communications.findById(commID)
       }).then((communication) => {
         Messages.sendOne(commID, content, newConvoId)
@@ -292,16 +291,36 @@ class Messages {
     });
   }
 
-  static create (conversationID, commID, content, MessageSID, MessageStatus) {
+  static createMany (conversationIds, commId, content, MessageSid, MessageStatus) {
+    let insertArray = conversationIds.map((conversationId) => {
+      return {
+        convo: conversationId,
+        comm: commId,
+        content: content,
+        inbound: false,
+        read: true,
+        tw_sid: MessageSid,
+        tw_status: MessageStatus
+      }
+    });
+    db("msgs")
+      .insert(insertArray)
+      .returning("*")
+    .then((messages) => {
+      fulfill(messages);
+    }).catch(reject)
+  }
+
+  static create (conversationId, commId, content, MessageSid, MessageStatus) {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .insert({
-          convo: conversationID,
-          comm: commID,
+          convo: conversationId,
+          comm: commId,
           content: content,
           inbound: false,
           read: true,
-          tw_sid: MessageSID,
+          tw_sid: MessageSid,
           tw_status: MessageStatus
         })
         .returning("msgid")

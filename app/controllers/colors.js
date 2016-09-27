@@ -1,5 +1,5 @@
 const ColorTags = require('../models/colorTags')
-const Client = require('../models/client');
+const Clients = require('../models/clients');
 
 module.exports = {
 
@@ -36,7 +36,7 @@ module.exports = {
 
   attribute(req, res) {
     let colorID = req.body.colorID == "" ? null : req.body.colorID;
-    Client.udpateColorTag(req.params.client, colorID)
+    Clients.udpateColorTag(req.params.client, colorID)
     .then(() => {
       req.logActivity.client(req.params.client);
       req.flash("success", "Changed client color.");

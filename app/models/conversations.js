@@ -3,11 +3,28 @@
 // Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
+const BaseModel = require("../lib/models").BaseModel
 
-
+const Messages = require("./messages");
 
 // Class
-class Conversations {
+class Conversations extends BaseModel {
+
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "convid",
+        "cm",
+        "client",
+        "subject",
+        "open",
+        "accepted",
+        "updated",
+        "created"
+      ]
+    })
+  }
 
   static findByUser (userID) {
     return new Promise((fulfill, reject) => {
@@ -15,6 +32,30 @@ class Conversations {
         .where("cm", userID)
         .orderBy("updated", "desc")
       .then((conversations) => {
+        fulfill(conversations);
+      }).catch(reject);
+    })
+  }
+
+  static findByIds (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
+    return new Promise((fulfill, reject) => {
+      let conversations;
+      db("convos")
+        .whereIn("convid", conversationIds)
+      .then((convos) => {
+        conversations = convos;
+        return Messages.findByConversations(conversationIds);
+      }).then((messages) => {
+        conversations = conversations.map((conversation) => {
+          conversation.messages = [];
+          messages.forEach((message) => {
+            if (message.convo == conversation.convid) {
+              conversatio.messages.push(message);
+            }
+          });
+          return conversation;
+        });
         fulfill(conversations);
       }).catch(reject);
     })
@@ -39,8 +80,77 @@ class Conversations {
         .andWhere("cm", userID)
         .andWhere("open", true)
         .update({ open: false })
-      .then(function () {
+      .then(() => {
         fulfill();
+      }).catch(reject);
+    })
+  }
+
+  static findOrCreate (clients, commId) {
+    if (!Array.isArray(clients)) clients = [clients];
+    return new Promise((fulfill, reject) => {
+
+      let clientIds = clients.map((client) => {
+        return client.clid;
+      });
+
+      let getConversationIds;
+      if (!clients.length) {
+        // If there are are no potential clients, 
+        // seek out existing uncaptured conversations
+        getConversationIds = db("msgs")
+          .leftJoin("convos", "convos.convid", "msgs.convo")
+          .where("msgs.comm", commId)
+          .andWhere("convos.client", null)
+          .andWhere("convos.open", true);
+      } else {
+        getConversationIds = db("convos")
+          .whereIn("client", clientIds)
+          .andWhere("open", true);
+      }
+
+      getConversationIds.then((conversations) => {
+        if (conversations.length) {
+          fulfill(conversations);
+          return null;
+        } else {
+          // Check if there is an unlinked conversation 
+          // associated with this value
+          return db.select("convos.convid").from("comms")
+            .innerJoin("msgs", "comms.commid", "msgs.comm")
+            .innerJoin("convos", "msgs.convo", "convos.convid")
+            .where("convos.open", true)
+            .andWhere("comms.commid", commId)
+            .andWhere("convos.cm", null)
+            .andWhere("convos.client", null)
+            .groupBy("convos.convid");
+        }
+      }).then((conversations) => {
+        if (conversations.length) {
+          fulfill(conversations);
+          return null;
+        } else {
+          // Make a new conversation(s)
+          var insertList = [];
+
+          for (var i = 0; i < clients.length; i++) {
+            var client = clients[i];
+            var insertObj = {
+              cm:       client.cmid,
+              client:   client.clid,
+              subject:  "Automatically created conversation",
+              open:     true,
+              accepted: false // leave the conversations "not accepted"
+            }
+            insertList.push(insertObj);
+          }
+
+          return db("convos")
+            .insert(insertList)
+            .returning("*");
+        }
+      }).then((conversations) => {
+        this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })
   }
@@ -53,7 +163,7 @@ class Conversations {
         .orderBy("updated", "desc")
         .limit(1)
       .then((convos) => {
-        fulfill(convos[0]);
+        this._getSingleResponse(convos, fulfill);
       }).catch(reject);
     }); 
   }
@@ -64,7 +174,7 @@ class Conversations {
         .where("convo", conversationID)
         .orderBy("created", "asc")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill);
       }).catch(reject);
     });
   }
@@ -82,7 +192,7 @@ class Conversations {
   }
 
   static create(userID, clientID, subject, open) {
-    if (!open) open = true;
+    if (typeof open == "undefined") open = true;
     return new Promise((fulfill, reject) => {
       db("convos")
         .insert({
@@ -92,9 +202,9 @@ class Conversations {
           open: open,
           accepted: true,
         })
-        .returning("convid")
-      .then((convoIDs) => {
-        fulfill(convoIDs[0]);
+        .returning("*")
+      .then((conversations) => {
+        this._getSingleResponse(conversations, fulfill);
       }).catch(reject)
     })
   }
@@ -104,7 +214,7 @@ class Conversations {
       db("convos")
         .where("convid", conversationID)
         .update({ updated: db.fn.now() })
-      .then(function () {
+      .then(() => {
         fulfill();
       }).catch(reject);
     });

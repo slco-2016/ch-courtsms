@@ -41,7 +41,7 @@ module.exports = {
 
         // TODO: Make sure this effectively handles all cases
         if (res.locals.client) {
-          id = res.locals.client.cm;
+          id = res.locals.clients.cm;
         }
 
         return id;

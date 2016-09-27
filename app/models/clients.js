@@ -4,13 +4,15 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const Conversations = require("./conversations");
 const CommConns = require("./commConns");
+const Departments = require("./departments");
 const Users = require("./users");
 const Departments = require("./departments");
 
 const colors = require("colors")
 
-const BaseModel = require("../lib/models").BaseModel
+const BaseModel = require("../lib/models").BaseModel;
 
 class Clients extends BaseModel {
 
@@ -47,11 +49,12 @@ class Clients extends BaseModel {
     })
   }
 
-  static create (userID, first, middle, last, dob, otn, so) {
+  static create (userId, first, middle, last, dob, otn, so) {
+    console.log("what is going in", userId, first, middle, last, dob, otn, so)
     return new Promise((fulfill, reject) => {
       db("clients")
         .insert({
-          cm:     userID,
+          cm:     userId,
           first:  first,
           middle: middle,
           last:   last,
@@ -67,7 +70,7 @@ class Clients extends BaseModel {
     });
   }
 
-  static editOne (clientID, first, middle, last, dob, uniqueID1, uniqueID2) {
+  static editOne (clientId, first, middle, last, dob, uniqueID1, uniqueID2) {
     return new Promise((fulfill, reject) => {
       db("clients")
         .update({
@@ -78,21 +81,21 @@ class Clients extends BaseModel {
           so: uniqueID1,
           otn: uniqueID2
         })
-        .where("clid", clientID)
+        .where("clid", clientId)
       .then(() => {
         fulfill()
       }).catch(reject);
     })
   }
 
-  static findAllByUsers (userIDs) {
-    if (!Array.isArray(userIDs)) userIDs = [userIDs];
+  static findAllByUsers (userIds) {
+    if (!Array.isArray(userIds)) userIds = [userIds];
     return new Promise((fulfill, reject) => {
       var clientsOpen;
-      Clients.findByUsers(userIDs, true)
+      Clients.findByUsers(userIds, true)
       .then((clients) => {
         clientsOpen = clients;
-        return Clients.findByUsers(userIDs, false)
+        return Clients.findByUsers(userIds, false)
       }).then((clientsClosed) => {
         return fulfill(clientsOpen.concat(clientsClosed));
       }).catch(reject);

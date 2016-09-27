@@ -11,9 +11,9 @@ const Communications = require("../models/communications");
 // Class
 class CommConns {
   
-  static findByClientID (clientID) {
+  static findByClientID (clientId) {
     return new Promise((fulfill, reject) => {
-      CommConns.findByClientIDs([clientID])
+      CommConns.findByClientIDs([clientId])
       .then((commconns) => {
         fulfill(commconns);
       }).catch(reject);
@@ -36,18 +36,18 @@ class CommConns {
     })
   }
 
-  static getClientCommunications (clientID) {
+  static getClientCommunications (clientId) {
     return new Promise((fulfill, reject) => {
       db("commconns")
         .select("commconns.*", "comms.type", "comms.value")
         .leftJoin("comms", "comms.commid", "commconns.comm")
         .whereNull("retired")
-        .andWhere("commconns.client", clientID)
+        .andWhere("commconns.client", clientId)
       .then((commConns) => {
         const commConnsIDArray = commConns.map(function (commConn) { 
           return commConn.comm;
         });
-        CommConns.getUseCounts(clientID, commConnsIDArray)
+        CommConns.getUseCounts(clientId, commConnsIDArray)
         .then((counts) => {
           commConns.map(function (commConn) {
             commConn.useCount = 0;
@@ -62,13 +62,13 @@ class CommConns {
     }); 
   }
 
-  static getUseCounts (clientID, communicationIDArray) {
+  static getUseCounts (clientId, communicationIDArray) {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .select(db.raw("count(msgid), msgs.comm"))
         .leftJoin("convos", "convos.convid", "msgs.convo")
         .whereIn("comm", communicationIDArray)
-        .andWhere("convos.client", clientID)
+        .andWhere("convos.client", clientId)
         .groupBy("msgs.comm")
       .then((counts) => {
         fulfill(counts);
@@ -76,28 +76,29 @@ class CommConns {
     }); 
   }
 
-  static createOne (clientID, type, name, value) {
+  static create (clientId, type, name, value) {
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
-      .then((comm) => {
-        // if a comm method already exists just create a reference 
-        if (comm) {
+      .then((communication) => {
+        console.log("XX" , clientId, type, name, value);
+        // if a communication method already exists just create a reference 
+        if (communication) {
           db("commconns")
             .insert({
-              client: clientID,
-              comm: comm.commid,
+              client: clientId,
+              comm: communication.commid,
               name: name
             })
           .then((success) => { 
             fulfill();
           }).catch(reject);
         } else {
-          Communications.createOne(type, name, value)
-          .then((commID) => { 
+          Communications.create(type, name, value)
+          .then((communication) => { 
             db("commconns")
               .insert({
-                client: clientID,
-                comm: commID,
+                client: clientId,
+                comm: communication.commid,
                 name: name
               })
             .then((success) => { 
