@@ -4,8 +4,9 @@ const request = require('request');
 
 const Messages = require('../models/messages')
 const Emails = require('../models/emails')
-const Twilio = require('../models/twilio')
 const Attachments = require('../models/attachments')
+
+const sms = require('../lib/sms')
 
 const Promise = require("bluebird");
 
@@ -67,46 +68,39 @@ module.exports = {
 
     var cleanBody = req.body['stripped-text'] || req.body['body-plain']
 
-    var fromAddress = mimelib.parseAddresses(req.body.From)[0]
+    var fromAddress = mimelib.parseAddresses(req.body.From)[0].address
     var toAddresses = mimelib.parseAddresses(req.body.To)
 
     console.log(fromAddress)
     console.log(toAddresses)
     console.log(`Email arrived for ${recipient}`)
-    console.log(`Content is \n${cleanBody}`)
+    console.log(`Content is: \n${cleanBody}`)
     
     let attachments = []
     if (req.body.attachments) {
       attachments = JSON.parse(req.body.attachments)
     }
 
-    // this is to avoid timeouts. maybe we want timeouts?
-    // attachment uploading takes too long?
-    res.send('ok, thanks');
-
     let msgid
 
-    Twilio.process_incoming_msg(
+    sms.processIncoming(
         fromAddress.address,
-        toAddresses, 
+        // toAddresses, 
         [cleanBody], 
-        "email",
+        // "email",
         "delivered",
         messageId
-    ).then((msgs) =>{
-        // we're passing an array of 1 item to process_incoming_msg
-        // so should be guaranteed a single returned id
-        msgid = msgs[0]
-
+    ).then((conversations) =>{
         return Emails.create({
           raw: JSON.stringify(req.body),
           from: fromAddress,
           to: JSON.stringify(toAddresses),
           cleanBody: cleanBody,
-          msg_id: msgid,
+          // msg_id: message_id,
         })
 
     }).then((email) => {
+      res.send('ok, thanks');
       return new Promise((fulfill, reject) => {
         fulfill(attachments)
       })

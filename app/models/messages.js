@@ -292,23 +292,25 @@ class Messages {
   }
 
   static createMany (conversationIds, commId, content, MessageSid, MessageStatus) {
-    let insertArray = conversationIds.map((conversationId) => {
-      return {
-        convo: conversationId,
-        comm: commId,
-        content: content,
-        inbound: false,
-        read: true,
-        tw_sid: MessageSid,
-        tw_status: MessageStatus
-      }
-    });
-    db("msgs")
-      .insert(insertArray)
-      .returning("*")
-    .then((messages) => {
-      fulfill(messages);
-    }).catch(reject)
+    return new Promise((fulfill, reject) => {
+      let insertArray = conversationIds.map((conversationId) => {
+        return {
+          convo: conversationId,
+          comm: commId,
+          content: content,
+          inbound: false,
+          read: true,
+          tw_sid: MessageSid,
+          tw_status: MessageStatus
+        }
+      });
+      db("msgs")
+        .insert(insertArray)
+        .returning("*")
+      .then((messages) => {
+        fulfill(messages);
+      }).catch(reject)
+    })
   }
 
   static create (conversationId, commId, content, MessageSid, MessageStatus) {

@@ -8,7 +8,6 @@ const Conversations = require("./conversations");
 const CommConns = require("./commConns");
 const Departments = require("./departments");
 const Users = require("./users");
-const Departments = require("./departments");
 
 const colors = require("colors")
 
