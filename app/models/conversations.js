@@ -86,7 +86,7 @@ class Conversations extends BaseModel {
     })
   }
 
-  static findOrCreate (clients, commId, from) {
+  static findOrCreate (clients, commId) {
     if (!Array.isArray(clients)) clients = [clients];
     return new Promise((fulfill, reject) => {
 
@@ -120,7 +120,7 @@ class Conversations extends BaseModel {
             .innerJoin("msgs", "comms.commid", "msgs.comm")
             .innerJoin("convos", "msgs.convo", "convos.convid")
             .where("convos.open", true)
-            .andWhere("comms.value", from)
+            .andWhere("comms.commid", commId)
             .andWhere("convos.cm", null)
             .andWhere("convos.client", null)
             .groupBy("convos.convid");

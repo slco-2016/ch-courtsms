@@ -15,5 +15,16 @@ describe('Conversations checks', function() {
       done()
     }).catch(done)
   })
+
+  it('Should be able to create communication', function(done) {
+    Conversations.findOrCreate([2, 3])
+    .then((conversations) => {
+      conversations.forEach((conversation) => {
+        conversation.hasOwnProperty("messages").should.be.exactly(true);
+        Array.isArray(conversation.messages).should.be.exactly(true);
+      })
+      done()
+    }).catch(done)
+  })
   
 })

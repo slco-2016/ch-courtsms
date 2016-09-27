@@ -19,7 +19,7 @@ class Twilio {
         communication = comm;
         return Clients.findByCommId(comm.id);
       }).then((clients) => {
-        return Conversations.findOrCreate(clients);
+        return Conversations.findOrCreate(clients, communication.commid);
       }).then((convos) => {
         conversations = convos;
         let conversationIds = convos.map((conversation) => {

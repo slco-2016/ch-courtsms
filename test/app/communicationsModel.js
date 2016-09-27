@@ -20,7 +20,6 @@ describe('Communications checks', function() {
   })
 
   it('Should be able to create communication from value', function(done) {
-
     Communications.getOrCreateFromValue(phone, "cell")
     .then((communication) => {
       communication.type.should.be.exactly('cell')
@@ -28,7 +27,6 @@ describe('Communications checks', function() {
       phoneId = communication.commid
       done()
     }).catch(done)
-
   })
 
   it('Should be able to get getOrCreate existing comm', function(done) {
@@ -37,6 +35,6 @@ describe('Communications checks', function() {
       communication.commid.should.be.exactly(phoneId)
       done()
     }).catch(done)
-
   })
+
 })
