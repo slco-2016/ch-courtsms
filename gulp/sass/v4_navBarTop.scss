@@ -1,10 +1,10 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$lightbluegrey:#6783a1;
+$bluegrey:    #516a84;
+$darkbluegrey:#3c5065;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -193,7 +193,8 @@ $darkblue:    #344289;
       font-size: 14px;
 
       span.button {
-        padding: 5px;
+        font-size: 14px;
+        padding: 5px 3px 5px 7px;
         border-radius: 3px;
         cursor: pointer;
         margin-left: 5px;
@@ -208,6 +209,9 @@ $darkblue:    #344289;
 
         &.selected {
           background-color: $lightblue;
+          &.orgLevel {
+            background-color: $lightbluegrey;
+          }
         }
 
         &:hover {

@@ -29,7 +29,7 @@
 
       <% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
         <a href="/">
-          <span class="button <%if (level=="org") {%>selected<%}%>">
+          <span class="button <%if (level=="org") {%>selected orgLevel<%}%>">
             Organization
           </span>
         </a>

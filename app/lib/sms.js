@@ -17,7 +17,7 @@ module.exports = {
       Communications.getOrCreateFromValue(fromNumber, "cell")
       .then((resp) => {
         communication = resp;
-        return Clients.findByCommId(communication.id);
+        return Clients.findByCommId(communication.commid);
       }).then((clients) => {
         return Conversations.findOrCreate(clients, communication.commid);
       }).then((resp) => {

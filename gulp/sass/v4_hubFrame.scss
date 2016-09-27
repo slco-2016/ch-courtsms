@@ -1,12 +1,10 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$lightbluegrey:#6783a1;
 $bluegrey:    #516a84;
-$darkbluegrey:    #3c5065;
+$darkbluegrey:#3c5065;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -37,23 +35,44 @@ $darkblue:    #344289;
     position: fixed;
 
     &.orgLevel {
-      background-color: $bluegrey;
+      background-color: $lightbluegrey;
+      color: $bluegrey;
 
       .leftTab {
         &.open {
           background-color: $darkbluegrey;
           color: $white;
+
           &.selected, &:hover {
             background-color: $darkbluegrey;
             color: $white;
           }
+
+          .option {
+            &.selected, &:hover {
+              background-color: $white;
+              color: $lightbluegrey;
+            }
+          }
         }
         &.closed {
-          background-color: $bluegrey;
+          background-color: $lightbluegrey;
           color: $white;
           &.selected, &:hover {
-            background-color: $darkbluegrey;
+            background-color: $bluegrey;
             color: $white;
+          }
+        }
+      }
+      .rightActions {
+        .fa.fa-inverse {
+          color: $lightbluegrey;
+        }
+
+        &:hover {
+          background-color: $bluegrey;
+          .fa.fa-inverse {
+            color: $bluegrey;
           }
         }
       }
