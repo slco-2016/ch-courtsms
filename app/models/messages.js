@@ -47,7 +47,7 @@ class Messages {
     });
   }
 
-  static findByConversations (clientID, conversationIDs) {
+  static findByConversations (conversationIDs) {
     if (!Array.isArray(conversationIDs)) conversationIDs = [conversationIDs];
     
     return new Promise((fulfill, reject) => {
@@ -66,7 +66,6 @@ class Messages {
           "commconns.commid", "msgs.comm")
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIDs)
-        .andWhere("client", clientID)
         .orderBy("created", "asc")
       .then((messages) => {
         fulfill(messages)

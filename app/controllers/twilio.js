@@ -1,23 +1,5 @@
 const Twilio = require('../models/twilio');
-
-function sendResponse (msg, msgid) { 
-  if (msg && msgid) {
-    
-    msg = String(msg).replace(/(\r\n|\n|\r)/gm,"");
-    Twilio.log_sent_msg(msg, msgid).then(function () {
-      let inner = "<Sms>" + msg + "</Sms>";
-      res.send("<?xml version='1.0' encoding='UTF-8'?><Response>" + inner + "</Response>");
-    }).catch(handleError);
-
-  } else {  }
-};
-
-function handleError (err) {
-  let now = new Date(Date.now()).toISOString().split("T");
-  console.log("Error occurred on " + now[0] + " at " + now[1] + ": " + err);
-  res.status(404).send(err);
-  return false;
-};
+const Conversations = require('../models/conversations');
 
 module.exports = {
 
@@ -37,58 +19,68 @@ module.exports = {
     Twilio.logIBMSensitivityAnalysis(req.body);
     
     Twilio.processIncoming(fromNumber, text, MessageStatus, MessageSID)
-    .then(function (messages) {
+    .then((conversations) => {
 
-      Twilio.check_new_unknown_msg(msg).then(function (isNew) {
-        
-        // if new, then initiate figuring out who person is
-        if (isNew) {
-          req.session.ccstate = "initiate-resp";
-          sendResponse("This # is not registered. Help us find you. Reply with your name in the following format: FIRST M LAST.", msg);
+      let conversationIds = conversations.map((conversation) => {
+        return conversation.convid;
+      });
 
-        // if ongoing auto convo, then continue
-        } else if (req.session.hasOwnProperty("ccstate") && req.session.ccstate) { 
-          Twilio.sms_guesser_logic_tree(req.session.ccstate, req.body.Body, msg).then(function (response) {
-            req.session.ccstate = response.state;
-            sendResponse(response.msg, msg);
-          }).catch(handleError);
+      Conversations.findByIds(conversationIds)
+    }).then((conversations) => {
 
-        // see if the person has not been serviced in a long time
-        } else { 
-          
-          // check when last response was
-          Twilio.check_last_unread(msg).then(function (unreadDate) {
-            if (unreadDate) {
-              try {
-                let d1 = new Date(unreadDate);
-                let d2 = new Date();
-                let diff = (d2.getTime() - d1.getTime()) / (3600*1000);
-                
-                // if it's been more than 4 hours let's notify the case manager
-                if (diff > 4) {
-                  // ... but only if it is not a weekend
-                  if (d2.getDay() == 6 || d2.getDay() == 0) {
-                    sendResponse("Message received! Because it is the weekend, your case manager may take until the next business day to respond. Thanks for your patience.", msg);
-                  } else {
-                    sendResponse("Message received! As it has been over 4 hours and your case manager has not yet addressed your prior message so we sent them a reminder to get back to you!", msg);
-                    // notify the case manager now...
-                  }
-                } else { 
-                  sendResponse(); 
-                }
+      conversations.forEach((conversation) => {
+        let content;
+        let commId = conversation.message.comm;
+        let conversationId = conversation.convid;
+        let inboundMessages = conversation.messages.filter((message) => {
+          return message.inbound;
+        });
+        let outboundMessages = conversation.messages.filter((message) => {
+          return !message.inbound;
+        });
 
-              } catch (e) { sendResponse(); }
-            } else { sendResponse(); }
-          }).catch(handleError);
+        if (conversation.clid == null) {
+          // This is a new conversation that has been started from unknown number
+          if (inboundMessages.length == 1) {
+            content = `Sorry! This # is not registered; 
+                      Help us find you. Reply with your name 
+                      in the following format: FIRST M LAST.`;
+          } else {
+            content = `Thanks for the message. A support member
+                      will place this number with the correct
+                      case manager as soon as possible.`;
+          }
+
+        } else if (inboundMessages.length > 1) {
+            let lastInboundDate = inboundMessages[inboundMessages.length - 1].created;
+            let d1 = new Date(lastInboundDate);
+            let d2 = new Date();
+            let timeLapsed = Math.round((d2.getTime() - d1.getTime()) / (3600*1000));
+
+            // If it's been more than 4 hours let's communicate
+            if (timeLapsed > 1) {
+              let dayOfWeek = d2.getDay();
+              if (dayOfWeek == 0 || dayOfWeek == 6) {
+                content = `Message received. Because it 
+                          is the weekend, your case manager may not 
+                          be able to response immediately. Thanks 
+                          for your patience.`;
+              } else {
+                content = `Message received. As it has been over ${timeLapsed} 
+                          hours and your case manager has not yet 
+                          addressed your prior message, a reminder
+                          has been sent out. Thanks for your patience.`;
+              }
+            }
+          }
+          if (content) {
+            Messages.sendOne(commId, content, conversationId)
+            .then(() => { }).catch((error) => {
+              console.log(error);
+            });
+          }
         }
-      }).catch(handleError);
-
-      // log message being received
-      let now = new Date(Date.now()).toISOString().split("T");
-      console.log("Message received from " + fromNumber + " on " + now[0] + " at " + now[1]);
-
-    }).catch(handleError);
-  
+      });
   },
 
   receiveVoice(req, res) {
@@ -98,8 +90,7 @@ module.exports = {
                   Client Comm is a text only number currently. 
                   Please dial 385-468-3500 for the front desk and ask for your case manager.
                 </Say>
-              </Response>
-            `);
+              </Response>`);
   },
 
 };

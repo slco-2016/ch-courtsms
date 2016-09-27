@@ -29,31 +29,6 @@ function success_update (cm, cl) {
 // Class
 class Twilio {
 
-  static check_new_unknown_msg (msg) {
-    return new Promise ((fulfill, reject) => {
-      var rawQuery = "SELECT COUNT(msgs.msgid) FROM msgs WHERE msgs.convo IN (SELECT convos.convid FROM msgs INNER JOIN convos ON (msgs.convo = convos.convid) WHERE msgs.msgid = " + msg + " AND convos.client IS NULL);"
-      db.raw(rawQuery).then(function (res) { 
-        if (res.hasOwnProperty("rows") && res.rows.length == 1 && res.rows[0].hasOwnProperty("count")) { 
-          var count = Number(res.rows[0].count);
-          if (isNaN(count)) reject(res.rows[0].count + "  - (res.rows[0].count) is not convertable into a number");
-          else fulfill(count == 1); 
-        } else { reject("Function check_new_unknown_msg failed to return row values correctly.") };
-      }).catch(function (err) { reject(err); });
-    });
-  }
-
-  static check_last_unread (msg) {
-    return new Promise ((fulfill, reject) => {
-      var rawQuery = "SELECT created FROM msgs WHERE msgs.convo IN (SELECT convos.convid FROM msgs INNER JOIN convos ON (msgs.convo = convos.convid) WHERE msgs.msgid = " + msg + ") AND inbound = TRUE AND read = FALSE ORDER BY created DESC LIMIT 1;";
-      db.raw(rawQuery).then(function (res) {
-        if (res.hasOwnProperty("rows")) { 
-          if (res.rows.length == 1 && res.rows[0].hasOwnProperty("created")) { fulfill(res.rows[0].created); }
-          else { fulfill(false); }
-        } else { reject("Function check_last_unread failed to return row values correctly.") };
-      }).catch(function (err) { reject(err); });
-    });
-  }
-
   static log_sent_msg (msg, msgid) {
     return new Promise ((fulfill, reject) => {
       var rawQuery = "INSERT INTO msgs (convo, comm, content, inbound, read, created) VALUES ( (SELECT convo FROM msgs WHERE msgs.msgid = " + msgid + "), (SELECT comm FROM msgs WHERE msgs.msgid = " + msgid + "), '" + msg + "', FALSE, FALSE, now() );";
@@ -81,143 +56,16 @@ class Twilio {
                                     MessageSID,
                                     MessageStatus);
       }).then((messages) => {
-        conversations.map((conversation) => {
-          conversation.messages = [];
+        conversations = conversations.map((conversation) => {
           messages.forEach(message) => {
             if (message.convo == conversation.convid) {
-              conversation.messages.push(message);
+              conversation.messages = message;
             }
           });
           return conversation;
         });
-        fulfill(messages);
+        fulfill(conversations);
       }).catch(reject);
-    });
-  }
-  
-  static get_or_create_convos (clients, commid, from) {
-    return new Promise ((fulfill, reject) => {
-      var cls = clients.map(function (ea) { return ea.clid; });
-      var cms = clients.map(function (ea) { return ea.cmid; });
-
-      var d, raw = false;
-
-      // search for null values as well is null is in list as a convo type
-      if (cls.indexOf(null) > -1 && cls.length == 1) {
-        raw = true;
-        var rawQuery =  "SELECT * FROM convos WHERE convos.convid IN (SELECT msgs.convo FROM msgs WHERE msgs.convo IN " + 
-                        " (SELECT convos.convid FROM convos WHERE client IS NULL AND convos.open = TRUE) AND msgs.comm = " + commid + 
-                        " GROUP BY msgs.convo) AND convos.open = TRUE;";
-        d = db.raw(rawQuery);
-
-      } else {
-        d = db("convos")
-        d.whereIn("client", cls);
-        d.andWhere("convos.open", true);
-      }
-
-      d.then(function (convos) {
-
-        // clean up response
-        if (raw) convos = convos.rows;
-        convos = convos.map(function (ea) { return ea.convid; });
-
-        // there are existing open conversations
-        if (convos.length > 0) {
-          fulfill(convos);
-
-        // we need to check if there is an unlinked convo associated to this 
-        } else {
-
-          db.select("convos.convid").from("comms")
-          .innerJoin("msgs", "comms.commid", "msgs.comm")
-          .innerJoin("convos", "msgs.convo", "convos.convid")
-          .where("convos.open", true)
-          .andWhere("comms.value", from)
-          .andWhere("convos.cm", null)
-          .andWhere("convos.client", null)
-          .groupBy("convos.convid")
-          .then(function (convos) {
-
-            // there are existing open conversations
-            if (convos.length > 0) {
-              convos = convos.map(function (ea) { return ea.convid; });
-              fulfill(convos);
-
-            } else {
-
-              // just in case [null] value was not submitted for clients in lieu of none
-              if (clients.length == 0) { clients = [{clid: null, cmid: null}]; }
-
-              var insertList = [];
-              var now = new Date(Date.now()).toISOString().split("T");
-              var subject = "New Convo " + now[0] + " at " + now[1].replace("Z", "");
-
-              for (var i = 0; i < clients.length; i++) {
-                var client = clients[i];
-                var insertObj = {
-                  "cm": client.cmid,
-                  "client": client.clid,
-                  "subject": subject,
-                  "open": true,
-                  "accepted": false
-                }
-                insertList.push(insertObj);
-              }
-
-              db("convos")
-              .insert(insertList)
-              .returning("convid")
-              .then(function (convos) {
-                fulfill(convos);
-              }).catch(function (err) { reject(err); });
-            }
-
-          }).catch(function (err) { reject(err); });
-
-        }
-      }).catch(function (err) { reject(err); });
-    });
-  }
-
-  static register_message (text, commid, convos, tw_status, tw_sid) {
-
-    return new Promise ((fulfill, reject) => {
-      var insertList = [];
-      for (var i = 0; i < convos.length; i++) {
-        var convo = convos[i];
-        for (var txt_i = 0; txt_i < text.length; txt_i++) {
-          var textPart = text[txt_i];
-
-          var insertObj = {
-            "convo":     convo,
-            "comm":      commid,
-            "content":   textPart,
-            "inbound":   true,
-            "read":      false,
-            "tw_sid":    tw_sid,
-            "tw_status": tw_status
-          }
-          insertList.push(insertObj);         
-        }
-      }
-
-      db("msgs")
-      .insert(insertList)
-      .returning("msgid")
-      .then(function (msgs) {
-
-        db("convos").whereIn("convid", convos)
-        .update({updated: db.fn.now()})
-        .then(function (success) {
-          fulfill(msgs);
-        }).catch(function (err) {
-          reject(err);
-        })
-
-      }).catch(function (err) {
-        reject(err);
-      });
     });
   }
 

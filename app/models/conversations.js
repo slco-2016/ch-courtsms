@@ -3,8 +3,9 @@
 // Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
-
 const BaseModel = require("../lib/models").BaseModel
+
+const Messages = require("./messages");
 
 // Class
 class Conversations extends BaseModel {
@@ -15,6 +16,30 @@ class Conversations extends BaseModel {
         .where("cm", userID)
         .orderBy("updated", "desc")
       .then((conversations) => {
+        fulfill(conversations);
+      }).catch(reject);
+    })
+  }
+
+  static findByIds (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
+    return new Promise((fulfill, reject) => {
+      let conversations;
+      db("convos")
+        .whereIn("convid", conversationIds)
+      .then((convos) => {
+        conversations = convos;
+        return Messages.findByConversations(conversationIds);
+      }).then((messages) => {
+        conversations = conversations.map((conversation) => {
+          conversation.messages = [];
+          messages.forEach((message) => {
+            if (message.convo == conversation.convid) {
+              conversatio.messages.push(message);
+            }
+          });
+          return conversation;
+        });
         fulfill(conversations);
       }).catch(reject);
     })
