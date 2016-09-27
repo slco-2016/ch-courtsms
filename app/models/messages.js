@@ -37,12 +37,12 @@ class Messages {
     return new Promise((fulfill, reject) => {
       Conversations.findByUser(userID)
       .then((conversations) => {
-        conversations = conversations.map(function (conversation) {
+        let conversationIds = conversations.map(function (conversation) {
           return conversation.convid;
         });
-        return Messages.findByConversations(clientID, conversations)
+        return Messages.findByConversations(conversationIds)
       }).then((messages) => {
-          fulfill(messages);
+        fulfill(messages);
       }).catch(reject);
     });
   }
