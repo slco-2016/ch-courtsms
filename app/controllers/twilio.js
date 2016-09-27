@@ -1,5 +1,6 @@
 const Twilio = require('../models/twilio');
 const Conversations = require('../models/conversations');
+const SentimentAnalysis = require('../models/sentiment');
 
 module.exports = {
 
@@ -16,7 +17,7 @@ module.exports = {
     let MessageSID = req.body.MessageSid;
 
     // Log IBM Sensitivity measures
-    Twilio.logIBMSensitivityAnalysis(req.body);
+    SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
     Twilio.processIncoming(fromNumber, text, MessageStatus, MessageSID)
     .then((conversations) => {
