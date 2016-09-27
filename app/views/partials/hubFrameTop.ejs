@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
-  <div class="navSub">
+  <div class="navSub <% if (level == "org") { %>orgLevel<% } %>">
   
     <% if (level == "org") { %>
       <% if (user.class !== "support") { %>
@@ -35,9 +35,11 @@
 
     <!-- Right "action" buttons -->
     <% if (level =="org") { %>
-      <%- rightTab('numbers', 'phone', level) %>
-      <%- rightTab('departments', 'building', level) %>
-      <%- rightTab('users', 'user-plus', level) %>
+      <% if (user.class !== "support") { %>
+        <%- rightTab('numbers', 'phone', level) %>
+        <%- rightTab('departments', 'building', level) %>
+        <%- rightTab('users', 'user-plus', level) %>
+      <% } %>
     <% } %>
 
     <!-- primary -->

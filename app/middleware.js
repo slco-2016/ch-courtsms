@@ -156,6 +156,12 @@ module.exports = {
         });
       }
 
+      if (level == "org") {
+        if (capitalized == "Clients") {
+          capitalized = "All Clients";
+        }
+      }
+
       return `
         <div class="leftTab ${hub.tab == name ? 'open' : 'closed'}">
           <div class="title"><a href="${url}">${capitalized}</a></div>

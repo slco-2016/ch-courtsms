@@ -105,6 +105,8 @@ $width_row11:  5%;
   overflow: hidden;
   color: $grey;
   background-color: $white;
+  border-bottom: 1px solid $offwhite;
+
 
   &:hover {
     color: $white;
@@ -216,7 +218,8 @@ $width_row11:  5%;
     }
   }
 
-  &:nth-child(even) {
+  &.inactive {
     background-color: $offwhite;
+    border-bottom: 1px solid $white;
   }
 }

@@ -28,17 +28,15 @@
     <div class="rightLogout">
 
       <% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
-        <a href="/org">
-          <span class="button">
-            <i class="fa fa-lg fa-tachometer" aria-hidden="true"></i>
-            <span class="hidden">Dashboard</span>
+        <a href="/">
+          <span class="button <%if (level=="org") {%>selected<%}%>">
+            Organization
           </span>
         </a>
 
         <a href="/clients">
-          <span class="button">
-            <i class="fa fa-lg fa-comments" aria-hidden="true"></i>
-            <span class="hidden">Clients</span>
+          <span class="button <%if (level=="user") {%>selected<%}%>">
+            Caseload
           </span>
         </a>
 

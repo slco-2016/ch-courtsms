@@ -52,7 +52,8 @@
   line-height: 50px;
   overflow: hidden;
   color: #898989;
-  background-color: #FFF; }
+  background-color: #FFF;
+  border-bottom: 1px solid #E8ECEF; }
   .clientRow:hover {
     color: #FFF;
     font-weight: 700; }
@@ -131,5 +132,6 @@
     .clientRow .column:nth-child(11) {
       width: 5%;
       text-align: center; }
-  .clientRow:nth-child(even) {
-    background-color: #E8ECEF; }
+  .clientRow.inactive {
+    background-color: #E8ECEF;
+    border-bottom: 1px solid #FFF; }

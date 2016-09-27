@@ -5,6 +5,8 @@ $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$bluegrey:    #516a84;
+$darkbluegrey:    #3c5065;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -33,6 +35,29 @@ $darkblue:    #344289;
     border-bottom: 1px solid $white;
     overflow: hidden;
     position: fixed;
+
+    &.orgLevel {
+      background-color: $bluegrey;
+
+      .leftTab {
+        &.open {
+          background-color: $darkbluegrey;
+          color: $white;
+          &.selected, &:hover {
+            background-color: $darkbluegrey;
+            color: $white;
+          }
+        }
+        &.closed {
+          background-color: $bluegrey;
+          color: $white;
+          &.selected, &:hover {
+            background-color: $darkbluegrey;
+            color: $white;
+          }
+        }
+      }
+    }
 
     .leftTab {
       height: inherit;

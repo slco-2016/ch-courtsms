@@ -7,6 +7,20 @@
   border-bottom: 1px solid #FFF;
   overflow: hidden;
   position: fixed; }
+  .applicationFrame .navSub.orgLevel {
+    background-color: #516a84; }
+    .applicationFrame .navSub.orgLevel .leftTab.open {
+      background-color: #3c5065;
+      color: #FFF; }
+      .applicationFrame .navSub.orgLevel .leftTab.open.selected, .applicationFrame .navSub.orgLevel .leftTab.open:hover {
+        background-color: #3c5065;
+        color: #FFF; }
+    .applicationFrame .navSub.orgLevel .leftTab.closed {
+      background-color: #516a84;
+      color: #FFF; }
+      .applicationFrame .navSub.orgLevel .leftTab.closed.selected, .applicationFrame .navSub.orgLevel .leftTab.closed:hover {
+        background-color: #3c5065;
+        color: #FFF; }
   .applicationFrame .navSub .leftTab {
     height: inherit;
     width: auto;
