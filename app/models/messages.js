@@ -310,7 +310,7 @@ class Messages {
       .then((messages) => {
         fulfill(messages);
       }).catch(reject)
-    })
+    });
   }
 
   static create (conversationId, commId, content, MessageSid, MessageStatus) {
