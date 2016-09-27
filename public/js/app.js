@@ -241,8 +241,7 @@ $(function() {
               $("#targetUser").val(selectedUser.cmid)
               return true;
             } else {
-              event.preventDefault();
-              return false;
+              return true;
             }
           });
         }
@@ -580,7 +579,7 @@ $(function() {
                               comm.name + " (" + comm.value + ")" + '</option>';
                 $("#commConn").append(newOpt);
               });
-              var smartSelect = '<option value="null" ' + '">Smart Select</option>';
+              var smartSelect = '<option value="null" ' + '">Smart Select (Best Contact Method)</option>';
               $("#commConn").append(smartSelect);
             }
           });
@@ -613,7 +612,7 @@ $(function() {
                               comm.name + " (" + comm.value + ")" + '</option>';
                 $("#commConn").append(newOpt);
               });
-              var smartSelect = '<option value="null" ' + '">Smart Select</option>';
+              var smartSelect = '<option value="null" ' + '">Smart Select (Best Contact Method)</option>';
               $("#commConn").append(smartSelect);
             }
           });
