@@ -26,7 +26,6 @@ module.exports = {
 
       return Conversations.findByIds(conversationIds)
     }).then((resp) => {
-      console.log("RESP", resp)
 
       resp.forEach((conversation) => {
         let content;

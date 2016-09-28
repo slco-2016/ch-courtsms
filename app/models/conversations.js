@@ -134,39 +134,43 @@ class Conversations extends BaseModel {
 
   static findOrCreate (clients, commId) {
     if (!Array.isArray(clients)) clients = [clients];
+    let jumpToCreateNewConversation = false;
+
     return new Promise((fulfill, reject) => {
 
       let clientIds = clients.map((client) => {
         return client.clid;
       });
 
-      let getConversationIds;
+      let getConversations;
       if (!clients.length) {
         // If there are are no potential clients, 
         // seek out existing uncaptured conversations
-        getConversationIds = db("msgs")
+        getConversations = db("msgs")
           .leftJoin("convos", "convos.convid", "msgs.convo")
           .where("msgs.comm", commId)
           .andWhere("convos.client", null)
           .andWhere("convos.open", true);
       } else {
-        getConversationIds = db("convos")
+        getConversations = db("convos")
           .whereIn("client", clientIds)
           .andWhere("open", true);
       }
 
-      getConversationIds.then((conversations) => {
+      getConversations.then((conversations) => {
+
+        console.log("GOT CONVOS", conversations)
 
         // See if there is a new enough conversation
         let allRecentlyActive = true;
         if (conversations.length) {
           conversations.forEach((conversation) => {
             let d1 = new Date().getTime();
-            let d2 = new Date(conversation.created).getTime();
+            let d2 = new Date(conversation.updated).getTime();
             let timeLapsed = Math.round((d2 - d1) / (3600 * 1000));
 
             // only allow continuation of conversations less than a day old
-            if (timeLapsed < 24) {
+            if (timeLapsed > 24) {
               allRecentlyActive = false;
             }
           });
@@ -177,10 +181,18 @@ class Conversations extends BaseModel {
         if (allRecentlyActive) {
           fulfill(conversations);
           return null;
+        } else if (conversations.length) {
+          // Close out all current conversations
+          let conversationIds = conversations.map((conversation) => {
+            return conversation.convid;
+          });
+          return db("convos")
+            .update({open: false})
+            .whereIn("convid", conversationIds);
         } else {
           // Check if there is an unlinked conversation 
           // associated with this value
-          return db.select("convos.convid").from("comms")
+          return db.select("convos.*").from("comms")
             .innerJoin("msgs", "comms.commid", "msgs.comm")
             .innerJoin("convos", "msgs.convo", "convos.convid")
             .where("convos.open", true)
@@ -190,7 +202,7 @@ class Conversations extends BaseModel {
             .groupBy("convos.convid");
         }
       }).then((conversations) => {
-        if (conversations.length) {
+        if (conversations && conversations.length) {
           fulfill(conversations);
           return null;
         } else if (clients.length) {
@@ -215,8 +227,7 @@ class Conversations extends BaseModel {
             .returning("*");
         }
       }).then((conversations) => {
-        console.log("conversations", conversations)
-        this._getMultiResponse(conversations, fulfill);
+        fulfill(conversations, fulfill);
       }).catch(reject);
     })
   }
