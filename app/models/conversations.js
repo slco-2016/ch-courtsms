@@ -95,8 +95,8 @@ class Conversations extends BaseModel {
         .update({
           cm: userId,
           client: clientId,
-          open: true,
-          accepted: true
+          open: accepted,
+          accepted: accepted
         })
         .where("convid", conversationsId)
         .returning("*")
