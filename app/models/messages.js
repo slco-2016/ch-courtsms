@@ -340,6 +340,16 @@ class Messages {
     })
   }
 
+  static findAllByPlatformId(platformId) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .where("tw_sid", platformId)
+        then((objects) => {
+          fulfill(objects)
+        }).catch(reject);
+    })
+  }
+
 }
 
 module.exports = Messages

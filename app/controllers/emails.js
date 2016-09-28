@@ -30,10 +30,12 @@ module.exports = {
       let messageId = `<${req.body['message-id']}>`
       // why, just why
 
-      Messages.findByPlatformId(messageId)
-      .then((message) => {
-        if (message) {
-          return message.update({tw_status: "Opened"})
+      Messages.findAllByPlatformId(messageId)
+      .then((messages) => {
+        if (messages) {
+          messages.forEach((message) => {
+            message.update({tw_status: "Opened"})
+          })
         } else {
           throw `No message found with message id ${messageId}`
         }
@@ -41,9 +43,7 @@ module.exports = {
         console.log(err)
       })
     }
-
-    // TODO "open" event
-
+    
     res.send('ok, thanks');
   },
   receive(req, res) {
