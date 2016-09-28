@@ -26,7 +26,7 @@
     <div class="column">transcript</div>
   <% } else { %>
     <div class="column">-</div>
-  <% } %>
+  <% } %>BEZOM
 
   <div class="column">edit</div>
   <div class="column">transfer</div>
@@ -72,9 +72,9 @@
 
     <div class="column">
       <% if (user.class == "support") { %>
-        <a href="<%=`${clientBaseURL}/messages`%>">
+        <a href="<%=`/clients/${client.clid}/messages`%>">
       <% } else { %>
-        <a href="<%=`${clientBaseURL}`%>">
+        <a href="<%=`/clients/${client.clid}`%>">
       <% } %>
         <span class="clientName">
           <%=`${client.last}, ${client.first} ${client.middle}`%>

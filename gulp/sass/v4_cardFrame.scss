@@ -4,6 +4,7 @@
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
+$green:       #00e500;
 $grey:        #898989;
 $black:       #000;
 $lightorange: #FFA500;
@@ -435,6 +436,26 @@ body {
         &:hover {
           background-color: $white;
           color: $lightblue;
+        }
+      }
+
+      &.red {
+        border: 2px solid $red;
+        color: $red;
+        background-color: $white;
+        &:hover {
+          background-color: $red;
+          color: $white;
+        }
+      }
+
+      &.green {
+        border: 2px solid $green;
+        color: $green;
+        background-color: $white;
+        &:hover {
+          background-color: $green;
+          color: $white;
         }
       }
     }

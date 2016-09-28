@@ -76,6 +76,7 @@ const AlertsController          = require('./controllers/alerts');
 const CaptureBoardController    = require('./controllers/capture');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
+const ConversationsController   = require('./controllers/conversations');
 const CommunicationsController  = require('./controllers/communications');
 const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
@@ -163,6 +164,9 @@ app.post("/clients/:client/messages", ClientsController.messagesSubmit);
 
 app.get("/clients/:client/edit/color", ColorsController.select);
 app.post("/clients/:client/edit/color", ColorsController.attribute);
+
+app.get("/clients/:client/conversations/:conversation/claim", ConversationsController.claimOption);
+app.post("/clients/:client/conversations/:conversation/claim", ConversationsController.claim);
 
 app.get("/clients/:client/communications", CommunicationsController.index);
 app.get("/clients/:client/communications/create", CommunicationsController.new);

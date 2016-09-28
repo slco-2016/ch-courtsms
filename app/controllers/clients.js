@@ -191,7 +191,7 @@ module.exports = {
         return conversation.convid;
       });
 
-      return Messages.findByConversations(conversationIds)
+      return Messages.findByConversations(conversationIds);
     }).then((resp) => {
 
       messages = resp.filter((msg) => {
@@ -213,16 +213,26 @@ module.exports = {
       
       return CommConns.findByClientID(client)
     }).then((communications) => {
-      res.render("clients/messages", {
-        hub: {
-          tab: "messages",
-          sel: method ? method : "all"
-        },
-        conversations: conversations,
-        messages: messages,
-        communications: communications,
-        convoFilter: convoFilter
-      });
+
+      let unclaimed = conversations.filter((conversation) => {
+        return !conversation.accepted;
+      })
+
+      if (unclaimed.length) {
+        unclaimed = unclaimed[0];
+        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
+      } else {
+        res.render("clients/messages", {
+          hub: {
+            tab: "messages",
+            sel: method ? method : "all"
+          },
+          conversations: conversations,
+          messages: messages,
+          communications: communications,
+          convoFilter: convoFilter
+        });
+      }
     }).catch(res.error500);
   },
 
