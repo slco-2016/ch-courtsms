@@ -19,7 +19,8 @@ module.exports = {
     
     sms.processIncoming(fromNumber, text, MessageStatus, MessageSID)
     .then((conversations) => {
-
+console.log("RES", conversations, "\n")
+throw Error("Stopping,")
       let conversationIds = conversations.map((conversation) => {
         return conversation.convid;
       });
@@ -63,10 +64,17 @@ module.exports = {
             }
           }
           if (content) {
-            Messages.sendOne(commId, content, conversationId)
-            .then(() => { }).catch((error) => {
-              console.log(error);
-            });
+            // Switch to only send when app is in production
+            if (process.env.CCENV && process.env.CCENV == "production") {
+              Messages.sendOne(commId, content, conversationId)
+              .then(() => { }).catch((error) => {
+                console.log(error);
+              });
+            } else {
+              console.log( `Sending to: ${commId} \n
+                            ConvoId: ${conversationId} \n
+                            Content: ${content}.\n`)
+            }
           }
         });
 

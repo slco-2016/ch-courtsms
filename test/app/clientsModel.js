@@ -1,6 +1,7 @@
 const assert = require('assert');
 
-const Clients = require('../../app/models/clients')
+const Clients = require('../../app/models/clients');
+const CommConns = require('../../app/models/commConns');
 
 require('colors');
 const should = require('should');
@@ -22,9 +23,15 @@ describe('Clients checks', function() {
   it('Should be able to find clients by the commid created', function(done) {
     Clients.findByCommId(1)
     .then((clients) => {
-      clients.length.should.be.greaterThan(1);
-      done();
+
+      CommConns.findByCommId(1)
+      .then((commConns) => {
+        clients.length.should.be.exactly(commConns.length);
+        done();
+      }).catch(done);
+
     }).catch(done);
   });
+
   
 })

@@ -31,14 +31,6 @@ module.exports = {
                                     MessageSID,
                                     MessageStatus);
       }).then((messages) => {
-        conversations = conversations.map((conversation) => {
-          messages.forEach((message) => {
-            if (message.convo == conversation.convid) {
-              conversation.messages = message;
-            }
-          });
-          return conversation;
-        });
         fulfill(conversations);
       }).catch(reject);
     });

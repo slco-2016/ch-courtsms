@@ -19,6 +19,17 @@ class CommConns {
       }).catch(reject);
     })
   }
+
+  static findByCommId (communicationId) {
+    return new Promise((fulfill, reject) => {
+      db("commconns")
+        .where("comm", communicationId)
+        .and.where("retired", null)
+      .then((commconns) => {
+        fulfill(commconns);
+      }).catch(reject);
+    })
+  }
   
   static findByClientIDs (clientIDs) {
     return new Promise((fulfill, reject) => {

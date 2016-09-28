@@ -107,7 +107,8 @@ class Clients extends BaseModel {
           db("commconns")
             .whereNull("retired")
             .as("commconns"), 
-          "commconns.comm", commId)
+          "commconns.client", "clients.clid")
+        .where("comm", commId)
       .then((clients) => {
         this._getMultiResponse(clients, fulfill)
       }).catch(reject);
@@ -343,14 +344,14 @@ class Clients extends BaseModel {
 
         // Always move the notifications over
         return db("notifications")
-        .where("clid", client)
+        .where("client", client)
         .andWhere("cm", fromUser)
         .update({ cm: toUser });
 
       }).then(() => {
 
+        // also switch convos
         if (bundle) {
-          // also switch convos
           Conversations.transferUserReference(client, fromUser, toUser)
           .then(() => {
             fulfill()

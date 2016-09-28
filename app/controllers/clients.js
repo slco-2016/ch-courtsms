@@ -292,6 +292,7 @@ module.exports = {
 
     // Handle situations where an owner has a department attached to her/him
     if (req.user.class === "owner") { allDep = true; }
+    if (req.user.class === "support") { allDep = true; }
 
     Users.findByOrg(req.user.org)
     .then((users) => {
