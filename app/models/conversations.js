@@ -156,7 +156,25 @@ class Conversations extends BaseModel {
       }
 
       getConversationIds.then((conversations) => {
+
+        // See if there is a new enough conversation
+        let allRecentlyActive = true;
         if (conversations.length) {
+          conversations.forEach((conversation) => {
+            let d1 = new Date().getTime();
+            let d2 = new Date(conversation.created).getTime();
+            let timeLapsed = Math.round((d2 - d1) / (3600 * 1000));
+
+            // only allow continuation of conversations less than a day old
+            if (timeLapsed < 24) {
+              allRecentlyActive = false;
+            }
+          });
+        } else {
+          allRecentlyActive = false;
+        }
+        
+        if (allRecentlyActive) {
           fulfill(conversations);
           return null;
         } else {
@@ -167,8 +185,8 @@ class Conversations extends BaseModel {
             .innerJoin("convos", "msgs.convo", "convos.convid")
             .where("convos.open", true)
             .andWhere("comms.commid", commId)
-            .andWhere("convos.cm", null)
-            .andWhere("convos.client", null)
+            .and.whereNull("convos.cm")
+            .and.whereNull("convos.client")
             .groupBy("convos.convid");
         }
       }).then((conversations) => {
@@ -177,16 +195,17 @@ class Conversations extends BaseModel {
           return null;
         } else {
           // Make a new conversation(s)
-          var insertList = [];
+          let insertList = [];
+          let ableToAccept = clients.length == 1 ? true : false;
 
           for (var i = 0; i < clients.length; i++) {
-            var client = clients[i];
-            var insertObj = {
-              cm:       client.cmid,
+            let client = clients[i];
+            let insertObj = {
+              cm:       client.cm,
               client:   client.clid,
               subject:  "Automatically created conversation",
               open:     true,
-              accepted: false // leave the conversations "not accepted"
+              accepted: ableToAccept
             }
             insertList.push(insertObj);
           }

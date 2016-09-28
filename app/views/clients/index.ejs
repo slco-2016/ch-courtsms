@@ -84,7 +84,9 @@
 
     <div class="column">
       <% if (client.unread > 0) { %>
-        <span class="bigNumber"><%= client.unread %></span>
+        <a href="<%=`/clients/${client.clid}/messages`%>">
+          <span class="bigNumber"><%= client.unread %></span>
+        </a>
       <% } else { %>-<% } %>
     </div>
     

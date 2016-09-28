@@ -306,8 +306,8 @@ class Messages {
           convo: conversationId,
           comm: commId,
           content: content,
-          inbound: false,
-          read: true,
+          inbound: true,
+          read: false,
           tw_sid: MessageSid,
           tw_status: MessageStatus
         }
