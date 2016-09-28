@@ -40,13 +40,9 @@ module.exports = {
         if (conversation.clid == null) {
           // This is a new conversation that has been started from unknown number
           if (inboundMessages.length == 1) {
-            content = `Sorry! This # is not registered; 
-                      Help us find you. Reply with your name 
-                      in the following format: FIRST M LAST.`;
+            content = `Sorry! This # is not registered; Help us find you. Reply with your name in the following format: FIRST M LAST.`;
           } else {
-            content = `Thanks for the message. A support member
-                      will place this number with the correct
-                      case manager as soon as possible.`;
+            content = `Thanks for the message. A support member will place this number with the correct case manager as soon as possible.`;
           }
 
         } else if (inboundMessages.length > 1) {
@@ -59,15 +55,9 @@ module.exports = {
             if (timeLapsed > 1) {
               let dayOfWeek = d2.getDay();
               if (dayOfWeek == 0 || dayOfWeek == 6) {
-                content = `Message received. Because it 
-                          is the weekend, your case manager may not 
-                          be able to response immediately. Thanks 
-                          for your patience.`;
+                content = `Message received. Because it is the weekend, your case manager may not be able to response immediately. Thanks for your patience.`;
               } else {
-                content = `Message received. As it has been over ${timeLapsed} 
-                          hours and your case manager has not yet 
-                          addressed your prior message, a reminder
-                          has been sent out. Thanks for your patience.`;
+                content = `Message received. As it has been over ${timeLapsed} hours and your case manager has not yet addressed your prior message, a reminder has been sent out. Thanks for your patience.`;
               }
             }
           }
