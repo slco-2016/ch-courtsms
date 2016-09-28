@@ -92,8 +92,8 @@ const VoiceController           = require('./controllers/voice');
 
 app.get("/", RootController.index);
 
-app.post("/sms/webhook", SmsController.receiveText);
-app.post("/voice/webhook", VoiceController.receiveVoice);
+app.post("/sms/webhook", SmsController.webhook);
+app.post("/voice/webhook", VoiceController.webhook);
 
 app.get("/login", AccessController.login);
 app.post("/login", 
