@@ -149,6 +149,7 @@ app.post("/clients/create", ClientsController.create);
 
 app.get("/clients/:client", ClientsController.clientCard);
 app.get("/clients/:client/address", ClientsController.addressCraft);
+app.get("/clients/:client/address/templates", ClientsController.templates);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
 app.post("/clients/:client/edit", ClientsController.update);
@@ -200,6 +201,7 @@ app.post("/org/clients/create", ClientsController.create);
 
 app.get("/org/clients/:client", ClientsController.clientCard);
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
+app.get("/org/clients/:client/address/templates", ClientsController.templates);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
 app.get("/org/clients/:client/edit", ClientsController.update);

@@ -106,6 +106,7 @@
           background-color: #FFF;
           height: 35px;
           line-height: 35px;
+          font-size: 16px;
           cursor: pointer; }
           .rightContent .responseBox .mini .messageInput .miniButton:hover {
             background-color: #344289;

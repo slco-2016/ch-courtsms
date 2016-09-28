@@ -2,6 +2,7 @@ const Clients = require('../models/clients');
 const CommConns = require('../models/commConns');
 const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
+const Templates = require('../models/templates');
 const Users = require('../models/users');
 
 let moment = require("moment");
@@ -131,6 +132,18 @@ module.exports = {
     res.render("clients/address", {
       template: req.query
     });
+  },
+
+  templates(req, res) {
+    let user = req.getUser();
+
+    Templates.findByUser(user)
+    .then((templates) => {
+      res.render("clients/templates", {
+        templates: templates,
+        parameters: req.query
+      });
+    }).catch(res.error500);
   },
 
   addressSubmit(req, res) {
