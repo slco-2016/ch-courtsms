@@ -405,6 +405,21 @@ describe('Basic http req tests', function() {
       })
   });
 
+  it('twilio sends an sms from a new number', function(done) {
+    anonymous.post('/twilio/sms')
+      .send({
+        From: "18589057365",
+        Body: "Lorem ipsum",
+        SmsStatus: "clear",
+        MessageSid: 12313121
+      })
+      .expect(200)
+      .end(function(err, res) {
+        console.log(res.text);
+        done(err);
+      })
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)

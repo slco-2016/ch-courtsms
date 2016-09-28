@@ -49,7 +49,6 @@ class Clients extends BaseModel {
   }
 
   static create (userId, first, middle, last, dob, otn, so) {
-    console.log("what is going in", userId, first, middle, last, dob, otn, so)
     return new Promise((fulfill, reject) => {
       db("clients")
         .insert({

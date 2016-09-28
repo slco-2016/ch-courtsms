@@ -74,7 +74,8 @@ class Conversations extends BaseModel {
           });
           return conversation;
         });
-        this._getMultiResponse(conversations, fulfill);
+        
+        fulfill(conversations);
       }).catch(reject);
     })
   }

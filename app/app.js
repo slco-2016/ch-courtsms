@@ -91,6 +91,9 @@ const UsersController           = require('./controllers/users');
 
 app.get("/", RootController.index);
 
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
+
 app.get("/login", AccessController.login);
 app.post("/login", 
   passport.authenticate("local-login", {
@@ -225,9 +228,6 @@ app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);
-
-app.post("/twilio/sms", TwilioController.receiveText);
-app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

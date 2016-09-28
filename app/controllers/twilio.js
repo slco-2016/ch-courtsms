@@ -1,11 +1,12 @@
 const Conversations = require('../models/conversations');
+const Messages = require('../models/messages');
 const SentimentAnalysis = require('../models/sentiment');
 const sms = require('../lib/sms');
 
 module.exports = {
 
   receiveText(req, res) {
-    let fromNumber = from.replace(/\D+/g, "");
+    let fromNumber = req.body.From.replace(/\D+/g, "");
     if (fromNumber.length == 10) { 
       from = "1" + from; 
     }
@@ -23,12 +24,12 @@ module.exports = {
         return conversation.convid;
       });
 
-      Conversations.findByIds(conversationIds)
-    }).then((conversations) => {
+      return Conversations.findByIds(conversationIds)
+    }).then((resp) => {
 
-      conversations.forEach((conversation) => {
+      resp.forEach((conversation) => {
         let content;
-        let commId = conversation.message.comm;
+        let commId = conversation.messages[0].comm;
         let conversationId = conversation.convid;
         let inboundMessages = conversation.messages.filter((message) => {
           return message.inbound;
