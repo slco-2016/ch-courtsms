@@ -341,6 +341,14 @@ class Clients extends BaseModel {
         .update({ cm: toUser })
       .then(() => {
 
+        // Always move the notifications over
+        return db("notifications")
+        .where("clid", client)
+        .andWhere("cm", fromUser)
+        .update({ cm: toUser });
+
+      }).then(() => {
+
         if (bundle) {
           // also switch convos
           Conversations.transferUserReference(client, fromUser, toUser)
