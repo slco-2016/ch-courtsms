@@ -11,24 +11,53 @@
 <% } %>
 
 <div class="header">
+  <% if (hub.sel == "closed") { %>
+    <div class="column">-</div>
+  <% } else { %>
+    <div class="column">message</div>
+  <% } %>
   <div class="column">color</div>
-  <div class="column">color name</div>
-  <div class="column">contact</div>
   <div class="column">client name</div>
-  <div class="column">case manager</div>
   <div class="column">unread</div>
-  <div class="column">transcript</div>
   <div class="column">last activity</div>
+  <div class="column">case manager</div>
+
+  <% if (user.class !== "support"){ %>
+    <div class="column">transcript</div>
+  <% } else { %>
+    <div class="column">-</div>
+  <% } %>
+
   <div class="column">edit</div>
   <div class="column">transfer</div>
-  <div class="column">remove</div>
+
+  <% if (hub.sel == "closed") { %>
+    <div class="column">restore</div>
+  <% } else { %>
+    <div class="column">remove</div>
+  <% } %>
 </div>
 
 <% if (clients.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% clients.forEach( function (client) { %>
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
-  <div class="clientRow" data-client-color="<%= client.color_tag %>">
+  <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
+        data-client-color="<%= client.color_tag %>">
+
+    <div class="column">
+      <% if (client.active) { %>
+        <% if (client.communications.length) { %>
+          <a href="<%=`${clientBaseURL}/address`%>">
+            <i class="fa highlight fa-send" aria-hidden="true"></i>
+          </a>
+        <% } else { %>
+          <a href="<%=`${clientBaseURL}/communications/create`%>">
+            <i class="fa highlight fa-plus" aria-hidden="true"></i>
+          </a>
+        <% } %>
+      <% } else { %>-<% } %>
+    </div>
 
     <!-- color tag can only be edited if user level -->
     <div class="column" value="<%= client.color_name %>">
@@ -40,37 +69,29 @@
         </a>
       <% } %>
     </div>
-    
-    <div class="column">
-      <% if (level === "user") { %>
-        <a href="<%=`/clients/${client.clid}/edit/color`%>">
-      <% } %>
-      <%= client.color_name || `No group` %>
-      <% if (level === "user") { %>
-        </a>
-      <% } %>
-    </div>
 
     <div class="column">
-      <% if (client.active) { %>
-        <% if (client.communications.length) { %>
-          <a href="<%=`${clientBaseURL}/address`%>">
-            <i class="fa highlight fa-send" aria-hidden="true"></i>
-          </a>
-        <% } else { %>
-          <a href="<%=`${clientBaseURL}/communications/create`%>">
-            <i class="fa highlight fa-phone" aria-hidden="true"></i>
-          </a>
-        <% } %>
-      <% } else { %>-<% } %>
-    </div>
-
-    <div class="column">
-      <a href="<%=`${clientBaseURL}`%>">
+      <% if (user.class == "support") { %>
+        <a href="<%=`/clients/${client.clid}/messages`%>">
+      <% } else { %>
+        <a href="<%=`/clients/${client.clid}`%>">
+      <% } %>
         <span class="clientName">
           <%=`${client.last}, ${client.first} ${client.middle}`%>
         </span>
       </a>
+    </div>
+
+    <div class="column">
+      <% if (client.unread > 0) { %>
+        <span class="bigNumber"><%= client.unread %></span>
+      <% } else { %>-<% } %>
+    </div>
+    
+    <div class="column">
+      <small>
+        <%= moment.tz(client.updated, organization.tz).fromNow() %>
+      </small>
     </div>
 
     <div class="column">
@@ -84,23 +105,12 @@
     </div>
 
     <div class="column">
-      <% if (client.unread > 0) { %>
-        <span class="bigNumber"><%= client.unread %></span>
+      <% if (user.class !== "support"){ %>
+        <!-- Both levels href to same endpoint since it just returns a text download log -->
+        <a href="<%= `/clients/${client.clid}/transcript?with=${client.cm}` %>">
+          <i class="fa highlight fa-download" aria-hidden="true"></i>
+        </a>
       <% } else { %>-<% } %>
-    </div>
-
-    <div class="column">
-      <!-- Both levels href to same endpoint since it just returns a text download log -->
-      <a href="<%= `/clients/${client.clid}/transcript?with=${client.cm}` %>">
-        <i class="fa highlight fa-download" aria-hidden="true"></i>
-      </a>
-    </div>
-    
-    <div class="column">
-      <small>
-        <i class="fa fa-clock-o" aria-hidden="true"></i>
-        <%= moment.tz(client.updated, organization.tz).fromNow() %>
-      </small>
     </div>
 
     <div class="column">
@@ -110,7 +120,11 @@
     </div>
 
     <div class="column">
-      <a href="<%= `${clientBaseURL}/transfer` %>">
+      <% if (user.class == "owner" || user.class == "support") { %>
+        <a href="<%= `${clientBaseURL}/transfer?allDepartments=true` %>">
+      <% } else { %>
+        <a href="<%= `${clientBaseURL}/transfer` %>">
+      <% } %>
         <i class="fa highlight fa-mail-forward" aria-hidden="true"></i>
       </a>
     </div>

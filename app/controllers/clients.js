@@ -2,6 +2,7 @@ const Clients = require('../models/clients');
 const CommConns = require('../models/commConns');
 const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
+const Templates = require('../models/templates');
 const Users = require('../models/users');
 
 let moment = require("moment");
@@ -133,6 +134,18 @@ module.exports = {
     });
   },
 
+  templates(req, res) {
+    let user = req.getUser();
+
+    Templates.findByUser(user)
+    .then((templates) => {
+      res.render("clients/templates", {
+        templates: templates,
+        parameters: req.query
+      });
+    }).catch(res.error500);
+  },
+
   addressSubmit(req, res) {
     let user = req.getUser();
 
@@ -169,11 +182,19 @@ module.exports = {
 
     let conversations, messages;
     Conversations.findByUserAndClient(user, client)
-    .then((convos) => {
-      conversations = convos;
-      return Messages.findByClientID(user, client)
-    }).then((msgs) => {
-      messages = msgs.filter((msg) => {
+    .then((resp) => {
+      conversations = resp;
+
+      let conversationIds = conversations.filter((conversation) => {
+        return conversation.client == Number(client);
+      }).map((conversation) => {
+        return conversation.convid;
+      });
+
+      return Messages.findByConversations(conversationIds);
+    }).then((resp) => {
+
+      messages = resp.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == "all") {
           return msg.convo == convoFilter || convoFilter == null;
         } else { 
@@ -192,16 +213,26 @@ module.exports = {
       
       return CommConns.findByClientID(client)
     }).then((communications) => {
-      res.render("clients/messages", {
-        hub: {
-          tab: "messages",
-          sel: method ? method : "all"
-        },
-        conversations: conversations,
-        messages: messages,
-        communications: communications,
-        convoFilter: convoFilter
-      });
+
+      let unclaimed = conversations.filter((conversation) => {
+        return !conversation.accepted;
+      })
+
+      if (unclaimed.length) {
+        unclaimed = unclaimed[0];
+        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
+      } else {
+        res.render("clients/messages", {
+          hub: {
+            tab: "messages",
+            sel: method ? method : "all"
+          },
+          conversations: conversations,
+          messages: messages,
+          communications: communications,
+          convoFilter: convoFilter
+        });
+      }
     }).catch(res.error500);
   },
 
@@ -297,7 +328,7 @@ module.exports = {
 
   transcript(req, res) {
     let withUser = req.query.with || null;
-    Messages.findByClientID(withUser, req.params.client)
+    Messages.findBetweenUserAndClient(withUser, req.params.client)
     .then((messages) => {
       
       // Format into a text string
@@ -319,7 +350,7 @@ module.exports = {
 
     let messages;
 
-    Messages.findByClientID(user, client)
+    Messages.findBetweenUserAndClient(user, client)
     .then((msgs) => {
       messages = msgs;
       return CommConns.findByClientID(client)

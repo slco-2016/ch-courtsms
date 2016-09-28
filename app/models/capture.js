@@ -49,10 +49,10 @@ class CaptureBoard {
     return new Promise((fulfill, reject) => {
       CaptureBoard.findByOrg(orgId)
       .then((conversations) => {
-        let conversation = conversations.filter((convo) => {
-          return conversationId == convo.convo;
-        })[0];
-        fulfill(conversation)
+        conversations = conversations.filter((convo) => {
+          return Number(conversationId) == convo.convo;
+        });
+        fulfill(conversations[0])
       }).catch(reject);
     })
   }

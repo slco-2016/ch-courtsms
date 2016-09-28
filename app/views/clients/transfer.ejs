@@ -14,7 +14,7 @@
 <div class="cardBody">
 
   <div class="formRow">
-    <% if (user.class !== "owner") { %>
+    <% if (user.class !== "owner" && user.class !== "support") { %>
       <% if (allDepartments) { %>
         <a href="<%=`/clients/${client.clid}/transfer?allDepartments=false`%>">
           <input type="submit" id="useTemplate" class="formSubmit inverse" value="Transfer within your department">
@@ -58,6 +58,7 @@
 
 <script src="/components/typeahead.js/dist/typeahead.jquery.min.js"></script>
 <script type="text/javascript" class="JStransferClient">
+  var orgLevel = <%- level === "org" %>;
   var users = <%- JSON.stringify(users); %>;
 </script>
 

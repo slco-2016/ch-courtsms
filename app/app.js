@@ -76,6 +76,7 @@ const AlertsController          = require('./controllers/alerts');
 const CaptureBoardController    = require('./controllers/capture');
 const ClientsController         = require('./controllers/clients');
 const ColorsController          = require('./controllers/colors');
+const ConversationsController   = require('./controllers/conversations');
 const CommunicationsController  = require('./controllers/communications');
 const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
@@ -89,6 +90,9 @@ const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
 
 app.get("/", RootController.index);
+
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
 
 app.get("/login", AccessController.login);
 app.post("/login", 
@@ -149,6 +153,7 @@ app.post("/clients/create", ClientsController.create);
 
 app.get("/clients/:client", ClientsController.clientCard);
 app.get("/clients/:client/address", ClientsController.addressCraft);
+app.get("/clients/:client/address/templates", ClientsController.templates);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
 app.post("/clients/:client/edit", ClientsController.update);
@@ -162,6 +167,9 @@ app.post("/clients/:client/messages", ClientsController.messagesSubmit);
 
 app.get("/clients/:client/edit/color", ColorsController.select);
 app.post("/clients/:client/edit/color", ColorsController.attribute);
+
+app.get("/clients/:client/conversations/:conversation/claim", ConversationsController.claimOption);
+app.post("/clients/:client/conversations/:conversation/claim", ConversationsController.claim);
 
 app.get("/clients/:client/communications", CommunicationsController.index);
 app.get("/clients/:client/communications/create", CommunicationsController.new);
@@ -200,6 +208,7 @@ app.post("/org/clients/create", ClientsController.create);
 
 app.get("/org/clients/:client", ClientsController.clientCard);
 app.get("/org/clients/:client/address", ClientsController.addressCraft);
+app.get("/org/clients/:client/address/templates", ClientsController.templates);
 app.post("/org/clients/:client/address", ClientsController.addressSubmit);
 app.get("/org/clients/:client/edit", ClientsController.edit);
 app.get("/org/clients/:client/edit", ClientsController.update);
@@ -219,9 +228,6 @@ app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);
-
-app.post("/twilio/sms", TwilioController.receiveText);
-app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Redundant catch all
 app.get("/*", (req, res) => {

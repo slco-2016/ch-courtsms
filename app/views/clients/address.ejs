@@ -47,7 +47,7 @@
       <select class="blueSelect" name="commID" required>
 
         <!-- default to smart select always -->
-        <option value="null" selected>Smart Select</option>
+        <option value="null" selected>Smart Select (Best Contact Method)</option>
         <% client.communications.forEach(function (comm) { %>
           <option value="<%= comm.commid %>"><%= `${comm.name} (${comm.value})` %></option>
         <% }) %>

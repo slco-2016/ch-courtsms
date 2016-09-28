@@ -288,6 +288,20 @@ body {
       .card .cardBody .formSubmit.inverse:hover {
         background-color: #FFF;
         color: #4A90E2; }
+    .card .cardBody .formSubmit.red {
+      border: 2px solid #E50000;
+      color: #E50000;
+      background-color: #FFF; }
+      .card .cardBody .formSubmit.red:hover {
+        background-color: #E50000;
+        color: #FFF; }
+    .card .cardBody .formSubmit.green {
+      border: 2px solid #00e500;
+      color: #00e500;
+      background-color: #FFF; }
+      .card .cardBody .formSubmit.green:hover {
+        background-color: #00e500;
+        color: #FFF; }
   .card .cardBody .orBreak {
     margin-right: auto;
     margin-left: auto;

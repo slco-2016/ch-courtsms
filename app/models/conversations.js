@@ -3,11 +3,27 @@
 // Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
-
+const BaseModel = require("../lib/models").BaseModel
 
 
 // Class
-class Conversations {
+class Conversations extends BaseModel {
+
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "convid",
+        "cm",
+        "client",
+        "subject",
+        "open",
+        "accepted",
+        "updated",
+        "created"
+      ]
+    })
+  }
 
   static findByUser (userID) {
     return new Promise((fulfill, reject) => {
@@ -15,6 +31,77 @@ class Conversations {
         .where("cm", userID)
         .orderBy("updated", "desc")
       .then((conversations) => {
+        fulfill(conversations);
+      }).catch(reject);
+    })
+  }
+
+  static findByIds (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
+    return new Promise((fulfill, reject) => {
+      let conversations;
+      db("convos")
+        .whereIn("convid", conversationIds)
+      .then((convos) => {
+        conversations = convos;
+        
+        // Did this because can't require Messages b/c Messages requires Conversations...
+        return db("msgs")
+          .select("msgs.*", 
+                  "sentiment.sentiment",
+                  "commconns.client",
+                  "commconns.name as commconn_name", 
+                  "comms.value as comm_value",
+                  "comms.type as comm_type")
+          .leftJoin("comms", "comms.commid", "msgs.comm")
+          .leftJoin("convos", "convos.convid", "msgs.convo")
+          .leftJoin("commconns", function () {
+              this
+                .on("commconns.comm", "msgs.comm")
+                .andOn("commconns.client", "convos.client");
+            })
+          .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
+          .whereIn("convo", conversationIds)
+          .orderBy("created", "asc")
+
+      }).then((messages) => {
+        conversations = conversations.map((conversation) => {
+          conversation.messages = [];
+          messages.forEach((message) => {
+            if (message.convo == conversation.convid) {
+              conversation.messages.push(message);
+            }
+          });
+          return conversation;
+        });
+        
+        fulfill(conversations);
+      }).catch(reject);
+    })
+  }
+
+  static makeClaimDecision (conversationsId, userId, clientId, accepted) {
+    if (typeof accepted == "undefined") {
+      accepted = true;
+    }
+    accepted = accepted == true ? true : false;
+
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .update({ open: false })
+        .where("client", clientId)
+        .andWhere("cm", userId)
+      .then(() => {
+        return db("convos")
+        .update({
+          cm: userId,
+          client: clientId,
+          open: accepted,
+          accepted: accepted
+        })
+        .where("convid", conversationsId)
+        .returning("*")
+      }).then((conversations) => {
         fulfill(conversations);
       }).catch(reject);
     })
@@ -45,7 +132,7 @@ class Conversations {
     })
   }
 
-  static findOrCreate (clients, commId, from) {
+  static findOrCreate (clients, commId) {
     if (!Array.isArray(clients)) clients = [clients];
     return new Promise((fulfill, reject) => {
 
@@ -79,7 +166,7 @@ class Conversations {
             .innerJoin("msgs", "comms.commid", "msgs.comm")
             .innerJoin("convos", "msgs.convo", "convos.convid")
             .where("convos.open", true)
-            .andWhere("comms.value", from)
+            .andWhere("comms.commid", commId)
             .andWhere("convos.cm", null)
             .andWhere("convos.client", null)
             .groupBy("convos.convid");
@@ -108,8 +195,8 @@ class Conversations {
             .insert(insertList)
             .returning("*");
         }
-      }).then(function (conversations) {
-        fulfill(convos);
+      }).then((conversations) => {
+        this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })
   }
@@ -122,7 +209,7 @@ class Conversations {
         .orderBy("updated", "desc")
         .limit(1)
       .then((convos) => {
-        fulfill(convos[0]);
+        this._getSingleResponse(convos, fulfill);
       }).catch(reject);
     }); 
   }
@@ -133,7 +220,7 @@ class Conversations {
         .where("convo", conversationID)
         .orderBy("created", "asc")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill);
       }).catch(reject);
     });
   }
@@ -151,7 +238,7 @@ class Conversations {
   }
 
   static create(userID, clientID, subject, open) {
-    if (!open) open = true;
+    if (typeof open == "undefined") open = true;
     return new Promise((fulfill, reject) => {
       db("convos")
         .insert({
@@ -161,8 +248,9 @@ class Conversations {
           open: open,
           accepted: true,
         })
+        .returning("*")
       .then((conversations) => {
-        fulfill(conversations[0]);
+        this._getSingleResponse(conversations, fulfill);
       }).catch(reject)
     })
   }

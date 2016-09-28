@@ -1,10 +1,10 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$lightbluegrey:#6783a1;
+$bluegrey:    #516a84;
+$darkbluegrey:#3c5065;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -193,9 +193,16 @@ $darkblue:    #344289;
       font-size: 14px;
 
       span.button {
+        font-size: 14px;
         padding: 5px;
+        padding-bottom: 3px;
         border-radius: 3px;
         cursor: pointer;
+        margin-left: 5px;
+
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
 
         .ss-icon {
           // font-size: 24px;
@@ -203,6 +210,13 @@ $darkblue:    #344289;
 
         .hidden {
           display: none;
+        }
+
+        &.selected {
+          border-bottom: 3px solid $lightblue;
+          &.orgLevel {
+            border-bottom: 3px solid $lightbluegrey;
+          }
         }
 
         &:hover {

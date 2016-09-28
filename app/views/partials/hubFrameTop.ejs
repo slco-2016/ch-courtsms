@@ -2,12 +2,14 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
-  <div class="navSub">
+  <div class="navSub <% if (level == "org") { %>orgLevel<% } %>">
   
     <% if (level == "org") { %>
-      <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
-        <div class="title"><a href="/org">Metrics Dashboard</a></div>
-      </div>
+      <% if (user.class !== "support") { %>
+        <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
+          <div class="title"><a href="/org">Metrics Dashboard</a></div>
+        </div>
+      <% } %>
 
       <% if (user.class == "owner") { %>
         <%- leftTab('departments', hub, level, ['active', 'inactive']) %>
@@ -30,12 +32,13 @@
       <%- leftTab('groups', hub, level, ['current', 'deleted']) %>
     <% } %>
 
-
     <!-- Right "action" buttons -->
     <% if (level =="org") { %>
-      <%- rightTab('numbers', 'phone', level) %>
-      <%- rightTab('departments', 'building', level) %>
-      <%- rightTab('users', 'user-plus', level) %>
+      <% if (user.class !== "support") { %>
+        <%- rightTab('numbers', 'phone', level) %>
+        <%- rightTab('departments', 'building', level) %>
+        <%- rightTab('users', 'user-plus', level) %>
+      <% } %>
     <% } %>
 
     <!-- primary -->

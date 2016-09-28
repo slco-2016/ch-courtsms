@@ -2,9 +2,9 @@
 
 <div class="cardHead">
   <a href="/clients"><% include ../partials/cardExit %></a>
-  <div class="cardTitle">Notification Message</div>
+  <div class="cardTitle">Select template</div>
   <div class="cardSubtitle">
-    Use notifications to schedule messages to be sent in the future.
+    Use templates to make sending messages quicker and easier.
   </div>
 </div>
 
@@ -40,7 +40,7 @@
     <% } %>
   </div>
 
-  <form method="get" action="/clients/<%=client.clid%>/address">
+  <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
     <input type="hidden" name="title"   id="templateTitle">    
     <input type="hidden" name="content" id="templateContent">
 

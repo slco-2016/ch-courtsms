@@ -33,22 +33,24 @@ const CommConns = require("./commConns");
 // Class
 class Messages {
 
-  static findByClientID (userID, clientID) {
+  static findBetweenUserAndClient (userId, clientId) {
     return new Promise((fulfill, reject) => {
-      Conversations.findByUser(userID)
+      Conversations.findByUser(userId)
       .then((conversations) => {
-        conversations = conversations.map(function (conversation) {
+        let conversationIds = conversations.filter((conversation) => {
+          return conversation.client == Number(clientId);
+        }).map((conversation) => {
           return conversation.convid;
         });
-        return Messages.findByConversations(clientID, conversations)
+        return Messages.findByConversations(conversationIds)
       }).then((messages) => {
-          fulfill(messages);
+        fulfill(messages);
       }).catch(reject);
     });
   }
 
-  static findByConversations (clientID, conversationIDs) {
-    if (!Array.isArray(conversationIDs)) conversationIDs = [conversationIDs];
+  static findByConversations (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
     
     return new Promise((fulfill, reject) => {
 
@@ -57,16 +59,17 @@ class Messages {
                 "sentiment.sentiment",
                 "commconns.client",
                 "commconns.name as commconn_name", 
-                "commconns.value as comm_value",
-                "commconns.type as comm_type")
-        .leftJoin(
-          db("commconns")
-            .join("comms", "commconns.comm", "comms.commid")
-            .as("commconns"),
-          "commconns.commid", "msgs.comm")
+                "comms.value as comm_value",
+                "comms.type as comm_type")
+        .leftJoin("comms", "comms.commid", "msgs.comm")
+        .leftJoin("convos", "convos.convid", "msgs.convo")
+        .leftJoin("commconns", function () {
+            this
+              .on("commconns.comm", "msgs.comm")
+              .andOn("commconns.client", "convos.client");
+          })
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
-        .whereIn("convo", conversationIDs)
-        .andWhere("client", clientID)
+        .whereIn("convo", conversationIds)
         .orderBy("created", "asc")
       .then((messages) => {
         fulfill(messages)
@@ -265,10 +268,10 @@ class Messages {
     }); 
   }
 
-  static sendOne (commID, content, conversationID) {
+  static sendOne (commId, content, conversationId) {
     return new Promise((fulfill, reject) => {
       var contentArray = content.match(/.{1,1599}/g);
-      Communications.findById(commID)
+      Communications.findById(commId)
       .then((communication) => {
         contentArray.forEach(function (contentPortion, contentIndex) {
           twClient.sendMessage({
@@ -279,9 +282,13 @@ class Messages {
             if (err) {
               reject(err)
             } else {
-              const MessageSID = msg.sid;
+              const MessageSid = msg.sid;
               const MessageStatus = msg.status;
-              Messages.create(conversationID, commID, contentPortion, MessageSID, MessageStatus)
+              Messages.create(conversationId, 
+                              commId, 
+                              contentPortion, 
+                              MessageSid, 
+                              MessageStatus)
               .then(() => {
                 if (contentIndex == contentArray.length - 1) fulfill();
               }).catch(reject);
@@ -292,21 +299,43 @@ class Messages {
     });
   }
 
-  static create (conversationID, commID, content, MessageSID, MessageStatus) {
+  static createMany (conversationIds, commId, content, MessageSid, MessageStatus) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .insert({
-          convo: conversationID,
-          comm: commID,
+      let insertArray = conversationIds.map((conversationId) => {
+        return {
+          convo: conversationId,
+          comm: commId,
           content: content,
           inbound: false,
           read: true,
-          tw_sid: MessageSID,
+          tw_sid: MessageSid,
+          tw_status: MessageStatus
+        }
+      });
+      db("msgs")
+        .insert(insertArray)
+        .returning("*")
+      .then((messages) => {
+        fulfill(messages);
+      }).catch(reject)
+    });
+  }
+
+  static create (conversationId, commId, content, MessageSid, MessageStatus) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .insert({
+          convo: conversationId,
+          comm: commId,
+          content: content,
+          inbound: false,
+          read: true,
+          tw_sid: MessageSid,
           tw_status: MessageStatus
         })
-        .returning("msgid")
-      .then((messageIDs) => {
-        fulfill(messageIDs[0]);
+        .returning("*")
+      .then((messages) => {
+        fulfill(messages);
       }).catch(reject)
     })
   }

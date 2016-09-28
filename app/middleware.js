@@ -36,17 +36,12 @@ module.exports = {
   attachRoutingTools(req, res, next) {
 
     req.getUser = () => {
+      let id = req.user.cmid;
       try {
-        let id = req.user.cmid;
-
-        // TODO: Make sure this effectively handles all cases
-        if (res.locals.client) {
-          id = res.locals.clients.cm;
-        }
-
+        id = res.locals.client.cm;
         return id;
       } catch(e) {
-        return null;
+        return id;
       }
     };
 
@@ -54,7 +49,7 @@ module.exports = {
       let endPath = "";
       try {
         let base = "";
-        if (res.locals.level === "org") {
+        if (res.locals.level == "org") {
           base = "/org";
         }
         endPath = `${base}${path}`;
@@ -159,6 +154,14 @@ module.exports = {
             </a>
           `;
         });
+      }
+
+      if (level == "org") {
+        if (capitalized == "Clients") {
+          capitalized = "All Clients";
+        } else if (capitalized == "Captured") {
+          capitalized = "Unclaimed Numbers";
+        }
       }
 
       return `
