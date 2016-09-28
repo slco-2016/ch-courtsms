@@ -85,14 +85,15 @@ const NotificationsController   = require('./controllers/notifications');
 const PhoneNumbers              = require('./controllers/phoneNumbers');
 const RootController            = require('./controllers/root');
 const SettingsController        = require('./controllers/settings');
+const SmsController             = require('./controllers/sms');
 const TemplatesController       = require('./controllers/templates');
-const TwilioController          = require('./controllers/twilio');
 const UsersController           = require('./controllers/users');
+const VoiceController           = require('./controllers/voice');
 
 app.get("/", RootController.index);
 
-app.post("/twilio/sms", TwilioController.receiveText);
-app.post("/twilio/voice", TwilioController.receiveVoice);
+app.post("/sms/webhook", SmsController.receiveText);
+app.post("/voice/webhook", VoiceController.receiveVoice);
 
 app.get("/login", AccessController.login);
 app.post("/login", 
