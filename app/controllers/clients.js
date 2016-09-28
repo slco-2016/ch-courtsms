@@ -172,16 +172,16 @@ module.exports = {
     .then((resp) => {
       conversations = resp;
 
-      let conversationIds = conversations.map((conversation) => {
+      let conversationIds = conversations.filter((conversation) => {
+        return conversation.client == Number(client);
+      }).map((conversation) => {
         return conversation.convid;
-      }).filter((conversation) => {
-        return conversation.client == client;
       });
 
-      // return Messages.findByConversations(conversationIds)
-      return Messages.findBetweenUserAndClient(user, client);
-    }).then((msgs) => {
-      messages = msgs.filter((msg) => {
+      return Messages.findByConversations(conversationIds)
+    }).then((resp) => {
+
+      messages = resp.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == "all") {
           return msg.convo == convoFilter || convoFilter == null;
         } else { 

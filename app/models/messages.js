@@ -59,13 +59,15 @@ class Messages {
                 "sentiment.sentiment",
                 "commconns.client",
                 "commconns.name as commconn_name", 
-                "commconns.value as comm_value",
-                "commconns.type as comm_type")
-        .leftJoin(
-          db("commconns")
-            .join("comms", "commconns.comm", "comms.commid")
-            .as("commconns"),
-          "commconns.commid", "msgs.comm")
+                "comms.value as comm_value",
+                "comms.type as comm_type")
+        .leftJoin("comms", "comms.commid", "msgs.comm")
+        .leftJoin("convos", "convos.convid", "msgs.convo")
+        .leftJoin("commconns", function () {
+            this
+              .on("commconns.comm", "msgs.comm")
+              .andOn("commconns.client", "convos.client");
+          })
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIds)
         .orderBy("created", "asc")
