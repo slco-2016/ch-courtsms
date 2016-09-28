@@ -194,10 +194,15 @@ $darkblue:    #344289;
 
       span.button {
         font-size: 14px;
-        padding: 5px 3px 5px 7px;
+        padding: 5px;
+        padding-bottom: 3px;
         border-radius: 3px;
         cursor: pointer;
         margin-left: 5px;
+
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
 
         .ss-icon {
           // font-size: 24px;
@@ -208,9 +213,9 @@ $darkblue:    #344289;
         }
 
         &.selected {
-          background-color: $lightblue;
+          border-bottom: 3px solid $lightblue;
           &.orgLevel {
-            background-color: $lightbluegrey;
+            border-bottom: 3px solid $lightbluegrey;
           }
         }
 

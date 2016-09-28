@@ -5,7 +5,6 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 const BaseModel = require("../lib/models").BaseModel
 
-const Messages = require("./messages");
 
 // Class
 class Conversations extends BaseModel {
@@ -45,17 +44,64 @@ class Conversations extends BaseModel {
         .whereIn("convid", conversationIds)
       .then((convos) => {
         conversations = convos;
-        return Messages.findByConversations(conversationIds);
+        
+        // Did this because can't require Messages b/c Messages requires Conversations...
+        return db("msgs")
+          .select("msgs.*", 
+                  "sentiment.sentiment",
+                  "commconns.client",
+                  "commconns.name as commconn_name", 
+                  "comms.value as comm_value",
+                  "comms.type as comm_type")
+          .leftJoin("comms", "comms.commid", "msgs.comm")
+          .leftJoin("convos", "convos.convid", "msgs.convo")
+          .leftJoin("commconns", function () {
+              this
+                .on("commconns.comm", "msgs.comm")
+                .andOn("commconns.client", "convos.client");
+            })
+          .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
+          .whereIn("convo", conversationIds)
+          .orderBy("created", "asc")
+
       }).then((messages) => {
         conversations = conversations.map((conversation) => {
           conversation.messages = [];
           messages.forEach((message) => {
             if (message.convo == conversation.convid) {
-              conversatio.messages.push(message);
+              conversation.messages.push(message);
             }
           });
           return conversation;
         });
+        
+        fulfill(conversations);
+      }).catch(reject);
+    })
+  }
+
+  static makeClaimDecision (conversationsId, userId, clientId, accepted) {
+    if (typeof accepted == "undefined") {
+      accepted = true;
+    }
+    accepted = accepted == true ? true : false;
+
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .update({ open: false })
+        .where("client", clientId)
+        .andWhere("cm", userId)
+      .then(() => {
+        return db("convos")
+        .update({
+          cm: userId,
+          client: clientId,
+          open: accepted,
+          accepted: accepted
+        })
+        .where("convid", conversationsId)
+        .returning("*")
+      }).then((conversations) => {
         fulfill(conversations);
       }).catch(reject);
     })

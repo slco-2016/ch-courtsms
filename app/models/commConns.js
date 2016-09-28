@@ -80,7 +80,6 @@ class CommConns {
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
       .then((communication) => {
-        console.log("XX" , clientId, type, name, value);
         // if a communication method already exists just create a reference 
         if (communication) {
           db("commconns")
