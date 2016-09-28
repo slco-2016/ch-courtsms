@@ -11,20 +11,31 @@
 <% } %>
 
 <div class="header">
-  <div class="column">message</div>
+  <% if (hub.sel == "closed") { %>
+    <div class="column">-</div>
+  <% } else { %>
+    <div class="column">message</div>
+  <% } %>
   <div class="column">color</div>
   <div class="column">client name</div>
   <div class="column">unread</div>
   <div class="column">last activity</div>
   <div class="column">case manager</div>
+
   <% if (user.class !== "support"){ %>
     <div class="column">transcript</div>
   <% } else { %>
     <div class="column">-</div>
   <% } %>
+
   <div class="column">edit</div>
   <div class="column">transfer</div>
-  <div class="column">remove</div>
+
+  <% if (hub.sel == "closed") { %>
+    <div class="column">restore</div>
+  <% } else { %>
+    <div class="column">remove</div>
+  <% } %>
 </div>
 
 <% if (clients.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
@@ -79,7 +90,6 @@
     
     <div class="column">
       <small>
-        <i class="fa fa-clock-o" aria-hidden="true"></i>
         <%= moment.tz(client.updated, organization.tz).fromNow() %>
       </small>
     </div>

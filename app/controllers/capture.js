@@ -113,8 +113,9 @@ module.exports = {
   },
 
   removeConfirm(req, res) {
-    let conversationId = Number(req.params.conversation);
-    CaptureBoard.findByConversationId(conversationId)
+    let conversationId = req.params.conversation;
+    let orgId = req.user.org;
+    CaptureBoard.findByConversationId(orgId, conversationId)
     .then((conversation) => {
       if (conversation) {
         res.render("capture/removeConfirm", {

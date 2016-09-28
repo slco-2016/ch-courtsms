@@ -159,6 +159,8 @@ module.exports = {
       if (level == "org") {
         if (capitalized == "Clients") {
           capitalized = "All Clients";
+        } else if (capitalized == "Captured") {
+          capitalized = "Unclaimed Numbers";
         }
       }
 

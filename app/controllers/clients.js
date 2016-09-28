@@ -169,9 +169,17 @@ module.exports = {
 
     let conversations, messages;
     Conversations.findByUserAndClient(user, client)
-    .then((convos) => {
-      conversations = convos;
-      return Messages.findBetweenUserAndClient(user, client)
+    .then((resp) => {
+      conversations = resp;
+
+      let conversationIds = conversations.map((conversation) => {
+        return conversation.convid;
+      }).filter((conversation) => {
+        return conversation.client == client;
+      });
+
+      // return Messages.findByConversations(conversationIds)
+      return Messages.findBetweenUserAndClient(user, client);
     }).then((msgs) => {
       messages = msgs.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == "all") {

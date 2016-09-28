@@ -37,10 +37,10 @@ class Messages {
     return new Promise((fulfill, reject) => {
       Conversations.findByUser(userId)
       .then((conversations) => {
-        let conversationIds = conversations.map((conversation) => {
+        let conversationIds = conversations.filter((conversation) => {
+          return conversation.client == Number(clientId);
+        }).map((conversation) => {
           return conversation.convid;
-        }).filter((conversation) => {
-          return conversation.client == clientId;
         });
         return Messages.findByConversations(conversationIds)
       }).then((messages) => {
@@ -49,8 +49,8 @@ class Messages {
     });
   }
 
-  static findByConversations (conversationIDs) {
-    if (!Array.isArray(conversationIDs)) conversationIDs = [conversationIDs];
+  static findByConversations (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
     
     return new Promise((fulfill, reject) => {
 
@@ -67,7 +67,7 @@ class Messages {
             .as("commconns"),
           "commconns.commid", "msgs.comm")
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
-        .whereIn("convo", conversationIDs)
+        .whereIn("convo", conversationIds)
         .orderBy("created", "asc")
       .then((messages) => {
         fulfill(messages)
