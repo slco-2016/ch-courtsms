@@ -123,16 +123,20 @@
       font-size: 14px; }
       .applicationFrame .navHeader .rightLogout span.button {
         font-size: 14px;
-        padding: 5px 3px 5px 7px;
+        padding: 5px;
+        padding-bottom: 3px;
         border-radius: 3px;
         cursor: pointer;
-        margin-left: 5px; }
+        margin-left: 5px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box; }
         .applicationFrame .navHeader .rightLogout span.button .hidden {
           display: none; }
         .applicationFrame .navHeader .rightLogout span.button.selected {
-          background-color: #4A90E2; }
+          border-bottom: 3px solid #4A90E2; }
           .applicationFrame .navHeader .rightLogout span.button.selected.orgLevel {
-            background-color: #6783a1; }
+            border-bottom: 3px solid #6783a1; }
         .applicationFrame .navHeader .rightLogout span.button:hover {
           background-color: #3F69B6; }
           .applicationFrame .navHeader .rightLogout span.button:hover .hidden {
