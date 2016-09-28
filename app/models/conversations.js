@@ -193,7 +193,7 @@ class Conversations extends BaseModel {
         if (conversations.length) {
           fulfill(conversations);
           return null;
-        } else {
+        } else if (clients.length) {
           // Make a new conversation(s)
           let insertList = [];
           let ableToAccept = clients.length == 1 ? true : false;
@@ -215,6 +215,7 @@ class Conversations extends BaseModel {
             .returning("*");
         }
       }).then((conversations) => {
+        console.log("conversations", conversations)
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })

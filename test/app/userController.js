@@ -405,7 +405,21 @@ describe('Basic http req tests', function() {
       })
   });
 
-  it('twilio sends an sms from a new number', function(done) {
+  it('twilio sends an sms from an existing number', function(done) {
+    anonymous.post('/sms/webhook')
+      .send({
+        From: "10008384828",
+        Body: "Lorem ipsum",
+        SmsStatus: "clear",
+        MessageSid: 12313121
+      })
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('twilio sends an sms from a new unknown number', function(done) {
     anonymous.post('/sms/webhook')
       .send({
         From: "18589057365",
@@ -415,7 +429,6 @@ describe('Basic http req tests', function() {
       })
       .expect(200)
       .end(function(err, res) {
-        console.log(res.text);
         done(err);
       })
   });

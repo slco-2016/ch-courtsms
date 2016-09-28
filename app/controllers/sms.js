@@ -26,6 +26,7 @@ module.exports = {
 
       return Conversations.findByIds(conversationIds)
     }).then((resp) => {
+      console.log("RESP", resp)
 
       resp.forEach((conversation) => {
         let content;
@@ -64,12 +65,12 @@ module.exports = {
           }
           if (content) {
             // Switch to only send when app is in production
-            // if (process.env.CCENV && process.env.CCENV == "production") {
+            if (process.env.CCENV !== "testing") {
               Messages.sendOne(commId, content, conversationId)
               .then(() => { }).catch((error) => {
                 console.log(error);
               });
-            // }
+            }
           }
 
           req.logActivity.client(conversation.client)
