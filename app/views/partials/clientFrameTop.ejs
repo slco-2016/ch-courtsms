@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <% if (user.class !== "owner") { %>
+    <% if (user.class !== "owner" || client.cm == user.cmid) { %>
       <div class="rightTab <%= hub.tab == 'messages' ? 'open' : 'closed' %>">
         <div class="title"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">Messages</a></div>
         <div class="option <%= hub.sel == 'all' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">All</a></div>

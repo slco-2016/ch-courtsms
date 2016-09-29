@@ -273,28 +273,50 @@ class Messages {
       var contentArray = content.match(/.{1,1599}/g);
       Communications.findById(commId)
       .then((communication) => {
-        contentArray.forEach(function (contentPortion, contentIndex) {
-          twClient.sendMessage({
-            to: TESTENV ? "+18589057365" : communication.value,
-            from: TWILIO_NUM,
-            body: content
-          }, (err, msg) => {
-            if (err) {
-              reject(err)
-            } else {
-              const MessageSid = msg.sid;
-              const MessageStatus = msg.status;
-              Messages.create(conversationId, 
-                              commId, 
-                              contentPortion, 
-                              MessageSid, 
-                              MessageStatus)
-              .then(() => {
-                if (contentIndex == contentArray.length - 1) fulfill();
-              }).catch(reject);
-            }
-          })
-        });
+        if (communication.type == "email") {
+          // CaseManager.findById(cmid)
+          //   .then((caseManager) => {
+          //     return mailgun.sendEmail(
+          //       this.value,
+          //       caseManager.getClientCommEmail(),
+          //       `New message from ${caseManager.getFullName()}`,
+          //       content
+          //     )
+          //   }).then((response) => {
+
+          //     console.log(response)
+          //     return this._createMessage(
+          //       convid,
+          //       content,
+          //       response.id,
+          //       response.message
+          //     )
+          //   }).then(fulfill).catch(reject)
+          // }
+        } else if (communication.type == "cell") {
+          contentArray.forEach(function (contentPortion, contentIndex) {
+            twClient.sendMessage({
+              to: TESTENV ? "+18589057365" : communication.value,
+              from: TWILIO_NUM,
+              body: content
+            }, (err, msg) => {
+              if (err) {
+                reject(err)
+              } else {
+                const MessageSid = msg.sid;
+                const MessageStatus = msg.status;
+                Messages.create(conversationId, 
+                                commId, 
+                                contentPortion, 
+                                MessageSid, 
+                                MessageStatus)
+                .then(() => {
+                  if (contentIndex == contentArray.length - 1) fulfill();
+                }).catch(reject);
+              }
+            })
+          });          
+        }
       }).catch(reject);
     });
   }
@@ -337,6 +359,16 @@ class Messages {
       .then((messages) => {
         fulfill(messages);
       }).catch(reject)
+    })
+  }
+
+  static findAllByPlatformId(platformId) {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .where("tw_sid", platformId)
+        then((objects) => {
+          fulfill(objects)
+        }).catch(reject);
     })
   }
 

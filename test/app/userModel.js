@@ -40,6 +40,15 @@ describe('User checks', function() {
     })
   })
 
+  it('Should be able to get user by clientcomm email', function(done) {
+    let email = "Owner.test@clientcomm.org"
+    Users.findByClientCommEmail(email)
+    .then((user) => {
+      user.cmid.should.be.exactly(1)
+      done()
+    }).catch(done)
+  })
+
   it('Should return null for user that doesn\'t exist', function(done) {
     Users.findByID(80085).then((user) => {
       should.not.exist(user)
