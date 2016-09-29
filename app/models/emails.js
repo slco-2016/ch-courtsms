@@ -15,7 +15,7 @@ class Emails extends BaseModel{
         'raw',
         'from',
         'to',
-        'msg_id',
+        'messageId',
         'created',
       ],
     })

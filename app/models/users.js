@@ -27,7 +27,47 @@ class Users extends BaseModel {
     })
   }
 
+  static clientCommEmail(email) {
+    let parts = email.split('@')
+
+    let emailName = parts[0]
+
+    let domainParts = parts[1].split('.')
+    domainParts.pop()
+    let emailOrg = domainParts.join('.') // foo.bar.com
+
+    return `${emailName}.${emailOrg}@clientcomm.org`
+  }
+
+  getFullName() {
+    return `${this.first} ${this.last}`
+  }
+
+  getClientCommEmail() {
+    let rawEmail = CaseManager.clientCommEmail(this.email)
+    return `${this.getFullName()} <${rawEmail}>`
+  }
+
   static returnUserIdFromResponse(res) {
+
+  }
+
+  static findByClientCommEmail(email) {
+    return new Promise((fulfill, reject) => {
+      // joanne@slco.org => joanne.slco@clientcomm.org
+      let usernameParts = email.split("@")[0].split(".")
+      let host = usernameParts.pop()
+      let username = usernameParts.join('.')
+      let addressPart = username + "@" + host
+      addressPart = addressPart.toLowerCase()
+      db("cms")
+        .where(db.raw('LOWER(email)'), 'like', `${addressPart}%`)
+        .limit(1)
+      .then((users) => {
+        this._getSingleResponse(users, fulfill)
+      }).catch(reject)
+    })
+
 
   }
 

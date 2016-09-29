@@ -15,7 +15,6 @@ class Attachments extends BaseModel {
         'id',
         'key',
         'created',
-        'msg_id',
       ]
     })
   }
@@ -39,7 +38,6 @@ class Attachments extends BaseModel {
         return Attachment.create({
           key: key,
           contentType: mailgunObj['content-type'],
-          msg_id: msgid,
         })
       }).then(fulfill).catch(reject)
     })

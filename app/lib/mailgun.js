@@ -1,5 +1,5 @@
 const request = require('request');
-const credentials = require('../credentials')
+const credentials = require('../../credentials')
 const Promise = require("bluebird");
 
 module.exports = {

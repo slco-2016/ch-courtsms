@@ -2,15 +2,20 @@ const mimelib = require('mimelib');
 const credentials = require('../../credentials')
 const request = require('request');
 
-const Messages = require('../models/messages')
-const Emails = require('../models/emails')
 const Attachments = require('../models/attachments')
+const Communications = require('../models/communications')
+const Emails = require('../models/emails')
+const Messages = require('../models/messages')
+const Users = require('../models/users')
 
 const sms = require('../lib/sms')
 
 const Promise = require("bluebird");
 
 module.exports = {
+  _updateMessages() {
+    // TODO:
+  },
   webhook(req, res) {
     let event = req.body.event
     console.log(req.body)
@@ -68,13 +73,14 @@ module.exports = {
 
     var cleanBody = req.body['stripped-text'] || req.body['body-plain']
 
-    var fromAddress = mimelib.parseAddresses(req.body.From)[0].address
+    var fromAddresses = mimelib.parseAddresses(req.body.From)
+    var fromAddress = fromAddresses[0]
     var toAddresses = mimelib.parseAddresses(req.body.To)
 
-    console.log(fromAddress)
-    console.log(toAddresses)
-    console.log(`Email arrived for ${recipient}`)
-    console.log(`Content is: \n${cleanBody}`)
+    // console.log(fromAddress)
+    // console.log(toAddresses)
+    // console.log(`Email arrived for ${recipient}`)
+    // console.log(`Content is: \n${cleanBody}`)
     
     let attachments = []
     if (req.body.attachments) {
@@ -83,34 +89,47 @@ module.exports = {
 
     let msgid
 
-    sms.processIncoming(
-        fromAddress.address,
-        // toAddresses, 
-        [cleanBody], 
-        // "email",
-        "delivered",
-        messageId
-    ).then((conversations) =>{
-        return Emails.create({
-          raw: JSON.stringify(req.body),
-          from: fromAddress,
-          to: JSON.stringify(toAddresses),
-          cleanBody: cleanBody,
-          // msg_id: message_id,
-        })
+    // email comes in    // from unknown user
+    // states who it is going to
+    // register email in system
+    // CommConn connects conversation and client
+    // find if that client is paired with that case manager
+    // add message to open conversation if open converstion is less than 24hrs old
 
-    }).then((email) => {
-      res.send('ok, thanks');
+    // capture board needs communication and conversation
+    // client is null and casemanager is null
+
+
+    let communication, users, email
+    Emails.create({
+      raw: JSON.stringify(req.body),
+      from: fromAddress.address,
+      to: JSON.stringify(toAddresses),
+      cleanBody: cleanBody,
+      messageId: messageId,
+    }).then((resp) => {
+      email = resp;
       return new Promise((fulfill, reject) => {
         fulfill(attachments)
       })
     }).map((attachment) => {
-      console.log(attachment)
       return Attachments.createFromMailgunObject(attachment, msgid)
     }).then((attachments) => {
-      console.log(attachments)
-    }).catch((err) => {
-      console.log(err)
+      return Communications.getOrCreateFromValue(fromAddress.address, "email")
+    }).then((resp) => {
+      communication = resp;
+      return new Promise((fulfill, reject) => {
+        fulfill(toAddresses)
+      })
+    }).map((address) => {
+      return Users.findByClientCommEmail(address.address)
+    }).then((resp) => {
+      users = resp;
+      // console.log(communication, users, email)
+      // console.log(users)
+
+      res.send('ok, thanks');
     })
   }
 };
+
