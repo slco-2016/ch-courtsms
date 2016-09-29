@@ -406,7 +406,7 @@ describe('Basic http req tests', function() {
   });
 
   it('twilio sends an sms from a new number', function(done) {
-    anonymous.post('/twilio/sms')
+    anonymous.post('/sms/webhook')
       .send({
         From: "18589057365",
         Body: "Lorem ipsum",
