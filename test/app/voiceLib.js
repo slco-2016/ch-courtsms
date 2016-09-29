@@ -1,5 +1,8 @@
+const supertest = require('supertest');
+
 const Users = require('../../app/models/users')
 const voice = require('../../app/lib/voice')
+const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 
 describe('Voice checks', function() {
   xit('Should be able to call me to leave a message', function(done) {
@@ -16,6 +19,13 @@ describe('Voice checks', function() {
       )
     }).then(() => {
       done()
+    })
+  })
+  it('Should send messages that need to be sent', function(done) {
+    voice.sendPendingOutboundVoiceMessages()
+    .then((obvs) => {
+      console.log(obvs)
+      done();
     })
   })
 })

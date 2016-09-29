@@ -35,6 +35,17 @@ class Clients extends BaseModel {
     })
   }
 
+  communications() {
+    let Communications = require('./communications')
+    return new Promise((fulfill, reject) => {
+      CommConns.findByClientID(this.clid)
+      .then((commconns) => {
+        let commids = commconns.map(commconn => commconn.commconnid)
+        return Communications.findByIds(commids)
+      }).then(fulfill).catch(reject)
+    })
+  }
+
   static alterCase (clientID, active) {
     if (typeof active == "undefined") active = true;
 

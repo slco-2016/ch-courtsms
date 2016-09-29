@@ -92,6 +92,30 @@ class BaseModel {
     })
   }
 
+  static findById (id) {
+    this._checkModelValidity()
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+      .where(this.primaryId, id)
+      .limit(1)
+      .then((objects) => {
+        return this._getSingleResponse(objects, fulfill, reject)
+      }).catch(reject)
+    })
+  }
+
+  static findByIds (ids) {
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+        .whereIn(this.primaryId, ids)
+        .then((objects) => {
+          console.log(objects, "SDS")
+          this._getMultiResponse(objects, fulfill)
+        }).catch(reject)
+    })
+
+  }
+
   static findOneByAttribute(attributeName, value) {
     this._checkModelValidity()
     return new Promise((fulfill, reject) => {

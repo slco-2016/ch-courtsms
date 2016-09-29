@@ -11,7 +11,6 @@ exports.seed = function(knex, Promise) {
       `DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;`
     ).then(() => {
-      console.log("Running latest migrations".yellow)
       return knex.migrate.latest()
     }).then(() => {
       console.log("Inserting seed data".yellow)
@@ -38,6 +37,8 @@ exports.seed = function(knex, Promise) {
       return knex('comms').insert(secondContactMethod)
     }).then(() => {
       return knex('commconns').insert(secondCommConn)
+    }).then(() => {
+      return knex('outbound_voice_messages').insert(outboundVoiceMessage)
     }).catch((err) => {
       throw err
     });        
@@ -139,7 +140,7 @@ let secondClient = {
 let contactMethod = {
   description: 'DummyFoo2',
   type: 'cell',
-  value: '10008384828',
+  value: '12033133609',
 }
 
 let secondContactMethod = {
@@ -160,4 +161,12 @@ let secondCommConn = {
   comm: 1,
   name: "RedundantMaybe",
   retired: null
+}
+
+let outboundVoiceMessage = {
+  delivery_date: "2016-09-29 17:07:11.726-04",
+  recording_key: "2oc0hpy2j32e3rgm0a4i-REde2dd4be0e7a521f8296a7390a9ab21b",
+  RecordingSid: "REde2dd4be0e7a521f8296a7390a9ab21b",
+  delivered: false,
+  client_id: 1,
 }

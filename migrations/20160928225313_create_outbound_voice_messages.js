@@ -5,8 +5,8 @@ exports.up = function(knex, Promise) {
 
       table.increments("id").primary();
 
-      table.timestamp("delivery_date");
-      table.timestamp("last_delivery_attempt");
+      table.dateTime("delivery_date");
+      table.dateTime("last_delivery_attempt");
       table.text("recording_key");
       table.text("RecordingSid");
       table.boolean("delivered").defaultTo(false);

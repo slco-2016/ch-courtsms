@@ -34,7 +34,7 @@ module.exports = {
   save(req, res) {
     let userId = req.query.userId
     let clientId = req.query.clientId
-    let deliveryDateEpoch = req.query.deliveryDate
+    let deliveryDateEpoch = Number(req.query.deliveryDate)
     let deliveryDate = new Date(deliveryDateEpoch)
     let recordingUrl = req.body.RecordingUrl
 
@@ -44,7 +44,7 @@ module.exports = {
     ).then((key) => {
       return OutboundVoiceMessages.create({
         client_id: clientId,
-        // delivery_date: deliveryDate,
+        delivery_date: deliveryDate,
         RecordingSid: req.body.RecordingSid,
         recording_key: key,
       })
