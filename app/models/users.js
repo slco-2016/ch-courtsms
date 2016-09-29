@@ -21,7 +21,7 @@ class Users extends BaseModel {
         "cmid","org", "first",
         "last","email","position",
         "admin","active","superuser",
-        "class","department"
+        "class","department", "email_alert_frequency",
       ],
     })
   }
