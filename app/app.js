@@ -97,8 +97,7 @@ app.post("/webhook/sms", SmsController.webhook);
 app.post("/webhook/voice", VoiceController.webhook);
 
 app.get("/login", AccessController.login);
-app.post("/login", 
-  passport.authenticate("local-login", {
+app.post("/login", passport.authenticate("local-login", {
     successRedirect: "/",
     failureRedirect: "/login-fail"
   })
@@ -111,9 +110,6 @@ app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
 
 app.post("/email/webhook", EmailsController.webhook);
 app.post("/email", EmailsController.receive);
-
-app.post("/twilio/sms", TwilioController.receiveText);
-app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);
