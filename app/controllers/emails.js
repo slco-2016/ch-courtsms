@@ -18,7 +18,6 @@ module.exports = {
   },
   webhook(req, res) {
     let event = req.body.event
-    console.log(req.body)
     if (event == "delivered") {
       let messageId = req.body['Message-Id']
       Messages.findByPlatformId(messageId)

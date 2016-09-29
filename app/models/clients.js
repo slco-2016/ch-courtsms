@@ -376,6 +376,9 @@ class Clients extends BaseModel {
   
 }
 
+Clients.primaryId = "clid"
+Clients.tableName = "clients"
+
 module.exports = Clients
 
 

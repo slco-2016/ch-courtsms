@@ -11,7 +11,7 @@ const mailgun = require('../../app/lib/mailgun');
 
 const mailgunAgent = supertest.agent(APP)
 
-const emailData = require('../testEmailData')
+const emailData = require('../data/testEmailData')
 // request = session(APP)
 
 // http://mherman.org/blog/2016/04/28/test-driven-development-with-node/
