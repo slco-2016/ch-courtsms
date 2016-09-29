@@ -86,6 +86,18 @@ class Users extends BaseModel {
     });
   }
 
+  static findByIds (userIds) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .select("cms.*", "departments.name as department_name")
+        .leftJoin("departments", "departments.department_id", "cms.department")
+        .whereIn("cms.cmid", userIds)
+      .then((users) => {
+        fulfill(users);
+      }).catch(reject);
+    });
+  }
+
   static changeActivityStatus (user, status) {
     if (typeof status == "undefined") status = false;
     

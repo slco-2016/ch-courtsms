@@ -59,6 +59,17 @@ class Departments {
     })
   }
 
+  static findByPhoneNumber (value) {
+    return new Promise((fulfill, reject) => {
+      db("departments")
+        .leftJoin("phone_numbers", "phone_numbers.phone_number_id", "departments.phone_number")
+        .where("active", true)
+        .andWhere("phone_numbers.value", value)
+      .then((departments) => {
+        return fulfill(departments);
+      }).catch(reject);
+    });
+  }
 
   static findByID (departmentID) {
     return new Promise((fulfill, reject) => {

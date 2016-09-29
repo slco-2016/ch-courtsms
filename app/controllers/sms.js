@@ -10,6 +10,10 @@ module.exports = {
     if (fromNumber.length == 10) { 
       from = "1" + from; 
     }
+    let toNumber = req.body.To.replace(/\D+/g, "");
+    if (toNumber.length == 10) { 
+      from = "1" + from; 
+    }
     let text = req.body.Body.replace(/["']/g, "").trim();
     let MessageStatus = req.body.SmsStatus;
     let MessageSID = req.body.MessageSid;
@@ -17,7 +21,7 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    sms.processIncoming(fromNumber, text, MessageStatus, MessageSID)
+    sms.processIncoming(toNumber, fromNumber, text, MessageStatus, MessageSID)
     .then((conversations) => {
 
       let conversationIds = conversations.map((conversation) => {

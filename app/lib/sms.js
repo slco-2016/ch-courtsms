@@ -7,22 +7,44 @@ const Promise = require("bluebird");
 const Clients = require("../models/clients");
 const Conversations = require("../models/conversations");
 const Communications = require("../models/communications");
+const Departments = require("../models/departments");
 const Messages = require("../models/messages");
+const Users = require("../models/users");
 
 module.exports = {
 
-  processIncoming (fromNumber, text, MessageStatus, MessageSID) {
-    let communication, conversations;
+  processIncoming (toNumber, fromNumber, text, MessageStatus, MessageSID) {
+    let clients, communication, conversations, departmentIds, userIds;
     return new Promise ((fulfill, reject) => {
-      Communications.getOrCreateFromValue(fromNumber, "cell")
+      Departments.findByPhoneNumber(toNumber)
       .then((resp) => {
+        departmentIds = resp.map((department) => {
+          return department.department_id;
+        });
+        console.log("***********", departmentIds);
+        console.log("***********", departmentIds);
+        return Communications.getOrCreateFromValue(fromNumber, "cell")
+      }).then((resp) => {
         communication = resp;
         return Clients.findByCommId(communication.commid);
-      }).then((clients) => {
+      }).then((resp) => {
+        clients = resp;
+        let userIds = clients.map((client) => {
+          return client.cm;
+        });
+        return Users.findByIds(userIds);
+      }).then((resp) => {
+        userIds = resp.filter((user) => {
+          return departmentIds.indexOf(user.department) > -1;
+        }).map((user) => {
+          return user.cmid;
+        });
         return Conversations.findOrCreate(clients, communication.commid);
       }).then((resp) => {
         conversations = resp;
-        let conversationIds = conversations.map((conversation) => {
+        let conversationIds = conversations.filter((conversation) => {
+          return userIds.indexOf(conversation.cm) > -1 || conversation.cm == null;
+        }).map((conversation) => {
           return conversation.convid;
         });
         return Messages.createMany( conversationIds,

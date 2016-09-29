@@ -225,6 +225,12 @@ class Conversations extends BaseModel {
           return db("convos")
             .insert(insertList)
             .returning("*");
+
+        } else {
+          // Unable to find any messages, add to capture board
+          return db("convos")
+            .insert(insertList)
+            .returning("*");
         }
       }).then((conversations) => {
         fulfill(conversations, fulfill);
