@@ -88,6 +88,7 @@ const SettingsController        = require('./controllers/settings');
 const SmsController             = require('./controllers/sms');
 const TemplatesController       = require('./controllers/templates');
 const UsersController           = require('./controllers/users');
+const EmailsController          = require('./controllers/emails');
 const VoiceController           = require('./controllers/voice');
 
 app.get("/", RootController.index);
@@ -107,6 +108,12 @@ app.get("/login/reset", AccessController.reset);
 app.post("/login/reset", AccessController.resetSubmit);
 app.get("/login/reset/:uid", AccessController.resetSpecific);
 app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
+
+app.post("/email/webhook", EmailsController.webhook);
+app.post("/email", EmailsController.receive);
+
+app.post("/twilio/sms", TwilioController.receiveText);
+app.post("/twilio/voice", TwilioController.receiveVoice);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);

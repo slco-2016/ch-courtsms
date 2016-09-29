@@ -16,7 +16,8 @@ class Communications extends BaseModel {
         "type",
         "value",
         "description",
-        "updated", "created",
+        "updated",
+        "created",
       ]
     })
   }

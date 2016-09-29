@@ -22,6 +22,18 @@ class BaseModel {
     })
   }
 
+  static _cleanParams(obj) {
+    let out = {};
+    let instance = new this({});
+    let columnNames = instance._info.columns;
+    for (let i=0; i < columnNames.length; i++) {
+      if (obj[columnNames[i]]) {
+        out[columnNames[i]] = obj[columnNames[i]]        
+      }
+    }
+    return out
+  }
+
   static _checkModelValidity() {
     this._checkForTableName()
     this._checkForPrimaryId()
@@ -67,16 +79,20 @@ class BaseModel {
     })
   }
 
-  static findByEmail (email) {
-    this._checkForTableName()
+  static findOneByAttribute(attributeName, value) {
+    this._checkModelValidity()
     return new Promise((fulfill, reject) => {
       db(this.tableName)
-        .where("email", email)
-        .limit(1)
+      .where(attributeName, value)
+      .limit(1)
       .then((objects) => {
         return this._getSingleResponse(objects, fulfill, reject)
-      }).catch(reject);
+      }).catch(reject)
     })
+  }
+
+  static findByEmail (email) {
+    return this.findOneByAttribute('email', email)
   }
 
 }
