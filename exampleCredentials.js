@@ -6,7 +6,7 @@ var baseProductionReadyCredentials = {
   // BELOW: Main body of the credentials object
 
   // Root url
-  rootUrl: "http://localhost:4000"
+  rootUrl: "http://localhost:4000",
 
   // Twilio-related
   accountSid: "****************",
