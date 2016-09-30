@@ -105,7 +105,7 @@ class Communications extends BaseModel {
 
 }
 
-Communications.primaryId = "cmid"
+Communications.primaryId = "commid"
 Communications.tableName = "comms"
 
 module.exports = Communications;

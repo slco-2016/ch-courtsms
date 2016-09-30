@@ -5,6 +5,9 @@ var baseProductionReadyCredentials = {
   
   // BELOW: Main body of the credentials object
 
+  // Root url
+  rootUrl: "http://localhost:4000",
+
   // Twilio-related
   accountSid: "****************",
   authToken: "****************",
@@ -32,6 +35,10 @@ var baseProductionReadyCredentials = {
   // New Relic monitoring information
   newrelic: {
     key: "abc123efg456"
+  },
+
+  mailgun: {
+    key: "fake-key"
   },
 
   // AWS interface/access secrets

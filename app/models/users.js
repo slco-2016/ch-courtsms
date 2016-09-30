@@ -11,7 +11,6 @@ const bcrypt = require("bcrypt-nodejs");
 
 const CommConns = require("./commConns");
 
-
 // Class
 class Users extends BaseModel {
 
@@ -22,7 +21,7 @@ class Users extends BaseModel {
         "cmid","org", "first",
         "last","email","position",
         "admin","active","superuser",
-        "class","department"
+        "class","department", "email_alert_frequency",
       ],
     })
   }
@@ -37,6 +36,17 @@ class Users extends BaseModel {
     let emailOrg = domainParts.join('.') // foo.bar.com
 
     return `${emailName}.${emailOrg}@clientcomm.org`
+  }
+
+  getClients() {
+    return new Promise((fulfill, reject) => {
+      db('clients')
+        .where("cm", this.cmid)
+      .then((users) => {
+        let Clients = require('../models/clients')
+        this.constructor._getMultiResponse(users, fulfill, Clients)
+      })
+    })
   }
 
   getFullName() {
@@ -121,7 +131,7 @@ class Users extends BaseModel {
         .where("cms.cmid", user)
         .limit(1)
       .then((users) => {
-        fulfill(users[0]);
+        this._getSingleResponse(users, fulfill)
       }).catch(reject);
     });
   }
