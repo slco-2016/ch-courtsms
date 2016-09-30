@@ -30,14 +30,23 @@ module.exports = {
     })
   },
   sendPendingOutboundVoiceMessages() {
+    let ovmId
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.getNeedToBeSent()
       .map((ovm) => {
+        ovmId = ovm.id
         return Clients.findById(ovm.client_id)
         .then((client) => {
           return client.communications()
         }).then((communications) => {
-          fulfill(communications)
+          twClient.calls.create({
+            url: `https://fb65e626.ngrok.io/webhook/voice/play-message/?ovmId=${ovmId}`,
+            to: communications[0].value,
+            from: credentials.twilioNum,
+          }), function(err, call) {
+            console.log(err)
+            fulfill(communications)
+          }
         })
       }).catch(reject)
     })

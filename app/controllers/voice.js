@@ -11,10 +11,30 @@ module.exports = {
     res.send(`<?xml version='1.0' encoding='UTF-8'?>
               <Response>
                 <Say voice='woman'>
-                  Client Comm is a text only number currently. 
+                  Client Comm is a text only number currently.
                   Please dial 385-468-3500 for the front desk and ask for your case manager.
                 </Say>
               </Response>`);
+  },
+  playMessage(req, res) {
+    // let ovmId = req.query.ovmId;
+    // OutboundVoiceMessages.findById(ovmId)
+    // .then((ovm) => {
+    //   let url = ovm.getTemporaryRecordingUrl()
+    let url = s3.getTemporaryUrl('2oc0hpy2j32e3rgm0a4i-REde2dd4be0e7a521f8296a7390a9ab21b')
+    url = url.replace(/&/gi, '&amp;')
+    let response = `<?xml version="1.0" encoding="UTF-8"?>
+    <Response>
+      <Say voice='woman'>
+        Hello. You have a new message from your case manager.
+      </Say>
+      <Play>${url}</Play>
+      <Say voice='woman'>
+        Thank you.
+      </Say>
+    </Response>`
+    res.send(response)
+    // })
   },
   record(req, res) {
     let userId = req.query.userId
@@ -39,7 +59,7 @@ module.exports = {
     let recordingUrl = req.body.RecordingUrl
 
     s3.uploadFromUrl(
-      req.body.RecordingUrl, 
+      req.body.RecordingUrl,
       req.body.RecordingSid
     ).then((key) => {
       return OutboundVoiceMessages.create({

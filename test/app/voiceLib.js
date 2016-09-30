@@ -5,6 +5,7 @@ const voice = require('../../app/lib/voice')
 const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 
 describe('Voice checks', function() {
+
   xit('Should be able to call me to leave a message', function(done) {
     let deliveryDate = new Date()
     let userQuery = Users.findById(2)
@@ -21,11 +22,13 @@ describe('Voice checks', function() {
       done()
     })
   })
-  it('Should send messages that need to be sent', function(done) {
+
+  xit('Should send messages that need to be sent', function(done) {
     voice.sendPendingOutboundVoiceMessages()
     .then((obvs) => {
       console.log(obvs)
       done();
     })
   })
+
 })
