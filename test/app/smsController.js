@@ -21,4 +21,26 @@ describe('Sms inbound message endpoint', function() {
       });
   });
 
+  it('twilio sends an sms from an existing number', function(done) {
+    let newSmsBody = smsData;
+    newSmsBody.From = "10008384828"
+    twilioAgent.post('/webhook/sms')
+      .send(newSmsBody)
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
+  it('twilio sends an sms from a new number', function(done) {
+    let newSmsBody = smsData;
+    newSmsBody.From = "18589057365"
+    twilioAgent.post('/webhook/sms')
+      .send(newSmsBody)
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      })
+  });
+
 })

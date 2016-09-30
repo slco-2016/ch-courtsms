@@ -75,8 +75,9 @@ class BaseModel {
     if (!model) {
       model = this
     }
+    
     fulfill(objects.map((object) => {
-      return new model(object)
+      return new model(object);
     }))
   }
 

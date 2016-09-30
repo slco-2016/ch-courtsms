@@ -14,7 +14,7 @@ const Users = require("../models/users");
 
 module.exports = {
 
-  processIncoming (toNumber, fromNumber, text, MessageStatus, MessageSID) {
+  processIncomingAndRetrieveOrCreateConversations (toNumber, fromNumber, text, MessageStatus, MessageSID) {
     let clients, communication, conversations, departmentIds, users;
     return new Promise ((fulfill, reject) => {
 
@@ -66,27 +66,30 @@ module.exports = {
         return Conversations.findByClientAndUserInvolvingSpecificCommId(clients, communication)
       }).then((resp) => {
         conversations = resp;
-console.log("\n1.) Conersations that already exist: ", conversations, "\n");
+
         return Conversations.createNewIfOlderThanSetHours(conversations, 24)
       }).then((resp) => {
         conversations = resp;
-console.log("\n2.) Conersations updated: ", conversations, "\n");
+
         // We can add this message to existing conversations if they exist
         if (conversations.length) {
           return new Promise((fulfill, reject) => {
             fulfill(conversations);
           });
+        } else if (clients.length) {
+          return Conversations.createNewNotAcceptedConversationsForAllClients(clients);
         } else {
-          return Conversations.createNewNotAcceptedConversationsForAllClients(clients)
+          return Conversations.createCaptureBoardConversation();
         }
-console.log("\n3.) Conersations being submitted to: ", conversations, "\n");
       }).then((resp) => {
+        // handle createCaptureBoardConversation returning single obj, not array
+        if (!Array.isArray(resp)) resp = [resp];
         conversations = resp;
 
         let conversationIds = conversations.map((conversation) => {
           return conversation.convid;
         });
-console.log("\n4.) Conersations getting messages: ", conversations, "\n");
+
         // Now create a number
         return Messages.insertIntoManyConversations(conversationIds,
                                                     communication.commid,

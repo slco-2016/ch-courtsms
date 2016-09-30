@@ -227,25 +227,48 @@ class Conversations extends BaseModel {
     });
   }
 
-  static createNewNotAcceptedConversationsForAllClients(clients) {
+  static createNewNotAcceptedConversationsForAllClients (clients) {
     return new Promise((fulfill, reject) => {
-      let insertList = [];
-      clients.forEach((client) => {
-        insertList.push({
-          cm: client.cm,
-          client: client.clid,
-          subject: "Automatically created",
-          open: true,
-          accepted: false,
+      if (clients.length) {
+        let insertList = [];
+        clients.forEach((client) => {
+          insertList.push({
+            cm: client.cm,
+            client: client.clid,
+            subject: "Automatically created",
+            open: true,
+            accepted: false,
+          });
         });
-      });
 
+        db("convos")
+          .insert(insertList)
+          .returning("*")
+        .then((conversations) => {
+          this._getMultiResponse(conversations, fulfill);
+        }).catch(reject)
+      } else {
+        fulfill([]);
+      }
+    });
+  }
+
+  static createCaptureBoardConversation () {
+    return new Promise((fulfill, reject) => {
       db("convos")
-        .insert(insertList)
-        .returning("*")
-      .then((conversations) => {
-        this._getMultiResponse(conversations, fulfill);
-      }).catch(reject)
+      .then(() => {
+        return db("convos")
+          .insert({
+            cm: null,
+            client: null,
+            subject: "New Conversation Originally From Unkown Contact",
+            open: true,
+            accepted: false,
+          })
+          .returning("*")
+      }).then((conversations) => {
+        this._getSingleResponse(conversations, fulfill);
+      }).catch(reject);
     });
   }
 
@@ -317,4 +340,6 @@ class Conversations extends BaseModel {
   }
 }
 
+Conversations.primaryId = "convid"
+Conversations.tableName = "convos"
 module.exports = Conversations

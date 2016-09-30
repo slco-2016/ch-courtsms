@@ -191,7 +191,7 @@ module.exports = {
         return conversation.convid;
       });
 
-      return Messages.findByConversations(conversationIds);
+      return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
     }).then((resp) => {
 
       messages = resp.filter((msg) => {

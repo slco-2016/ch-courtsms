@@ -405,34 +405,6 @@ describe('Basic http req tests', function() {
       })
   });
 
-  it('twilio sends an sms from an existing number', function(done) {
-    anonymous.post('/sms/webhook')
-      .send({
-        From: "10008384828",
-        Body: "Lorem ipsum",
-        SmsStatus: "clear",
-        MessageSid: 12313121
-      })
-      .expect(200)
-      .end(function(err, res) {
-        done(err);
-      })
-  });
-
-  it('twilio sends an sms from a new number', function(done) {
-    anonymous.post('/webhook/sms')
-      .send({
-        From: "18589057365",
-        Body: "Lorem ipsum",
-        SmsStatus: "clear",
-        MessageSid: 12313121
-      })
-      .expect(200)
-      .end(function(err, res) {
-        done(err);
-      })
-  });
-
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)

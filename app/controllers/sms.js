@@ -21,69 +21,39 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    sms.processIncoming(toNumber, fromNumber, text, MessageStatus, MessageSID)
+    sms.processIncomingAndRetrieveOrCreateConversations(toNumber, 
+                                                        fromNumber, 
+                                                        text, 
+                                                        MessageStatus, 
+                                                        MessageSID)
     .then((conversations) => {
 
       conversations.forEach((conversation) => {
-        Messages.findByConversationIds([conversation.convid])
+        Messages.findByConversation(conversation)
         .then((messages) => {
-          let content, commId, conversationId;
-          let baseMessage = messages[0];
-          if (baseMessage) {
-            commId = baseMessage.comm;
-            conversationId = baseMessage.convo;
-
-            let inboundMessages = conversation.messages.filter((message) => {
-              return message.inbound;
+          return Messages.determineIfAutoResponseShouldBeSent(conversation, messages)
+        }).then((resp) => {
+          let shouldSendResponse = resp.sendResponse;
+          if (shouldSendResponse) {
+            let commId = resp.sendValues.communicationId;
+            let conversationId = resp.sendValues.conversationId;
+            let messageContent = resp.sendValues.content;
+            Messages.sendOne(commId, messageContent, conversationId)
+            .then(() => { }).catch((error) => {
+              console.log(error);
             });
-            let outboundMessages = conversation.messages.filter((message) => {
-              return !message.inbound;
-            });
-
-            if (conversation.client == null) {
-              // This is a new conversation that has been started from unknown number
-              if (inboundMessages.length == 1) {
-                content = `Sorry! This # is not registered; Help us find you. Reply with your name in the following format: FIRST M LAST.`;
-              } else {
-                content = `Thanks for the message. A support member will place this number with the correct case manager as soon as possible.`;
-              }
-
-            } else if (inboundMessages.length > 1) {
-                let lastInboundDate = inboundMessages[inboundMessages.length - 1].created;
-                let d1 = new Date(lastInboundDate).getTime();
-                let d2 = new Date().getTime();
-                let timeLapsed = Math.round((d2 - d1) / (3600*1000));
-
-                // If it's been more than 1 hour let's communicate
-                if (timeLapsed > 1) {
-                  let dayOfWeek = d2.getDay();
-                  if (dayOfWeek == 0 || dayOfWeek == 6) {
-                    content = `Message received. Because it is the weekend, your case manager may not be able to response immediately. Thanks for your patience.`;
-                  } else {
-                    content = `Message received. As it has been over ${timeLapsed} hours and your case manager has not yet addressed your prior message, a reminder has been sent out. Thanks for your patience.`;
-                  }
-                }
-              }
-              if (content) {
-                // Switch to only send when app is in production
-                if (process.env.CCENV !== "testing") {
-                  Messages.sendOne(commId, content, conversationId)
-                  .then(() => { }).catch((error) => {
-                    console.log(error);
-                  });
-                }
-              }
           }
         }).catch((err) => {
-          console.log("Error finding by conversation: ", err)
+          console.log("Error finding by conversation: ", err);
         });
+
         req.logActivity.client(conversation.client)
-        req.logActivity.conversation(conversationId);
+        req.logActivity.conversation(conversation.convid);
       });
 
-        // Send a blank response
-        res.send("<?xml version='1.0' encoding='UTF-8'?><Response></Response>");
-      });
+      // Send a blank response
+      res.send("<?xml version='1.0' encoding='UTF-8'?><Response></Response>");
+    });
   },
 
 };
