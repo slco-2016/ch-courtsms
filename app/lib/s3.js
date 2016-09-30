@@ -52,7 +52,12 @@ module.exports = {
       })
     })
   },
-
+  uploadFromUrl(url, name) {
+    if (!name) {
+      name = "unnamed"
+    }
+    return this.uploadFile({url: url}, name)
+  },
   uploadMailGunAttachment(details) {
     let requestParams = {
       url: details.url,

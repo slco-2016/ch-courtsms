@@ -51,6 +51,16 @@ class BaseModel {
       }
   }
 
+  static create(modelObject) {
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+      .insert(this._cleanParams(modelObject)).returning("*")
+      .then((objs) => {
+        this._getSingleResponse(objs, fulfill)
+      }).catch(reject)
+    })
+  }
+
   static _getSingleResponse(objects, fulfill) {
     if (!objects || objects.length === 0) {
       fulfill(null)
@@ -61,9 +71,12 @@ class BaseModel {
     }
   }
 
-  static _getMultiResponse(objects, fulfill) {
+  static _getMultiResponse(objects, fulfill, model) {
+    if (!model) {
+      model = this
+    }
     fulfill(objects.map((object) => {
-      return new this(object)
+      return new model(object)
     }))
   }
 
@@ -77,6 +90,29 @@ class BaseModel {
         return this._getSingleResponse(objects, fulfill, reject)
       }).catch(reject)
     })
+  }
+
+  static findById (id) {
+    this._checkModelValidity()
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+      .where(this.primaryId, id)
+      .limit(1)
+      .then((objects) => {
+        return this._getSingleResponse(objects, fulfill, reject)
+      }).catch(reject)
+    })
+  }
+
+  static findByIds (ids) {
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+        .whereIn(this.primaryId, ids)
+        .then((objects) => {
+          this._getMultiResponse(objects, fulfill)
+        }).catch(reject)
+    })
+
   }
 
   static findOneByAttribute(attributeName, value) {

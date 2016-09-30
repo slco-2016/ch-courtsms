@@ -95,6 +95,9 @@ app.get("/", RootController.index);
 
 app.post("/webhook/sms", SmsController.webhook);
 app.post("/webhook/voice", VoiceController.webhook);
+app.post("/webhook/voice/record/", VoiceController.record);
+app.post("/webhook/voice/save-recording/", VoiceController.save);
+app.post("/webhook/voice/play-message/", VoiceController.playMessage);
 
 app.get("/login", AccessController.login);
 app.post("/login", passport.authenticate("local-login", {
