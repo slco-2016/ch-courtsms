@@ -35,4 +35,15 @@ describe('Conversations checks', function() {
     }).catch(done);
   })
 
+  it('user findById should return single result with key columns as obj keys', function(done) {
+    Conversations.findById(1)
+    .then((conversation) => {
+      conversation.hasOwnProperty("client").should.be.exactly(true);
+      conversation.hasOwnProperty("cm").should.be.exactly(true);
+      conversation.hasOwnProperty("accepted").should.be.exactly(true);
+      conversation.hasOwnProperty("open").should.be.exactly(true);
+      done()
+    }).catch(done);
+  })
+
 })

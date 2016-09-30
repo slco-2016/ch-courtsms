@@ -79,11 +79,9 @@ module.exports = {
         } else if (clients.length) {
           return Conversations.createNewNotAcceptedConversationsForAllClients(clients);
         } else {
-          return Conversations.createCaptureBoardConversation();
+          return Conversations.createOrAttachToExistingCaptureBoardConversation(communication);
         }
       }).then((resp) => {
-        // handle createCaptureBoardConversation returning single obj, not array
-        if (!Array.isArray(resp)) resp = [resp];
         conversations = resp;
 
         let conversationIds = conversations.map((conversation) => {
