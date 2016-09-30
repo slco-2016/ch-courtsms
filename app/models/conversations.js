@@ -201,7 +201,7 @@ class Conversations extends BaseModel {
     return new Promise((fulfill, reject) => {
       if (conversations.length) {
         return new Promise((fulfill, reject) => {
-          this._getMultiResponse(conversations, fulfill);
+          fulfill(conversations);
         }).map((conversation) => {
 
           let d1 = new Date().getTime();
@@ -218,6 +218,8 @@ class Conversations extends BaseModel {
             let open = true;
             return Conversations.create(userId, clientId, subject, open);
           };
+        }).then((conversations) => {
+          fulfill(conversations);
         });
       } else {
         fulfill([]);

@@ -113,7 +113,7 @@ module.exports = {
   },
 
   logging(req, res, next) {
-    if (process.env.CCENV !== 'testing' && process.env.CCENV !== 'production') {
+    if (process.env.CCENV !== 'testing') {
       let start = new Date()
       res.on('finish', () => {
         let milliseconds = new Date().getTime() - start.getTime()
@@ -125,19 +125,16 @@ module.exports = {
         let contentLength = res.header()._headers['content-length'] || 0;
         let userAgent = req.headers['user-agent'];
 
-        // Don't log the alerts calls that happen every 30 seconds
-        if (path !== "/alerts") {
-          console.log(
-            `${ip} -- [${timestamp}] ` +
-            `${method} ${path} ${statusCode} `.magenta +
-            `${contentLength} ${milliseconds}ms `.cyan +
-            `"${userAgent}"`
-          );
-        }
+        console.log(
+          `${ip} -- [${timestamp}] ` +
+          `${method} ${path} ${statusCode} `.magenta +
+          `${contentLength} ${milliseconds}ms `.cyan +
+          `"${userAgent}"`
+        );
       });
     }
     return next();
-  }, 
+  },
 
   templateHelpers(req, res, next) {
     res.locals.leftTab = (name, hub, level, optionsList) => {

@@ -77,12 +77,7 @@ console.log("\n2.) Conersations updated: ", conversations, "\n");
             fulfill(conversations);
           });
         } else {
-          return new Promise((fulfill, reject) => {
-            Conversations.createNewNotAcceptedConversationsForAllClients(clients)
-            .then((conversations) => {
-              fulfill(conversations);
-            }).catch(reject);
-          });
+          return Conversations.createNewNotAcceptedConversationsForAllClients(clients)
         }
 console.log("\n3.) Conersations being submitted to: ", conversations, "\n");
       }).then((resp) => {
