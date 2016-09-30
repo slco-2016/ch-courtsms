@@ -55,8 +55,8 @@ class BaseModel {
     return new Promise((fulfill, reject) => {
       db(this.tableName)
       .insert(this._cleanParams(modelObject)).returning("*")
-      .then((emails) => {
-        this._getSingleResponse(emails, fulfill)
+      .then((objs) => {
+        this._getSingleResponse(objs, fulfill)
       }).catch(reject)
     })
   }
@@ -109,7 +109,6 @@ class BaseModel {
       db(this.tableName)
         .whereIn(this.primaryId, ids)
         .then((objects) => {
-          console.log(objects, "SDS")
           this._getMultiResponse(objects, fulfill)
         }).catch(reject)
     })
