@@ -119,7 +119,7 @@ class Conversations extends BaseModel {
     })
   }
 
-  static closeAllForClient (userID, clientID) {
+  static closeAllBetweenClientAndUser (userID, clientID) {
     return new Promise((fulfill, reject) => {
       db("convos")
         .where("client", clientID)
@@ -132,111 +132,222 @@ class Conversations extends BaseModel {
     })
   }
 
-  static findOrCreate (clients, commId) {
-    if (!Array.isArray(clients)) clients = [clients];
-    let jumpToCreateNewConversation = false;
+  static findByClientAndUserInvolvingSpecificCommId (clients, communication) {
+    // clients is an array of client objects
+    // communicatiosn is an object representing a single communication row
+    let clientIds = clients.map((client) => {
+      return client.clid;
+    });
+    let userIds = clients.map((client) => {
+      return client.cm;
+    });
+    let commId = communication.commid;
+    let conversations;
+
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .whereIn("client", clientIds)
+        .and.whereIn("cm", userIds)
+        .andWhere("open", true)
+      .then((resp) => {
+        conversations = resp;
+        // We need to remove situations where a client was communication
+        // not with their current case manager
+        conversations = conversations.filter((conversation) => {
+          // Find the related client
+          let clientsThatAreInThisConversation = clients.filter((client) => {
+            return client.clid == conversation.client;
+          });
+          let relatedClient = clientsThatAreInThisConversation[0];
+
+          let conversationClient = conversation.client;
+          let conversationUser = conversations.cm;
+          let relatedClientCaseManager = relatedClient.cm;
+          return conversationUser == relatedClientCaseManager;
+        });
+
+        // Get conversation Ids
+        let conversationIds = conversations.map((conversation) => {
+          return conversation.convid;
+        });
+
+        // Get messages associated with each conversation that use that commid
+        return db("msgs")
+          .whereIn("convo", conversationIds)
+          .andWhere("comm", commId)
+      }).then((messages) => {
+
+        // get list of conversationIds from the resulting messages
+        let conversationIds = messages.map((message) => {
+          return message.convo;
+        });
+
+        // Filter out conversations not in conversationIds
+        conversations.filter((conversation) => {
+          return conversationIds.indexOf(conversation.convid) > -1;
+        })
+
+        // Final list is good to send off
+        this._getMultiResponse(conversations, fulfill);
+      }).catch(reject);
+    });
+  }
+
+  static createNewIfOlderThanSetHours(conversations, hourThreshold) {
+    if (!hourThreshold || isNaN(hourThreshold)){
+      hourThreshold = 24; // default to 1 day threshold
+    }
 
     return new Promise((fulfill, reject) => {
 
-      let clientIds = clients.map((client) => {
-        return client.clid;
+      return new Promise((fulfill, reject) => {
+        this._getMultiResponse(conversations, fulfill);
+      }).map((conversation) => {
+
+        let d1 = new Date().getTime();
+        let d2 = new Date(conversation.updated).getTime();
+        let timeLapsed = Math.round((d2 - d1) / (3600 * 1000)); // in hours
+        let recentlyActive = timeLapsed < Number(hourThreshold); // active conversations are less than a day olf
+
+        if (recentlyActive) {
+          fulfill(conversation);
+        } else {
+          let userId = conversation.cm;
+          let clientId = conversation.client;
+          let subject = "Automatically created";
+          let open = true;
+          return Conversations.create(userId, clientId, subject, open);
+        };
+      })
+
+    });
+  }
+
+  static createNewNOtAcceptedConversationsForAllClients(clients) {
+    return new Promise((fulfill, reject) => {
+      let insertList = [];
+      clients.forEach((client) => {
+        insertList.push({
+          cm: client.cm,
+          client: client.clid,
+          subject: "Automatically created",
+          open: true,
+          accepted: false,
+        });
       });
 
-      let getConversations;
-      if (!clients.length) {
-        // If there are are no potential clients, 
-        // seek out existing uncaptured conversations
-        getConversations = db("msgs")
-          .leftJoin("convos", "convos.convid", "msgs.convo")
-          .where("msgs.comm", commId)
-          .andWhere("convos.client", null)
-          .andWhere("convos.open", true);
-      } else {
-        getConversations = db("convos")
-          .whereIn("client", clientIds)
-          .andWhere("open", true);
-      }
-
-      getConversations.then((conversations) => {
-
-        console.log("GOT CONVOS", conversations)
-
-        // See if there is a new enough conversation
-        let allRecentlyActive = true;
-        if (conversations.length) {
-          conversations.forEach((conversation) => {
-            let d1 = new Date().getTime();
-            let d2 = new Date(conversation.updated).getTime();
-            let timeLapsed = Math.round((d2 - d1) / (3600 * 1000));
-
-            // only allow continuation of conversations less than a day old
-            if (timeLapsed > 24) {
-              allRecentlyActive = false;
-            }
-          });
-        } else {
-          allRecentlyActive = false;
-        }
-        
-        if (allRecentlyActive) {
-          fulfill(conversations);
-          return null;
-        } else if (conversations.length) {
-          // Close out all current conversations
-          let conversationIds = conversations.map((conversation) => {
-            return conversation.convid;
-          });
-          return db("convos")
-            .update({open: false})
-            .whereIn("convid", conversationIds);
-        } else {
-          // Check if there is an unlinked conversation 
-          // associated with this value
-          return db.select("convos.*").from("comms")
-            .innerJoin("msgs", "comms.commid", "msgs.comm")
-            .innerJoin("convos", "msgs.convo", "convos.convid")
-            .where("convos.open", true)
-            .andWhere("comms.commid", commId)
-            .and.whereNull("convos.cm")
-            .and.whereNull("convos.client")
-            .groupBy("convos.convid");
-        }
-      }).then((conversations) => {
-        if (conversations && conversations.length) {
-          fulfill(conversations);
-          return null;
-        } else if (clients.length) {
-          // Make a new conversation(s)
-          let insertList = [];
-          let ableToAccept = clients.length == 1 ? true : false;
-
-          for (var i = 0; i < clients.length; i++) {
-            let client = clients[i];
-            let insertObj = {
-              cm:       client.cm,
-              client:   client.clid,
-              subject:  "Automatically created conversation",
-              open:     true,
-              accepted: ableToAccept
-            }
-            insertList.push(insertObj);
-          }
-
-          return db("convos")
-            .insert(insertList)
-            .returning("*");
-
-        } else {
-          // Unable to find any messages, add to capture board
-          return db("convos")
-            .insert(insertList)
-            .returning("*");
-        }
-      }).then((conversations) => {
-        fulfill(conversations, fulfill);
-      }).catch(reject);
-    })
+      db("convos")
+        .insert(insertList)
+        .returning("*")
+      .then((conversations) => {
+        this._getMultiResponse(conversations, fulfill);
+      }).catch(reject)
+    }
   }
+
+  // static findOrCreate (clients, commId) {
+  //   if (!Array.isArray(clients)) clients = [clients];
+  //   let jumpToCreateNewConversation = false;
+
+  //   return new Promise((fulfill, reject) => {
+
+  //     let clientIds = clients.map((client) => {
+  //       return client.clid;
+  //     });
+
+  //     let getConversations;
+  //     if (!clients.length) {
+  //       // If there are are no potential clients, 
+  //       // seek out existing uncaptured conversations
+  //       getConversations = db("msgs")
+  //         .leftJoin("convos", "convos.convid", "msgs.convo")
+  //         .where("msgs.comm", commId)
+  //         .andWhere("convos.client", null)
+  //         .andWhere("convos.open", true);
+  //     } else {
+  //       getConversations = db("convos")
+  //         .whereIn("client", clientIds)
+  //         .andWhere("open", true);
+  //     }
+
+  //     getConversations.then((conversations) => {
+
+  //       // See if there is a new enough conversation
+  //       let allRecentlyActive = true;
+  //       if (conversations.length) {
+  //         conversations.forEach((conversation) => {
+  //           let d1 = new Date().getTime();
+  //           let d2 = new Date(conversation.updated).getTime();
+  //           let timeLapsed = Math.round((d2 - d1) / (3600 * 1000));
+
+  //           // only allow continuation of conversations less than a day old
+  //           if (timeLapsed > 24) {
+  //             allRecentlyActive = false;
+  //           }
+  //         });
+  //       } else {
+  //         allRecentlyActive = false;
+  //       }
+        
+  //       if (allRecentlyActive) {
+  //         fulfill(conversations);
+  //         return null;
+  //       } else if (conversations.length) {
+  //         // Close out all current conversations
+  //         let conversationIds = conversations.map((conversation) => {
+  //           return conversation.convid;
+  //         });
+  //         return db("convos")
+  //           .update({open: false})
+  //           .whereIn("convid", conversationIds);
+  //       } else {
+  //         // Check if there is an unlinked conversation 
+  //         // associated with this value
+  //         return db.select("convos.*").from("comms")
+  //           .innerJoin("msgs", "comms.commid", "msgs.comm")
+  //           .innerJoin("convos", "msgs.convo", "convos.convid")
+  //           .where("convos.open", true)
+  //           .andWhere("comms.commid", commId)
+  //           .and.whereNull("convos.cm")
+  //           .and.whereNull("convos.client")
+  //           .groupBy("convos.convid");
+  //       }
+  //     }).then((conversations) => {
+  //       if (conversations && conversations.length) {
+  //         fulfill(conversations);
+  //         return null;
+  //       } else if (clients.length) {
+  //         // Make a new conversation(s)
+  //         let insertList = [];
+  //         let ableToAccept = clients.length == 1 ? true : false;
+
+  //         for (var i = 0; i < clients.length; i++) {
+  //           let client = clients[i];
+  //           let insertObj = {
+  //             cm:       client.cm,
+  //             client:   client.clid,
+  //             subject:  "Automatically created conversation",
+  //             open:     true,
+  //             accepted: ableToAccept
+  //           }
+  //           insertList.push(insertObj);
+  //         }
+
+  //         return db("convos")
+  //           .insert(insertList)
+  //           .returning("*");
+
+  //       } else {
+  //         // Unable to find any messages, add to capture board
+  //         return db("convos")
+  //           .insert(insertList)
+  //           .returning("*");
+  //       }
+  //     }).then((conversations) => {
+  //       fulfill(conversations, fulfill);
+  //     }).catch(reject);
+  //   })
+  // }
 
   static getMostRecentConversation (userID, clientID) {
     return new Promise((fulfill, reject) => {
@@ -274,19 +385,21 @@ class Conversations extends BaseModel {
     });
   }
 
-  static create(userID, clientID, subject, open) {
+  static create(userId, clientId, subject, open) {
     if (typeof open == "undefined") open = true;
     return new Promise((fulfill, reject) => {
-      db("convos")
-        .insert({
-          cm: userID,
-          client: clientID,
-          subject: subject,
-          open: open,
-          accepted: true,
-        })
-        .returning("*")
-      .then((conversations) => {
+      Conversations.closeAllBetweenClientAndUser(userId)
+      .then(() => {
+        return db("convos")
+          .insert({
+            cm: userId,
+            client: clientId,
+            subject: subject,
+            open: open,
+            accepted: true,
+          })
+          .returning("*")
+      }).then((conversations) => {
         this._getSingleResponse(conversations, fulfill);
       }).catch(reject)
     })

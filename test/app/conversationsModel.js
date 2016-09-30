@@ -26,7 +26,16 @@ describe('Conversations checks', function() {
         conversation.cm.should.be.exactly(2);
       });
       done();
-    }).catch(done)
+    }).catch(done);
   })
-  
+
+  it('entering clients and commid should return a list of conversations on search', function(done) {
+    Clients.findAllByUsers(2)
+    .then((clients) => {
+      return Conversations.findByClientAndUserInvolvingSpecificCommId(clients, 1)
+    }).then((conversations) => {
+      done();
+    }).catch(done);
+  })
+
 })

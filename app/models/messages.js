@@ -77,6 +77,18 @@ class Messages {
     });
   }
 
+  // To replace the above method
+  static findByConversationIds (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .whereIn("convo", conversationIds)
+      .then((messages) => {
+        fulfill(messages)
+      }).catch(reject);
+    });
+  }
+
   static countsByOrg (orgID, timeframe) {
     return new Promise((fulfill, reject) => {
       db("msgs")
@@ -253,7 +265,7 @@ class Messages {
     return new Promise((fulfill, reject) => {
       var newConvoId;
 
-      Conversations.closeAllForClient(userID, clientID)
+      Conversations.closeAllBetweenClientAndUser(userID, clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
       }).then((conversations) => {
@@ -321,7 +333,7 @@ class Messages {
     });
   }
 
-  static createMany (conversationIds, commId, content, MessageSid, MessageStatus) {
+  static insertIntoManyConversations (conversationIds, commId, content, MessageSid, MessageStatus) {
     return new Promise((fulfill, reject) => {
       let insertArray = conversationIds.map((conversationId) => {
         return {
