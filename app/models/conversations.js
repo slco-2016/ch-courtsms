@@ -199,31 +199,33 @@ class Conversations extends BaseModel {
     }
 
     return new Promise((fulfill, reject) => {
+      if (conversations.length) {
+        return new Promise((fulfill, reject) => {
+          this._getMultiResponse(conversations, fulfill);
+        }).map((conversation) => {
 
-      return new Promise((fulfill, reject) => {
-        this._getMultiResponse(conversations, fulfill);
-      }).map((conversation) => {
+          let d1 = new Date().getTime();
+          let d2 = new Date(conversation.updated).getTime();
+          let timeLapsed = Math.round((d2 - d1) / (3600 * 1000)); // in hours
+          let recentlyActive = timeLapsed < Number(hourThreshold); // active conversations are less than a day olf
 
-        let d1 = new Date().getTime();
-        let d2 = new Date(conversation.updated).getTime();
-        let timeLapsed = Math.round((d2 - d1) / (3600 * 1000)); // in hours
-        let recentlyActive = timeLapsed < Number(hourThreshold); // active conversations are less than a day olf
-
-        if (recentlyActive) {
-          fulfill(conversation);
-        } else {
-          let userId = conversation.cm;
-          let clientId = conversation.client;
-          let subject = "Automatically created";
-          let open = true;
-          return Conversations.create(userId, clientId, subject, open);
-        };
-      })
-
+          if (recentlyActive) {
+            fulfill(conversation);
+          } else {
+            let userId = conversation.cm;
+            let clientId = conversation.client;
+            let subject = "Automatically created";
+            let open = true;
+            return Conversations.create(userId, clientId, subject, open);
+          };
+        });
+      } else {
+        fulfill([]);
+      }
     });
   }
 
-  static createNewNOtAcceptedConversationsForAllClients(clients) {
+  static createNewNotAcceptedConversationsForAllClients(clients) {
     return new Promise((fulfill, reject) => {
       let insertList = [];
       clients.forEach((client) => {
@@ -242,112 +244,8 @@ class Conversations extends BaseModel {
       .then((conversations) => {
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject)
-    }
+    });
   }
-
-  // static findOrCreate (clients, commId) {
-  //   if (!Array.isArray(clients)) clients = [clients];
-  //   let jumpToCreateNewConversation = false;
-
-  //   return new Promise((fulfill, reject) => {
-
-  //     let clientIds = clients.map((client) => {
-  //       return client.clid;
-  //     });
-
-  //     let getConversations;
-  //     if (!clients.length) {
-  //       // If there are are no potential clients, 
-  //       // seek out existing uncaptured conversations
-  //       getConversations = db("msgs")
-  //         .leftJoin("convos", "convos.convid", "msgs.convo")
-  //         .where("msgs.comm", commId)
-  //         .andWhere("convos.client", null)
-  //         .andWhere("convos.open", true);
-  //     } else {
-  //       getConversations = db("convos")
-  //         .whereIn("client", clientIds)
-  //         .andWhere("open", true);
-  //     }
-
-  //     getConversations.then((conversations) => {
-
-  //       // See if there is a new enough conversation
-  //       let allRecentlyActive = true;
-  //       if (conversations.length) {
-  //         conversations.forEach((conversation) => {
-  //           let d1 = new Date().getTime();
-  //           let d2 = new Date(conversation.updated).getTime();
-  //           let timeLapsed = Math.round((d2 - d1) / (3600 * 1000));
-
-  //           // only allow continuation of conversations less than a day old
-  //           if (timeLapsed > 24) {
-  //             allRecentlyActive = false;
-  //           }
-  //         });
-  //       } else {
-  //         allRecentlyActive = false;
-  //       }
-        
-  //       if (allRecentlyActive) {
-  //         fulfill(conversations);
-  //         return null;
-  //       } else if (conversations.length) {
-  //         // Close out all current conversations
-  //         let conversationIds = conversations.map((conversation) => {
-  //           return conversation.convid;
-  //         });
-  //         return db("convos")
-  //           .update({open: false})
-  //           .whereIn("convid", conversationIds);
-  //       } else {
-  //         // Check if there is an unlinked conversation 
-  //         // associated with this value
-  //         return db.select("convos.*").from("comms")
-  //           .innerJoin("msgs", "comms.commid", "msgs.comm")
-  //           .innerJoin("convos", "msgs.convo", "convos.convid")
-  //           .where("convos.open", true)
-  //           .andWhere("comms.commid", commId)
-  //           .and.whereNull("convos.cm")
-  //           .and.whereNull("convos.client")
-  //           .groupBy("convos.convid");
-  //       }
-  //     }).then((conversations) => {
-  //       if (conversations && conversations.length) {
-  //         fulfill(conversations);
-  //         return null;
-  //       } else if (clients.length) {
-  //         // Make a new conversation(s)
-  //         let insertList = [];
-  //         let ableToAccept = clients.length == 1 ? true : false;
-
-  //         for (var i = 0; i < clients.length; i++) {
-  //           let client = clients[i];
-  //           let insertObj = {
-  //             cm:       client.cm,
-  //             client:   client.clid,
-  //             subject:  "Automatically created conversation",
-  //             open:     true,
-  //             accepted: ableToAccept
-  //           }
-  //           insertList.push(insertObj);
-  //         }
-
-  //         return db("convos")
-  //           .insert(insertList)
-  //           .returning("*");
-
-  //       } else {
-  //         // Unable to find any messages, add to capture board
-  //         return db("convos")
-  //           .insert(insertList)
-  //           .returning("*");
-  //       }
-  //     }).then((conversations) => {
-  //       fulfill(conversations, fulfill);
-  //     }).catch(reject);
-  //   })
-  // }
 
   static getMostRecentConversation (userID, clientID) {
     return new Promise((fulfill, reject) => {
@@ -359,7 +257,7 @@ class Conversations extends BaseModel {
       .then((convos) => {
         this._getSingleResponse(convos, fulfill);
       }).catch(reject);
-    }); 
+    });
   }
 
   static getconversationMessages (conversationID) {

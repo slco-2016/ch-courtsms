@@ -26,8 +26,6 @@ module.exports = {
         departmentIds = resp.map((department) => {
           return department.department_id;
         });
-        console.log("***********", departmentIds);
-        console.log("***********", departmentIds);
 
         // Next, get or create a basic comm row
         return Communications.getOrCreateFromValue(fromNumber, "cell")
@@ -49,13 +47,13 @@ module.exports = {
         return Users.findByIds(allUserIdsRelatedToClients);
       }).then((resp) => {
 
-        // Only keep the users that are in the departments that 
+        // Only keep the users that are in the departments that
         // are related with that toNumber
         users = resp.filter((user) => {
           return departmentIds.indexOf(user.department) > -1;
         });
 
-        // Reduce clients list to only clients that are in 
+        // Reduce clients list to only clients that are in
         // the list of in-department users
         let userIds = users.map((user) => {
           return user.cmid;
@@ -66,29 +64,34 @@ module.exports = {
 
         // Get the conversations that are possible candidates
         return Conversations.findByClientAndUserInvolvingSpecificCommId(clients, communication)
-      }).then((resp) => { 
+      }).then((resp) => {
         conversations = resp;
-
+console.log("\n1.) Conersations that already exist: ", conversations, "\n");
         return Conversations.createNewIfOlderThanSetHours(conversations, 24)
-      }).then((resp) => { 
+      }).then((resp) => {
         conversations = resp;
-
+console.log("\n2.) Conersations updated: ", conversations, "\n");
         // We can add this message to existing conversations if they exist
-        if (conversations.length > 0) {
+        if (conversations.length) {
           return new Promise((fulfill, reject) => {
             fulfill(conversations);
-          })
+          });
         } else {
-          return Conversations.createNewNOtAcceptedConversationsForAllClients(clients)
+          return new Promise((fulfill, reject) => {
+            Conversations.createNewNotAcceptedConversationsForAllClients(clients)
+            .then((conversations) => {
+              fulfill(conversations);
+            }).catch(reject);
+          });
         }
-
+console.log("\n3.) Conersations being submitted to: ", conversations, "\n");
       }).then((resp) => {
         conversations = resp;
 
         let conversationIds = conversations.map((conversation) => {
           return conversation.convid;
         });
-
+console.log("\n4.) Conersations getting messages: ", conversations, "\n");
         // Now create a number
         return Messages.insertIntoManyConversations(conversationIds,
                                                     communication.commid,
