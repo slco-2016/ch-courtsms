@@ -4,6 +4,9 @@ const db      = require("../../app/db");
 const Promise = require("bluebird");
 
 const CommConns = require("../models/commConns");
+const Communications = require("../models/communications");
+const Conversations = require("../models/conversations");
+const Messages = require("../models/messages");
 
 class CaptureBoard {
 
@@ -61,41 +64,59 @@ class CaptureBoard {
     return new Promise((fulfill, reject) => {
       let subject = "Captured Conversation from New Contact";
       let deviceName = "New Captured Method";
-      
-      // Query 1: Update convo with CM and client
-      db("convos")
-        .where("convid", conversationId)
-        .andWhere("client", null)
-        .update({
-          subject: subject,
-          client: client,
-          cm: user,
-          accepted: true,
-          open: true
-        })
-      .then((success) => {
+      let clientcomms, comms, conversation;
 
-      // Query 2: Close all other conversation that client has open
-      db("convos")
-        .whereNot("convid", conversationId)
-        .andWhere("cm", user)
-        .andWhere("client", client)
-        .update({ open: false })
-      .then((success) => {
+      Conversations.findById(conversationId)
+      .then((resp) => {
+        conversation = resp;
+        return Messages.findByConversation(conversation)
+      }).then((resp) => {
+        let messages = resp;
+        let commId = messages[0].comm;
+        return Communications.findById(commId)
+      }).then((resp) => {
+        let communcation = resp;
+        return Conversations.closeAllCapturedWithCertainCommunication(communcation)
+      }).then((resp) => {
+        // Query 1: Update convo with CM and client
+        return db("convos")
+          .where("convid", conversationId)
+          .update({
+            subject: subject,
+            client: client,
+            cm: user,
+            accepted: true,
+            open: true
+          })
+          .returning("*");
+      }).then((resp) => {
+        return Conversations.findById(conversationId)
+      }).then((resp) => {
+        console.log("done", resp)
 
-      // Query 3: Gather comm forms used in that conversation (should be only one)
-      db("msgs")
-        .where("convo", conversationId)
-        .andWhere("inbound", true)
-        .pluck("comm")
-      .then((comms) => {
+        // Query 2: Close all other conversation that client has open
+        return db("convos")
+          .whereNot("convid", conversationId)
+          .andWhere("cm", user)
+          .andWhere("client", client)
+          .update({ open: false })
+      }).then(() => {
 
-      // Query 4: Gather comms that the CM currently has
-      db("commconns")
-        .where("client", client)
-        .andWhere("retired", null)
-        .pluck("comm")
-      .then((clientcomms) => {
+        // Query 3: Gather comm forms used in that conversation (should be only one)
+        return db("msgs")
+          .where("convo", conversationId)
+          .andWhere("inbound", true)
+          .pluck("comm")
+      }).then((resp) => {
+        comms = resp;
+
+        // Query 4: Gather comms that the CM currently has
+        return db("commconns")
+          .where("client", client)
+          .andWhere("retired", null)
+          .pluck("comm")
+      }).then((resp) => {
+        clientcomms = resp;
 
         // Remove duplicates
         comms = comms.reduce(function (a,b) { 
@@ -139,9 +160,6 @@ class CaptureBoard {
           fulfill();
         }
 
-      }).catch(reject);
-      }).catch(reject);
-      }).catch(reject);
       }).catch(reject);
     })
   }

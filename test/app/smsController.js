@@ -5,6 +5,8 @@ const should = require('should');
 const APP = require('../../app/app');
 
 const Emails = require('../../app/models/emails');
+const Capture = require('../../app/models/capture');
+const CommConns = require('../../app/models/commConns');
 const Communications = require('../../app/models/communications');
 const Conversations = require('../../app/models/conversations');
 const Messages = require('../../app/models/messages');
@@ -23,7 +25,7 @@ describe('Sms inbound message endpoint', function() {
       });
   });
 
-  it('twilio sends an sms from an existing number', function(done) {
+  it('twilio sends an sms from an brand new number', function(done) {
     let newSmsBody = smsData;
     newSmsBody.From = "10008384828"
     twilioAgent.post('/webhook/sms')
@@ -34,7 +36,7 @@ describe('Sms inbound message endpoint', function() {
       })
   });
 
-  it('twilio sends an sms from an existing number again', function(done) {
+  it('twilio sends an sms from that same new number again', function(done) {
     let newSmsBody = smsData;
     newSmsBody.From = "10008384828"
     twilioAgent.post('/webhook/sms')
@@ -54,15 +56,65 @@ describe('Sms inbound message endpoint', function() {
       })
   });
 
-  it('twilio sends an sms from a new number', function(done) {
+  it('twilio sends an an sms to an existing number', function(done) {
     let newSmsBody = smsData;
-    newSmsBody.From = "18589057365"
-    twilioAgent.post('/webhook/sms')
-      .send(newSmsBody)
-      .expect(200)
-      .end(function(err, res) {
-        done(err);
-      })
+    newSmsBody.From = "12033133609";
+
+    // this is the number that is assoc. with main department in seed
+    newSmsBody.To = "12435678910";
+
+    CommConns.findByValue(newSmsBody.From)
+    .then((commConns) => {
+      // We seeded two connections so those should hold
+      commConns.length.should.be.exactly(2);
+
+      twilioAgent.post('/webhook/sms')
+        .send(newSmsBody)
+        .expect(200)
+        .end(function(err, res) {
+          Conversations.findByCommunicationValue(newSmsBody.From)
+          .then((conversations) => {
+            conversations.forEach((conversation) => {
+              // We should not have any new capture board convos
+              conversation.cm.should.not.be.exactly(null);
+              conversation.client.should.not.be.exactly(null);
+            })
+            done(err);
+          });
+        })
+    }).catch(done);
+
+  });
+
+  it('claim the conversation with one case manager so it closes for all others', function(done) {
+    let newSmsBody = smsData;
+    newSmsBody.From = "12033133609";
+
+    // this is the number that is assoc. with main department in seed
+    newSmsBody.To = "12435678910";
+
+    Conversations.findByCommunicationValue(newSmsBody.From)
+    .then((conversations) => {
+      // just take the first one
+      let conversation = conversations[0];
+      let userId = conversation.cm;
+      let clientId = conversation.client;
+      let conversationId = conversation.convid;
+      Capture.associateConversation(userId,
+                                    clientId,
+                                    conversationId)
+      .then(() => {
+        Conversations.findByCommunicationValue(newSmsBody.From)
+        .then((conversations) => {
+          conversations = conversations.filter((conversation) => {
+            return conversation.accepted == true;
+          });
+          conversations.length.should.be.exactly(1);
+          done();
+        });
+      }).catch(done);
+    });
+
   });
 
 })

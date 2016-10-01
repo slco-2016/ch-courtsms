@@ -56,6 +56,32 @@ class Conversations extends BaseModel {
     })
   }
 
+  static closeAllCapturedWithCertainCommunication (communication) {
+    let value = communication.value;
+    return new Promise((fulfill, reject) => {
+      Conversations.findByCommunicationValue(value)
+      .then((conversations) => {
+        conversations = conversations.filter((conversation) => {
+          let notAccepted = conversation.accepted == false;
+          let stillOpen = conversation.open == true;
+          return stillOpen && notAccepted;
+        });
+        let conversationIds = conversations.map((conversation) => {
+          return conversation.convid;
+        });
+
+        return db("convos")
+          .whereIn("convid", conversationIds)
+          .update({
+            accepted: false,
+            open: false
+          });
+      }).then(() => {
+        fulfill();
+      }).catch(reject);
+    })
+  }
+
   static createOrAttachToExistingCaptureBoardConversation (communication) {
     let commId = communication.commid;
     return new Promise((fulfill, reject) => {
@@ -168,7 +194,8 @@ class Conversations extends BaseModel {
           return conversationId.convid;
         });
         return db("convos")
-          .whereIn("convid", conversationIds);
+          .whereIn("convid", conversationIds)
+          .andWhere("open", true);
       }).then((conversations) => {
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject);

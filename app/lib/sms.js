@@ -70,7 +70,6 @@ module.exports = {
         return Conversations.createNewIfOlderThanSetHours(conversations, 24)
       }).then((resp) => {
         conversations = resp;
-
         // We can add this message to existing conversations if they exist
         if (conversations.length) {
           return new Promise((fulfill, reject) => {
