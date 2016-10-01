@@ -161,7 +161,7 @@ module.exports = {
         if (capitalized == "Clients") {
           capitalized = "All Clients";
         } else if (capitalized == "Captured") {
-          capitalized = "Unclaimed Numbers";
+          capitalized = "Unclaimed";
         }
       }
 
