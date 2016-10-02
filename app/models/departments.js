@@ -72,16 +72,18 @@ class Departments extends BaseModel {
     let Conversations = require("./conversations");
     let Users = require("./users");
 
-    Conversations.findById(conversationId)
-    .then((conversation) => {
-      let userId = conversation.cm;
-      return Users.findById(userId);
-    }).then((user) => {
-      let departmentId = user.department;
-      return Departments.findById(departmentId)
-    }).then((departments) => {
-      this._getSingleResponse(departments, fulfill)
-    }).catch(reject);
+    return new Promise((fulfill, reject) => {
+      Conversations.findById(conversationId)
+      .then((conversation) => {
+        let userId = conversation.cm;
+        return Users.findById(userId);
+      }).then((user) => {
+        let departmentId = user.department;
+        return Departments.findById(departmentId)
+      }).then((departments) => {
+        fulfill(departments);
+      }).catch(reject);
+    });
   }
 
   static findByMember (user) {
