@@ -27,6 +27,10 @@ module.exports = {
         res.json({ closed: false, error: 'Not allowed to edit this alert.' });
       }
     }).catch(res.error500);
+  },
+
+  createForDepartment(req, res) {
+    res.send("ok")
   }
 
 };
