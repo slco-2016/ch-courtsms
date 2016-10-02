@@ -4,12 +4,117 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const BaseModel = require("../lib/models").BaseModel;
+
 const DepartmentSupervisors = require("./departmentSupervisors");
 
+class Departments extends BaseModel {
 
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "department_id",
+        "organization",
+        "name",
+        "phone_number",
+        "created_by",
+        "active",
+        "created"
+      ]
+    })
+  }
 
-// Class
-class Departments {
+  static alterCase (departmentID, active) {
+    if (typeof active == "undefined") active = true;
+
+    return new Promise((fulfill, reject) => {
+      db("departments")
+        .where("department_id", departmentID)
+        .update({active: active})
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    });
+  }
+
+  static createOne (orgID, name, phoneNumber, userID) {
+    return new Promise((fulfill, reject) => {
+      db("departments")
+        .insert({
+          organization: orgID,
+          name: name,
+          phone_number: phoneNumber,
+          created_by: userID,
+          active: true
+        })
+      .then(() => {
+        fulfill()
+      }).catch(reject);
+    });
+  }
+
+  static editOne (departmentID, name, phoneNumber) {
+    return new Promise((fulfill, reject) => {
+      db("departments")
+        .where("department_id", departmentID)
+        .update({
+          name: name,
+          phone_number: phoneNumber
+        })
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    });
+  }
+
+  static findByConversationId (conversationId) {
+    let Conversations = require("./conversations");
+    let Users = require("./users");
+
+    Conversations.findById(conversationId)
+    .then((conversation) => {
+      let userId = conversation.cm;
+      return Users.findById(userId);
+    }).then((user) => {
+      let departmentId = user.department;
+      return Departments.findById(departmentId)
+    }).then((departments) => {
+      this._getSingleResponse(departments, fulfill)
+    }).catch(reject);
+  }
+
+  static findByMember (user) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .where("cmid", user)
+      .then((members) => {
+        let member = members[0];
+
+        if (member) {
+          let departmentId = member.department;
+          Departments.findById(departmentId)
+          .then((department) => {
+            fulfill(department);
+          }).catch(reject);
+
+        } else {
+          fulfill();
+        }
+      }).catch(reject);
+    });
+  }
+
+  static findMembers (departmentID) {
+    return new Promise((fulfill, reject) => {
+      db("cms")
+        .where("department", departmentID)
+        .andWhere("active", true)
+      .then((members) => {
+        fulfill(members);
+      }).catch(reject);
+    });
+  }
 
   static findByOrg (orgID, activeStatus) {
     if (typeof activeStatus == "undefined") activeStatus = true;
@@ -70,94 +175,9 @@ class Departments {
       }).catch(reject);
     });
   }
-
-  static findByID (departmentID) {
-    return new Promise((fulfill, reject) => {
-      db("departments")
-        .where("department_id", departmentID)
-        .limit(1)
-      .then((departments) => {
-        return fulfill(departments[0]);
-      }).catch(reject);
-    });
-  }
-
-  static findByMember (user) {
-    return new Promise((fulfill, reject) => {
-      db("cms")
-        .where("cmid", user)
-      .then((members) => {
-        let member = members[0];
-
-        if (member) {
-          Departments.findByID(member.department)
-          .then((department) => {
-            fulfill(department);
-          }).catch(reject);
-
-        } else {
-          fulfill();
-        }
-      }).catch(reject);
-    });
-  }
-
-  static findMembers (departmentID) {
-    return new Promise((fulfill, reject) => {
-      db("cms")
-        .where("department", departmentID)
-        .andWhere("active", true)
-      .then((members) => {
-        fulfill(members);
-      }).catch(reject);
-    });
-  }
-
-
-  static editOne (departmentID, name, phoneNumber) {
-    return new Promise((fulfill, reject) => {
-      db("departments")
-        .where("department_id", departmentID)
-        .update({
-          name: name,
-          phone_number: phoneNumber
-        })
-      .then(() => {
-        fulfill();
-      }).catch(reject);
-    });
-  }
-
-
-  static createOne (orgID, name, phoneNumber, userID) {
-    return new Promise((fulfill, reject) => {
-      db("departments")
-        .insert({
-          organization: orgID,
-          name: name,
-          phone_number: phoneNumber,
-          created_by: userID,
-          active: true
-        })
-      .then(() => {
-        fulfill()
-      }).catch(reject);
-    });
-  }
-
-  static alterCase (departmentID, active) {
-    if (typeof active == "undefined") active = true;
-
-    return new Promise((fulfill, reject) => {
-      db("departments")
-        .where("department_id", departmentID)
-        .update({active: active})
-      .then(() => {
-        fulfill();
-      }).catch(reject);
-    });
-  }
   
 }
 
+Departments.primaryId = "department_id";
+Departments.tableName = "departments";
 module.exports = Departments;

@@ -23,10 +23,12 @@ if (process.env.CCENV && process.env.CCENV == "production") {
 
 const BaseModel = require("../lib/models").BaseModel
 
-const Conversations = require("./conversations");
-const Communications = require("./communications");
 const Clients = require("./clients");
 const CommConns = require("./commConns");
+const Communications = require("./communications");
+const Conversations = require("./conversations");
+const Departments = require("./departments");
+const PhoneNumbers = require("./phoneNumbers");
 
 class Messages extends BaseModel {
 
@@ -385,30 +387,40 @@ class Messages extends BaseModel {
           // }
 
         } else if (communication.type == "cell") {
-          contentArray.forEach(function (contentPortion, contentIndex) {
-            if (process.env.CCENV !== "testing") {
-              twClient.sendMessage({
-                to: TESTENV ? "+18589057365" : communication.value,
-                from: TWILIO_NUM,
-                body: content
-              }, (err, msg) => {
-                if (err) {
-                  reject(err)
-                } else {
-                  const MessageSid = msg.sid;
-                  const MessageStatus = msg.status;
-                  Messages.create(conversationId,
-                                  commId,
-                                  contentPortion,
-                                  MessageSid,
-                                  MessageStatus)
-                  .then(() => {
-                    if (contentIndex == contentArray.length - 1) fulfill();
-                  }).catch(reject);
-                }
-              })
-            }
-          });
+
+          Departments.findByConversationId(conversationId)
+          .then((department) => {
+            let phoneNumberId = department.phone_number;
+            return PhoneNumbers.findById(phoneNumberId);
+          }).then((departmentPhoneNumber) => {
+            let sentFromValue = departmentPhoneNumber.value;
+
+            contentArray.forEach((contentPortion, contentIndex) => {
+              if (process.env.CCENV !== "testing") {
+                twClient.sendMessage({
+                  to: TESTENV ? "+18589057365" : communication.value,
+                  from: sentFromValue,
+                  body: content
+                }, (err, msg) => {
+                  if (err) {
+                    reject(err)
+                  } else {
+                    const MessageSid = msg.sid;
+                    const MessageStatus = msg.status;
+                    Messages.create(conversationId,
+                                    commId,
+                                    contentPortion,
+                                    MessageSid,
+                                    MessageStatus)
+                    .then(() => {
+                      if (contentIndex == contentArray.length - 1) fulfill();
+                    }).catch(reject);
+                  }
+                })
+              }
+            });
+
+          }).catch(reject);
         }
 
       }).catch(reject);

@@ -231,8 +231,8 @@ module.exports = {
 
   fetchUserDepartment(req, res, next) {
     if (req.user) {
-      let department = req.user.department;
-      return Departments.findByID(department)
+      let departmentId = req.user.department;
+      return Departments.findById(departmentId)
       .then((department) => {
         // if no department, provide some dummy attributes
         if (!department) {

@@ -92,7 +92,6 @@ class CaptureBoard {
       }).then((resp) => {
         return Conversations.findById(conversationId)
       }).then((resp) => {
-        console.log("done", resp)
 
         // Query 2: Close all other conversation that client has open
         return db("convos")

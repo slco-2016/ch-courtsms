@@ -42,7 +42,7 @@ router.get("/dashboard/overview", (req, res) => {
   let userFilterID = Number(req.query.targetUserID);
   if (isNaN(userFilterID)) userFilterID = null;
 
-  Departments.findByID(orgID, true)
+  Departments.findById(departmentID)
   .then((dept) => {
     department = dept;
     return Users.findByDepartment(departmentID, true)

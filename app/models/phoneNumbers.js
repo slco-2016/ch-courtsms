@@ -4,11 +4,21 @@
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const BaseModel = require("../lib/models").BaseModel;
 
+class PhoneNumbers extends BaseModel {
 
-
-// Class
-class PhoneNumbers {
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "phone_number_id",
+        "organization",
+        "created",
+        "value",
+      ]
+    })
+  }
 
   static findByOrgID (orgID) {
     return new Promise((fulfill, reject) => {
@@ -22,4 +32,6 @@ class PhoneNumbers {
   
 }
 
+PhoneNumbers.primaryId = "phone_number_id";
+PhoneNumbers.tableName = "phone_numbers";
 module.exports = PhoneNumbers;
