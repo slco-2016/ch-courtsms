@@ -9,7 +9,7 @@
         <% if (level == "org") { %>
           <% if (user.class !== "support") { %>
             <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
-              <div class="title"><a href="/org">Metrics Dashboard</a></div>
+              <div class="title"><a href="/org">Dashboard</a></div>
             </div>
           <% } %>
 
@@ -36,23 +36,27 @@
       </div>
     </div>
 
-    <!-- Right "action" buttons -->
-    <% if (level =="org") { %>
-      <% if (user.class !== "support") { %>
-        <%- rightTab('numbers', 'phone', level) %>
-        <%- rightTab('departments', 'building', level) %>
-        <%- rightTab('users', 'user-plus', level) %>
-      <% } %>
-    <% } %>
+    <div class="allRightParent">
+      <div class="allRight">
+        <!-- Right "action" buttons -->
+        <% if (level =="org") { %>
+          <% if (user.class !== "support") { %>
+            <%- rightTab('numbers', 'phone', level) %>
+            <%- rightTab('departments', 'building', level) %>
+            <%- rightTab('users', 'user-plus', level) %>
+          <% } %>
+        <% } %>
 
-    <!-- primary -->
-    <% if (level == "user") { %>
-      <%- rightTab('groups', 'users', level) %>
-      <%- rightTab('templates', 'clipboard', level) %> 
-      <%- rightTab('notifications', 'bell', level) %>
-    <% } %>
+        <!-- primary -->
+        <% if (level == "user") { %>
+          <%- rightTab('groups', 'users', level) %>
+          <%- rightTab('templates', 'clipboard', level) %> 
+          <%- rightTab('notifications', 'bell', level) %>
+        <% } %>
 
-    <%- rightTab('clients', 'user', level) %>
+        <%- rightTab('clients', 'user', level) %>
+      </div>
+    </div>
       
   </div>
 

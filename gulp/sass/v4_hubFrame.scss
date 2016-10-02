@@ -85,7 +85,6 @@ $darkblue:    #344289;
 
       .allLeft {
         width: 1024px;
-        background-color: red;
 
         .leftTab {
           height: inherit;
@@ -147,36 +146,48 @@ $darkblue:    #344289;
       }
     }
 
-    .rightActions {
+    .allRightParent {
+      max-width: 25%;
+      overflow-x: scroll; 
       float: right;
-      line-height: 45px;
-      font-size: 12px;
-      color: $white;
-      padding-left: 10px;
-      padding-right: 15px;
 
-      .fa-stack.fa-lg {
-        font-size: 12px;
-      }
+      .allRight {
+        width: 500px;
+        float: right;
 
-      .fa.fa-inverse {
-        color: $lightblue;
-      }
+        .rightActions {
+          float: right;
+          line-height: 45px;
+          font-size: 12px;
+          color: $white;
+          padding-left: 10px;
+          padding-right: 15px;
 
-      .text {
-        display: none;
-      }
+          .fa-stack.fa-lg {
+            font-size: 12px;
+          }
 
-      &:hover {
-        background-color: $blue;
-        .fa.fa-inverse {
-          color: $blue;
-        }
-        .text {
-          display: inline;
+          .fa.fa-inverse {
+            color: $lightblue;
+          }
+
+          .text {
+            display: none;
+          }
+
+          &:hover {
+            background-color: $blue;
+            .fa.fa-inverse {
+              color: $blue;
+            }
+            .text {
+              display: inline;
+            }
+          }
         }
       }
     }
+
   }
 
   .coreContent {

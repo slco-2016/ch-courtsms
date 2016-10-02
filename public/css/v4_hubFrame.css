@@ -36,8 +36,7 @@
     overflow-x: scroll;
     float: left; }
     .applicationFrame .navSub .allLeftParent .allLeft {
-      width: 1024px;
-      background-color: red; }
+      width: 1024px; }
       .applicationFrame .navSub .allLeftParent .allLeft .leftTab {
         height: inherit;
         width: auto;
@@ -76,25 +75,32 @@
           display: none; }
         .applicationFrame .navSub .allLeftParent .allLeft .leftTab.closed:hover {
           background-color: #3F69B6; }
-  .applicationFrame .navSub .rightActions {
-    float: right;
-    line-height: 45px;
-    font-size: 12px;
-    color: #FFF;
-    padding-left: 10px;
-    padding-right: 15px; }
-    .applicationFrame .navSub .rightActions .fa-stack.fa-lg {
-      font-size: 12px; }
-    .applicationFrame .navSub .rightActions .fa.fa-inverse {
-      color: #4A90E2; }
-    .applicationFrame .navSub .rightActions .text {
-      display: none; }
-    .applicationFrame .navSub .rightActions:hover {
-      background-color: #3F69B6; }
-      .applicationFrame .navSub .rightActions:hover .fa.fa-inverse {
-        color: #3F69B6; }
-      .applicationFrame .navSub .rightActions:hover .text {
-        display: inline; }
+  .applicationFrame .navSub .allRightParent {
+    max-width: 25%;
+    overflow-x: scroll;
+    float: right; }
+    .applicationFrame .navSub .allRightParent .allRight {
+      width: 500px;
+      float: right; }
+      .applicationFrame .navSub .allRightParent .allRight .rightActions {
+        float: right;
+        line-height: 45px;
+        font-size: 12px;
+        color: #FFF;
+        padding-left: 10px;
+        padding-right: 15px; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .fa-stack.fa-lg {
+          font-size: 12px; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .fa.fa-inverse {
+          color: #4A90E2; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .text {
+          display: none; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions:hover {
+          background-color: #3F69B6; }
+          .applicationFrame .navSub .allRightParent .allRight .rightActions:hover .fa.fa-inverse {
+            color: #3F69B6; }
+          .applicationFrame .navSub .allRightParent .allRight .rightActions:hover .text {
+            display: inline; }
 
 .applicationFrame .coreContent {
   padding-top: 92px;

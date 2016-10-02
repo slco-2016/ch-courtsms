@@ -16,7 +16,7 @@ module.exports = {
     let userId = req.user.cmid;
     let alertId = req.params.alert;
 
-    Alerts.findOne(alertId)
+    Alerts.findById(alertId)
     .then((alert) => {
       if (alert && alert.user == userId) {
         Alerts.closeOne(alertId)
