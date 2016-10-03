@@ -12,7 +12,7 @@ const Conversations = require('../../app/models/conversations');
 const Messages = require('../../app/models/messages');
 
 const twilioAgent = supertest.agent(APP);
-const smsData = require('../testSMSData');
+const smsData = require('../data/testSMSData');
 
 describe('Sms inbound message endpoint', function() {
 
