@@ -75,9 +75,10 @@ class Conversations extends BaseModel {
           .update({
             accepted: false,
             open: false
-          });
-      }).then(() => {
-        fulfill();
+          })
+          .returning("*");
+      }).then((conversations) => {
+        this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     })
   }

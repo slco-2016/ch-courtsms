@@ -26,7 +26,7 @@ module.exports = {
   },
 
   create(req, res) {
-    Departments.createOne(
+    Departments.create(
                   req.user.org,    // organization
                   req.body.name,   // new dep't name
                   req.body.number, // associated number

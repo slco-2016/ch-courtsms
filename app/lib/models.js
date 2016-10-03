@@ -40,15 +40,15 @@ class BaseModel {
   }
 
   static _checkForTableName() {
-      if(!this.tableName) {
-        throw new Error("This model needs a tableName!")
-      }
+    if(!this.tableName) {
+      throw new Error("This model needs a tableName!")
+    }
   }
 
   static _checkForPrimaryId() {
-      if(!this.primaryId) {
-        throw new Error("This model needs a primaryId!")
-      }
+    if(!this.primaryId) {
+      throw new Error("This model needs a primaryId!")
+    }
   }
 
   static create(modelObject) {
@@ -113,7 +113,23 @@ class BaseModel {
           this._getMultiResponse(objects, fulfill)
         }).catch(reject)
     })
+  }
 
+  static findManyByAttribute(attributeName, value, otherOperations) {
+    if (!otherOperations) {
+      otherOperations = (dbCall) => {
+        return dbCall;
+      }
+    }
+    this._checkModelValidity();
+    return new Promise((fulfill, reject) => {
+      let basicDbCall = db(this.tableName)
+                          .where(attributeName, value);
+      otherOperations(basicDbCall)
+      .then((objects) => {
+        return this._getMultiResponse(objects, fulfill)
+      }).catch(reject)
+    })
   }
 
   static findOneByAttribute(attributeName, value) {

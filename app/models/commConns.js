@@ -157,6 +157,6 @@ class CommConns extends BaseModel {
 
 }
 
-Communications.primaryId = "commconnid";
-Communications.tableName = "commconns";
-module.exports = CommConns
+CommConns.primaryId = "commconnid";
+CommConns.tableName = "commconns";
+module.exports = CommConns;

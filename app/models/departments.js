@@ -32,13 +32,14 @@ class Departments extends BaseModel {
       db("departments")
         .where("department_id", departmentID)
         .update({active: active})
-      .then(() => {
-        fulfill();
+        .returning("*")
+      .then((departments) => {
+        this._getMultiResponse(departments, fulfill);
       }).catch(reject);
     });
   }
 
-  static createOne (orgID, name, phoneNumber, userID) {
+  static create (orgID, name, phoneNumber, userID) {
     return new Promise((fulfill, reject) => {
       db("departments")
         .insert({
@@ -48,8 +49,9 @@ class Departments extends BaseModel {
           created_by: userID,
           active: true
         })
-      .then(() => {
-        fulfill()
+        .returning("*")
+      .then((departments) => {
+        this._getSingleResponse(departments, fulfill);
       }).catch(reject);
     });
   }

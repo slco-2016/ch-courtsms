@@ -24,7 +24,10 @@ describe('Clients checks', function() {
     Clients.findByCommId(1)
     .then((clients) => {
 
-      CommConns.findByCommId(1)
+      CommConns.findManyByAttribute("comm", 1, (dbCall) => {
+        return dbCall
+          .andWhere("retired", null);
+      })
       .then((commConns) => {
         clients.length.should.be.exactly(commConns.length);
         done();
