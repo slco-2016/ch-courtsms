@@ -10,11 +10,7 @@ before_script:
   - "mv exampleCredentials.js credentials.js"
   - createdb cctest
 script: 
-<<<<<<< HEAD
   - CCENV=testing istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly test/app/
-=======
-  - CCENV=testing istanbul cover _mocha test/app/
->>>>>>> a64425890453f653d7a84ee1ecaa4a8c1381482c
   - codecov
 after_success:
   - bash <(curl -s https://codecov.io/bash)
