@@ -3,8 +3,14 @@ node_js:
   - "6"
 addons:
   postgresql: "9.4"
+install:
+  - npm install -g codecov istanbul
+  - npm install
 before_script:
-   - "mv exampleCredentials.js credentials.js"
-   - createdb cctest
+  - "mv exampleCredentials.js credentials.js"
+  - createdb cctest
+script: 
+  - CCENV=testing istanbul cover _mocha test/app/
+  - codecov
 after_success:
   - bash <(curl -s https://codecov.io/bash)
