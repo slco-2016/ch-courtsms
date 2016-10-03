@@ -2,7 +2,7 @@
 Communications interface for case managers at Criminal Justice Services (CJS) in Salt Lake County, Utah. Code for America 2016 Fellowship Project.
 
 
-## Version 4.0.0 status [![Coverage Status](https://codecov.io/github/slco-2016/clientcomm/coverage.svg?branch=v4)](https://codecov.io/github/slco-2016/clientcomm/coverage.svg?branch=v4) [![Build Status](https://travis-ci.org/slco-2016/clientcomm.svg?branch=v4)](https://travis-ci.org/slco-2016/clientcomm)
+## Version 4.0.0 status [![Coverage Status](https://codecov.io/gh/slco-2016/clientcomm/branch/v4/graph/badge.svg)](https://codecov.io/github/slco-2016/clientcomm/coverage.svg?branch=v4) [![Build Status](https://travis-ci.org/slco-2016/clientcomm.svg?branch=v4)](https://travis-ci.org/slco-2016/clientcomm)
 Version 4.0.0 represents the final deliverable to Salt Lake County. Future development of the tool during this Fellowship is dedicated to shipping Version 4.0.0 and related minor updates. No additional features are scheduled beyond or within this build.
 
 
