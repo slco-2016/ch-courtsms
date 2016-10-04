@@ -23,26 +23,6 @@ class Conversations extends BaseModel {
     })
   }
 
-  static create(userId, clientId, subject, open) {
-    if (typeof open == "undefined") open = true;
-    return new Promise((fulfill, reject) => {
-      Conversations.closeAllBetweenClientAndUser(userId)
-      .then(() => {
-        return db("convos")
-          .insert({
-            cm: userId,
-            client: clientId,
-            subject: subject,
-            open: open,
-            accepted: true,
-          })
-          .returning("*")
-      }).then((conversations) => {
-        this._getSingleResponse(conversations, fulfill);
-      }).catch(reject)
-    })
-  }
-
   static closeAllBetweenClientAndUser (userID, clientID) {
     return new Promise((fulfill, reject) => {
       db("convos")
@@ -104,6 +84,26 @@ class Conversations extends BaseModel {
       .then(() => {
         fulfill();
       }).catch(reject);
+    })
+  }
+
+  static create(userId, clientId, subject, open) {
+    if (typeof open == "undefined") open = true;
+    return new Promise((fulfill, reject) => {
+      Conversations.closeAllBetweenClientAndUser(userId)
+      .then(() => {
+        return db("convos")
+          .insert({
+            cm: userId,
+            client: clientId,
+            subject: subject,
+            open: open,
+            accepted: true,
+          })
+          .returning("*")
+      }).then((conversations) => {
+        this._getSingleResponse(conversations, fulfill);
+      }).catch(reject)
     })
   }
 
@@ -415,6 +415,37 @@ class Conversations extends BaseModel {
         fulfill(conversations[0]);
       }).catch(reject);
     })
+  }
+
+  // TODO: @maxmcd is this ok? This is essentially a wrapper function and is calling
+  // a number of other model methods
+  static retrieveConversations (clients, communication) {
+    return new Promise ((fulfill, reject) => {
+      let conversations;
+      // Get the conversations that are possible candidates
+      Conversations.findByClientAndUserInvolvingSpecificCommId(clients, communication)
+      .then((resp) => {
+        conversations = resp;
+
+        // @maxmcd perhaps this is something that should be a lib/util?
+        return Conversations.createNewIfOlderThanSetHours(conversations, 24)
+      }).then((resp) => {
+        conversations = resp;
+
+        // We can add this message to existing conversations if they exist
+        if (conversations.length) {
+          return new Promise((fulfill, reject) => {
+            fulfill(conversations);
+          });
+        } else if (clients.length) {
+          return Conversations.createNewNotAcceptedConversationsForAllClients(clients);
+        } else {
+          return Conversations.createOrAttachToExistingCaptureBoardConversation(communication);
+        }
+      }).then((conversations) => {
+        fulfill(conversations);
+      }).catch(reject);
+    });
   }
 
   static transferUserReference (client, fromUser, toUser) {

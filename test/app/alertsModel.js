@@ -6,6 +6,7 @@ const Alerts = require('../../app/models/alerts')
 require('colors');
 const should = require('should');
 
+<<<<<<< HEAD
 // Base information
 let createdBy = 1,
     targetUserId = 2,

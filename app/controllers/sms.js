@@ -1,6 +1,9 @@
+const Communications = require("../models/communications");
 const Conversations = require('../models/conversations');
-const Messages = require('../models/messages');
+const Departments = require("../models/departments");
+const Messages = require("../models/messages");
 const SentimentAnalysis = require('../models/sentiment');
+
 const sms = require('../lib/sms');
 
 module.exports = {
@@ -21,12 +24,26 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    sms.processIncomingAndRetrieveOrCreateConversations(toNumber, 
-                                                        fromNumber, 
-                                                        text, 
-                                                        MessageStatus, 
-                                                        MessageSID)
-    .then((conversations) => {
+    let communication, conversations, clients;
+    Communications.getOrCreateFromValue(fromNumber, "cell")
+    .then((resp) => {
+      communication = resp;
+      return sms.retrieveClients(toNumber, communication);
+    }).then((resp) => {
+      clients = resp;
+      return Conversations.retrieveConversations(clients, communication)
+    }).then((resp) => {
+      conversations = resp;
+      let conversationIds = conversations.map((conversation) => {
+        return conversation.convid;
+      });
+      
+      return Messages.insertIntoManyConversations(conversationIds,
+                                                  communication.commid,
+                                                  text,
+                                                  MessageSID,
+                                                  MessageStatus);
+    }).then((messages) => {
 
       conversations.forEach((conversation) => {
         Messages.findByConversation(conversation)
@@ -41,7 +58,7 @@ module.exports = {
             let clientId = conversation.client;
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
-              return Messages.sendOne(commId, messageContent, conversationId)
+              return Messages.sendOne(commId, messageContent, conversation)
             }).then(() => { }).catch((error) => {
               console.log(error);
             });

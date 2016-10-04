@@ -8,6 +8,7 @@ const Promise = require("bluebird");
 
 // Class
 class Conversations {
+
   static closeAll(cmid, clid) {
     return new Promise((fulfill, reject) => {
       db("convos")
@@ -45,6 +46,7 @@ class Conversations {
       }).catch(reject)
     })
   }
-}
+  
+};
 
 module.exports = Conversations
