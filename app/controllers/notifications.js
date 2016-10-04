@@ -7,7 +7,7 @@ let moment_tz = require("moment-timezone");
 
 module.exports = {
   index(req, res) {
-    let client = req.params.clientId || req.params.clientID || null;
+    let client = req.params.client || req.params.clientId || req.params.clientID || null;
     let status = req.query.status || "pending";
     let isSent = status === "sent";
     let strategy;

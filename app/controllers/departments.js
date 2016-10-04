@@ -1,9 +1,61 @@
-const PhoneNumbers = require('../models/phoneNumbers');
+const Conversations = require('../models/conversations');
 const Departments = require('../models/departments');
-const Users = require('../models/users');
 const DepartmentSupervisors = require('../models/departmentSupervisors');
+const PhoneNumbers = require('../models/phoneNumbers');
+const Users = require('../models/users');
+
 
 module.exports = {
+
+  alter(req, res) {
+    let state = req.params.case === "close" ? false : true;
+
+    Departments.findMembers(req.params.department)
+    .then((members) => {
+      if (members.length == 0) {
+        Departments.alterCase(req.params.department, state)
+        .then(() => {
+          req.flash("success", "Changed department activity status.");
+          res.redirect("/org/departments");
+        }).catch(res.error500);
+      } else {
+        req.flash("warning", "Need to remove or close out members first.");
+        res.redirect("/org/departments");
+      }
+    }).catch(res.error500);
+  },
+
+  create(req, res) {
+    Departments.create(
+                  req.user.org,    // organization
+                  req.body.name,   // new dep't name
+                  req.body.number, // associated number
+                  req.user.cmid    // created by
+    ).then(() => {
+      req.flash("success", "Made new department.");
+      res.redirect("/org/departments");
+    }).catch(res.error500);
+  },
+  
+  edit(req, res) {
+    let departmentId = req.params.department;
+    let orgId = req.user.org;
+    Departments.findById(departmentId)
+    .then((department) => {
+      if (department) {
+        PhoneNumbers.findByOrgID(orgId)
+        .then((phoneNumbers) => {
+          res.render("departments/edit", {
+            department: department,
+            phoneNumbers: phoneNumbers
+          });
+        }).catch(res.error500);
+
+      } else {
+        notFound(res);
+      }
+    }).catch(res.error500);
+  },
   
   index(req, res) {
     let status = req.query.status === "inactive" ? false : true;
@@ -26,48 +78,6 @@ module.exports = {
       res.render("departments/create", {
         phoneNumbers: phoneNumbers
       });
-    }).catch(res.error500);
-  },
-  
-  create(req, res) {
-    Departments.createOne(
-                  req.user.org,    // organization
-                  req.body.name,   // new dep't name
-                  req.body.number, // associated number
-                  req.user.cmid    // created by
-    ).then(() => {
-      req.flash("success", "Made new department.");
-      res.redirect("/org/departments");
-    }).catch(res.error500);
-  },
-  
-  edit(req, res) {
-    Departments.findByID(req.params.department)
-    .then((department) => {
-      if (department) {
-        PhoneNumbers.findByOrgID(req.user.org)
-        .then((phoneNumbers) => {
-          res.render("departments/edit", {
-            department: department,
-            phoneNumbers: phoneNumbers
-          });
-        }).catch(res.error500);
-
-      } else {
-        notFound(res);
-      }
-    }).catch(res.error500);
-  },
-  
-  update(req, res) {
-    Departments.editOne(
-      req.params.department, // department
-      req.body.name,           // new name
-      req.body.number          // new associated number
-    ).then(() => {
-      req.flash("success", "Updated department.");
-      res.redirect("/org/departments");
-      return null
     }).catch(res.error500);
   },
   
@@ -105,23 +115,17 @@ module.exports = {
       res.redirect("/org/departments");
     }).catch(res.error500);
   },
-  
-  alter(req, res) {
-    let state = req.params.case === "close" ? false : true;
 
-    Departments.findMembers(req.params.department)
-    .then((members) => {
-      if (members.length == 0) {
-        Departments.alterCase(req.params.department, state)
-        .then(() => {
-          req.flash("success", "Changed department activity status.");
-          res.redirect("/org/departments");
-        }).catch(res.error500);
-      } else {
-        req.flash("warning", "Need to remove or close out members first.");
-        res.redirect("/org/departments");
-      }
+  update(req, res) {
+    Departments.editOne(
+      req.params.department, // department
+      req.body.name,           // new name
+      req.body.number          // new associated number
+    ).then(() => {
+      req.flash("success", "Updated department.");
+      res.redirect("/org/departments");
+      return null
     }).catch(res.error500);
-  },
+  }
 
 };

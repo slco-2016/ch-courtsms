@@ -38,7 +38,7 @@
   <div class="formRow">
     <div class="formLabel"> Conversation stream (for reference) </div>
     <div class="formInput">
-      <% conversation._info.data.messages.forEach((msg) => { %>
+      <% conversation.messages.forEach((msg) => { %>
         <div class="<% if (msg.inbound) { %>inbound<% } else { %>outbound<% } %>">
           <%= msg.content %>
         </div>

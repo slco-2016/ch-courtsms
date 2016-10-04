@@ -3,6 +3,7 @@
 <link rel="stylesheet" type="text/css" href="/static/css/v4_departments.css">
 
 <div class="header">
+  <div class="column">alert</div>
   <div class="column">department name</div>
   <div class="column">attached number</div>
   <div class="column">members</div>
@@ -16,26 +17,36 @@
 
 <% departments.forEach((d) => { %>
   <div class="notificationRow">
+    
     <div class="column">
-      <span class="clientName">
-        <%= d.name %>
-      </span>
+      <a href="<%=`/org/alerts/departments/${department.department_id}/create`%>">
+        <i class="fa highlight fa-bell" aria-hidden="true"></i>
+      </a>
     </div>
+    
+    <div class="column">
+      <%= d.name %>
+    </div>
+
     <div class="column">
       <%= d.value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
     </div>
+
     <div class="column">
       <span class="bigNumber"><%= d.members ? d.members : '0' %></span>
     </div>
+
     <div class="column">
       <% if (d.supervisors.length == 0) { %><b>No supervisors</b><% } %>
       <%= d.supervisors.map((s) => {return `${s.first} ${s.last}`}).join(', '); %>
     </div>
+
     <div class="column">
       <span class="time">
         <%= moment.tz(d.send, organization.tz).format('MMM. Do, YYYY hh:mm A') %>
       </span>
     </div>
+
     <div class="column">
       <% if (hub.sel == "active") { %>
         <a href="/org/departments/<%=d.department_id%>/edit">
@@ -43,6 +54,7 @@
         </a>
       <% } else { %>-<% } %>
     </div>
+
     <div class="column">
       <% if (hub.sel == "active") { %>
         <!-- Can only deactivate a department if all clients and supers are removed -->
@@ -57,6 +69,7 @@
         </a>
       <% } %>
     </div>
+
   </div>
 <% }) %>
 

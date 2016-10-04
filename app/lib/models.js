@@ -40,15 +40,15 @@ class BaseModel {
   }
 
   static _checkForTableName() {
-      if(!this.tableName) {
-        throw new Error("This model needs a tableName!")
-      }
+    if(!this.tableName) {
+      throw new Error("This model needs a tableName!")
+    }
   }
 
   static _checkForPrimaryId() {
-      if(!this.primaryId) {
-        throw new Error("This model needs a primaryId!")
-      }
+    if(!this.primaryId) {
+      throw new Error("This model needs a primaryId!")
+    }
   }
 
   static create(modelObject) {
@@ -75,8 +75,9 @@ class BaseModel {
     if (!model) {
       model = this
     }
+    
     fulfill(objects.map((object) => {
-      return new model(object)
+      return new model(object);
     }))
   }
 
@@ -112,15 +113,38 @@ class BaseModel {
           this._getMultiResponse(objects, fulfill)
         }).catch(reject)
     })
-
   }
 
-  static findOneByAttribute(attributeName, value) {
-    this._checkModelValidity()
+  static findManyByAttribute(attributeName, value, otherOperations) {
+    this._checkModelValidity();
+    if (!otherOperations) {
+      otherOperations = (dbCall) => {
+        return dbCall;
+      }
+    }
+    
     return new Promise((fulfill, reject) => {
-      db(this.tableName)
-      .where(attributeName, value)
-      .limit(1)
+      let basicDbCall = db(this.tableName)
+                          .where(attributeName, value);
+      otherOperations(basicDbCall)
+      .then((objects) => {
+        return this._getMultiResponse(objects, fulfill)
+      }).catch(reject)
+    })
+  }
+
+  static findOneByAttribute(attributeName, value, otherOperations) {
+    this._checkModelValidity();
+    if (!otherOperations) {
+      otherOperations = (dbCall) => {
+        return dbCall;
+      }
+    }
+    
+    return new Promise((fulfill, reject) => {
+      let basicDbCall = db(this.tableName)
+                          .where(attributeName, value);
+      otherOperations(basicDbCall)
       .then((objects) => {
         return this._getSingleResponse(objects, fulfill, reject)
       }).catch(reject)

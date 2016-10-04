@@ -20,7 +20,7 @@ function removeAlert () {
 };
 
 function submitAlertClosure (alertId) {
-  $.get("/alerts/close/" + alertId)
+  $.get("/alerts/" + alertId + "/close")
   .fail(function (error) { 
     console.log(error.status+": "+error.statusText); 
   });

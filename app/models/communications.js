@@ -35,9 +35,8 @@ class Communications extends BaseModel {
   }
 
   static getOrCreateFromValue(value, type) {
-    if (!type) {
-      type = "cell";
-    }
+    if (!type) { type = "cell"; }
+
     return new Promise((fulfill, reject) => {
       this.findByValue(value)
       .then((communication) => {
@@ -105,7 +104,6 @@ class Communications extends BaseModel {
 
 }
 
-Communications.primaryId = "commid"
-Communications.tableName = "comms"
-
+Communications.primaryId = "commid";
+Communications.tableName = "comms";
 module.exports = Communications;

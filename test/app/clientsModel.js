@@ -1,6 +1,7 @@
 const assert = require('assert');
 
-const Clients = require('../../app/models/clients')
+const Clients = require('../../app/models/clients');
+const CommConns = require('../../app/models/commConns');
 
 require('colors');
 const should = require('should');
@@ -19,12 +20,61 @@ describe('Clients checks', function() {
     }).catch(done);
   });
 
+  it('clients should be able to be found by attribute type, single query', function(done) {
+    Clients.findOneByAttribute("clid", 1, (baseDbCall) => {
+      return baseDbCall.where("active", true);
+    })
+    .then((client) => {
+      client.clid.should.be.exactly(1);
+      done();
+    }).catch(done)
+  });
+
+  it('with findOneByAttribute, should return null if none found', function(done) {
+    Clients.findOneByAttribute("clid", 99999999, (baseDbCall) => {
+      return baseDbCall.where("active", true);
+    })
+    .then((client) => {
+      should(client).not.be.ok();
+      done();
+    }).catch(done)
+  });
+
+  it('clients should be able to be found by attribute type, multi query', function(done) {
+    Clients.findManyByAttribute("cm", 2, (baseDbCall) => {
+      return baseDbCall.where("active", true);
+    })
+    .then((clients) => {
+      clients.length.should.be.greaterThan(0);
+      done();
+    }).catch(done)
+  });
+
+  it('with find by many attr multi query, array even if no results, just length 0', function(done) {
+    Clients.findManyByAttribute("cm", 9999, (baseDbCall) => {
+      return baseDbCall.where("active", true);
+    })
+    .then((clients) => {
+      clients.length.should.be.exactly(0);
+      done();
+    }).catch(done)
+  });
+
   it('Should be able to find clients by the commid created', function(done) {
     Clients.findByCommId(1)
     .then((clients) => {
-      clients.length.should.be.greaterThan(1);
-      done();
+
+      CommConns.findManyByAttribute("comm", 1, (dbCall) => {
+        return dbCall
+          .andWhere("retired", null);
+      })
+      .then((commConns) => {
+        clients.length.should.be.exactly(commConns.length);
+        done();
+      }).catch(done);
+
     }).catch(done);
   });
+
   
 })

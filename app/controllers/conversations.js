@@ -13,9 +13,8 @@ module.exports = {
   claimOption(req, res) {
     let conversationId = req.params.conversation;
     let clientId = req.params.client;
-    Conversations.findByIds([conversationId])
-    .then((conversations) => {
-      conversation = conversations[0];
+    Conversations.findById(conversationId)
+    .then((conversation) => {
       if (conversation &&
           conversation.client == Number(clientId) &&
           conversation.cm == req.user.cmid &&
