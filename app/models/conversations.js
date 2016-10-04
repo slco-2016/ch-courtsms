@@ -83,6 +83,30 @@ class Conversations extends BaseModel {
     })
   }
 
+  static closeAllWithClient (clientId) {
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .where("client", clientId)
+        .update({ open: false })
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    })
+  }
+
+  static closeAllWithClientExcept (clientId, conversationId) {
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .where("client", clientId)
+        .andWhere("open", true)
+        .and.whereNot("convid", conversationId)
+        .update({ open: false })
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    })
+  }
+
   static createOrAttachToExistingCaptureBoardConversation (communication) {
     let commId = communication.commid;
     return new Promise((fulfill, reject) => {
