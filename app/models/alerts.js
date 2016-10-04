@@ -23,17 +23,6 @@ class Alerts extends BaseModel {
       ]
     })
   }
-  
-  static findByUser (userId) {
-    return new Promise((fulfill, reject) => {
-      db("alerts_feed")
-        .where("user", userId)
-        .andWhere("open", true)
-      .then((alerts) => {
-        return fulfill(alerts);
-      }).catch(reject);
-    });
-  }
 
   static closeOne (alertId) {
     return new Promise((fulfill, reject) => {
@@ -41,6 +30,34 @@ class Alerts extends BaseModel {
         .where("alert_id", alertId)
         .update({ open: false })
       .then(fulfill).catch(reject);
+    });
+  }
+
+  static createForUser (targetUserId, createdByUserId, subject, message) {
+    return new Promise((fulfill, reject) => {
+    let insert = {
+        user: targetUserId,
+        created_by: createdByUserId,
+        subject: subject,
+        message: message,
+        open: true,
+        created: db.fn.now()
+      };
+
+      db("alerts_feed")
+        .insert(insert)
+      .then(fulfill).catch(reject);
+    });
+  }
+  
+  static findByUser (userId) {
+    return new Promise((fulfill, reject) => {
+      db("alerts_feed")
+        .where("user", userId)
+        .andWhere("open", true)
+      .then((alerts) => {
+        this._getMultiResponse(alerts, fulfill);
+      }).catch(reject);
     });
   }
 
