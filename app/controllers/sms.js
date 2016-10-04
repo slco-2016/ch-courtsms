@@ -31,7 +31,9 @@ module.exports = {
       return sms.retrieveClients(toNumber, communication);
     }).then((resp) => {
       clients = resp;
-      return Conversations.retrieveConversations(clients, communication)
+      return Conversations.retrieveByClientsAndCommunication(
+        clients, communication
+      )
     }).then((resp) => {
       conversations = resp;
       let conversationIds = conversations.map((conversation) => {
@@ -42,7 +44,8 @@ module.exports = {
                                                   communication.commid,
                                                   text,
                                                   MessageSID,
-                                                  MessageStatus);
+                                                  MessageStatus,
+                                                  toNumber);
     }).then((messages) => {
 
       conversations.forEach((conversation) => {

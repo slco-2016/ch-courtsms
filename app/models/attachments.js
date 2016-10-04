@@ -15,6 +15,7 @@ class Attachments extends BaseModel {
         'id',
         'key',
         'created',
+        'email_id',
       ]
     })
   }
@@ -31,13 +32,14 @@ class Attachments extends BaseModel {
     })
   }
 
-  static createFromMailgunObject(mailgunObj, msgid) {
+  static createFromMailgunObject(mailgunObj, email) {
     return new Promise((fulfill, reject) => {
       s3.uploadMailGunAttachment(mailgunObj)
       .then((key) => {
         return Attachment.create({
           key: key,
           contentType: mailgunObj['content-type'],
+          email_id: email.id,
         })
       }).then(fulfill).catch(reject)
     })

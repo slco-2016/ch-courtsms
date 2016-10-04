@@ -44,8 +44,10 @@ class Messages extends BaseModel {
         "content",
         "inbound",
         "read",
+        "sent_to",
         "tw_sid",
         "tw_status",
+        "email_id",
         "created",
         "status_cleared"
       ]
@@ -291,7 +293,24 @@ class Messages extends BaseModel {
     });
   }
 
-  static insertIntoManyConversations (conversationIds, commId, content, MessageSid, MessageStatus) {
+  static insertIntoManyConversations (
+    conversationIds, commId, content, 
+    MessageSid, MessageStatus, sentTo,
+    options) {
+    if (!options) {
+      options = {}
+    }
+    if (!options.emailId) {
+      options.emailId = null
+    }
+    if (!options.voiceMessageId) {
+      options.voiceMessageId = null
+    }
+    conversationIds.forEach((conversationId) => {
+      if (!conversationId) {
+        throw new Error("Need a valid conversation id")
+      }
+    })
     return new Promise((fulfill, reject) => {
       let insertArray = conversationIds.map((conversationId) => {
         return {
@@ -300,15 +319,17 @@ class Messages extends BaseModel {
           content: content,
           inbound: true,
           read: false,
+          sent_to: sentTo,
           tw_sid: MessageSid,
-          tw_status: MessageStatus
+          tw_status: MessageStatus,
+          email_id: options.emailId,
         }
       });
       db("msgs")
         .insert(insertArray)
         .returning("*")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill)
       }).catch(reject)
     });
   }

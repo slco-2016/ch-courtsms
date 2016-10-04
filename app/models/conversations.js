@@ -23,6 +23,26 @@ class Conversations extends BaseModel {
     })
   }
 
+  static closeAll(cmid, clid) {
+    return new Promise((fulfill, reject) => {
+      db("convos")
+        .where("client", clid)
+        .andWhere("cm", cmid)
+        .andWhere("convos.open", true)
+        .pluck("convid")
+        .then(function (convos) {
+          db("convos").whereIn("convid", convos)
+            .update({
+              open: false
+            }).then(function (success) {
+              fulfill(success)
+            })
+            .catch(reject)
+        })
+        .catch(reject)
+    })
+  }
+  
   static closeAllBetweenClientAndUser (userID, clientID) {
     return new Promise((fulfill, reject) => {
       db("convos")
@@ -129,7 +149,7 @@ class Conversations extends BaseModel {
             .insert({
               cm: null,
               client: null,
-              subject: "New Conversation Originally From Unkown Contact",
+              subject: "New Conversation Originally From Unknown Contact",
               open: true,
               accepted: false,
             })
@@ -417,18 +437,17 @@ class Conversations extends BaseModel {
     })
   }
 
-  // TODO: @maxmcd is this ok? This is essentially a wrapper function and is calling
-  // a number of other model methods
-  static retrieveConversations (clients, communication) {
+  static retrieveByClientsAndCommunication (clients, communication) {
     return new Promise ((fulfill, reject) => {
       let conversations;
       // Get the conversations that are possible candidates
-      Conversations.findByClientAndUserInvolvingSpecificCommId(clients, communication)
-      .then((resp) => {
+      this.findByClientAndUserInvolvingSpecificCommId(
+        clients, communication
+      ).then((resp) => {
         conversations = resp;
 
         // @maxmcd perhaps this is something that should be a lib/util?
-        return Conversations.createNewIfOlderThanSetHours(conversations, 24)
+        return this.createNewIfOlderThanSetHours(conversations, 24)
       }).then((resp) => {
         conversations = resp;
 
@@ -438,9 +457,9 @@ class Conversations extends BaseModel {
             fulfill(conversations);
           });
         } else if (clients.length) {
-          return Conversations.createNewNotAcceptedConversationsForAllClients(clients);
+          return this.createNewNotAcceptedConversationsForAllClients(clients);
         } else {
-          return Conversations.createOrAttachToExistingCaptureBoardConversation(communication);
+          return this.createOrAttachToExistingCaptureBoardConversation(communication);
         }
       }).then((conversations) => {
         fulfill(conversations);
