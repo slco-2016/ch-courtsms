@@ -29,10 +29,10 @@ module.exports = {
   },
 
   create(req, res) {
-    let client = req.params.client;
-    let name   = req.body.description;
-    let type   = req.body.type;
-    let value  = req.body.value;
+    let client      = req.params.client;
+    let description = req.body.description;
+    let type        = req.body.type;
+    let value       = req.body.value;
 
     // clean up numbers
     if (type == "cell" || type == "landline") {
@@ -51,7 +51,7 @@ module.exports = {
         res.redirect(`/clients/${client}/communications`);
 
       } else {
-        CommConns.create(client, type, name, value)
+        CommConns.create(client, type, description, value)
         .then(() => {
           req.logActivity.client(client);
           req.flash("success", "Created new communication method.");

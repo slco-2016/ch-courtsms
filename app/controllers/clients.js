@@ -259,7 +259,7 @@ module.exports = {
       }
 
       if (conversation && recentOkay) {
-        Messages.sendOne(commID, content, conversation.convid)
+        Messages.sendOne(commID, content, conversation)
         .then(() => {
           req.logActivity.client(client);
           req.logActivity.conversation(conversation.convid);
@@ -270,7 +270,7 @@ module.exports = {
       } else {
         Conversations.create(user, client, subject, true)
         .then((conversation) => {
-          return Messages.sendOne(commID, content, conversation.convid)
+          return Messages.sendOne(commID, content, conversation)
         }).then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect(`/clients/${client}/messages`);
