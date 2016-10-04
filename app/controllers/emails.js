@@ -4,6 +4,7 @@ const request = require('request');
 
 const Attachments = require('../models/attachments')
 const Communications = require('../models/communications')
+const Conversations = require('../models/conversations')
 const Emails = require('../models/emails')
 const Messages = require('../models/messages')
 const Users = require('../models/users')
@@ -112,7 +113,7 @@ module.exports = {
         fulfill(attachments)
       })
     }).map((attachment) => {
-      return Attachments.createFromMailgunObject(attachment, msgid)
+      return Attachments.createFromMailgunObject(attachment, email)
     }).then((attachments) => {
       return Communications.getOrCreateFromValue(fromAddress.address, "email")
     }).then((resp) => {
@@ -124,6 +125,14 @@ module.exports = {
       return Users.findByClientCommEmail(address.address)
     }).then((resp) => {
       users = resp;
+
+      // find the user that email represents
+      // see if there are clients attaches to that comm value
+      // for those clients, which have that case manager
+      // should be one
+      // if 0, then capture board
+
+      // Conversations.
       // console.log(communication, users, email)
       // console.log(users)
 
