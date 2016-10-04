@@ -50,6 +50,14 @@ describe('Email endpoint', function() {
       });
   });
 
+  it('should be able to update email status', function(done) {
+    // add seed data for sent message
+    // make requests to update status to delivered and opened
+    // confirm status is updated and requests are sucessful
+    // test null id, maybe outside of this test
+    done()
+  })
+
   it.skip('should be able to send an email', function(done) {
     mailgun.sendEmail(
       'max.t.mcdonnell@gmail.com', 

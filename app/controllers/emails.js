@@ -18,39 +18,26 @@ module.exports = {
   _updateMessages() {
     // TODO:
   },
+  _updateMessages(messageId, status, res) {
+    return Messages.findManyByTwSid(messageId)
+    .map((message) => {
+      return message.update({tw_status: "Delivered"})
+    }).then((messages) => {
+      // pass
+    }).catch(res.error500)
+  },
   webhook(req, res) {
     let event = req.body.event
     if (event == "delivered") {
       let messageId = req.body['Message-Id']
-      Messages.findByPlatformId(messageId)
-      .then((message) => {
-        if (message) {
-          return message.update({tw_status: "Delivered"})          
-        } else {
-          throw `No message found with message id ${messageId}`
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      this._updateMessages(messageId, "Delivered", res)
     } else if (event == "opened") {
-      let messageId = `<${req.body['message-id']}>`
       // why, just why
-
-      Messages.findAllByPlatformId(messageId)
-      .then((messages) => {
-        if (messages) {
-          messages.forEach((message) => {
-            message.update({tw_status: "Opened"})
-          })
-        } else {
-          throw `No message found with message id ${messageId}`
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      let messageId = `<${req.body['message-id']}>`
+      this._updateMessages(messageId, "Opened", res)
+    } else {
+      res.send('ok, thanks');
     }
-    
-    res.send('ok, thanks');
   },
   receive(req, res) {
     // mailgun's philosophy here seems to be that if they can populate a section they

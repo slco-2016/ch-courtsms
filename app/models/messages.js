@@ -206,12 +206,12 @@ class Messages extends BaseModel {
     });
   }
 
-  static findAllByPlatformId(platformId) {
+  static findManyByTwSid(twSid) {
     return new Promise((fulfill, reject) => {
       db("msgs")
-        .where("tw_sid", platformId)
+        .where("tw_sid", twSid)
         then((objects) => {
-          fulfill(objects)
+          this._getMultiResponse(objects, fulfill)
         }).catch(reject);
     })
   }
