@@ -6,7 +6,6 @@ const Alerts = require('../../app/models/alerts')
 require('colors');
 const should = require('should');
 
-<<<<<<< HEAD
 // Base information
 let createdBy = 1,
     targetUserId = 2,
@@ -31,7 +30,6 @@ describe('Attachment checks', function() {
       alerts.length.should.be.exactly(1);
       let alert = alerts[0];
       alert.user.should.be.exactly(targetUserId);
-      console.log("Alertsxx", alert.created_by, createdBy)
       alert.created_by.should.be.exactly(createdBy);
       alert.subject.should.be.exactly(subject);
       alert.message.should.be.exactly(message);
@@ -56,5 +54,25 @@ describe('Attachment checks', function() {
       done();
     }).catch(done);
   });
+
+  it('should send to all active user in a department', function(done) {
+    let departmentId = 1;
+    Alerts.createForWholeDepartment(departmentId, createdBy, subject, message)
+    .then((alerts) => {
+      done();
+    }).catch(done);
+  });
+
+  it('should send to all active user in an org', function(done) {
+    let departmentId = 1;
+    Alerts.createForWholeOrganization(departmentId, createdBy, subject, message)
+    .then((alerts) => {
+      done();
+    }).catch(done);
+  });
+
+  // it('should send to all active user in an org', function(done) {
+
+  // });
 
 })

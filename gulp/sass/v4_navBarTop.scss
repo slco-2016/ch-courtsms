@@ -85,6 +85,7 @@ $darkblue:    #344289;
         cursor: default;
 
         .message {
+          font-weight: 300;
           float: left;
           width: 260px;
           white-space: break;
@@ -98,6 +99,8 @@ $darkblue:    #344289;
           text-align: right;
           cursor: pointer;
           border-left: 1px solid $lightblue;
+          border-bottom: 1px solid $lightblue;
+          border-bottom-left-radius: 5px;
 
           &:hover {
             color: $darkblue;
@@ -109,6 +112,7 @@ $darkblue:    #344289;
 
           .close {
             border-left: 1px solid $darkblue;
+            border-bottom: 1px solid $darkblue;
           }
         }
 

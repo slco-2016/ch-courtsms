@@ -5,7 +5,9 @@ const Promise = require("bluebird");
 
 const BaseModel = require("../lib/models").BaseModel;
 
+const Departments = require("./departments");
 const Messages = require("./messages");
+const Users = require("./users");
 
 class Alerts extends BaseModel {
 
@@ -47,6 +49,52 @@ class Alerts extends BaseModel {
       db("alerts_feed")
         .insert(insert)
       .then(fulfill).catch(reject);
+    });
+  }
+
+  static createForDepartment (departmentId, createdByUserId, subject, message) {
+    let active = true;
+    return new Promise((fulfill, reject) => {
+      Users.findByDepartment(departmentId, active)
+      .then((users) => {
+        let insert = users.map((user) => {
+          return {
+            user: user.cmid,
+            created_by: createdByUserId,
+            subject: subject,
+            message: message,
+            open: true,
+            created: db.fn.now()
+          }
+        });
+
+        db("alerts_feed")
+          .insert(insert)
+        .then(fulfill).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  static createForOrganization (organizationId, createdByUserId, subject, message) {
+    let active = true;
+    return new Promise((fulfill, reject) => {
+      Users.findByOrg(organizationId, active)
+      .then((users) => {
+        let insert = users.map((user) => {
+          return {
+            user: user.cmid,
+            created_by: createdByUserId,
+            subject: subject,
+            message: message,
+            open: true,
+            created: db.fn.now()
+          }
+        });
+
+        db("alerts_feed")
+          .insert(insert)
+        .then(fulfill).catch(reject);
+      }).catch(reject);
     });
   }
   

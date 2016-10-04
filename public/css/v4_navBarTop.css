@@ -51,6 +51,7 @@
         overflow: hidden;
         cursor: default; }
         .alerts .hiddenAlerts .alertsBody .alertRow .message {
+          font-weight: 300;
           float: left;
           width: 260px;
           white-space: break;
@@ -61,13 +62,16 @@
           width: 19px;
           text-align: right;
           cursor: pointer;
-          border-left: 1px solid #4A90E2; }
+          border-left: 1px solid #4A90E2;
+          border-bottom: 1px solid #4A90E2;
+          border-bottom-left-radius: 5px; }
           .alerts .hiddenAlerts .alertsBody .alertRow .close:hover {
             color: #344289; }
         .alerts .hiddenAlerts .alertsBody .alertRow:hover {
           background-color: #4A90E2; }
           .alerts .hiddenAlerts .alertsBody .alertRow:hover .close {
-            border-left: 1px solid #344289; }
+            border-left: 1px solid #344289;
+            border-bottom: 1px solid #344289; }
         .alerts .hiddenAlerts .alertsBody .alertRow:nth-last-child(1) {
           border-bottom: 0; }
 
