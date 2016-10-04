@@ -149,7 +149,7 @@ class Conversations extends BaseModel {
             .insert({
               cm: null,
               client: null,
-              subject: "New Conversation Originally From Unkown Contact",
+              subject: "New Conversation Originally From Unknown Contact",
               open: true,
               accepted: false,
             })

@@ -5,6 +5,8 @@ const should = require('should');
 const APP = require('../../app/app')
 
 const Emails = require('../../app/models/emails');
+const Messages = require('../../app/models/messages');
+const Conversations = require('../../app/models/conversations');
 const Communications = require('../../app/models/communications');
 
 const mailgun = require('../../app/lib/mailgun');
@@ -23,8 +25,11 @@ describe('Email endpoint', function() {
       .send(emailData)
       .expect(200)
       .end(function(err, res) {
+        if (err) {done(err)}
+        let email;
         Emails.findByFrom('max@gmail.com')
-        .then((email) => {
+        .then((resp) => {
+          email = resp
           should.exist(email)          
           return Communications.findByValue('max@gmail.com')
         }).then((comm) => {
@@ -32,18 +37,25 @@ describe('Email endpoint', function() {
           return Emails.findOneByAttribute('messageId', '<CA+fmJFvSa63JWBZP5SUduG73_7haoO97A@mail.gmail.com>')
         }).then((email) => {
           should.exist(email.messageId)
-          done(err);
+          return Messages.findOneByAttribute("tw_sid", email.messageId)
+        }).then((message) => {
+          should.exist(message)
+          should.exist(message.convo)
+          should.equal(email.id, message.email_id)
+          return Conversations.findById(message.convo)
+        }).then((conversation) => {
+          should.exist(conversation)
+          done();
         }).catch(done)
       });
   });
 
-  xit('should be able to send an email', function(done) {
+  it.skip('should be able to send an email', function(done) {
     mailgun.sendEmail(
       'max.t.mcdonnell@gmail.com', 
       'test@clientcomm.org',
       "maybe a different subject", "a different body"
     ).then((body) => {
-      console.log(body)
       done();
     }).catch(done)
   })

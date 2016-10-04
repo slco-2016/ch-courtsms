@@ -5,6 +5,7 @@ const request = require('request');
 const Attachments = require('../models/attachments')
 const Communications = require('../models/communications')
 const Conversations = require('../models/conversations')
+const Clients = require('../models/clients')
 const Emails = require('../models/emails')
 const Messages = require('../models/messages')
 const Users = require('../models/users')
@@ -77,28 +78,10 @@ module.exports = {
     var fromAddress = fromAddresses[0]
     var toAddresses = mimelib.parseAddresses(req.body.To)
 
-    // console.log(fromAddress)
-    // console.log(toAddresses)
-    // console.log(`Email arrived for ${recipient}`)
-    // console.log(`Content is: \n${cleanBody}`)
-    
     let attachments = []
     if (req.body.attachments) {
       attachments = JSON.parse(req.body.attachments)
     }
-
-    let msgid
-
-    // email comes in    // from unknown user
-    // states who it is going to
-    // register email in system
-    // CommConn connects conversation and client
-    // find if that client is paired with that case manager
-    // add message to open conversation if open converstion is less than 24hrs old
-
-    // capture board needs communication and conversation
-    // client is null and casemanager is null
-
 
     let clients, communication, users, email
     Emails.create({
@@ -115,7 +98,10 @@ module.exports = {
     }).map((attachment) => {
       return Attachments.createFromMailgunObject(attachment, email)
     }).then((attachments) => {
-      return Communications.getOrCreateFromValue(fromAddress.address, "email")
+      return Communications.getOrCreateFromValue(
+        fromAddress.address, 
+        "email"
+      )
     }).then((resp) => {
       communication = resp;
       return Clients.findByCommId(communication.commid);
@@ -135,22 +121,36 @@ module.exports = {
       let clientsForUser = clients.filter((client) => {
         return client.cm === user.cmid;
       });
+      return Conversations.retrieveByClientsAndCommunication(
+        clientsForUser, 
+        communication
+      )
+      // TODO: I mean, like, maybe? 
+      // ).then((conversations) => {
+      //   return Conversations.closeAllWithClientExcept(client, conversationId);
+      // })
 
-      return Conversations.retrieveByClientsAndCommunication(clientsForUser, communication)
-    }).then((conversations) => {
+    }).then((listOfListOfConversations) => {
+      let conversations = [];
+      listOfListOfConversations.forEach((conversationList) => {
+        conversations = conversations.concat(conversationList)
+      })
       let conversationIds = conversations.map((conversation) => {
         return conversation.convid;
       });
-      
+
+      sentTo = toAddresses.map( address => address.address ).join(", ")
+
       return Messages.insertIntoManyConversations(conversationIds,
                                                   communication.commid,
                                                   cleanBody,
                                                   messageId,
-                                                  "sent",
+                                                  "received",
+                                                  sentTo,
                                                   {emailId: email.id});
     }).then((messages) => {
       res.send('ok, thanks');
-    }).catch(reject);
+    }).catch(res.error500);
   }
 };
 

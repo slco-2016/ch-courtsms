@@ -44,7 +44,8 @@ module.exports = {
                                                   communication.commid,
                                                   text,
                                                   MessageSID,
-                                                  MessageStatus);
+                                                  MessageStatus,
+                                                  toNumber);
     }).then((messages) => {
 
       conversations.forEach((conversation) => {
