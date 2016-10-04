@@ -2,6 +2,7 @@ const assert = require('assert');
 const request = require('request');
 
 const Alerts = require('../../app/models/alerts')
+const Users = require('../../app/models/users')
 
 require('colors');
 const should = require('should');
@@ -57,17 +58,51 @@ describe('Attachment checks', function() {
 
   it('should send to all active user in a department', function(done) {
     let departmentId = 1;
-    Alerts.createForWholeDepartment(departmentId, createdBy, subject, message)
-    .then((alerts) => {
+    let users;
+    Alerts.createForDepartment(departmentId, createdBy, subject, message)
+    .then(() => {
+      return Users.findByDepartment(departmentId, true)
+    }).then((resp) => {
+      users = resp;
+      return new Promise((fulfill, reject) => {
+        return fulfill(resp)
+      })
+    }).map((user) => {
+      return Alerts.findByUser(user.cmid);
+    }).then((listOfAlertsList) => {
+      let alerts = [];
+      listOfAlertsList.forEach((alertsList) => {
+        alerts = alerts.concat(alertsList);
+      });
+
+      // We should have created and closed out all other alerts at this point
+      alerts.length.should.be.exactly(users.length)
       done();
     }).catch(done);
   });
 
   it('should send to all active user in an org', function(done) {
-    let departmentId = 1;
-    Alerts.createForWholeOrganization(departmentId, createdBy, subject, message)
-    .then((alerts) => {
-      done();
+    let organizationId = 1;
+    let users;
+    Alerts.createForOrganization(organizationId, createdBy, subject, message)
+    .then(() => {
+      return Users.findByOrg(organizationId, true)
+    }).then((resp) => {
+      users = resp;
+      return new Promise((fulfill, reject) => {
+        return fulfill(users)
+      })
+    }).map((user) => {
+      return Alerts.findByUser(user.cmid);
+    }).then((listOfAlertsList) => {
+      let alerts = [];
+      listOfAlertsList.forEach((alertsList) => {
+        alerts = alerts.concat(alertsList);
+      });
+      // Should be adding on the ones from the previous test, 
+      // since we have not closed all out
+      alerts.length.should.be.greaterThan(users.length)
+      done()
     }).catch(done);
   });
 

@@ -61,10 +61,6 @@ module.exports = {
       redirect = redirect + "/users";
     }
 
-    console.log("\n\n\n")
-    console.log("Method targetUserId", targetUserId)
-    console.log("Method departmentId", departmentId)
-    console.log("\n\n\n")
     if (subject.length) {
       let strategy;
       if (targetUserId) {
