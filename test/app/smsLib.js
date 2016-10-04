@@ -3,16 +3,14 @@ const assert = require('assert');
 require('colors');
 const should = require('should');
 
-const Messages = require('../../app/models/messages');
 const Communications = require('../../app/models/communications');
-const Conversations = require('../../app/models/conversations');
 const sms = require('../../app/lib/sms');
 
 // global reference values
 let value = "16198702271";
 let toNumber = "12435678910"
 
-describe('Sms model checks', function() {
+describe('Sms library checks', function() {
 
   it('create or find from value', function(done) {
     Communications.getOrCreateFromValue(value, "cell")
