@@ -41,7 +41,7 @@ module.exports = {
             let clientId = conversation.client;
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
-              return Messages.sendOne(commId, messageContent, conversationId)
+              return Messages.sendOne(commId, messageContent, conversation)
             }).then(() => { }).catch((error) => {
               console.log(error);
             });

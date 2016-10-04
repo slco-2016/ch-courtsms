@@ -24,7 +24,11 @@ module.exports = {
                 if (error) {
                     reject(error);    
                 } else {
-                    fulfill(JSON.parse(body));    
+                    jsonBody = JSON.parse(body)
+                    if (jsonBody.message === "Queued. Thank you.") {
+                        jsonBody.message = "queued"
+                    }
+                    fulfill(jsonBody);    
                 }
             })
         })

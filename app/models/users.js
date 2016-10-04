@@ -54,7 +54,7 @@ class Users extends BaseModel {
   }
 
   getClientCommEmail() {
-    let rawEmail = CaseManager.clientCommEmail(this.email)
+    let rawEmail = this.constructor.clientCommEmail(this.email)
     return `${this.getFullName()} <${rawEmail}>`
   }
 
