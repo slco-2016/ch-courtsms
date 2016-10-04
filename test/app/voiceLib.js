@@ -13,7 +13,6 @@ let ngrokUrl;
 describe.skip('Voice lib checks', function() {
 
   before(function(done) {
-    this.timeout(100000)
     const app = require('../../app/app')
     let server = app.listen(4000, function() {
       ngrokTestServer(4000, function(url) {

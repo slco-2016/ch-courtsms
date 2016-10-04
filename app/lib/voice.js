@@ -19,11 +19,15 @@ module.exports = {
     let url = `${domain}/webhook/voice/record/${params}`
     return new Promise((fulfill, reject) => {
       twClient.calls.create({
-          url: url,
-          to: phoneNumber,
-          from: credentials.twilioNum,
-      }, function(err, call) {
-        fulfill(call)
+        url: url,
+        to: phoneNumber,
+        from: credentials.twilioNum,
+      }, (err, call) => {
+        if (err) {
+          reject(err)
+        } else {
+          fulfill(call)  
+        }
       });
     })
   },
@@ -34,6 +38,7 @@ module.exports = {
       .then((client) => {
         return client.communications()
     }).then((communications) => {
+        // TODO use best communication
         twClient.calls.create({
           url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
           to: communications[0].value,
@@ -42,14 +47,14 @@ module.exports = {
           record: true,
           statusCallbackEvent: ["initiated", "ringing", "answered", "completed"],
           StatusCallback: `${domain}/webhook/voice/status`,
-        }, function(err, call) {
+        }, (err, call) => {
           if (err) {
             reject(err)
           } else {
             ovm.update({call_sid: call.sid})
             .then((ovm) => {
               fulfill(ovm)
-            })
+            }).catch(reject)
           }
         })
       })
