@@ -31,6 +31,9 @@ describe('Conversations checks', function() {
     .then((clients) => {
       return Conversations.findByClientAndUserInvolvingSpecificCommId(clients, 1)
     }).then((conversations) => {
+      conversations.forEach((conversation) => {
+        conversation.cm.should.be.exactly(2);
+      });
       done();
     }).catch(done);
   })
@@ -44,6 +47,85 @@ describe('Conversations checks', function() {
       conversation.hasOwnProperty("open").should.be.exactly(true);
       done()
     }).catch(done);
-  })
+  });
+
+  it('create a new conversation if older than preset time', function(done) {
+    let currentDate = new Date();
+    Conversations.createNewIfOlderThanSetHours([1], 24)
+    .then((conversations) => {
+      conversations.forEach((conversation) => {
+        let conversationDate = new Date(conversation.updated);
+        let difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours
+        if (difference < 0) {
+          done(Error("For some reason a conversation is older than time it was set for"))
+        }
+      })
+      done();
+    }).catch(done);
+  });
+
+  it('create new if older than should work even if hours is not set, should default to 24 hrs', function(done) {
+    let currentDate = new Date();
+    Conversations.createNewIfOlderThanSetHours([1])
+    .then((conversations) => {
+      conversations.forEach((conversation) => {
+        let conversationDate = new Date(conversation.updated);
+        let difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours
+        if (difference < 0) {
+          done(Error("For some reason a conversation is older than time it was set for"))
+        }
+      })
+      done();
+    }).catch(done);
+  });
+
+  it('should be able to produce unaccepted conversations for each client', function(done) {
+    let client1, client2;
+    Clients.findById(1)
+    .then((resp) => {
+      client1 = resp;
+      return Clients.findById(2);
+    }).then((resp) => {
+      client2 = resp;
+      return Conversations.createNewNotAcceptedConversationsForAllClients([client1, client2]);
+    }).then((conversations) => {
+      conversations.forEach((conversation) => {
+        [1, 2].indexOf(conversation.client).should.be.greaterThan(-1);
+        conversation.accepted.should.be.exactly(false);
+      });
+      done();
+    }).catch(done);
+  });
+
+  it('closing by a client should close all convos with that client', function(done) {
+    Conversations.closeAllWithClient(1)
+    .then(() => {
+      return Conversations.findManyByAttribute("client", 1)
+    }).then((conversations) => {
+      conversations.forEach((conversation) => {
+        conversation.open.should.be.exactly(false);
+      });
+      done();
+    }).catch(done);
+  });
+
+  it('decide to claim one of the convos that was created, should work', function(done) {
+    let currentConvo;
+    Conversations.findManyByAttribute("client", 2)
+    .then((conversations) => {
+      conversations.forEach((conversation) => {
+        if (conversation.open) {
+          currentConvo = conversation;
+        }
+      });
+      return Conversations.makeClaimDecision( currentConvo.convid,
+                                              currentConvo.cm,
+                                              currentConvo.client,
+                                              true);
+    }).then((conversation) => {
+      conversation.convid.should.be.exactly(currentConvo.convid);
+      done();
+    }).catch(done);
+  });
 
 })

@@ -116,12 +116,13 @@ class BaseModel {
   }
 
   static findManyByAttribute(attributeName, value, otherOperations) {
+    this._checkModelValidity();
     if (!otherOperations) {
       otherOperations = (dbCall) => {
         return dbCall;
       }
     }
-    this._checkModelValidity();
+    
     return new Promise((fulfill, reject) => {
       let basicDbCall = db(this.tableName)
                           .where(attributeName, value);
@@ -132,12 +133,18 @@ class BaseModel {
     })
   }
 
-  static findOneByAttribute(attributeName, value) {
-    this._checkModelValidity()
+  static findOneByAttribute(attributeName, value, otherOperations) {
+    this._checkModelValidity();
+    if (!otherOperations) {
+      otherOperations = (dbCall) => {
+        return dbCall;
+      }
+    }
+    
     return new Promise((fulfill, reject) => {
-      db(this.tableName)
-      .where(attributeName, value)
-      .limit(1)
+      let basicDbCall = db(this.tableName)
+                          .where(attributeName, value);
+      otherOperations(basicDbCall)
       .then((objects) => {
         return this._getSingleResponse(objects, fulfill, reject)
       }).catch(reject)

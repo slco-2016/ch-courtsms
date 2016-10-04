@@ -28,7 +28,15 @@ describe('User checks', function() {
         class: "owner",
       })
       done();
-    })
+    }).catch(done);
+  })
+
+  it('Should be able to query for multiple users at once', function(done) {
+    Users.findByIds([1, 2, 3])
+    .then((users) => {
+      users.length.should.be.exactly(3);
+      done();
+    }).catch(done);
   })
 
   it('Should be able to get user by Email', function(done) {

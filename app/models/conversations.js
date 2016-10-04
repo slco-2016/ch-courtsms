@@ -390,7 +390,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static makeClaimDecision (conversationsId, userId, clientId, accepted) {
+  static makeClaimDecision (conversationId, userId, clientId, accepted) {
     if (typeof accepted == "undefined") {
       accepted = true;
     }
@@ -409,10 +409,10 @@ class Conversations extends BaseModel {
           open: accepted,
           accepted: accepted
         })
-        .where("convid", conversationsId)
+        .where("convid", conversationId)
         .returning("*")
       }).then((conversations) => {
-        fulfill(conversations);
+        fulfill(conversations[0]);
       }).catch(reject);
     })
   }
