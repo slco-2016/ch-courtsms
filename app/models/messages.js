@@ -291,7 +291,16 @@ class Messages extends BaseModel {
     });
   }
 
-  static insertIntoManyConversations (conversationIds, commId, content, MessageSid, MessageStatus) {
+  static insertIntoManyConversations (conversationIds, commId, content, MessageSid, MessageStatus, options) {
+    if (!options) {
+      options = {}
+    }
+    if (!options.emailId) {
+      options.emailId = null
+    }
+    if (!options.voiceMessageId) {
+      options.voiceMessageId = null
+    }
     return new Promise((fulfill, reject) => {
       let insertArray = conversationIds.map((conversationId) => {
         return {
@@ -301,14 +310,15 @@ class Messages extends BaseModel {
           inbound: true,
           read: false,
           tw_sid: MessageSid,
-          tw_status: MessageStatus
+          tw_status: MessageStatus,
+          email_id: options.emailId,
         }
       });
       db("msgs")
         .insert(insertArray)
         .returning("*")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill)
       }).catch(reject)
     });
   }

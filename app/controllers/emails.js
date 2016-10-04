@@ -100,7 +100,7 @@ module.exports = {
     // client is null and casemanager is null
 
 
-    let communication, users, email
+    let clients, communication, users, email
     Emails.create({
       raw: JSON.stringify(req.body),
       from: fromAddress.address,
@@ -118,26 +118,39 @@ module.exports = {
       return Communications.getOrCreateFromValue(fromAddress.address, "email")
     }).then((resp) => {
       communication = resp;
+      return Clients.findByCommId(communication.commid);
+    }).then((resp) => {
+      clients = resp;
       return new Promise((fulfill, reject) => {
         fulfill(toAddresses)
-      })
+      });
     }).map((address) => {
       return Users.findByClientCommEmail(address.address)
     }).then((resp) => {
       users = resp;
+      return new Promise((fulfill, reject) => {
+        fulfill(users);
+      });
+    }).map((user) => {
+      let clientsForUser = clients.filter((client) => {
+        return client.cm === user.cmid;
+      });
 
-      // find the user that email represents
-      // see if there are clients attaches to that comm value
-      // for those clients, which have that case manager
-      // should be one
-      // if 0, then capture board
-
-      // Conversations.
-      // console.log(communication, users, email)
-      // console.log(users)
-
+      return Conversations.retrieveByClientsAndCommunication(clientsForUser, communication)
+    }).then((conversations) => {
+      let conversationIds = conversations.map((conversation) => {
+        return conversation.convid;
+      });
+      
+      return Messages.insertIntoManyConversations(conversationIds,
+                                                  communication.commid,
+                                                  cleanBody,
+                                                  messageId,
+                                                  "sent",
+                                                  {emailId: email.id});
+    }).then((messages) => {
       res.send('ok, thanks');
-    })
+    }).catch(reject);
   }
 };
 
