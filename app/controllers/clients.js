@@ -191,7 +191,7 @@ module.exports = {
         return conversation.convid;
       });
 
-      return Messages.findByConversations(conversationIds);
+      return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
     }).then((resp) => {
 
       messages = resp.filter((msg) => {
@@ -242,9 +242,14 @@ module.exports = {
     let subject  = "New Conversation";
     let content  = req.body.content;
     let commID   = req.body.commID;
+    let conversation;
 
     Conversations.getMostRecentConversation(user, client)
-    .then((conversation) => {
+    .then((resp) => {
+      conversation = resp;
+      let conversationId = conversation.convid;
+      return Conversations.closeAllWithClientExcept(client, conversationId);
+    }).then(() => {
       // Use existing conversation if exists and recent (lt 5 days)
       var now, lastUpdated, recentOkay = false;
       if (conversation) {
@@ -276,12 +281,14 @@ module.exports = {
 
   alter(req, res) {
     let userId = req.getUser();
-    let client = req.params.client;
+    let clientId = req.params.client;
     let status = req.params.status == "open";
 
-    Clients.alterCase(client, status)
+    Conversations.closeAllWithClient(userId, clientId)
     .then(() => {
-      req.logActivity.client(client);
+      return Clients.alterCase(clientId, status);
+    }).then(() => {
+      req.logActivity.client(clientId);
       req.flash("success", "Client case status changed.")
       res.levelSensitiveRedirect(`/clients`);
     }).catch(res.error500);
@@ -292,6 +299,7 @@ module.exports = {
 
     // Handle situations where an owner has a department attached to her/him
     if (req.user.class === "owner") { allDep = true; }
+    if (req.user.class === "support") { allDep = true; }
 
     Users.findByOrg(req.user.org)
     .then((users) => {

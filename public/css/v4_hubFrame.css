@@ -31,63 +31,76 @@
       background-color: #516a84; }
       .applicationFrame .navSub.orgLevel .rightActions:hover .fa.fa-inverse {
         color: #516a84; }
-  .applicationFrame .navSub .leftTab {
-    height: inherit;
-    width: auto;
-    float: left;
-    color: #FFF;
-    line-height: 45px; }
-    .applicationFrame .navSub .leftTab.open {
-      background-color: #344289; }
-      .applicationFrame .navSub .leftTab.open .title {
-        display: inline;
-        margin-left: 15px;
-        margin-right: 15px;
-        font-weight: 700;
-        font-size: 18px;
-        cursor: pointer; }
-      .applicationFrame .navSub .leftTab.open .option {
-        display: inline;
-        font-size: 14px;
-        padding: 3px;
+  .applicationFrame .navSub .allLeftParent {
+    max-width: 75%;
+    overflow-x: scroll;
+    float: left; }
+    .applicationFrame .navSub .allLeftParent .allLeft {
+      width: 1024px; }
+      .applicationFrame .navSub .allLeftParent .allLeft .leftTab {
+        height: inherit;
+        width: auto;
+        float: left;
+        color: #FFF;
+        line-height: 45px; }
+        .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open {
+          background-color: #344289; }
+          .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .title {
+            display: inline;
+            margin-left: 15px;
+            margin-right: 15px;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer; }
+          .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .option {
+            display: inline;
+            font-size: 14px;
+            padding: 3px;
+            padding-left: 10px;
+            padding-right: 10px;
+            margin-right: 5px;
+            border-radius: 15px;
+            cursor: pointer; }
+            .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .option.selected, .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .option:hover {
+              background-color: #FFF;
+              color: #4A90E2; }
+            .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .option:nth-last-child(1) {
+              margin-right: 15px; }
+        .applicationFrame .navSub .allLeftParent .allLeft .leftTab.closed .title {
+          display: inline;
+          margin-left: 15px;
+          margin-right: 15px;
+          cursor: pointer; }
+        .applicationFrame .navSub .allLeftParent .allLeft .leftTab.closed .option {
+          display: none; }
+        .applicationFrame .navSub .allLeftParent .allLeft .leftTab.closed:hover {
+          background-color: #3F69B6; }
+  .applicationFrame .navSub .allRightParent {
+    max-width: 25%;
+    overflow-x: scroll;
+    float: right; }
+    .applicationFrame .navSub .allRightParent .allRight {
+      width: 500px;
+      float: right; }
+      .applicationFrame .navSub .allRightParent .allRight .rightActions {
+        float: right;
+        line-height: 45px;
+        font-size: 12px;
+        color: #FFF;
         padding-left: 10px;
-        padding-right: 10px;
-        margin-right: 5px;
-        border-radius: 15px;
-        cursor: pointer; }
-        .applicationFrame .navSub .leftTab.open .option.selected, .applicationFrame .navSub .leftTab.open .option:hover {
-          background-color: #FFF;
+        padding-right: 15px; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .fa-stack.fa-lg {
+          font-size: 12px; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .fa.fa-inverse {
           color: #4A90E2; }
-        .applicationFrame .navSub .leftTab.open .option:nth-last-child(1) {
-          margin-right: 15px; }
-    .applicationFrame .navSub .leftTab.closed .title {
-      display: inline;
-      margin-left: 15px;
-      margin-right: 15px;
-      cursor: pointer; }
-    .applicationFrame .navSub .leftTab.closed .option {
-      display: none; }
-    .applicationFrame .navSub .leftTab.closed:hover {
-      background-color: #3F69B6; }
-  .applicationFrame .navSub .rightActions {
-    float: right;
-    line-height: 45px;
-    font-size: 12px;
-    color: #FFF;
-    padding-left: 10px;
-    padding-right: 15px; }
-    .applicationFrame .navSub .rightActions .fa-stack.fa-lg {
-      font-size: 12px; }
-    .applicationFrame .navSub .rightActions .fa.fa-inverse {
-      color: #4A90E2; }
-    .applicationFrame .navSub .rightActions .text {
-      display: none; }
-    .applicationFrame .navSub .rightActions:hover {
-      background-color: #3F69B6; }
-      .applicationFrame .navSub .rightActions:hover .fa.fa-inverse {
-        color: #3F69B6; }
-      .applicationFrame .navSub .rightActions:hover .text {
-        display: inline; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions .text {
+          display: none; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions:hover {
+          background-color: #3F69B6; }
+          .applicationFrame .navSub .allRightParent .allRight .rightActions:hover .fa.fa-inverse {
+            color: #3F69B6; }
+          .applicationFrame .navSub .allRightParent .allRight .rightActions:hover .text {
+            display: inline; }
 
 .applicationFrame .coreContent {
   padding-top: 92px;

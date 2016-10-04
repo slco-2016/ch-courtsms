@@ -1,16 +1,28 @@
 'use strict';
 
-// Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
 
+const BaseModel = require("../lib/models").BaseModel;
 
-// Models
 const Messages = require("./messages");
 
+class Alerts extends BaseModel {
 
-// Class
-class Alerts {
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "alert_id",
+        "user",
+        "created_by",
+        "subject",
+        "message",
+        "open",
+        "created"
+      ]
+    })
+  }
   
   static findByUser (userId) {
     return new Promise((fulfill, reject) => {
@@ -19,18 +31,6 @@ class Alerts {
         .andWhere("open", true)
       .then((alerts) => {
         return fulfill(alerts);
-      }).catch(reject);
-    });
-  }
-
-  static findOne (alertId) {
-    return new Promise((fulfill, reject) => {
-      db("alerts_feed")
-        .where("alert_id", alertId)
-        .andWhere("open", true)
-        .limit(1)
-      .then((alerts) => {
-        return fulfill(alerts[0]);
       }).catch(reject);
     });
   }
@@ -46,4 +46,6 @@ class Alerts {
 
 }
 
+Alerts.primaryId = "alert_id";
+Alerts.tableName = "alerts_feed";
 module.exports = Alerts;

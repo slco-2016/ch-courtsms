@@ -4,18 +4,61 @@
 const db        = require("../../app/db");
 const Promise   = require("bluebird");
 
-
+const BaseModel = require("../lib/models").BaseModel
 const Communications = require("../models/communications");
 
 
 // Class
-class CommConns {
+class CommConns extends BaseModel {
+
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "commconnid",
+        "client",
+        "comm",
+        "name",
+        "retired",
+        "created"
+      ]
+    })
+  }
   
   static findByClientID (clientId) {
     return new Promise((fulfill, reject) => {
       CommConns.findByClientIDs([clientId])
       .then((commconns) => {
         fulfill(commconns);
+      }).catch(reject);
+    })
+  }
+
+  static findByCommId (communicationId) {
+    return new Promise((fulfill, reject) => {
+      db("commconns")
+        .where("comm", communicationId)
+        .and.where("retired", null)
+      .then((commconns) => {
+        fulfill(commconns);
+      }).catch(reject);
+    })
+  }
+
+  static findByValue (value) {
+    return new Promise((fulfill, reject) => {
+      Communications.findByValue(value)
+      .then((communication) => {
+        if (communication) {
+          let commId = communication.commid;
+          return db("commconns")
+            .whereNull("retired")
+            .andWhere("comm", commId);
+        } else {
+          fulfill([])
+        }
+      }).then((commConns) => {
+        this._getMultiResponse(commConns, fulfill);
       }).catch(reject);
     })
   }
@@ -114,4 +157,6 @@ class CommConns {
 
 }
 
-module.exports = CommConns
+CommConns.primaryId = "commconnid";
+CommConns.tableName = "commconns";
+module.exports = CommConns;

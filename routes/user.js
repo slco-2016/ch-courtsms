@@ -75,7 +75,8 @@ router.use((req, res, next) => {
 
 // Add department
 router.use((req, res, next) => {
-  Departments.findByID(req.user.department)
+  let departmentId = req.user.department;
+  Departments.findById(departmentId)
   .then((department) => {
     // if no department, provide some dummy attributes
     if (!department) {

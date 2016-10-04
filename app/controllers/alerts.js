@@ -16,7 +16,7 @@ module.exports = {
     let userId = req.user.cmid;
     let alertId = req.params.alert;
 
-    Alerts.findOne(alertId)
+    Alerts.findById(alertId)
     .then((alert) => {
       if (alert && alert.user == userId) {
         Alerts.closeOne(alertId)
@@ -27,6 +27,10 @@ module.exports = {
         res.json({ closed: false, error: 'Not allowed to edit this alert.' });
       }
     }).catch(res.error500);
+  },
+
+  createForDepartment(req, res) {
+    res.send("ok")
   }
 
 };

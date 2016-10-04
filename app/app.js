@@ -121,8 +121,8 @@ app.use(auth.checkIsAllowed);
 
 app.get("/logout", AccessController.logout);
 
-app.get("/alerts", AlertsController.checkForNewMessages)
-app.get("/alerts/:alert/close", AlertsController.close)
+app.get("/alerts", AlertsController.checkForNewMessages);
+app.get("/alerts/:alert/close", AlertsController.close);
 
 app.get("/colors", ColorsController.index);
 app.post("/colors", ColorsController.create);
@@ -207,8 +207,8 @@ app.get("/org/departments/:department/supervisors", DepartmentsController.superv
 app.post("/org/departments/:department/supervisors", DepartmentsController.supervisorsUpdate);
 app.get("/org/departments/:department/alter/:case", DepartmentsController.alter);
 
-app.get("/org/numbers", PhoneNumbers.index)
-app.get("/org/numbers/create", PhoneNumbers.new)
+app.get("/org/numbers", PhoneNumbers.index);
+app.get("/org/numbers/create", PhoneNumbers.new);
 
 app.get("/org/clients", ClientsController.index);
 app.get("/org/clients/create", ClientsController.new);
@@ -226,13 +226,16 @@ app.post("/org/clients/:client/transfer", ClientsController.transferSubmit);
 app.get("/org/clients/:client/communications/create", CommunicationsController.new);
 app.post("/org/clients/:client/communications/create", CommunicationsController.create);
 
-app.get("/org/captured", CaptureBoardController.index)
-app.get("/org/captured/attach/:conversation", CaptureBoardController.attachUserIndex)
-app.post("/org/captured/attach/:conversation", CaptureBoardController.attachUserSelect)
-app.get("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachClientIndex)
-app.post("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachUpdate)
-app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm)
-app.post("/org/captured/remove/:conversation", CaptureBoardController.remove)
+app.get("/org/captured", CaptureBoardController.index);
+app.get("/org/captured/attach/:conversation", CaptureBoardController.attachUserIndex);
+app.post("/org/captured/attach/:conversation", CaptureBoardController.attachUserSelect);
+app.get("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachClientIndex);
+app.post("/org/captured/attach/:conversation/user/:user", CaptureBoardController.attachUpdate);
+app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm);
+app.post("/org/captured/remove/:conversation", CaptureBoardController.remove);
+
+app.get("/org/alerts/departments/:department/create", AlertsController.createForDepartment);
+app.post("/org/alerts/departments/:department/create", AlertsController.createForDepartment);
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);

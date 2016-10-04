@@ -124,6 +124,7 @@ module.exports = {
         let statusCode = res.statusCode;
         let contentLength = res.header()._headers['content-length'] || 0;
         let userAgent = req.headers['user-agent'];
+
         console.log(
           `${ip} -- [${timestamp}] ` +
           `${method} ${path} ${statusCode} `.magenta +
@@ -133,7 +134,7 @@ module.exports = {
       });
     }
     return next();
-  }, 
+  },
 
   templateHelpers(req, res, next) {
     res.locals.leftTab = (name, hub, level, optionsList) => {
@@ -160,7 +161,7 @@ module.exports = {
         if (capitalized == "Clients") {
           capitalized = "All Clients";
         } else if (capitalized == "Captured") {
-          capitalized = "Unclaimed Numbers";
+          capitalized = "Unclaimed";
         }
       }
 
@@ -230,8 +231,8 @@ module.exports = {
 
   fetchUserDepartment(req, res, next) {
     if (req.user) {
-      let department = req.user.department;
-      return Departments.findByID(department)
+      let departmentId = req.user.department;
+      return Departments.findById(departmentId)
       .then((department) => {
         // if no department, provide some dummy attributes
         if (!department) {
