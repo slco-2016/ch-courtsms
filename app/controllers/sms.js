@@ -38,8 +38,11 @@ module.exports = {
             let commId = resp.sendValues.communicationId;
             let conversationId = resp.sendValues.conversationId;
             let messageContent = resp.sendValues.content;
-            Messages.sendOne(commId, messageContent, conversationId)
-            .then(() => { }).catch((error) => {
+            let clientId = conversation.client;
+            Conversations.closeAllWithClientExcept(clientId, conversationId)
+            .then(() => {
+              return Messages.sendOne(commId, messageContent, conversationId)
+            }).then(() => { }).catch((error) => {
               console.log(error);
             });
           }

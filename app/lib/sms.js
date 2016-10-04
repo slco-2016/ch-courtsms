@@ -38,6 +38,11 @@ module.exports = {
       }).then((resp) => {
         clients = resp;
 
+        // Filter out inactive clients
+        clients = clients.filter((client) => {
+          return client.active;
+        });
+
         // Get all the case managers that are related to those clients
         let allUserIdsRelatedToClients = clients.map((client) => {
           return client.cm;
@@ -49,8 +54,11 @@ module.exports = {
 
         // Only keep the users that are in the departments that
         // are related with that toNumber
+        // and make sure they are active
         users = resp.filter((user) => {
           return departmentIds.indexOf(user.department) > -1;
+        }).filter((user) => {
+          return user.active;
         });
 
         // Reduce clients list to only clients that are in

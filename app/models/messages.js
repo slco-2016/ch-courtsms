@@ -458,7 +458,7 @@ class Messages extends BaseModel {
     return new Promise((fulfill, reject) => {
       var newConvoId;
 
-      Conversations.closeAllBetweenClientAndUser(userID, clientID)
+      Conversations.closeAllWithClient(clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
       }).then((conversations) => {
