@@ -5,6 +5,18 @@ const Promise = require("bluebird");
 
 const mock = resourceRequire('lib', 'mock')
 
+mailgunReq = (method, path, data, callback) => {
+  request({
+    method: method,
+    url: "https://api.mailgun.net/v3/" + path,
+    formData: data,
+    auth: {
+      user: 'api',
+      password: credentials.mailgun.apiKey,
+    },
+  }, callback)  
+}
+
 module.exports = {
   sendEmail(to, from, subject, content) {
     return new Promise((fulfill, reject) => {
@@ -14,22 +26,13 @@ module.exports = {
           message: 'queued',
         })
       } else {
-        request.post(
-          {
-            url: "https://api.mailgun.net/v3/clientcomm.org/messages",
-            formData: {
-              from: from,
-              to: to,
-              subject: subject,
-              html: content,
-              "o:tracking-opens":1,
-            },
-            auth: {
-              user: 'api',
-              password: credentials.mailgun.apiKey,
-            },
-          }
-        ,(error, response, body) => {
+        mailgunReq('post', 'clientcomm.org/messages', {
+          from: from,
+          to: to,
+          subject: subject,
+          html: content,
+          "o:tracking-opens":1,
+        }, (error, response, body) => {
           if (error) {
             reject(error);    
           } else {
@@ -44,4 +47,22 @@ module.exports = {
       }
     })
   },
+  updateWebhooks(domain, hostUrl) {
+    mailgunReq(
+      'put',
+      `${domain}/webhooks/deliver`, 
+      {url: hostUrl + "webhool/email/status"}, 
+      (error) => {
+        if (error) { reject(error) }
+        mailgunReq(
+          'put',
+          `${domain}/webhooks/open`, 
+          {url: hostUrl + "webhool/email/status"}, 
+          (error) => {
+            if (error) { reject(error) }
+          }
+        )
+      }
+    )
+  }
 }
