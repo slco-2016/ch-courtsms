@@ -82,10 +82,12 @@
   background-color: #FFF; }
   .applicationFrame .navHeader {
     height: 40px;
-    width: inherit;
+    width: 1022px;
     color: #FFF;
     background-color: #344289;
-    border-bottom: 1px solid #FFF;
+    border-bottom: 1px solid #E8ECEF;
+    border-right: 1px solid #E8ECEF;
+    border-left: 1px solid #E8ECEF;
     overflow: hidden;
     position: fixed; }
     .applicationFrame .navHeader .leftLogo {

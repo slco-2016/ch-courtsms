@@ -58,6 +58,13 @@ var checkingForNewMessages = setInterval(function () {
     });
 }, 2000);
 
+// Dynamically set coreContent if it exists to height of page
+function adjustCoreContentBoxSize () {
+  $(".coreContent").height($(window).height() - 97);
+}
+$(window).resize(adjustCoreContentBoxSize);
+adjustCoreContentBoxSize();
+
 // Google analytics
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

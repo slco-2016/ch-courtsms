@@ -4,6 +4,7 @@
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
+$lightbluegrey:#6783a1;
 $grey:        #898989;
 $darkgrey:    #2A2A2A;
 $black:       #000;
@@ -108,13 +109,13 @@ $width_row5:  5%;
   .subjectToggle {
     position: absolute;
     left: 50%;
-    background-color: $lightblue;
+    background-color: #5979BC;
     color: $white;
     line-height: 30px;
-    padding-left: 25px;
-    padding-right: 25px;
-    border-bottom-right-radius: 50px;
-    border-bottom-left-radius: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
     margin-right: auto;
     margin-left: auto;
 
@@ -220,7 +221,7 @@ $width_row5:  5%;
         cursor: pointer;
         .icon {
           font-size: 24px;
-          line-height: 32px;
+          line-height: 38px;
         }
         .name {
           line-height: 16px;

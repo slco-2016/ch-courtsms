@@ -1,10 +1,12 @@
 .applicationFrame .navSub {
   position: absolute;
   top: 41px;
-  width: inherit;
+  width: 1022px;
   height: 55px;
   background-color: #4A90E2;
   border-bottom: 1px solid #E8ECEF;
+  border-left: 1px solid #E8ECEF;
+  border-right: 1px solid #E8ECEF;
   overflow: hidden;
   position: fixed; }
   .applicationFrame .navSub .leftTab {
@@ -31,7 +33,9 @@
     color: #FFF;
     line-height: 55px; }
     .applicationFrame .navSub .rightTab.open {
-      background-color: #344289; }
+      background-color: #344289;
+      padding-left: 10px;
+      padding-right: 10px; }
       .applicationFrame .navSub .rightTab.open .title {
         display: inline;
         margin-left: 15px;
@@ -90,7 +94,7 @@
 
 .applicationFrame .coreContent {
   padding-top: 97px;
-  background-color: #FFF; }
+  background-color: #E8ECEF; }
 
 .applicationFrame .emptyResultsGreeting {
   text-align: middle;

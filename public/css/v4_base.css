@@ -6,7 +6,8 @@ body {
   font-family: Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #898989;
-  background-color: #D3D3D3;
+  background-color: #101e2d;
+  box-shadow: inset 0px 50px 200px 1px #29496b;
   margin: 0px; }
 
 a, a:hover, a:active {

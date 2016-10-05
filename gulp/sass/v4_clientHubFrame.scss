@@ -27,10 +27,12 @@ $darkblue:    #344289;
   .navSub {
     position: absolute;
     top: 41px;
-    width: inherit;
+    width: 1022px;
     height: 55px;
     background-color: $lightblue;
     border-bottom: 1px solid $offwhite;
+    border-left: 1px solid $offwhite;
+    border-right: 1px solid $offwhite;
     overflow: hidden;
     position: fixed;
 
@@ -69,6 +71,8 @@ $darkblue:    #344289;
 
       &.open {
         background-color: $darkblue;
+        padding-left: 10px;
+        padding-right: 10px;
 
         .title {
           display: inline;
@@ -161,7 +165,7 @@ $darkblue:    #344289;
 
   .coreContent {
     padding-top: 97px;
-    background-color: $white;
+    background-color: $offwhite;
   }
 
 

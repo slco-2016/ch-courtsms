@@ -51,13 +51,13 @@
   .rightContent .subjectToggle {
     position: absolute;
     left: 50%;
-    background-color: #4A90E2;
+    background-color: #5979BC;
     color: #FFF;
     line-height: 30px;
-    padding-left: 25px;
-    padding-right: 25px;
-    border-bottom-right-radius: 50px;
-    border-bottom-left-radius: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
     margin-right: auto;
     margin-left: auto; }
     .rightContent .subjectToggle .title {
@@ -126,7 +126,7 @@
         cursor: pointer; }
         .responseBox .mini .actionButtons .actionButton .icon {
           font-size: 24px;
-          line-height: 32px; }
+          line-height: 38px; }
         .responseBox .mini .actionButtons .actionButton .name {
           line-height: 16px;
           font-size: 12px;
