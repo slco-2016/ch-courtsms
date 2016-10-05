@@ -10,9 +10,9 @@ const twilioAgent = supertest.agent(APP)
 
 const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 
-describe.skip('Voice reqs', function() {
+describe('Voice reqs', function() {
 
-  it('should accept a new voice recording', function(done) {
+  it.skip('should accept a new voice recording', function(done) {
     this.timeout(6000)
     let params = "?userId=2&clientId=1"
     params += `&deliveryDate=${new Date().getTime()}`

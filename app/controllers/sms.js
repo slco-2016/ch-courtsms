@@ -8,11 +8,11 @@ module.exports = {
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, "");
     if (fromNumber.length == 10) { 
-      from = "1" + from; 
+      fromNumber = "1" + fromNumber; 
     }
     let toNumber = req.body.To.replace(/\D+/g, "");
     if (toNumber.length == 10) { 
-      from = "1" + from; 
+      toNumber = "1" + toNumber; 
     }
     let text = req.body.Body.replace(/["']/g, "").trim();
     let MessageStatus = req.body.SmsStatus;
