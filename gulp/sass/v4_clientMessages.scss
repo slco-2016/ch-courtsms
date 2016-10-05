@@ -36,13 +36,15 @@ $width_row5:  5%;
   background-color: $white;
 
   .conversations {
-    padding: 5px 10px 5px 10px;
+    // padding: 5px 10px 5px 10px;
+    padding: 0px;
 
     .conversation {
-      padding: 5px 5px 5px 5px;
+      padding: 5px 15px 5px 15px;
       border-bottom: 1px solid $offwhite;
 
       .subject {
+        margin-top: 7px;
         color: $lightblue;
         margin-bottom: 5px;
 
@@ -56,14 +58,17 @@ $width_row5:  5%;
       }
 
       .date {
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 14px;
         padding-bottom: 5px;
 
         .day {
-          float: left;
+          // float: left;
+          text-align: right;
         }
         .time {
-          float: right;
+          // float: right;
+          text-align: right;
         }
         &::after {
           content:"";
@@ -84,9 +89,9 @@ $width_row5:  5%;
       &:hover {
         background-color: $offwhite;
         color: $grey;
-        .subject {
-          color: $lightblue;
-          font-weight: 700;
+        .subject, .date {
+          color: $darkblue;
+          // font-weight: 700;
         }
       }
     }
@@ -98,226 +103,297 @@ $width_row5:  5%;
   overflow-y: scroll;
   float: right;
   background-color: $offwhite;
+  box-shadow: inset 1px 10px 20px -10px;
+
+  .subjectToggle {
+    position: absolute;
+    left: 50%;
+    background-color: $lightblue;
+    color: $white;
+    line-height: 30px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-bottom-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    margin-right: auto;
+    margin-left: auto;
+
+    .title {
+      display: inline;
+      margin-left: 15px;
+      margin-right: 15px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .option {
+      display: inline;
+      font-size: 12px;
+      padding: 3px;
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-right: 5px;
+      border-radius: 15px;
+      cursor: pointer;
+
+      &.selected, &:hover {
+        background-color: $white;
+        color: $lightblue;
+      }
+
+      &:nth-last-child(1) {
+        margin-right: 15px;
+      }
+    }
+  }
   
   .messageStream {
     padding: 5px 15px 5px 15px;
     margin-bottom: 60px;
 
-    .message {
-      padding: 15px 20px 10px 20px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+    .messageDiv {
 
-      &.outbound {
-        // background-color: $lightgrey;
-        border: 1px solid $white;
-        color: $darkgrey;
-      } 
-      
-      &.inbound {
-        background-color: $white;
-        color: $darkgrey;
-      } 
+      &.rightAligned {
+        // padding-left: 20px;
+      }
 
-      .bottomRow {
-        margin-top: 15px; 
-        font-size: 12px;
-        line-height: 18px;
+      .message {
+        padding: 15px 20px 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        width: 695px;
 
-        .fa {
-          font-size: 18px;
+        &.outbound {
+          border: 1px solid $white;
+          color: $darkgrey;
+          .content {
+            // text-align: right;
+          }
+        } 
+        
+        &.inbound {
+          background-color: $white;
+          color: $darkgrey;
         }
 
-        .state {
-          float: right;
+        .bottomRow {
+          margin-top: 15px; 
+          font-size: 12px;
+          line-height: 18px;
+
+          .fa {
+            font-size: 18px;
+          }
+
+          .state {
+            float: right;
+          }
         }
       }
     }
   }
+}
 
-  .responseBox {
-    position: absolute;
-    bottom: 0px;
-    overflow: hidden;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
+.responseBox {
+  position: absolute;
+  bottom: 0px;
+  overflow: hidden;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  width: 1024px;
 
-    .mini {
-      width: inherit;
-      background-color: $lightblue;
-      padding: 10px 10px 10px 10px;
+  .mini {
+    width: inherit;
+    background-color: $lightblue;
+    padding: 15px;
 
-      .messageInput {
-        width: 733px;
-        height: 45px;
-        background-color: $darkblue;
-        border-radius: 3px;
-        line-height: 45px;
-        font-size: 18px;
-        color: $white;
-        font-weight: 300;
-        padding-left: 15px;
+    .actionButtons {
+      color: $white;
+      width: 25%;
+
+      .actionButton {
+        float: left;
+        width: 23%;
+        overflow: hidden;
+        text-align: center;
         cursor: pointer;
-
-        .left {
-          float: left;
-          width: 50%;
-          text-align: left;
+        .icon {
+          font-size: 24px;
+          line-height: 32px;
         }
-        .right {
-          float: left;
-          width: 50%;
-          text-align: right;
-
-          .fa {
-            padding-right: 15px;
-          }
-        }
-
-        .miniButton {
-          display: block;
-          float: right;
-          padding: 5px 10px 5px 15px;
-          color: $blue;
-          background-color: $white;
-          height: 35px;
-          line-height: 35px;
-          font-size: 16px;
-          cursor: pointer;
-
-          &:hover {
-            background-color: $darkblue;
-            color: $white;
-            box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
-          }
-        }
-
-        &.disabled {
-          cursor: not-allowed;
+        .name {
+          line-height: 16px;
           font-size: 12px;
-          overflow: hidden;
-          background-color: $blue;
-
-          &:hover {
-            box-shadow: none;
-            background-color: $blue;
-          }
+          display: none;
         }
 
         &:hover {
-          background-color: $blue;
-          color: $offwhite;
-          box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+          color: $darkblue;
         }
       }
     }
 
-    .full {
-      display: none;
-      width: inherit;
-      background-color: $lightblue;
-      padding: 10px 10px 10px 10px;
+    .messageInput {
+      width: 735px;
+      height: 45px;
+      background-color: $offwhite;
+      border-radius: 7px;
+      line-height: 45px;
+      font-size: 18px;
+      color: $darkgrey;
+      font-weight: 300;
+      margin-left: 25px;
+      cursor: pointer;
+      float: right;
 
-      .messageInput {
-        textarea {
-          width: 728px;
-          max-width: 728px;
-          height: 55px;
-          max-height: 55px;
-          background-color: $darkblue;
-          border-radius: 7px;
-          line-height: 20px;
-          font-size: 18px;
-          color: $white;
-          font-weight: 300;
-          padding: 10px;
-          border: 0px;
+      .left {
+        padding-left: 15px;
+        width: 50%;
+        text-align: left;
+      }
+      .right {
+        width: 50%;
+        text-align: right;
+
+        .fa {
+          padding-right: 15px;
         }
       }
 
-      .bottomRow {
-        display: block;
-        height: 32px;
-        margin-top: 5px;
-        margin-bottom: 15px;
+      &.disabled {
+        cursor: not-allowed;
+        font-size: 12px;
+        overflow: hidden;
+        background-color: $blue;
 
-        .optionButton {
-          float: left;
-          text-align: center;
-          height: 31px;
-          border: 1px solid $darkblue;
+        &:hover {
+          box-shadow: none;
+          background-color: $blue;
+        }
+      }
+
+      &:hover {
+        box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+      }
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+  textarea[name="content"] {
+    display: none;
+    width: 708px;
+    height: 85px;
+    max-height: 85px;
+
+    background-color: $offwhite;
+    border-radius: 7px;
+    color: $darkgrey;
+    font-weight: 300;
+    margin-left: 25px;
+    cursor: pointer;
+
+    line-height: 20px;
+    font-size: 18px;
+    padding: 15px;
+    border: 0px;
+  }
+
+  .full {
+    display: none;
+    width: inherit;
+
+    .bottomRow {
+      display: block;
+      height: 32px;
+      margin-top: 10px;
+      margin-bottom: 0px;
+
+      .optionButton {
+        text-align: center;
+        height: 31px;
+        border: 1px solid $darkblue;
+        border-radius: 3px;
+        background-color: $blue;
+        margin-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        line-height: 31px;
+        font-size: 16px;
+        color: $white;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $white;
+          color: $blue;
+        }
+      }
+
+      .contactSelect {
+        float: right;
+        select {
+          display: inline;
+          width: 250px;
+          height: 32px;
+          border: 1px solid $white;
           border-radius: 3px;
           background-color: $blue;
-          margin-right: 10px;
-          padding-left: 10px;
-          padding-right: 10px;
-          line-height: 31px;
+          text-align: center;
           font-size: 16px;
           color: $white;
-          cursor: pointer;
+          
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          -webkit-user-select: none; /* Chrome/Safari */        
+          -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* IE10+ */
+          /* Rules below not implemented in browsers yet */
+          -o-user-select: none;
+          user-select: none;
 
           &:hover {
             background-color: $white;
             color: $blue;
           }
         }
+      }
 
-        .contactSelect {
-          float: left;
-          select {
-            display: inline;
-            width: 250px;
-            height: 32px;
-            border: 1px solid $darkblue;
-            border-radius: 3px;
-            background-color: $blue;
-            text-align: center;
-            font-size: 16px;
-            color: $white;
-            
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+      .submit {
+        float: right;
+        height: 32px;
+        line-height: 32px;
+        border: 2px solid $darkblue;
+        border-radius: 25px;
+        background-color: $white;
+        padding-right: 15px;
+        padding-left: 15px;
+        font-size: 14px;
+        color: $blue;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 25px;
 
-            -webkit-user-select: none; /* Chrome/Safari */        
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+ */
-            /* Rules below not implemented in browsers yet */
-            -o-user-select: none;
-            user-select: none;
-
-            &:hover {
-              background-color: $white;
-              color: $blue;
-            }
-          }
+        .ss {
+          margin-right: 5px;
         }
 
-        .submit {
-          float: right;
-          height: 45px;
-          line-height: 45px;
-          border: 2px solid $darkblue;
-          border-radius: 5px;
-          background-color: $white;
-          padding-right: 25px;
-          padding-left: 25px;
-          font-size: 22px;
-          color: $blue;
-          font-weight: 700;
-          cursor: pointer;
+        &:hover {
+          background-color: $blue;
+          color: $white;
+        }
 
-          &:hover {
-            background-color: $blue;
-            color: $white;
-          }
-
-          &.disabled {
-            cursor: not-allowed;
-            background-color: $lightgrey;
-            color: $grey;
-            border: 2px solid $grey;
-          }
+        &.disabled {
+          cursor: not-allowed;
+          background-color: $lightgrey;
+          color: $grey;
+          border: 2px solid $grey;
         }
       }
     }

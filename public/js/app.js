@@ -119,21 +119,51 @@ $(function() {
 
     {
       cssClass: 'JSmessagesStream',
-      execute: function() {
-        function toggleTypeBox () {
-          $("#typeBox").toggle();
-          $(".full").toggle();
-          if ($("#typeBox").is(":visible")) {
-            $(".messageStream").css("margin-bottom", 60);
-          } else { 
-            $(".messageStream").css("margin-bottom", 150);
-            scrollLast()
+      execute: function(directive) {
+        function toggleSubjectView (directive) {
+          // first, update the subject toggle setting
+          if (directive == "off") {
+            $("#subjectView-on").removeClass("selected");
+            $("#subjectView-off").addClass("selected");
+          } else {
+            $("#subjectView-on").addClass("selected");
+            $("#subjectView-off").removeClass("selected");
+          }
+
+          // next, show or hide the side convo bar
+          if (directive == "off") {
+            $(".leftBar").hide();
+            $(".rightContent").width(1024)
+            $(".messageDiv.rightAligned").css("padding-left", "255px");
+          } else {
+            $(".leftBar").show();
+            $(".rightContent").width(768)
+            $(".messageDiv.rightAligned").css("padding-left", "0px")
           }
         }
 
+        // bind actions to toggle control for side convos view
+        $("#subjectView-on").click(function() {
+          toggleSubjectView("on");
+        })
+        $("#subjectView-off").click(function() {
+          toggleSubjectView("off");
+        })
+
+        function toggleTypeBox () {
+          $(".full").show();
+          $("textarea[name='content']").show();
+          $(".name").show();
+          $(".actionButton").css("margin-top", "20px");
+          $("#placeHolderTypeBox").remove();
+          $(".messageStream").css("margin-bottom", 150);
+          scrollLast()
+        };
+        // toggleTypeBox()
+
         function adjustDivs () {
-          $(".leftBar").height($(window).height() - 92);
-          $(".rightContent").height($(window).height() - 92);
+          $(".leftBar").height($(window).height() - 97);
+          $(".rightContent").height($(window).height() - 97);
         }
 
         function scrollLast () {

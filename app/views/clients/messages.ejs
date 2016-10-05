@@ -19,8 +19,8 @@
             <%= conversation.subject ? conversation.subject : 'No Subject' %>
           </div>
           <div class="date">
-            <div class="day"><%= moment.tz(conversation.updated, organization.tz).format("MM/DD/YY") %></div>
-            <div class="time"><%= moment.tz(conversation.updated, organization.tz).format("hh:mm A") %></div>
+            <div class="day">started: <%= moment.tz(conversation.updated, organization.tz).format("MM/DD/YY") %></div>
+            <div class="time">last message: <%= moment.tz(conversation.updated, organization.tz).format("hh:mm A") %></div>
           </div>
         </div>
       </a>
@@ -31,96 +31,143 @@
 
 <div class="rightContent">
 
+  <div class="subjectToggle">
+    <span class="title">subject view</span>
+    <span class="option selected" id="subjectView-on">on</span> 
+    <span class="option" id="subjectView-off">off</span>
+  </div>
+
   <div class="messageStream">
     <% messages.forEach(function (message, messageIndex) { %>
-      <div class="message <%= message.inbound ? 'inbound' : 'outbound' %>"
-            <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
-        <div class="content">
-          <%= message.content %>
-        </div>
+      <div class="messageDiv <%= !message.inbound ? 'rightAligned' : '' %>">
+        <div class="message <%= message.inbound ? 'inbound' : 'outbound' %>"
+              <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
+          <div class="content">
+            <%= message.content %>
+          </div>
 
-        <div class="bottomRow">
+          <div class="bottomRow">
 
-          <% if (message.comm_type == 'cell') { %>
-            <i class="fa fa-mobile" aria-hidden="true"></i>
-          <% } %>
+            <% if (message.comm_type == 'cell') { %>
+              <i class="fa fa-mobile" aria-hidden="true"></i>
+            <% } %>
 
-          <%= message.inbound ? 'Received via' : 'Sent to' %>
-          <%= client.first + "'s" %> <%= message.commconn_name %>
+            <%= message.inbound ? 'Received via' : 'Sent to' %>
+            <%= client.first + "'s" %> <%= message.commconn_name %>
 
-          <span class="state">
-            <%= message.tw_status %> on 
-            <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at 
-            <%= moment.tz(message.created, organization.tz).format("hh:mm A"); %>
-          </span>
+            <span class="state">
+              <%= message.tw_status %> on 
+              <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at 
+              <%= moment.tz(message.created, organization.tz).format("hh:mm A"); %>
+            </span>
+          </div>
         </div>
       </div>
     <% }) %>
   </div>
+</div>
 
-  <div class="responseBox">
-    <form method="post"
-          id="newMessage" 
-          action="<%=`/clients/${client.clid}/messages`%>">
-      <% if (userOwnsClient) { %>
-        <div class="mini" id="typeBox">
-          <div class="messageInput">
-            <div class="left">Start typing message...</div>
-            <a href="<%=`${clientBaseURL}/address/templates`%>">
-              <span class="miniButton">
-                <i class="fa fa-send"></i> 
-                Load a template
-              </span>
-            </a>
-          </div>
-        </div>
-      <% } else { %>
-        <div class="mini">
-          <div class="messageInput disabled">
-            Viewing other user's client conversation log, cannot comment directly in thread.
-            <a href="<%=`/org/clients/${client.clid}/address`%>">
-              <span class="miniButton">
-                <i class="fa fa-send"></i> 
-                Send a one-off message
-              </span>
-            </a>
-          </div>
-        </div>
-      <% } %>
+<div class="responseBox">
+  <form method="post"
+        id="newMessage" 
+        action="<%=`/clients/${client.clid}/messages`%>">
+    <% if (userOwnsClient) { %>
+      <div class="mini" id="typeBox">
 
-      <div class="full">
-        <div class="messageInput">
-          <textarea name="content"
-                    rows="5"></textarea>
-        </div>
-
-        <div class="bottomRow">
-
+        <div class="actionButtons">
           <a href="<%=`${clientBaseURL}/address/templates`%>">
-            <div class="optionButton">
-              <i class="fa fa-upload" aria-hidden="true"></i> 
-              Load a Template
+            <div class="actionButton">
+              <div class="icon">
+                <i class="ss-download"></i>
+              </div>
+              <div class="name">
+                download transcript
+              </div>
             </div>
           </a>
 
-          <div class="contactSelect">
-            <select name="commID" required>
-              <option value="" selected disabled>Comm Method</option>
-              <% communications.forEach(function (communication) { %>
-                <option value="<%= communication.commid %>"><%= communication.name + ' (' + communication.value + ')' %></option>
-              <% }) %>
-            </select>
-          </div>
+          <a href="<%=`${clientBaseURL}/address/templates`%>">
+            <div class="actionButton">
+              <div class="icon">
+                <i class="ss-clipboard"></i>
+              </div>
+              <div class="name">
+                load template
+              </div>
+            </div>
+          </a>
 
-          <div class="submit disabled">
-            <i class="fa fa-paper-plane" aria-hidden="true"></i>
-            Send
+          <a href="<%=`${clientBaseURL}/address/templates`%>">
+            <div class="actionButton">
+              <div class="icon">
+                <i class="ss-phone"></i>
+              </div>
+              <div class="name">
+                record voice
+              </div>
+            </div>
+          </a>
+
+          <a href="">
+            <div class="actionButton">
+              <div class="icon">
+                <i class="ss-picture"></i>
+              </div>
+              <div class="name">
+                upload media
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="messageInput" id="placeHolderTypeBox">
+          <div class="left">Start typing message...</div>
+        </div>
+
+        <textarea name="content"
+                  rows="5"></textarea>
+
+        <div class="full">
+          <div class="bottomRow">
+
+            <div class="submit disabled">
+              <i class="ss ss-send" aria-hidden="true"></i>
+              Send Now
+            </div>
+
+            <!-- <div class="submit disabled">
+              <i class="ss ss-clock" aria-hidden="true"></i>
+              Send Later
+            </div> -->
+
+            <div class="contactSelect">
+              <select name="commID" required>
+                <option value="" selected disabled>Comm Method</option>
+                <% communications.forEach(function (communication) { %>
+                  <option value="<%= communication.commid %>"><%= communication.name + ' (' + communication.value + ')' %></option>
+                <% }) %>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-    </form>
-  </div>
 
+      </div>
+
+    <% } else { %>
+      <div class="mini">
+        <div class="messageInput disabled">
+          Viewing other user's client conversation log, cannot comment directly in thread.
+          <a href="<%=`/org/clients/${client.clid}/address`%>">
+            <span class="miniButton">
+              <i class="fa fa-send"></i> 
+              Send a one-off message
+            </span>
+          </a>
+        </div>
+      </div>
+    <% } %>
+
+  </form>
 </div>
 
 <script type="text/javascript" class="JSmessagesStream"></script>
