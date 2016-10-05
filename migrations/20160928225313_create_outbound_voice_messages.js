@@ -8,6 +8,7 @@ exports.up = function(knex, Promise) {
       table.dateTime("delivery_date");
       table.dateTime("last_delivery_attempt");
       table.text("recording_key");
+      table.text("call_sid");
       table.text("RecordingSid");
       table.boolean("delivered").defaultTo(false);
 

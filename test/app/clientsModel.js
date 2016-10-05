@@ -76,5 +76,14 @@ describe('Clients checks', function() {
     }).catch(done);
   });
 
+  it('Should be able to update client from BaseModel method', function(done) {
+    Clients.findById(1)
+    .then((client) => {
+      return client.update({first: 'joe'})
+    }).then((client) => {
+      should.equal(client.first, 'joe')
+      done()
+    }).catch(done)
+  })
   
 })

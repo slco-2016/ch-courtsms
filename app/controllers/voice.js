@@ -16,6 +16,22 @@ module.exports = {
                 </Say>
               </Response>`);
   },
+  status(req, res) {
+    if (req.body.CallStatus === "completed") {
+      let sid = req.body.CallSid;
+      OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
+      .then((ovm) => {
+        if (ovm) {
+          return ovm.update({delivered: true})  
+        } else {
+          res.send("ok")
+          return null
+        }
+      }).then((ovm) => {
+        res.send("ok")
+      }).catch(res.error500)
+    }
+  },
   playMessage(req, res) {
     // let ovmId = req.query.ovmId;
     // OutboundVoiceMessages.findById(ovmId)
