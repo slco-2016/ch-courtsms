@@ -390,7 +390,7 @@ class Messages extends BaseModel {
       .then((communication) => {
         if (communication.type == "email") {
 
-          Users.findById(conversation.cm)
+          return Users.findById(conversation.cm)
           .then((user) => {
             return mailgun.sendEmail(
               communication.value,
@@ -410,7 +410,7 @@ class Messages extends BaseModel {
 
         } else if (communication.type == "cell") {
 
-          Departments.findByConversationId(conversation.convid)
+          return Departments.findByConversationId(conversation.convid)
           .then((department) => {
             let phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
