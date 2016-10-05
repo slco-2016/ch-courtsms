@@ -99,6 +99,8 @@ app.post("/webhook/voice/status", VoiceController.status);
 app.post("/webhook/voice/record/", VoiceController.record);
 app.post("/webhook/voice/save-recording/", VoiceController.save);
 app.post("/webhook/voice/play-message/", VoiceController.playMessage);
+app.post("/webhook/email", EmailsController.webhook);
+app.post("/webhook/email/status", EmailsController.status);
 
 app.get("/login", AccessController.login);
 app.post("/login", passport.authenticate("local-login", {
@@ -111,9 +113,6 @@ app.get("/login/reset", AccessController.reset);
 app.post("/login/reset", AccessController.resetSubmit);
 app.get("/login/reset/:uid", AccessController.resetSpecific);
 app.post("/login/reset/:uid", AccessController.resetSpecficSubmit);
-
-app.post("/email/webhook", EmailsController.webhook);
-app.post("/email", EmailsController.receive);
 
 // Everything below this, you must be logged in
 app.use(auth.isLoggedIn);

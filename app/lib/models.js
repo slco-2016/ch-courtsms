@@ -80,6 +80,16 @@ class BaseModel {
     })
   }
 
+  static where(attributes) {
+    return new Promise((fulfill, reject) => {
+      db(this.tableName)
+      .where(this._cleanParams(attributes))
+      .then((objects) => {
+        this._getMultiResponse(objects, fulfill)
+      }).catch(reject)
+    })
+  }
+
   static _getSingleResponse(objects, fulfill) {
     if (!objects || objects.length === 0) {
       fulfill(null)

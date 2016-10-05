@@ -22,6 +22,7 @@ if (process.env.CCENV && process.env.CCENV == "production") {
 }
 
 const BaseModel = require("../lib/models").BaseModel
+const mailgun = require("../lib/mailgun")
 
 const Clients = require("./clients");
 const CommConns = require("./commConns");
@@ -29,6 +30,7 @@ const Communications = require("./communications");
 const Conversations = require("./conversations");
 const Departments = require("./departments");
 const PhoneNumbers = require("./phoneNumbers");
+const Users = require("./users");
 
 class Messages extends BaseModel {
 
@@ -42,8 +44,10 @@ class Messages extends BaseModel {
         "content",
         "inbound",
         "read",
+        "sent_to",
         "tw_sid",
         "tw_status",
+        "email_id",
         "created",
         "status_cleared"
       ]
@@ -202,12 +206,12 @@ class Messages extends BaseModel {
     });
   }
 
-  static findAllByPlatformId(platformId) {
+  static findManyByTwSid(twSid) {
     return new Promise((fulfill, reject) => {
       db("msgs")
-        .where("tw_sid", platformId)
-        then((objects) => {
-          fulfill(objects)
+        .where("tw_sid", twSid)
+        .then((objects) => {
+          this._getMultiResponse(objects, fulfill)
         }).catch(reject);
     })
   }
@@ -289,7 +293,24 @@ class Messages extends BaseModel {
     });
   }
 
-  static insertIntoManyConversations (conversationIds, commId, content, MessageSid, MessageStatus) {
+  static insertIntoManyConversations (
+    conversationIds, commId, content, 
+    MessageSid, MessageStatus, sentTo,
+    options) {
+    if (!options) {
+      options = {}
+    }
+    if (!options.emailId) {
+      options.emailId = null
+    }
+    if (!options.voiceMessageId) {
+      options.voiceMessageId = null
+    }
+    conversationIds.forEach((conversationId) => {
+      if (!conversationId) {
+        throw new Error("Need a valid conversation id")
+      }
+    })
     return new Promise((fulfill, reject) => {
       let insertArray = conversationIds.map((conversationId) => {
         return {
@@ -298,15 +319,17 @@ class Messages extends BaseModel {
           content: content,
           inbound: true,
           read: false,
+          sent_to: sentTo,
           tw_sid: MessageSid,
-          tw_status: MessageStatus
+          tw_status: MessageStatus,
+          email_id: options.emailId,
         }
       });
       db("msgs")
         .insert(insertArray)
         .returning("*")
       .then((messages) => {
-        fulfill(messages);
+        this._getMultiResponse(messages, fulfill)
       }).catch(reject)
     });
   }
@@ -360,35 +383,34 @@ class Messages extends BaseModel {
     });
   }
 
-  static sendOne (commId, content, conversationId) {
+  static sendOne (commId, content, conversation) {
     return new Promise((fulfill, reject) => {
       var contentArray = content.match(/.{1,1599}/g);
       Communications.findById(commId)
       .then((communication) => {
         if (communication.type == "email") {
-          // CaseManager.findById(cmid)
-          //   .then((caseManager) => {
-          //     return mailgun.sendEmail(
-          //       this.value,
-          //       caseManager.getClientCommEmail(),
-          //       `New message from ${caseManager.getFullName()}`,
-          //       content
-          //     )
-          //   }).then((response) => {
 
-          //     console.log(response)
-          //     return this._createMessage(
-          //       convid,
-          //       content,
-          //       response.id,
-          //       response.message
-          //     )
-          //   }).then(fulfill).catch(reject)
-          // }
+          return Users.findById(conversation.cm)
+          .then((user) => {
+            return mailgun.sendEmail(
+              communication.value,
+              user.getClientCommEmail(),
+              `New message from ${user.getFullName()}`,
+              content
+            )
+          }).then((response) => {
+            return Messages.create(
+              conversation.convid,
+              commId,
+              content,
+              response.id,
+              response.message
+            )
+          }).then(fulfill).catch(reject)
 
         } else if (communication.type == "cell") {
 
-          Departments.findByConversationId(conversationId)
+          return Departments.findByConversationId(conversation.convid)
           .then((department) => {
             let phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
@@ -407,7 +429,7 @@ class Messages extends BaseModel {
                   } else {
                     const MessageSid = msg.sid;
                     const MessageStatus = msg.status;
-                    Messages.create(conversationId,
+                    Messages.create(conversation.convid,
                                     commId,
                                     contentPortion,
                                     MessageSid,
@@ -456,16 +478,16 @@ class Messages extends BaseModel {
 
   static startNewConversation (userID, clientID, subject, content, commID) {
     return new Promise((fulfill, reject) => {
-      var newConvoId;
+      var conversation;
 
       Conversations.closeAllWithClient(clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
-      }).then((conversations) => {
-        newConvoId = conversations.convid;
+      }).then((resp) => {
+        conversation = resp
         return Communications.findById(commID)
       }).then((communication) => {
-        Messages.sendOne(commID, content, newConvoId)
+        Messages.sendOne(commID, content, conversation)
         .then(() => {
           fulfill();
         }).catch(reject);

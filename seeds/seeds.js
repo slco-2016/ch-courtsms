@@ -38,6 +38,14 @@ exports.seed = function(knex, Promise) {
     }).then(() => {
       return knex('commconns').insert(secondCommConn)
     }).then(() => {
+      return knex('comms').insert(emailContactMethod)
+    }).then(() => {
+      return knex('commconns').insert(emailCommConn)
+    }).then(() => {
+      return knex('convos').insert(conversation)
+    }).then(() => {
+      return knex('msgs').insert(outboundEmailMessage)
+    }).then(() => {
       return knex('outbound_voice_messages').insert(outboundVoiceMessage)
     }).catch((err) => {
       throw err
@@ -149,6 +157,12 @@ let secondContactMethod = {
   value: '12048384828',
 }
 
+let emailContactMethod = {
+  description: 'HurtLocker',
+  type: 'email',
+  value: 'max.t.mcdonnell@gmail.com',
+}
+
 let commConn = {
   client: 1,
   comm: 1,
@@ -161,6 +175,29 @@ let secondCommConn = {
   comm: 1,
   name: "RedundantMaybe",
   retired: null
+}
+
+let emailCommConn = {
+  client: 2,
+  comm: 3,
+  name: "hmm",
+  retired: null
+}
+
+let conversation = {
+  cm: 2,
+  client: 2,
+  subject: "primary and secondClient conversation",
+  open: true,
+  accepted: true,
+}
+
+let outboundEmailMessage = {
+  convo: 1,
+  comm: 3,
+  content: "this is a seeds email message",
+  tw_sid: "<2013FAKE82626.18666.16540@clientcomm.org>",
+  tw_status: 'queued',
 }
 
 let outboundVoiceMessage = {

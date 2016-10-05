@@ -23,26 +23,26 @@ class Conversations extends BaseModel {
     })
   }
 
-  static create(userId, clientId, subject, open) {
-    if (typeof open == "undefined") open = true;
+  static closeAll(cmid, clid) {
     return new Promise((fulfill, reject) => {
-      Conversations.closeAllBetweenClientAndUser(userId)
-      .then(() => {
-        return db("convos")
-          .insert({
-            cm: userId,
-            client: clientId,
-            subject: subject,
-            open: open,
-            accepted: true,
-          })
-          .returning("*")
-      }).then((conversations) => {
-        this._getSingleResponse(conversations, fulfill);
-      }).catch(reject)
+      db("convos")
+        .where("client", clid)
+        .andWhere("cm", cmid)
+        .andWhere("convos.open", true)
+        .pluck("convid")
+        .then(function (convos) {
+          db("convos").whereIn("convid", convos)
+            .update({
+              open: false
+            }).then(function (success) {
+              fulfill(success)
+            })
+            .catch(reject)
+        })
+        .catch(reject)
     })
   }
-
+  
   static closeAllBetweenClientAndUser (userID, clientID) {
     return new Promise((fulfill, reject) => {
       db("convos")
@@ -107,6 +107,26 @@ class Conversations extends BaseModel {
     })
   }
 
+  static create(userId, clientId, subject, open) {
+    if (typeof open == "undefined") open = true;
+    return new Promise((fulfill, reject) => {
+      Conversations.closeAllBetweenClientAndUser(userId)
+      .then(() => {
+        return db("convos")
+          .insert({
+            cm: userId,
+            client: clientId,
+            subject: subject,
+            open: open,
+            accepted: true,
+          })
+          .returning("*")
+      }).then((conversations) => {
+        this._getSingleResponse(conversations, fulfill);
+      }).catch(reject)
+    })
+  }
+
   static createOrAttachToExistingCaptureBoardConversation (communication) {
     let commId = communication.commid;
     return new Promise((fulfill, reject) => {
@@ -129,7 +149,7 @@ class Conversations extends BaseModel {
             .insert({
               cm: null,
               client: null,
-              subject: "New Conversation Originally From Unkown Contact",
+              subject: "New Conversation Originally From Unknown Contact",
               open: true,
               accepted: false,
             })
@@ -415,6 +435,36 @@ class Conversations extends BaseModel {
         fulfill(conversations[0]);
       }).catch(reject);
     })
+  }
+
+  static retrieveByClientsAndCommunication (clients, communication) {
+    return new Promise ((fulfill, reject) => {
+      let conversations;
+      // Get the conversations that are possible candidates
+      this.findByClientAndUserInvolvingSpecificCommId(
+        clients, communication
+      ).then((resp) => {
+        conversations = resp;
+
+        // @maxmcd perhaps this is something that should be a lib/util?
+        return this.createNewIfOlderThanSetHours(conversations, 24)
+      }).then((resp) => {
+        conversations = resp;
+
+        // We can add this message to existing conversations if they exist
+        if (conversations.length) {
+          return new Promise((fulfill, reject) => {
+            fulfill(conversations);
+          });
+        } else if (clients.length) {
+          return this.createNewNotAcceptedConversationsForAllClients(clients);
+        } else {
+          return this.createOrAttachToExistingCaptureBoardConversation(communication);
+        }
+      }).then((conversations) => {
+        fulfill(conversations);
+      }).catch(reject);
+    });
   }
 
   static transferUserReference (client, fromUser, toUser) {
