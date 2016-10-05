@@ -2,8 +2,10 @@ const Conversations = require('../models/conversations');
 const OutboundVoiceMessages = require('../models/outboundVoiceMessages');
 const Messages = require('../models/messages');
 const SentimentAnalysis = require('../models/sentiment');
+
 const sms = require('../lib/sms');
-const s3 = require('../lib/s3')
+const s3 = require('../lib/s3');
+const voice = require('../lib/voice');
 
 module.exports = {
 
@@ -34,10 +36,10 @@ module.exports = {
         Thank you.
       </Say>
     </Response>`
-    res.send(response)
+    res.send(response);
     // })
   },
-  
+
   record(req, res) {
     let userId = req.query.userId
     let clientId = req.query.clientId
@@ -88,6 +90,11 @@ module.exports = {
     }
 
     if (value.length == 11) {
+      // Somehow we initiate a call here?
+      // voice.recordVoiceMessage( user, 
+      //                           client, 
+      //                           deliveryDate, 
+      //                           phoneNumber)
       res.render('voice/callComing', {
         userProvidedNumber: value
       });
@@ -101,6 +108,20 @@ module.exports = {
       redirectAddress = redirectAddress + res.locals.client.clid + "/voicemessage";
       res.redirect(redirectAddress);
     }
+  },
+
+  reviewRecording(req, res) {
+    res.render('voice/review');
+  },
+
+  acceptRecording(req, res) {
+    // at this time we could use twilio to get transcript in text form
+    // make it easy to do this at a later date?
+    res.render('voice/transcript')
+  },
+
+  acceptTranscript(req, res) {
+    res.render('voice/schedule');
   }
 
 };

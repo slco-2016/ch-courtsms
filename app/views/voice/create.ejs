@@ -1,7 +1,7 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>"><% include ../partials/cardExit %></a>
   </a>
   <div class="cardTitle">
     Voice Message

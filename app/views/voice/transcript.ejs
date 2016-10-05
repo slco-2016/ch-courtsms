@@ -1,0 +1,38 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    Voice Message
+  </div>
+  <div class="cardSubtitle">
+    This series of cards will guide you through the steps required to create a voice message to be sent.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post" action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage/transcript">
+
+    <div class="formRow">
+      <div class="formInput">
+        Here's what our transcription tool thinks you said. Go ahead and make any edits that you see are fit.
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Transcript Review </div>
+      <div class="formInput">
+        <textarea name="content" rows="5" required>Hello, so and so. Please remember our appointment today at four PM. Thanks, Cheryl.</textarea>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Looks good, continue">
+
+  </form>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>

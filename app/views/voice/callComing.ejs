@@ -1,7 +1,7 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>"><% include ../partials/cardExit %></a>
   </a>
   <div class="cardTitle">
     Voice Message
@@ -26,6 +26,10 @@
       After you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to the target client (<%=`${client.first} ${client.last}`%>). Your personal number will not be saved.
     </div>
   </div>
+
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage/review">
+    <input type="submit" class="formSubmit" value="Skip ahead">
+  </a>
 
   <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage">
     <input type="submit" class="formSubmit" value="Use a different number">
