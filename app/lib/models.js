@@ -22,16 +22,37 @@ class BaseModel {
     })
   }
 
-  static _cleanParams(obj) {
+  update(params) {
+    return new Promise((fulfill, reject) => {
+      db(this.constructor.tableName)
+      .where(
+        this.constructor.primaryId, 
+        this[this.constructor.primaryId]
+      ).update(this._cleanParams(params))
+      .returning("*")
+      .then((objs) => {
+        // TODO? update params on this instance
+        // and not just the new one so that
+        // if it is re-used they are correct?
+        this.constructor._getSingleResponse(objs, fulfill)
+      })      
+    })
+  }
+
+  _cleanParams(obj) {
     let out = {};
-    let instance = new this({});
-    let columnNames = instance._info.columns;
+    let columnNames = this._info.columns;
     for (let i=0; i < columnNames.length; i++) {
       if (obj[columnNames[i]]) {
         out[columnNames[i]] = obj[columnNames[i]]        
       }
     }
     return out
+  }
+
+  static _cleanParams(obj) {
+    let instance = new this({});
+    return instance._cleanParams(obj)
   }
 
   static _checkModelValidity() {

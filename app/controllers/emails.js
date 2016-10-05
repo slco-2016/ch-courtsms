@@ -14,32 +14,30 @@ const sms = require('../lib/sms')
 
 const Promise = require("bluebird");
 
+const _updateMessages = (messageId, status, res) => {
+  return Messages.findManyByTwSid(messageId)
+  .map((message) => {
+    return message.update({tw_status: status})
+  }).then((messages) => {
+    res.send('ok')
+  }).catch(res.error500)
+}
+
 module.exports = {
-  _updateMessages() {
-    // TODO:
-  },
-  _updateMessages(messageId, status, res) {
-    return Messages.findManyByTwSid(messageId)
-    .map((message) => {
-      return message.update({tw_status: "Delivered"})
-    }).then((messages) => {
-      // pass
-    }).catch(res.error500)
-  },
-  webhook(req, res) {
+  status(req, res) {
     let event = req.body.event
     if (event == "delivered") {
       let messageId = req.body['Message-Id']
-      this._updateMessages(messageId, "Delivered", res)
+      _updateMessages(messageId, "Delivered", res)
     } else if (event == "opened") {
       // why, just why
       let messageId = `<${req.body['message-id']}>`
-      this._updateMessages(messageId, "Opened", res)
+      _updateMessages(messageId, "Opened", res)
     } else {
       res.send('ok, thanks');
     }
   },
-  receive(req, res) {
+  webhook(req, res) {
     // mailgun's philosophy here seems to be that if they can populate a section they
     // will, or they will omit it. This can be very confusing.
     // eg: if there is one recipient they will populate "recipient", but they
