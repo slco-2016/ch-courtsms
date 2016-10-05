@@ -51,16 +51,20 @@ module.exports = {
     let departmentId = req.body.departmentId || null;
     let createdById  = req.user.cmid;
     let targetUserId = req.body.targetUserId || null;
-    let subject      = req.body.subject;
+    let subject      = req.body.subject || "";
     let message      = req.body.message || null;
 
-    let redirect = "/org";
+    let redirect = "/alerts/create";
+    if (res.locals.level == "org") {
+      redirect = "/org" + redirect;
+    }
     if (departmentId) {
-      redirect = redirect + "/departments";
-    } else {
-      redirect = redirect + "/users";
+      redirect = redirect + "?department=" + departmentId;
+    } else if (targetUserId) {
+      redirect = redirect + "?user=" + targetUserId;
     }
 
+    subject = subject.trim();
     if (subject.length) {
       let strategy;
       if (targetUserId) {
