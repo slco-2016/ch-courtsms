@@ -30,6 +30,7 @@
     "moment": "~2.13.0",
     "moment-timezone": "~0.5.4",
     "newrelic": "~1.28.0",
+    "ngrok": "^2.2.3",
     "node-uuid": "~1.4.7",
     "nodemailer": "~2.4.1",
     "nodemon": "~1.9.1",

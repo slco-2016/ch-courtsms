@@ -14,9 +14,7 @@ function undefinedValuesCheck (array) {
 
 class BaseModel {
   constructor(info) {
-
     this._info = info
-
     info.columns.map(name => {
       this[name] = info.data[name]
     })
