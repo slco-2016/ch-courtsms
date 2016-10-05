@@ -1,0 +1,37 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    Voice Message
+  </div>
+  <div class="cardSubtitle">
+    This series of cards will guide you through the steps required to create a voice message to be sent.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <div class="formRow">
+    <div class="formLabel"> Now calling you </div>
+    <div class="formInput">
+      A call should be arriving to your phone in a few moments. The call is being sent to: <%= userProvidedNumber.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
+    </div>
+  </div>
+
+  <div class="formRow">
+    <div class="formLabel"> You should be receiving a call right now </div>
+    <div class="formInput">
+      After you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to the target client (<%=`${client.first} ${client.last}`%>). Your personal number will not be saved.
+    </div>
+  </div>
+
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage">
+    <input type="submit" class="formSubmit" value="Use a different number">
+  </a>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>

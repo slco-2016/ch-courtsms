@@ -16,6 +16,7 @@ module.exports = {
                 </Say>
               </Response>`);
   },
+
   playMessage(req, res) {
     // let ovmId = req.query.ovmId;
     // OutboundVoiceMessages.findById(ovmId)
@@ -36,6 +37,7 @@ module.exports = {
     res.send(response)
     // })
   },
+  
   record(req, res) {
     let userId = req.query.userId
     let clientId = req.query.clientId
@@ -51,6 +53,7 @@ module.exports = {
                 <Record action="${url}" />
               </Response>`);
   },
+
   save(req, res) {
     let userId = req.query.userId
     let clientId = req.query.clientId
@@ -72,5 +75,32 @@ module.exports = {
       res.send('ok')
     }).catch(res.error500)
   },
+
+  new(req, res) {
+    res.render('voice/create');
+  },
+
+  submitCallbackNumber(req, res) {
+    let value = req.body.phonenumber || "";
+    value = value.replace(/[^0-9.]/g, "");
+    if (value.length == 10) { 
+      value = "1" + value; 
+    }
+
+    if (value.length == 11) {
+      res.render('voice/callComing', {
+        userProvidedNumber: value
+      });
+
+    } else {
+      req.flash("warning", "Phone number is not long enough.");
+      let redirectAddress = "/clients/";
+      if (res.locals.level == "org") {
+        redirectAddress = "/org" + redirectAddress;
+      }
+      redirectAddress = redirectAddress + res.locals.client.clid + "/voicemessage";
+      res.redirect(redirectAddress);
+    }
+  }
 
 };

@@ -1,8 +1,8 @@
 const supertest = require('supertest');
 
-const Users = require('../../app/models/users')
-const voice = require('../../app/lib/voice')
-const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
+const Users = require('../../app/models/users');
+const voice = require('../../app/lib/voice');
+const twilioRecordingRequest = require('../data/twilioVoiceRecording.js');
 
 describe('Voice checks', function() {
 

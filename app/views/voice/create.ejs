@@ -1,0 +1,39 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    Voice Message
+  </div>
+  <div class="cardSubtitle">
+    This series of cards will guide you through the steps required to create a voice message to be sent.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post" action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage/submitcallbacknumber">
+
+    <div class="formRow">
+      <div class="formLabel"> Why we need your number </div>
+      <div class="formInput">
+        The first step will be to tell ClientComm what number to call you at. When you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to the target client (<%=`${client.first} ${client.last}`%>). Your personal number will not be saved.
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Please enter the number to call below </div>
+      <div class="formInput">
+        <input type="text" maxlength="100" name="phonenumber" value="" required>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Submit">
+
+  </form>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>

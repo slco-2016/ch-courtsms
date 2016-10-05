@@ -405,17 +405,35 @@ describe('Basic http req tests', function() {
       })
   });
 
-  // it('posting to voice should receive xml voice twilio response object', function(done) {
-  //   anonymous.get('/twilio/voice')
-  //     .expect(200)
-  //     .end(function(err, res) {
-  //       console.log(res.text)
-  //       done(err);
-  //     });
-  // });
+  it('primary can initiate create new voice message', function(done) {
+    Clients.findManyByAttribute("cm", 2)
+    .then((clients) => {
+      // assume here that there is at least one client from seeds
+      let client = clients[0];      
 
-  // Write a test for clients list page features first
-  // Then write features after
-  // it () 
+      primary.get(`/clients/${client.clid}/voicemessage`)
+        .expect(200)
+        .end(function(err, res) {
+          done(err);
+        });
+
+    }).catch(done);
+  });
+
+  it('submitting a bad number for voice message should error correctly', function(done) {
+    Clients.findManyByAttribute("cm", 2)
+    .then((clients) => {
+      // assume here that there is at least one client from seeds
+      let client = clients[0];      
+
+      primary.post(`/clients/${client.clid}/voicemessage/submitcallbacknumber`)
+        .expect(302)
+        .expect('Location', `/clients/${client.clid}/voicemessage`)
+        .end(function(err, res) {
+          done(err);
+        });
+
+    }).catch(done);
+  });
 
 })
