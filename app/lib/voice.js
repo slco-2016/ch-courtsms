@@ -37,7 +37,7 @@ module.exports = {
       return Clients.findById(ovm.client_id)
       .then((client) => {
         return client.communications()
-    }).then((communications) => {
+      }).then((communications) => {
         // TODO use best communication
         twClient.calls.create({
           url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
@@ -57,7 +57,7 @@ module.exports = {
             }).catch(reject)
           }
         })
-      })
+      }).catch(reject)
     })
   },
   sendPendingOutboundVoiceMessages(domain) {
