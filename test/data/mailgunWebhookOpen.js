@@ -4,6 +4,7 @@ module.exports = {
   'device-type': 'desktop',
   my_var_1: 'Mailgun Variable #1',
   country: 'US',
+  'message-id': '2013FAKE82626.18666.16540@clientcomm.org',
   region: 'CA',
   'client-name': 'Chrome',
   'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.43 Safari/537.31',

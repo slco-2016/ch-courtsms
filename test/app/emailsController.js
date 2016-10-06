@@ -14,6 +14,8 @@ const mailgun = require('../../app/lib/mailgun');
 const mailgunAgent = supertest.agent(APP)
 
 const emailData = require('../data/testEmailData')
+const mailgunWebhookDelivered = require('../data/mailgunWebhookDelivered')
+const mailgunWebhookOpen = require('../data/mailgunWebhookOpen')
 // request = session(APP)
 
 // http://mherman.org/blog/2016/04/28/test-driven-development-with-node/
@@ -21,7 +23,7 @@ const emailData = require('../data/testEmailData')
 describe('Email endpoint', function() {
 
   it('should accept a new email', function(done) {
-    mailgunAgent.post('/email')
+    mailgunAgent.post('/webhook/email')
       .send(emailData)
       .expect(200)
       .end(function(err, res) {
@@ -49,6 +51,40 @@ describe('Email endpoint', function() {
         }).catch(done)
       });
   });
+
+  it('should be able to update email status to opened', function(done) {
+    mailgunAgent.post('/webhook/email/status')
+      .send(mailgunWebhookOpen)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {done(err)}
+        Messages.where({tw_sid: '<2013FAKE82626.18666.16540@clientcomm.org>'})
+        .then((messages) => {
+          should.exist(messages[0])
+          messages.forEach((message) => {
+            message.tw_status.should.be.exactly('Opened')
+          })
+          done()
+        })
+      })
+  })
+
+  it('should be able to update email status to delivered', function(done) {
+    mailgunAgent.post('/webhook/email/status')
+      .send(mailgunWebhookDelivered)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {done(err)}
+        Messages.where({tw_sid: '<2013FAKE82626.18666.16540@clientcomm.org>'})
+        .then((messages) => {
+          should.exist(messages[0])
+          messages.forEach((message) => {
+            message.tw_status.should.be.exactly('Delivered')
+          })
+          done()
+        })
+      })
+  })
 
   it.skip('should be able to send an email', function(done) {
     mailgun.sendEmail(

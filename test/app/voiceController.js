@@ -12,7 +12,7 @@ const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 
 describe('Voice reqs', function() {
 
-  xit('should accept a new voice recording', function(done) {
+  it.skip('should accept a new voice recording', function(done) {
     this.timeout(6000)
     let params = "?userId=2&clientId=1"
     params += `&deliveryDate=${new Date().getTime()}`
@@ -31,7 +31,7 @@ describe('Voice reqs', function() {
       });
   });
 
-  xit('should accept a new recording from a known number', function(done) {
+  it('should accept a new recording from a known number', function(done) {
     done();
   })
 

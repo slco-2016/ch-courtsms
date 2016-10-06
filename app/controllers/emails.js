@@ -14,45 +14,30 @@ const sms = require('../lib/sms')
 
 const Promise = require("bluebird");
 
+const _updateMessages = (messageId, status, res) => {
+  return Messages.findManyByTwSid(messageId)
+  .map((message) => {
+    return message.update({tw_status: status})
+  }).then((messages) => {
+    res.send('ok')
+  }).catch(res.error500)
+}
+
 module.exports = {
-  _updateMessages() {
-    // TODO:
-  },
-  webhook(req, res) {
+  status(req, res) {
     let event = req.body.event
     if (event == "delivered") {
       let messageId = req.body['Message-Id']
-      Messages.findByPlatformId(messageId)
-      .then((message) => {
-        if (message) {
-          return message.update({tw_status: "Delivered"})          
-        } else {
-          throw `No message found with message id ${messageId}`
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      _updateMessages(messageId, "Delivered", res)
     } else if (event == "opened") {
-      let messageId = `<${req.body['message-id']}>`
       // why, just why
-
-      Messages.findAllByPlatformId(messageId)
-      .then((messages) => {
-        if (messages) {
-          messages.forEach((message) => {
-            message.update({tw_status: "Opened"})
-          })
-        } else {
-          throw `No message found with message id ${messageId}`
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      let messageId = `<${req.body['message-id']}>`
+      _updateMessages(messageId, "Opened", res)
+    } else {
+      res.send('ok, thanks');
     }
-    
-    res.send('ok, thanks');
   },
-  receive(req, res) {
+  webhook(req, res) {
     // mailgun's philosophy here seems to be that if they can populate a section they
     // will, or they will omit it. This can be very confusing.
     // eg: if there is one recipient they will populate "recipient", but they
