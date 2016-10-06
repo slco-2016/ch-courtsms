@@ -25,9 +25,9 @@ class CommConns extends BaseModel {
     })
   }
   
-  static findByClientID (clientId) {
+  static findByClientIdWithCommMetaData (clientId) {
     return new Promise((fulfill, reject) => {
-      CommConns.findByClientIDs([clientId])
+      CommConns.findByClientIdsWithCommMetaData([clientId])
       .then((commconns) => {
         fulfill(commconns);
       }).catch(reject);
@@ -63,7 +63,7 @@ class CommConns extends BaseModel {
     })
   }
   
-  static findByClientIDs (clientIDs) {
+  static findByClientIdsWithCommMetaData (clientIDs) {
     return new Promise((fulfill, reject) => {
       db("commconns")
         .leftJoin(

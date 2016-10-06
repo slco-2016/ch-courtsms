@@ -16,6 +16,65 @@
   <form method="post" action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>/voicemessage/submitcallbacknumber">
 
     <div class="formRow">
+      <div class="formLabel"> Which device to send to </div>
+      <select class="blueSelect" 
+              id="commId" 
+              name="commId" 
+              required>
+        <option value="" disabled selected> Contact Options </option>
+        <% communications.forEach(function (communication) { %>
+          <option value="<%= communication.commid %>">
+            <%= communication.name + ' (' + communication.value + ')' %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
+      <div class="formInput">
+        <input  type="date" 
+                id="sendDate" 
+                name="sendDate" 
+                value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
+                required>
+        </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
+
+      <div class="formInput">
+        <select class="blueSelect" id="sendHour" name="sendHour" required>
+          <option value="00"> 12:00 AM (Midnight) </option>
+          <option value="01"> 01:00 AM </option>
+          <option value="02"> 02:00 AM </option>
+          <option value="03"> 03:00 AM </option>
+          <option value="04"> 04:00 AM </option>
+          <option value="05"> 05:00 AM </option>
+          <option value="06"> 06:00 AM </option>
+          <option value="07"> 07:00 AM </option>
+          <option value="08" selected> 08:00 AM </option>
+          <option value="09"> 09:00 AM </option>
+          <option value="10"> 10:00 AM </option>
+          <option value="11"> 11:00 AM </option>
+          <option value="12"> 12:00 PM (Noon) </option>
+          <option value="13"> 01:00 PM </option>
+          <option value="14"> 02:00 PM </option>
+          <option value="15"> 03:00 PM  </option>
+          <option value="16"> 04:00 PM  </option>
+          <option value="17"> 05:00 PM  </option>
+          <option value="18"> 06:00 PM  </option>
+          <option value="19"> 07:00 PM  </option>
+          <option value="20"> 08:00 PM  </option>
+          <option value="21"> 09:00 PM  </option>
+          <option value="22"> 10:00 PM  </option>
+          <option value="23"> 11:00 PM  </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="formRow">
       <div class="formLabel"> Why we need your number </div>
       <div class="formInput">
         The first step will be to tell ClientComm what number to call you at. When you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to the target client (<%=`${client.first} ${client.last}`%>). Your personal number will not be saved.

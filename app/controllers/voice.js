@@ -4,6 +4,7 @@ const resourceRequire = require('../lib/resourceRequire')
 
 const SentimentAnalysis = require('../models/sentiment');
 
+const CommConns = resourceRequire('models', 'CommConns')
 const Communications = resourceRequire('models', 'Communications')
 const Conversations = resourceRequire('models', 'Conversations')
 const Messages = resourceRequire('models', 'Messages')
@@ -200,10 +201,19 @@ module.exports = {
   },
 
   new(req, res) {
-    res.render('voice/create');
+    let clientId = req.params.client;
+    CommConns.findByClientIdWithCommMetaData(clientId)
+    .then((communications) => {
+      res.render('voice/create', {
+        communications: communications
+      });
+    }).catch(res.error500);
   },
 
   submitCallbackNumber(req, res) {
+    let commId = req.body.commId;
+    let sendDate = req.body.sendDate;
+    let sendHour = req.body.sendHour;
     let value = req.body.phonenumber || "";
     value = value.replace(/[^0-9.]/g, "");
     if (value.length == 10) { 

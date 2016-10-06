@@ -38,7 +38,7 @@ class Clients extends BaseModel {
   communications() {
     let Communications = require('./communications')
     return new Promise((fulfill, reject) => {
-      CommConns.findByClientID(this.clid)
+      CommConns.findByClientIdWithCommMetaData(this.clid)
       .then((commconns) => {
         let commids = commconns.map(commconn => commconn.commconnid)
         return Communications.findByIds(commids)
@@ -176,7 +176,7 @@ class Clients extends BaseModel {
           return client.clid;
         });
 
-        return CommConns.findByClientIDs(clientIds)
+        return CommConns.findByClientIdsWithCommMetaData(clientIds)
       
       }).then((commConns) => {
         finalClientsObject = finalClientsObject.map((client) => {
@@ -298,7 +298,7 @@ class Clients extends BaseModel {
           return client.clid
         });
 
-        return CommConns.findByClientIDs(clientIDs)
+        return CommConns.findByClientIdsWithCommMetaData(clientIDs)
       }).then((commconns) => {
         // Add each communication method to relevant client
         finalClientsObject = finalClientsObject.map(function (client) {

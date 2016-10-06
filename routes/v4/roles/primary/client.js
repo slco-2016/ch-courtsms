@@ -3,7 +3,7 @@
 
 
 router.get("/communications/remove/:communicationID", (req, res) => {
-  CommConns.findByClientID(req.params.clientID)
+  CommConns.findByClientIdWithCommMetaData(req.params.clientID)
   .then((commConns) => {
     if (commConns.length > 1) {
       Communications.removeOne(req.params.communicationID)
