@@ -13,7 +13,8 @@
       <% ALERTS_FEED.forEach(function (alert) { %>
         <div class="alertRow">
           <div class="message">
-            <%= alert.subject %>
+            <b><%= alert.subject %></b>
+            <%= alert.message %>
           </div>
           <div class="close" alertID="<%= alert.alert_id %>">
             <i class="fa fa-check-circle" aria-hidden="true"></i>

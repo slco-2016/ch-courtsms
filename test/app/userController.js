@@ -405,6 +405,43 @@ describe('Basic http req tests', function() {
       })
   });
 
+  it('departments page should have options to send notifications', function(done) {
+    owner.get('/org/departments')
+      .expect(200)
+      .end(function(err, res) {
+        res.text.should.match(/\/org\/alerts\/create\?department=/);
+        done(err);
+      })
+  });
+
+  it('owner should be able to go to create an alert, should clearly indicate department wide', function(done) {
+    owner.get('/org/alerts/create?department=1')
+      .expect(200)
+      .end(function(err, res) {
+        res.text.should.match(/Department\-wide/);
+        done(err);
+      })
+  });
+
+  it('alert subject length must be greater than 0', function(done) {
+    owner.post('/org/alerts/create?department=1')
+      .send({
+        orgId: '',
+        departmentId: '1',
+        targetUserId: '',
+        subject: '',
+        message: '',
+      })
+      .redirects(1)
+      .end(function(err, res) {
+        res.redirect.should.be.exactly(false);
+        // TODO: @maxmcd this error should flash but i am having trouble getting
+        // it to render on text, although it does consistently in app
+        // res.text.should.match(/subject needs to be at least 1 character long/);
+        done(err);
+      });
+  });
+
   // it('posting to voice should receive xml voice twilio response object', function(done) {
   //   anonymous.get('/twilio/voice')
   //     .expect(200)

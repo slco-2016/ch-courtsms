@@ -26,53 +26,62 @@ $darkblue:    #344289;
 
   .navSub {
     position: absolute;
-    top: 46px;
-    width: inherit;
-    height: 45px;
+    top: 41px;
+    width: 1022px;
+    height: 55px;
     background-color: $lightblue;
-    border-bottom: 1px solid $white;
+    border-bottom: 1px solid $offwhite;
+    border-left: 1px solid $offwhite;
+    border-right: 1px solid $offwhite;
     overflow: hidden;
     position: fixed;
 
     &.orgLevel {
       background-color: $lightbluegrey;
       color: $bluegrey;
+      .allLeftParent {
+        .allLeft {
+          .leftTab {
+            &.open {
+              background-color: $darkbluegrey;
+              color: $white;
 
-      .leftTab {
-        &.open {
-          background-color: $darkbluegrey;
-          color: $white;
+              &.selected, &:hover {
+                background-color: $darkbluegrey;
+                color: $white;
+              }
 
-          &.selected, &:hover {
-            background-color: $darkbluegrey;
-            color: $white;
-          }
-
-          .option {
-            &.selected, &:hover {
-              background-color: $white;
-              color: $lightbluegrey;
+              .option {
+                &.selected, &:hover {
+                  background-color: $white;
+                  color: $lightbluegrey;
+                }
+              }
+            }
+            &.closed {
+              background-color: $lightbluegrey;
+              color: $white;
+              &.selected, &:hover {
+                background-color: $bluegrey;
+                color: $white;
+              }
             }
           }
         }
-        &.closed {
-          background-color: $lightbluegrey;
-          color: $white;
-          &.selected, &:hover {
-            background-color: $bluegrey;
-            color: $white;
-          }
-        }
       }
-      .rightActions {
-        .fa.fa-inverse {
-          color: $lightbluegrey;
-        }
+      .allRightParent {
+        .allRight {
+          .rightActions {
+            .fa.fa-inverse {
+              color: $lightbluegrey;
+            }
 
-        &:hover {
-          background-color: $bluegrey;
-          .fa.fa-inverse {
-            color: $bluegrey;
+            &:hover {
+              background-color: $bluegrey;
+              .fa.fa-inverse {
+                color: $bluegrey;
+              }
+            }
           }
         }
       }
@@ -91,10 +100,12 @@ $darkblue:    #344289;
           width: auto;
           float: left;
           color: $white;
-          line-height: 45px;
+          line-height: 55px;
 
           &.open {
             background-color: $darkblue;
+            padding-left: 10px;
+            padding-right: 10px;
 
             .title {
               display: inline;
@@ -157,14 +168,14 @@ $darkblue:    #344289;
 
         .rightActions {
           float: right;
-          line-height: 45px;
+          line-height: 55px;
           font-size: 12px;
           color: $white;
-          padding-left: 10px;
-          padding-right: 15px;
+          padding-left: 7px;
+          padding-right: 12px;
 
           .fa-stack.fa-lg {
-            font-size: 12px;
+            font-size: 15px;
           }
 
           .fa.fa-inverse {
@@ -191,8 +202,8 @@ $darkblue:    #344289;
   }
 
   .coreContent {
-    padding-top: 92px;
-    background-color: $white;
+    padding-top: 97px;
+    background-color: $offwhite;
   }
 
   .emptyResultsGreeting {

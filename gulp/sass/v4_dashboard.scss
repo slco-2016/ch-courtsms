@@ -28,14 +28,6 @@ $width_row5:  5%;
   margin-right: auto;
 }
 
-// Special for Dashbaord view
-.leftTab {
-  &.open {
-    min-width: 25%;
-  }
-}
-
-
 .leftBar {
   width: 25%;
   overflow-y: scroll;
