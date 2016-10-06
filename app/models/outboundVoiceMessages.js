@@ -7,8 +7,7 @@ const BaseModel = require("../lib/models").BaseModel
 
 const s3 = require("../lib/s3")
 
-class OutboundVoiceMessages extends BaseModel{
-
+class OutboundVoiceMessages extends BaseModel {
   constructor(data) {
     super({
       data: data,
@@ -22,6 +21,7 @@ class OutboundVoiceMessages extends BaseModel{
         'last_delivery_attempt',
         'created',
         'updated',
+        'call_sid'
       ],
     })
   }

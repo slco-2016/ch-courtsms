@@ -206,12 +206,12 @@ class Messages extends BaseModel {
     });
   }
 
-  static findAllByPlatformId(platformId) {
+  static findManyByTwSid(twSid) {
     return new Promise((fulfill, reject) => {
       db("msgs")
-        .where("tw_sid", platformId)
-        then((objects) => {
-          fulfill(objects)
+        .where("tw_sid", twSid)
+        .then((objects) => {
+          this._getMultiResponse(objects, fulfill)
         }).catch(reject);
     })
   }
@@ -390,7 +390,7 @@ class Messages extends BaseModel {
       .then((communication) => {
         if (communication.type == "email") {
 
-          Users.findById(conversation.cm)
+          return Users.findById(conversation.cm)
           .then((user) => {
             return mailgun.sendEmail(
               communication.value,
@@ -410,7 +410,7 @@ class Messages extends BaseModel {
 
         } else if (communication.type == "cell") {
 
-          Departments.findByConversationId(conversation.convid)
+          return Departments.findByConversationId(conversation.convid)
           .then((department) => {
             let phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
