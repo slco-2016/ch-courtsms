@@ -1,5 +1,6 @@
 const Notifications = require('../models/notifications');
 const Clients = require('../models/clients');
+const Communications = require('../models/communications');
 const CommConns = require('../models/commConns');
 const Templates = require('../models/templates');
 

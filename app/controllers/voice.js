@@ -206,9 +206,22 @@ module.exports = {
     let clientId = req.params.client;
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
-      res.render('voice/create', {
-        communications: communications
+
+      // filter out communications that are not type cell or landli
+      communications = communications.filter((communication) => {
+        let ok = false;
+        if (communication.type == "landline") ok = true;
+        if (communication.type == "cell") ok = true;
+        return ok;
       });
+
+      if (communications.length) {
+        res.render('voice/create', {
+          communications: communications
+        });
+      } else {
+        res.render('voice/noGoodNumbers');
+      }
     }).catch(res.error500);
   },
 
