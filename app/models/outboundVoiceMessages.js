@@ -25,6 +25,7 @@ class OutboundVoiceMessages extends BaseModel {
       ],
     })
   }
+
   static getNeedToBeSent() {
     return new Promise((fulfill, reject) => {
       db(this.tableName)
@@ -35,12 +36,13 @@ class OutboundVoiceMessages extends BaseModel {
         }).catch(reject)
     })
   }
+
   getTemporaryRecordingUrl() {
     return s3.getTemporaryUrl(this.recording_key)
   }
+
 }
 
-OutboundVoiceMessages.primaryId = "id"
-OutboundVoiceMessages.tableName = "outbound_voice_messages"
-
+OutboundVoiceMessages.primaryId = "id";
+OutboundVoiceMessages.tableName = "outbound_voice_messages";
 module.exports = OutboundVoiceMessages

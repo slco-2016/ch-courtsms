@@ -1,0 +1,79 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    Voice Message
+  </div>
+  <div class="cardSubtitle">
+    This series of cards will guide you through the steps required to create a voice message to be sent.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post">
+
+    <div class="formRow">
+      <div class="formLabel"> Which device to send to </div>
+      <select class="blueSelect" 
+              id="commConn" 
+              name="commConn" 
+              required>
+        <option value="" disabled selected> Contact Options </option>
+      </select>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
+      <div class="formInput">
+        <input  type="date" 
+                id="sendDate" 
+                name="sendDate" 
+                value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
+                required>
+        </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
+
+      <div class="formInput">
+        <select class="blueSelect" id="sendHour" name="sendHour" required>
+          <option value="00"> 12:00 AM (Midnight) </option>
+          <option value="01"> 01:00 AM </option>
+          <option value="02"> 02:00 AM </option>
+          <option value="03"> 03:00 AM </option>
+          <option value="04"> 04:00 AM </option>
+          <option value="05"> 05:00 AM </option>
+          <option value="06"> 06:00 AM </option>
+          <option value="07"> 07:00 AM </option>
+          <option value="08" selected> 08:00 AM </option>
+          <option value="09"> 09:00 AM </option>
+          <option value="10"> 10:00 AM </option>
+          <option value="11"> 11:00 AM </option>
+          <option value="12"> 12:00 PM (Noon) </option>
+          <option value="13"> 01:00 PM </option>
+          <option value="14"> 02:00 PM </option>
+          <option value="15"> 03:00 PM  </option>
+          <option value="16"> 04:00 PM  </option>
+          <option value="17"> 05:00 PM  </option>
+          <option value="18"> 06:00 PM  </option>
+          <option value="19"> 07:00 PM  </option>
+          <option value="20"> 08:00 PM  </option>
+          <option value="21"> 09:00 PM  </option>
+          <option value="22"> 10:00 PM  </option>
+          <option value="23"> 11:00 PM  </option>
+        </select>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit inverse" value="Submit send date and time">
+
+  </form>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>
