@@ -233,8 +233,8 @@ app.post("/org/captured/attach/:conversation/user/:user", CaptureBoardController
 app.get("/org/captured/remove/:conversation", CaptureBoardController.removeConfirm);
 app.post("/org/captured/remove/:conversation", CaptureBoardController.remove);
 
-app.get("/org/alerts/departments/:department/create", AlertsController.createForDepartment);
-app.post("/org/alerts/departments/:department/create", AlertsController.createForDepartment);
+app.get("/org/alerts/create", AlertsController.new);
+app.post("/org/alerts/create", AlertsController.create);
 
 app.get("/settings", SettingsController.index);
 app.post("/settings", SettingsController.update);

@@ -51,6 +51,7 @@
         overflow: hidden;
         cursor: default; }
         .alerts .hiddenAlerts .alertsBody .alertRow .message {
+          font-weight: 300;
           float: left;
           width: 260px;
           white-space: break;
@@ -61,13 +62,16 @@
           width: 19px;
           text-align: right;
           cursor: pointer;
-          border-left: 1px solid #4A90E2; }
+          border-left: 1px solid #4A90E2;
+          border-bottom: 1px solid #4A90E2;
+          border-bottom-left-radius: 5px; }
           .alerts .hiddenAlerts .alertsBody .alertRow .close:hover {
             color: #344289; }
         .alerts .hiddenAlerts .alertsBody .alertRow:hover {
           background-color: #4A90E2; }
           .alerts .hiddenAlerts .alertsBody .alertRow:hover .close {
-            border-left: 1px solid #344289; }
+            border-left: 1px solid #344289;
+            border-bottom: 1px solid #344289; }
         .alerts .hiddenAlerts .alertsBody .alertRow:nth-last-child(1) {
           border-bottom: 0; }
 
@@ -77,11 +81,13 @@
   width: 1024px;
   background-color: #FFF; }
   .applicationFrame .navHeader {
-    height: 45px;
-    width: inherit;
+    height: 40px;
+    width: 1022px;
     color: #FFF;
     background-color: #344289;
-    border-bottom: 1px solid #FFF;
+    border-bottom: 1px solid #E8ECEF;
+    border-right: 1px solid #E8ECEF;
+    border-left: 1px solid #E8ECEF;
     overflow: hidden;
     position: fixed; }
     .applicationFrame .navHeader .leftLogo {
@@ -93,30 +99,34 @@
         padding: 10px;
         padding-left: 15px;
         margin-right: 0px;
+        margin-top: -3px;
         float: left; }
         .applicationFrame .navHeader .leftLogo svg path {
           fill: #FFF; }
       .applicationFrame .navHeader .leftLogo .button {
         float: left;
         padding: 5px;
+        padding-left: 0px;
         border-radius: 3px;
         cursor: pointer;
         margin: 4px; }
         .applicationFrame .navHeader .leftLogo .button .name {
+          display: inline;
           font-size: 15px;
-          line-height: 15px;
+          line-height: 22px;
           padding: 0px;
           margin: 0px; }
         .applicationFrame .navHeader .leftLogo .button .organization {
-          font-size: 10px;
-          line-height: 10px;
+          display: inline;
+          font-size: 12px;
+          line-height: 22px;
           padding: 0px;
-          margin: 0px; }
-        .applicationFrame .navHeader .leftLogo .button:hover {
-          background-color: #3F69B6; }
+          margin: 0px;
+          padding-left: 4px;
+          margin-left: 8px; }
     .applicationFrame .navHeader .rightLogout {
       color: #FFF;
-      line-height: 45px;
+      line-height: 40px;
       display: inline;
       float: right;
       margin-right: 15px;
@@ -124,24 +134,20 @@
       .applicationFrame .navHeader .rightLogout span.button {
         font-size: 14px;
         padding: 5px;
-        padding-bottom: 3px;
-        border-radius: 3px;
+        padding-left: 15px;
+        padding-right: 10px;
+        border-radius: 15px;
         cursor: pointer;
-        margin-left: 5px;
+        margin-left: 3px;
         box-sizing: border-box;
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box; }
         .applicationFrame .navHeader .rightLogout span.button .hidden {
           display: none; }
         .applicationFrame .navHeader .rightLogout span.button.selected {
-          border-bottom: 3px solid #4A90E2; }
-          .applicationFrame .navHeader .rightLogout span.button.selected.orgLevel {
-            border-bottom: 3px solid #6783a1; }
-        .applicationFrame .navHeader .rightLogout span.button:hover {
-          background-color: #3F69B6; }
-          .applicationFrame .navHeader .rightLogout span.button:hover .hidden {
-            display: inline; }
-      .applicationFrame .navHeader .rightLogout .verticalDivider {
-        border-right: 1px solid #FFF;
-        margin-left: 15px;
-        margin-right: 15px; }
+          border: 1px solid #FFF; }
+        .applicationFrame .navHeader .rightLogout span.button.levels:hover {
+          background-color: #FFF;
+          color: #4A90E2; }
+        .applicationFrame .navHeader .rightLogout span.button:hover .hidden {
+          display: inline; }
