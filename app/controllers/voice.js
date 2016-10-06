@@ -1,4 +1,6 @@
 const twilio = require('twilio');
+const moment = require('moment');
+let moment_tz = require("moment-timezone");
 
 const resourceRequire = require('../lib/resourceRequire')
 
@@ -204,6 +206,9 @@ module.exports = {
     let clientId = req.params.client;
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
+      communications = communications.filter((communication) => {
+        return communication.type == "cell"
+      })
       res.render('voice/create', {
         communications: communications
       });
@@ -212,23 +217,26 @@ module.exports = {
 
   submitCallbackNumber(req, res) {
     let commId = req.body.commId;
-    let sendDate = req.body.sendDate;
-    let sendHour = req.body.sendHour;
-    let value = req.body.phonenumber || "";
-    value = value.replace(/[^0-9.]/g, "");
-    if (value.length == 10) { 
-      value = "1" + value; 
+
+    let deliveryDate = moment(req.body.sendDate)
+                    .tz(res.locals.organization.tz)
+                    .startOf("day")
+                    .add(Number(req.body.sendHour), "hours");
+
+    let phoneNumber = req.body.phonenumber || "";
+    phoneNumber = phoneNumber.replace(/[^0-9.]/g, "");
+    if (phoneNumber.length == 10) { 
+      phoneNumber = "1" + phoneNumber; 
     }
 
-    if (value.length == 11) {
-      // Somehow we initiate a call here?
-      // voice.recordVoiceMessage( user, 
-      //                           client, 
-      //                           deliveryDate, 
-      //                           phoneNumber)
+    if (phoneNumber.length == 11) {
       res.render('voice/callComing', {
-        userProvidedNumber: value
+        userProvidedNumber: phoneNumber
       });
+      
+      // voice.recordVoiceMessage(
+        
+      // )
 
     } else {
       req.flash("warning", "Phone number is not long enough.");

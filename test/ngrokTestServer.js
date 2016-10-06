@@ -25,3 +25,33 @@ module.exports = function(port, callback) {
     });
   });
 }
+  updateWebhooks(domain, hostUrl) {
+    mailgunReq(
+      'put',
+      `${domain}/webhooks/deliver`, 
+      {url: hostUrl + "webhool/email/status"}, 
+      (error) => {
+        if (error) { reject(error) }
+        mailgunReq(
+          'put',
+          `${domain}/webhooks/open`, 
+          {url: hostUrl + "webhool/email/status"}, 
+          (error) => {
+            if (error) { reject(error) }
+          }
+        )
+      }
+    )
+  }
+}
+_mailgunWebhookUpdate = (name, url, callback) => {
+  request({
+    method: 'put',
+    url: "https://api.mailgun.net/v3/clientcomm.org/webhooks/" + name,
+    formData: {url: url},
+    auth: {
+      user: 'api',
+      password: credentials.mailgun.apiKey,
+    },
+  }, callback)  
+}

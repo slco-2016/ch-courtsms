@@ -14,6 +14,7 @@ class Attachments extends BaseModel {
       columns: [
         'id',
         'key',
+        'filename',
         'created',
         'email_id',
       ]
