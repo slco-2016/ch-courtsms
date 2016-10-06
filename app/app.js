@@ -96,9 +96,10 @@ app.get("/", RootController.index);
 app.post("/webhook/sms", SmsController.webhook);
 app.post("/webhook/voice", VoiceController.webhook);
 app.post("/webhook/voice/status", VoiceController.status);
-app.post("/webhook/voice/record/", VoiceController.record);
-app.post("/webhook/voice/save-recording/", VoiceController.save);
-app.post("/webhook/voice/play-message/", VoiceController.playMessage);
+app.post("/webhook/voice/transcribe", VoiceController.transcribe);
+app.post("/webhook/voice/record", VoiceController.record);
+app.post("/webhook/voice/save-recording", VoiceController.save);
+app.post("/webhook/voice/play-message", VoiceController.playMessage);
 app.post("/webhook/email", EmailsController.webhook);
 app.post("/webhook/email/status", EmailsController.status);
 

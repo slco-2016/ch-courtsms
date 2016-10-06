@@ -303,8 +303,8 @@ class Messages extends BaseModel {
     if (!options.emailId) {
       options.emailId = null
     }
-    if (!options.voiceMessageId) {
-      options.voiceMessageId = null
+    if (!options.recordingId) {
+      options.recordingId = null
     }
     conversationIds.forEach((conversationId) => {
       if (!conversationId) {
@@ -323,6 +323,7 @@ class Messages extends BaseModel {
           tw_sid: MessageSid,
           tw_status: MessageStatus,
           email_id: options.emailId,
+          recording_id: options.recordingId,
         }
       });
       db("msgs")

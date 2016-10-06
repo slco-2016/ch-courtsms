@@ -41,7 +41,7 @@ module.exports = {
     }
 
     // First check if this client already has this commConn
-    CommConns.findByClientID(client)
+    CommConns.findByClientIdWithCommMetaData(client)
     .then((commConns) => {
       commConns = commConns.filter((commConn) => {
         return String(value) === String(commConn.value);
@@ -66,7 +66,7 @@ module.exports = {
   remove(req, res) {
     let client = req.params.client;
     let comm = req.params.communication;
-    CommConns.findByClientID(client)
+    CommConns.findByClientIdWithCommMetaData(client)
     .then((commConns) => {
       if (commConns.length > 1) {
         Communications.removeOne(comm)

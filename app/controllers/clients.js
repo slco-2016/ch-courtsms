@@ -211,7 +211,7 @@ module.exports = {
       return Messages.markAsRead(messageIds)
     }).then(() => {
       
-      return CommConns.findByClientID(client)
+      return CommConns.findByClientIdWithCommMetaData(client)
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {
@@ -361,7 +361,7 @@ module.exports = {
     Messages.findBetweenUserAndClient(user, client)
     .then((msgs) => {
       messages = msgs;
-      return CommConns.findByClientID(client)
+      return CommConns.findByClientIdWithCommMetaData(client)
     }).then((communications) => {
 
       let unreadCount = 0,
