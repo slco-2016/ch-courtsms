@@ -113,7 +113,7 @@ module.exports = {
   },
 
   logging(req, res, next) {
-    if (process.env.CCENV !== 'tsting') {
+    if (process.env.CCENV !== 'testing') {
       let start = new Date()
       res.on('finish', () => {
         let milliseconds = new Date().getTime() - start.getTime()
