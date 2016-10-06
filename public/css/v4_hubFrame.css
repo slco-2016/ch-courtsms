@@ -1,35 +1,37 @@
 .applicationFrame .navSub {
   position: absolute;
-  top: 46px;
-  width: inherit;
-  height: 45px;
+  top: 41px;
+  width: 1022px;
+  height: 55px;
   background-color: #4A90E2;
-  border-bottom: 1px solid #FFF;
+  border-bottom: 1px solid #E8ECEF;
+  border-left: 1px solid #E8ECEF;
+  border-right: 1px solid #E8ECEF;
   overflow: hidden;
   position: fixed; }
   .applicationFrame .navSub.orgLevel {
     background-color: #6783a1;
     color: #516a84; }
-    .applicationFrame .navSub.orgLevel .leftTab.open {
+    .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.open {
       background-color: #3c5065;
       color: #FFF; }
-      .applicationFrame .navSub.orgLevel .leftTab.open.selected, .applicationFrame .navSub.orgLevel .leftTab.open:hover {
+      .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.open.selected, .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.open:hover {
         background-color: #3c5065;
         color: #FFF; }
-      .applicationFrame .navSub.orgLevel .leftTab.open .option.selected, .applicationFrame .navSub.orgLevel .leftTab.open .option:hover {
+      .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.open .option.selected, .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.open .option:hover {
         background-color: #FFF;
         color: #6783a1; }
-    .applicationFrame .navSub.orgLevel .leftTab.closed {
+    .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.closed {
       background-color: #6783a1;
       color: #FFF; }
-      .applicationFrame .navSub.orgLevel .leftTab.closed.selected, .applicationFrame .navSub.orgLevel .leftTab.closed:hover {
+      .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.closed.selected, .applicationFrame .navSub.orgLevel .allLeftParent .allLeft .leftTab.closed:hover {
         background-color: #516a84;
         color: #FFF; }
-    .applicationFrame .navSub.orgLevel .rightActions .fa.fa-inverse {
+    .applicationFrame .navSub.orgLevel .allRightParent .allRight .rightActions .fa.fa-inverse {
       color: #6783a1; }
-    .applicationFrame .navSub.orgLevel .rightActions:hover {
+    .applicationFrame .navSub.orgLevel .allRightParent .allRight .rightActions:hover {
       background-color: #516a84; }
-      .applicationFrame .navSub.orgLevel .rightActions:hover .fa.fa-inverse {
+      .applicationFrame .navSub.orgLevel .allRightParent .allRight .rightActions:hover .fa.fa-inverse {
         color: #516a84; }
   .applicationFrame .navSub .allLeftParent {
     max-width: 75%;
@@ -42,9 +44,11 @@
         width: auto;
         float: left;
         color: #FFF;
-        line-height: 45px; }
+        line-height: 55px; }
         .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open {
-          background-color: #344289; }
+          background-color: #344289;
+          padding-left: 10px;
+          padding-right: 10px; }
           .applicationFrame .navSub .allLeftParent .allLeft .leftTab.open .title {
             display: inline;
             margin-left: 15px;
@@ -84,13 +88,13 @@
       float: right; }
       .applicationFrame .navSub .allRightParent .allRight .rightActions {
         float: right;
-        line-height: 45px;
+        line-height: 55px;
         font-size: 12px;
         color: #FFF;
-        padding-left: 10px;
-        padding-right: 15px; }
+        padding-left: 7px;
+        padding-right: 12px; }
         .applicationFrame .navSub .allRightParent .allRight .rightActions .fa-stack.fa-lg {
-          font-size: 12px; }
+          font-size: 15px; }
         .applicationFrame .navSub .allRightParent .allRight .rightActions .fa.fa-inverse {
           color: #4A90E2; }
         .applicationFrame .navSub .allRightParent .allRight .rightActions .text {
@@ -103,8 +107,8 @@
             display: inline; }
 
 .applicationFrame .coreContent {
-  padding-top: 92px;
-  background-color: #FFF; }
+  padding-top: 97px;
+  background-color: #E8ECEF; }
 
 .applicationFrame .emptyResultsGreeting {
   text-align: middle;
