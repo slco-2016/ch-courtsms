@@ -159,14 +159,20 @@ app.get("/clients/create", ClientsController.new);
 app.post("/clients/create", ClientsController.create);
 
 app.get("/clients/:client", ClientsController.clientCard);
-app.get("/clients/:client/address", ClientsController.addressCraft);
-app.get("/clients/:client/address/templates", ClientsController.templates);
-app.post("/clients/:client/address", ClientsController.addressSubmit);
 app.get("/clients/:client/edit", ClientsController.edit);
 app.post("/clients/:client/edit", ClientsController.update);
 app.get("/clients/:client/alter/:status", ClientsController.alter);
 app.get("/clients/:client/transfer", ClientsController.transferSelect);
 app.post("/clients/:client/transfer", ClientsController.transferSubmit);
+
+app.get("/clients/:client/address", ClientsController.addressCraft);
+app.get("/clients/:client/address/templates", ClientsController.templates);
+app.post("/clients/:client/address", ClientsController.addressSubmit);
+app.get("/clients/:client/voicemessage", VoiceController.new);
+app.post("/clients/:client/voicemessage/submitcallbacknumber", VoiceController.submitCallbackNumber);
+app.get("/clients/:client/voicemessage/review", VoiceController.reviewRecording);
+app.post("/clients/:client/voicemessage/review", VoiceController.acceptRecording);
+app.post("/clients/:client/voicemessage/transcript", VoiceController.acceptTranscript);
 
 app.get("/clients/:client/transcript", ClientsController.transcript);
 app.get("/clients/:client/messages", ClientsController.messagesIndex);

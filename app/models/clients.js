@@ -234,7 +234,6 @@ class Clients extends BaseModel {
   }
 
   static findByUser (userIDs, active) {
-    console.log("Warning! Clients method findAllByUser() deprecated, use findByUsers()".red);
     return new Promise((fulfill, reject) => {
       Clients.findByUsers(userIDs, active)
       .then((clients) => {
