@@ -1,20 +1,23 @@
 const twilio = require('twilio');
 
-const Conversations = require('../models/conversations');
-const Communications = require('../models/communications');
-const OutboundVoiceMessages = require('../models/outboundVoiceMessages');
-const Messages = require('../models/messages');
+const resourceRequire = require('../lib/resourceRequire')
+
 const SentimentAnalysis = require('../models/sentiment');
 
-const sms = require('../lib/sms');
-const s3 = require('../lib/s3')
+const Communications = resourceRequire('models', 'Communications')
+const Conversations = resourceRequire('models', 'Conversations')
+const Messages = resourceRequire('models', 'Messages')
+const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
+const Recordings = resourceRequire('models', 'Recordings')
 
+const sms = require('../lib/sms');
+const s3 = require('../lib/s3');
 
 module.exports = {
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, "");
     if (fromNumber.length == 10) { 
-      from = "1" + from; 
+      fromNumber = "1" + fromNumber; 
     }
     let resp = new twilio.TwimlResponse();
     Communications.findByValue(fromNumber)
@@ -25,9 +28,13 @@ module.exports = {
           "Hello. We've found your number in our system. " +
           "Please leave a message for your case manager after "+
           "the beep.")
-        let params = `?type=ovm&commId=${communication.commid}`
+        let params = `?type=message&commId=${communication.commid}`
         let url = `/webhook/voice/save-recording/${params}`
-        resp.record({action: url})
+        resp.record({
+          action: url, 
+          transcribe: true, 
+          transcribeCallback: "/webhook/voice/transcribe",
+        })
         res.send(resp.toString())
       } else {        
         resp.say(
@@ -41,6 +48,45 @@ module.exports = {
       }
     })
   },
+  transcribe(req, res) {
+    let RecordingSid = req.body.RecordingSid
+    Recordings.findOneByAttribute('RecordingSid', RecordingSid)
+    .then((recording) => {
+      if (recording) {
+        let communication, clients, conversations
+        return recording.update({transcription: req.body.TranscriptionText})
+        .then((recording) => {
+          return Communications.findById(recording.comm_id)
+        }).then((resp) => {
+          communication = resp
+          return sms.retrieveClients(recording.call_to, communication);
+        }).then((resp) =>{
+          clients = resp
+          return Conversations.retrieveByClientsAndCommunication(
+            clients, communication
+          )
+        }).then((resp) => {
+          conversations = resp;
+          let conversationIds = conversations.map((conversation) => {
+            return conversation.convid;
+          });
+
+          return Messages.insertIntoManyConversations(
+            conversationIds,
+            communication.commid,
+            req.body.TranscriptionText,
+            RecordingSid,
+            'recieved',
+            toNumber, {
+              recordingId: recording.id
+            }
+          );
+
+        })
+      }
+    }).then(() => res.send('ok'))
+    .catch(res.error500)
+  },
   status(req, res) {
     if (req.body.CallStatus === "completed") {
       let sid = req.body.CallSid;
@@ -49,7 +95,6 @@ module.exports = {
         if (ovm) {
           return ovm.update({delivered: true})  
         } else {
-          res.send("ok")
           return null
         }
       }).then((ovm) => {
@@ -97,6 +142,7 @@ module.exports = {
     resp.send(resp.toString())
   },
   save(req, res) {
+    console.log(req.body)
     let type = req.query.type
     if (!type) {
       return res.error500(new Error("save-recording needs a recording type"))
@@ -106,6 +152,7 @@ module.exports = {
       req.body.RecordingSid
     ).then((key) => {
       if (type === "ovm") {
+
         let userId = req.query.userId
         let clientId = req.query.clientId
         let deliveryDateEpoch = Number(req.query.deliveryDate)
@@ -115,14 +162,36 @@ module.exports = {
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
-        }).then((outboundVoiceMessage) => {
-          res.send('ok')
         })
+
       } else if (type === "message") {
         
+        let commId = req.query.commId
+        let toNumber = req.body.To.replace(/\D+/g, "");
+        if (toNumber.length == 10) { 
+          toNumber = "1" + toNumber; 
+        }
+        console.log(toNumber)
+
+        return Communications.findById(commId)
+        .then((communication) => {
+          if (!communication) {
+            throw new Error(
+              "No communication found for this recording" +
+              "S3 key is " + key
+            )
+          } else {
+            return Recordings.create({
+              comm_id: communication.id,
+              recording_key: key,
+              RecordingSid: req.body.RecordingSid,
+              call_to: toNumber,
+            })
+          }
+        })
       }
     }).then(() => res.send('ok'))
-    }).catch(res.error500)
+    .catch(res.error500)
   },
 
 };
