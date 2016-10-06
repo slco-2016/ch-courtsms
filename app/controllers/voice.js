@@ -99,7 +99,7 @@ module.exports = {
     res.render('voice/create');
   },
 
-  submitCallbackNumber(req, res) {
+  create(req, res) {
     let value = req.body.phonenumber || "";
     value = value.replace(/[^0-9.]/g, "");
     if (value.length == 10) { 
@@ -112,6 +112,7 @@ module.exports = {
       //                           client, 
       //                           deliveryDate, 
       //                           phoneNumber)
+      
       res.render('voice/callComing', {
         userProvidedNumber: value
       });
@@ -125,20 +126,6 @@ module.exports = {
       redirectAddress = redirectAddress + res.locals.client.clid + "/voicemessage";
       res.redirect(redirectAddress);
     }
-  },
-
-  reviewRecording(req, res) {
-    res.render('voice/review');
-  },
-
-  acceptRecording(req, res) {
-    // at this time we could use twilio to get transcript in text form
-    // make it easy to do this at a later date?
-    res.render('voice/transcript')
-  },
-
-  acceptTranscript(req, res) {
-    res.render('voice/schedule');
   }
 
 };

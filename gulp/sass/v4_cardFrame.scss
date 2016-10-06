@@ -32,7 +32,6 @@ body {
   margin: 0px;
 }
 
-// SCSS
 .card {
   position: relative;
   background-color: $white;
@@ -437,6 +436,10 @@ body {
           background-color: $white;
           color: $lightblue;
         }
+      }
+
+      &.inline {
+        display: inline;
       }
 
       &.red {

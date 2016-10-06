@@ -211,11 +211,12 @@ $width_row5:  5%;
 
     .actionButtons {
       color: $white;
-      width: 25%;
+      width: 241px; // 256 - 15
+      // overflow: hidden;
 
       .actionButton {
         float: left;
-        width: 23%;
+        width: 58px;
         overflow: hidden;
         text-align: center;
         cursor: pointer;

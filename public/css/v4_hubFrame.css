@@ -35,7 +35,7 @@
         color: #516a84; }
   .applicationFrame .navSub .allLeftParent {
     max-width: 75%;
-    overflow-x: scroll;
+    overflow: hidden;
     float: left; }
     .applicationFrame .navSub .allLeftParent .allLeft {
       width: 1024px; }
@@ -81,7 +81,7 @@
           background-color: #3F69B6; }
   .applicationFrame .navSub .allRightParent {
     max-width: 25%;
-    overflow-x: scroll;
+    overflow: hidden;
     float: right; }
     .applicationFrame .navSub .allRightParent .allRight {
       width: 500px;

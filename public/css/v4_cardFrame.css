@@ -288,6 +288,8 @@ body {
       .card .cardBody .formSubmit.inverse:hover {
         background-color: #FFF;
         color: #4A90E2; }
+    .card .cardBody .formSubmit.inline {
+      display: inline; }
     .card .cardBody .formSubmit.red {
       border: 2px solid #E50000;
       color: #E50000;

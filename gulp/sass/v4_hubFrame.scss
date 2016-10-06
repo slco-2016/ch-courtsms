@@ -89,7 +89,7 @@ $darkblue:    #344289;
 
     .allLeftParent {
       max-width: 75%;
-      overflow-x: scroll; 
+      overflow: hidden;
       float: left;
 
       .allLeft {
@@ -159,7 +159,7 @@ $darkblue:    #344289;
 
     .allRightParent {
       max-width: 25%;
-      overflow-x: scroll; 
+      overflow: hidden;
       float: right;
 
       .allRight {

@@ -2,9 +2,9 @@
 
 <div class="cardHead">
   <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
-  <div class="cardTitle">Quick Message</div>
+  <div class="cardTitle">Create Message</div>
   <div class="cardSubtitle">
-    Send a quick message to <%=`${client.first}`%>.
+    Send a message to <%=`${client.first}`%>. Use "Send Voice Message" button to record and send a voice message instead.
     <% if (level == "user") { %>
       Load messages from templates to use pre-built phrases.
     <% } %>
@@ -13,14 +13,27 @@
 
 <div class="cardBody">
   
-  <!-- load template option only on primary accounts view -->
-  <% if (level == "user") { %>
-    <div class="formRow">
-      <a href="<%=`/clients/${client.clid}/address/templates`%>">
-        <input type="submit" class="formSubmit inverse" value="Load a template">
-      </a>
+
+  <div class="formRow">
+      <div class="formLabel"> Options </div>
+      <div class="formInput">
+      <center>
+        <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/voicemessage`%>/">
+          <button class="formSubmit inline">
+            Send a voice message
+          </button>
+        </a>
+        <!-- load template option only on primary accounts view -->
+        <% if (level == "user") { %>
+          <a href="<%=`/clients/${client.clid}/address/templates`%>">
+            <button class="formSubmit inline">
+              Load a template
+            </button>
+          </a>
+        <% } %>
+      </center>
     </div>
-  <% } %>
+  </div>
 
   <form method="post">
 

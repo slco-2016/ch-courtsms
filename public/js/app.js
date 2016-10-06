@@ -187,7 +187,7 @@ $(function() {
 
         $(window).resize(adjustDivs)
 
-        $("#typeBox").click(toggleTypeBox);
+        $("#placeHolderTypeBox").click(toggleTypeBox);
 
         $("textarea[name=content]").keyup(checkSubmitValid);
         $("select[name=commID]").change(checkSubmitValid);

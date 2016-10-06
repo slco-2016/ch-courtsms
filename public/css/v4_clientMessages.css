@@ -117,10 +117,10 @@
     padding: 15px; }
     .responseBox .mini .actionButtons {
       color: #FFF;
-      width: 25%; }
+      width: 241px; }
       .responseBox .mini .actionButtons .actionButton {
         float: left;
-        width: 23%;
+        width: 58px;
         overflow: hidden;
         text-align: center;
         cursor: pointer; }
