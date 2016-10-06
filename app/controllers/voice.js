@@ -12,6 +12,7 @@ const Recordings = resourceRequire('models', 'Recordings')
 
 const sms = require('../lib/sms');
 const s3 = require('../lib/s3');
+const voice = require('../lib/voice');
 
 module.exports = {
   webhook(req, res) {
@@ -87,6 +88,7 @@ module.exports = {
     }).then(() => res.send('ok'))
     .catch(res.error500)
   },
+
   status(req, res) {
     if (req.body.CallStatus === "completed") {
       let sid = req.body.CallSid;
@@ -102,6 +104,7 @@ module.exports = {
       }).catch(res.error500)
     }
   },
+
   playMessage(req, res) {
     let ovmId = req.query.ovmId
     let resp = new twilio.TwimlResponse();
@@ -126,6 +129,7 @@ module.exports = {
       res.send(resp.toString())              
     })
   },
+
   record(req, res) {
     let userId = req.query.userId
     let clientId = req.query.clientId
@@ -141,6 +145,7 @@ module.exports = {
     resp.record({action: url})
     resp.send(resp.toString())
   },
+
   save(req, res) {
     console.log(req.body)
     let type = req.query.type
@@ -193,5 +198,51 @@ module.exports = {
     }).then(() => res.send('ok'))
     .catch(res.error500)
   },
+
+  new(req, res) {
+    res.render('voice/create');
+  },
+
+  submitCallbackNumber(req, res) {
+    let value = req.body.phonenumber || "";
+    value = value.replace(/[^0-9.]/g, "");
+    if (value.length == 10) { 
+      value = "1" + value; 
+    }
+
+    if (value.length == 11) {
+      // Somehow we initiate a call here?
+      // voice.recordVoiceMessage( user, 
+      //                           client, 
+      //                           deliveryDate, 
+      //                           phoneNumber)
+      res.render('voice/callComing', {
+        userProvidedNumber: value
+      });
+
+    } else {
+      req.flash("warning", "Phone number is not long enough.");
+      let redirectAddress = "/clients/";
+      if (res.locals.level == "org") {
+        redirectAddress = "/org" + redirectAddress;
+      }
+      redirectAddress = redirectAddress + res.locals.client.clid + "/voicemessage";
+      res.redirect(redirectAddress);
+    }
+  },
+
+  reviewRecording(req, res) {
+    res.render('voice/review');
+  },
+
+  acceptRecording(req, res) {
+    // at this time we could use twilio to get transcript in text form
+    // make it easy to do this at a later date?
+    res.render('voice/transcript')
+  },
+
+  acceptTranscript(req, res) {
+    res.render('voice/schedule');
+  }
 
 };
