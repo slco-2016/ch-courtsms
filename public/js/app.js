@@ -169,7 +169,7 @@ $(function() {
             // $(".messageStream").css("margin-bottom", 150);
           } else {
             $(".full").show();
-            $("textarea[name='content']").show();
+            $("#actualTypeBox").show();
             $(".name").show();
             $(".actionButton").css("margin-top", "20px");
             $("#placeHolderTypeBox").hide();
@@ -487,17 +487,17 @@ $(function() {
           try {
             var firstDay = new Date(keysOutbound[0]);
             var lastDay = new Date(keysOutbound[keysOutbound.length - 1]);
-            var newkeysOutbound = _getDatesArray(firstDay, lastDay);
-            var newvalsOutbound = [];
+            var newkeysInbound = _getDatesArray(firstDay, lastDay);
+            var newvalsInbound = [];
 
-            newkeysOutbound.forEach(function (day) {
+            newkeysInbound.forEach(function (day) {
               var i = keysInbound.indexOf(day);
-              if (i > -1) newvalsOutbound.push(valsInbound[i]);
-              else newvalsOutbound.push(0);
+              if (i > -1) newvalsInbound.push(valsInbound[i]);
+              else newvalsInbound.push(0);
             });
 
-            keysOutbound = newkeysOutbound;
-            valsOutbound = newvalsOutbound;
+            keysInbound = newkeysInbound;
+            valsInbound = newvalsInbound;
           } catch (e) { console.log(e); }
 
           c3.generate({
@@ -514,13 +514,19 @@ $(function() {
               ],
               types: {"Inbound Messages": "bar", "Outbound Messages": "bar"},
               colors: {
-                  "Inbound Messages": "#FFC966",
-                  "Outbound Messages": "#FF6700"
+                  "Inbound Messages": "#4A90E2",
+                  "Outbound Messages": "#344289"
               }
             },
-            legend: { hide: false },
+            legend: { hide: false, position: 'inset', inset: {
+                anchor: 'top-left',
+                x: 0,
+                y: 0,
+                step: undefined
+              }
+            },
             axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
-            padding: { right: 0, top: 0, bottom: 0 },
+            padding: { right: 15, top: 0, bottom: 0 },
             size: { height: 175 },
             grid: { y: { show: true }, x: { show: false } },
             bindto: "#messagingActivity"

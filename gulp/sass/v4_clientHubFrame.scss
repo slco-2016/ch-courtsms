@@ -41,9 +41,17 @@ $darkblue:    #344289;
       float: left;
       color: $white;
       line-height: 55px;
-        margin-right: 50px;
+      padding-right: 25px;
+      margin-right: 25px;
       // background-color: $white;
 
+      &:hover {
+        background-color: $blue;
+      }
+
+      &.open {
+        background-color: $darkblue;
+      }
 
       .icon {
         float: left;

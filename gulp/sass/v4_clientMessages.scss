@@ -196,6 +196,15 @@ $width_row5:  5%;
   }
 }
 
+.mainVisibleRow {
+
+  &::after {
+    content:"";
+    display:block;
+    clear:both;
+  }
+}
+
 .responseBox {
   position: absolute;
   bottom: 0px;
@@ -203,6 +212,12 @@ $width_row5:  5%;
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
   width: 1024px;
+
+  .miniAlt {
+    .messageInput {
+      color: $white;
+    } 
+  }
 
   .mini {
     width: inherit;
@@ -287,23 +302,33 @@ $width_row5:  5%;
     }
   }
 
-  textarea[name="content"] {
+  #actualTypeBox {
     display: none;
-    width: 708px;
-    height: 85px;
-    max-height: 85px;
+    float: right;
 
-    background-color: $offwhite;
-    border-radius: 7px;
-    color: $darkgrey;
-    font-weight: 300;
-    margin-left: 25px;
-    cursor: pointer;
+    textarea {
+      width: 708px;
+      max-width: 708px;
+      height: 85px;
+      max-height: 85px;
 
-    line-height: 20px;
-    font-size: 18px;
-    padding: 15px;
-    border: 0px;
+      background-color: $offwhite;
+      border-radius: 7px;
+      color: $darkgrey;
+      font-weight: 300;
+      cursor: pointer;
+
+      line-height: 20px;
+      font-size: 18px;
+      padding: 15px;
+      border: 0px;
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
   }
 
   .full {
@@ -398,6 +423,12 @@ $width_row5:  5%;
           border: 2px solid $grey;
         }
       }
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
     }
   }
 }

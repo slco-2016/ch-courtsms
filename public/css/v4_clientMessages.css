@@ -104,6 +104,11 @@
         .rightContent .messageStream .messageDiv .message .bottomRow .state {
           float: right; }
 
+.mainVisibleRow::after {
+  content: "";
+  display: block;
+  clear: both; }
+
 .responseBox {
   position: absolute;
   bottom: 0px;
@@ -111,6 +116,8 @@
   padding: 0px 0px 0px 0px;
   margin: 0px 0px 0px 0px;
   width: 1024px; }
+  .responseBox .miniAlt .messageInput {
+    color: #FFF; }
   .responseBox .mini {
     width: inherit;
     background-color: #4A90E2;
@@ -168,21 +175,27 @@
       content: "";
       display: block;
       clear: both; }
-  .responseBox textarea[name="content"] {
+  .responseBox #actualTypeBox {
     display: none;
-    width: 708px;
-    height: 85px;
-    max-height: 85px;
-    background-color: #E8ECEF;
-    border-radius: 7px;
-    color: #2A2A2A;
-    font-weight: 300;
-    margin-left: 25px;
-    cursor: pointer;
-    line-height: 20px;
-    font-size: 18px;
-    padding: 15px;
-    border: 0px; }
+    float: right; }
+    .responseBox #actualTypeBox textarea {
+      width: 708px;
+      max-width: 708px;
+      height: 85px;
+      max-height: 85px;
+      background-color: #E8ECEF;
+      border-radius: 7px;
+      color: #2A2A2A;
+      font-weight: 300;
+      cursor: pointer;
+      line-height: 20px;
+      font-size: 18px;
+      padding: 15px;
+      border: 0px; }
+    .responseBox #actualTypeBox::after {
+      content: "";
+      display: block;
+      clear: both; }
   .responseBox .full {
     display: none;
     width: inherit; }
@@ -258,3 +271,7 @@
           background-color: #D3D3D3;
           color: #898989;
           border: 2px solid #898989; }
+    .responseBox .full::after {
+      content: "";
+      display: block;
+      clear: both; }

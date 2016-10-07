@@ -1,6 +1,3 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
@@ -30,30 +27,50 @@ $width_right:  50%;
   height: 100%;
 
   .smallLeft {
+    padding-top: 10px;
     float: left;
-    height: 100%;
     width: 20%;
 
+    .container {
+      padding-right: 0px;
+    }
+
     .clientImage {
-      font-size: 100px;
-      text-align: center;
-      border-radius: 50%;
-      // background-color: $lightblue;
-      color: $white;
-      height: 200px;
+      svg {
+        width: 80%;
+        padding-left: 15px;
+        padding-bottom: 5px;
+      }
     }
     .clientInfoContainer {
-      padding: 10px;
+      padding-top: 15px;
+      padding-bottom: 15px;
 
       .clientInfoRow {
         font-size: 14px;
         line-height: 20px;
+
+        .caseManager {
+          border: 1px solid $lightgrey;
+          color: $grey;
+          padding: 5px;
+          border-radius: 5px;
+          // margin-bottom: 10px;
+
+          &:nth-last-child(1) {
+            margin-bottom: 0px;
+          }
+
+          small {
+            font-size: 12px;
+          }
+        }
       }
     }
   }
   .bigRight {
     float: left;
-    height: 100%;
+    padding-top: 10px;
     width: 80%;
   }
 
@@ -72,15 +89,16 @@ $width_right:  50%;
     .left, .right {
       .container {
         padding-top: 0px;
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 20px;
+        padding-right: 20px;
         padding-bottom: 30px;
 
         .heading {
+          margin-top: 15px;
           padding: 5px 0px 5px 0px;
           color: $darkblue;
-          border-bottom: 2px solid $darkblue;
-          font-size: 18px;
+          border-bottom: 2px solid $lightgrey;
+          font-size: 16px;
           font-weight: 700;
           margin-bottom: 5px;
         }
@@ -88,7 +106,7 @@ $width_right:  50%;
         .body {
           .row {
             font-size: 16px;
-            line-height: 20px;
+            line-height: 22px;
             width: 100%;
             .name {
               text-align: left;
@@ -145,6 +163,7 @@ $width_right:  50%;
       float: left;
       width: 50%;
       font-weight: 700;
+      padding-top: 5px;
     }
     .leftAttr {
       color: $lightblue;
@@ -154,6 +173,7 @@ $width_right:  50%;
         color: $grey;
         font-size: 12px;
         line-height: 50px;
+        font-weight: bold;
       }
     }
     .rightAttr {
@@ -165,6 +185,7 @@ $width_right:  50%;
         color: $grey;
         font-size: 12px;
         line-height: 50px;
+        font-weight: bold;
       }
     }
     &::after {

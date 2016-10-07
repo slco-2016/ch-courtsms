@@ -534,7 +534,7 @@ module.exports = {
 
       res.render("clients/profile", {
         hub: {
-          tab: null,
+          tab: "profile",
           sel: null
         },
         messages: {

@@ -14,7 +14,12 @@
     float: left;
     color: #FFF;
     line-height: 55px;
-    margin-right: 50px; }
+    padding-right: 25px;
+    margin-right: 25px; }
+    .applicationFrame .navSub .leftTab:hover {
+      background-color: #3F69B6; }
+    .applicationFrame .navSub .leftTab.open {
+      background-color: #344289; }
     .applicationFrame .navSub .leftTab .icon {
       float: left;
       margin-left: 15px;

@@ -74,58 +74,61 @@
     <% if (userOwnsClient) { %>
       <div class="mini" id="typeBox">
 
-        <div class="actionButtons">
-          <a href="<%=`/clients/${client.clid}/transcript`%>">
-            <div class="actionButton">
-              <div class="icon">
-                <i class="ss ss-download"></i>
+      <div class="mainVisibleRow">
+          <div class="actionButtons">
+            <a href="<%=`/clients/${client.clid}/transcript`%>">
+              <div class="actionButton">
+                <div class="icon">
+                  <i class="ss ss-download"></i>
+                </div>
+                <div class="name">
+                  download transcript
+                </div>
               </div>
-              <div class="name">
-                download transcript
-              </div>
-            </div>
-          </a>
+            </a>
 
-          <a href="<%=`${clientBaseURL}/address/templates`%>">
-            <div class="actionButton">
-              <div class="icon">
-                <i class="ss ss-clipboard"></i>
+            <a href="<%=`${clientBaseURL}/address/templates`%>">
+              <div class="actionButton">
+                <div class="icon">
+                  <i class="ss ss-clipboard"></i>
+                </div>
+                <div class="name">
+                  load template
+                </div>
               </div>
-              <div class="name">
-                load template
-              </div>
-            </div>
-          </a>
+            </a>
 
-          <a href="<%=`${clientBaseURL}/voicemessage`%>">
-            <div class="actionButton">
-              <div class="icon">
-                <i class="ss ss-phone"></i>
+            <a href="<%=`${clientBaseURL}/voicemessage`%>">
+              <div class="actionButton">
+                <div class="icon">
+                  <i class="ss ss-phone"></i>
+                </div>
+                <div class="name">
+                  record voice
+                </div>
               </div>
-              <div class="name">
-                record voice
-              </div>
-            </div>
-          </a>
+            </a>
 
-          <a href="<%=`${clientBaseURL}/address`%>">
-            <div class="actionButton">
-              <div class="icon">
-                <i class="ss ss-textchat"></i>
+            <a href="<%=`${clientBaseURL}/address`%>">
+              <div class="actionButton">
+                <div class="icon">
+                  <i class="ss ss-textchat"></i>
+                </div>
+                <div class="name">
+                  start new conversation
+                </div>
               </div>
-              <div class="name">
-                start new conversation
-              </div>
-            </div>
-          </a>
+            </a>
+          </div>
+
+          <div class="messageInput" id="placeHolderTypeBox">
+            <div class="left">Start typing message...</div>
+          </div>
+
+          <div id="actualTypeBox">
+            <textarea name="content" rows="5"></textarea>
+          </div>
         </div>
-
-        <div class="messageInput" id="placeHolderTypeBox">
-          <div class="left">Start typing message...</div>
-        </div>
-
-        <textarea name="content"
-                  rows="5"></textarea>
 
         <div class="full">
           <div class="bottomRow">
@@ -153,18 +156,6 @@
 
       </div>
 
-    <% } else { %>
-      <div class="mini">
-        <div class="messageInput disabled">
-          Viewing other user's client conversation log, cannot comment directly in thread.
-          <a href="<%=`/org/clients/${client.clid}/address`%>">
-            <span class="miniButton">
-              <i class="fa fa-send"></i> 
-              Send a one-off message
-            </span>
-          </a>
-        </div>
-      </div>
     <% } %>
 
   </form>
