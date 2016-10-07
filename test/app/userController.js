@@ -463,7 +463,13 @@ describe('Basic http req tests', function() {
       // assume here that there is at least one client from seeds
       let client = clients[0];      
 
-      primary.post(`/clients/${client.clid}/voicemessage/submitcallbacknumber`)
+      primary.post(`/clients/${client.clid}/voicemessage`)
+        .send({
+          commId: '1',
+          sendDate: '2016-10-20',
+          sendHour: 10,
+          value: '123'
+        })
         .expect(302)
         .expect('Location', `/clients/${client.clid}/voicemessage`)
         .end(function(err, res) {
