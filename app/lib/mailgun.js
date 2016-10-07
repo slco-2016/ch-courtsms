@@ -7,7 +7,7 @@ const credentials = require('../../credentials')
 
 var mailgun = require('mailgun-js')({
   apiKey: credentials.mailgun.apiKey,
-  domain: 'clientcomm.org',
+  domain: (process.env.CCMAILGUNDOMAIN || 'clientcomm.org'),
 });
 
 const mock = resourceRequire('lib', 'mock')
