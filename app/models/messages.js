@@ -29,6 +29,7 @@ const CommConns = require("./commConns");
 const Communications = require("./communications");
 const Conversations = require("./conversations");
 const Departments = require("./departments");
+const Attachments = require("./attachments");
 const PhoneNumbers = require("./phoneNumbers");
 const Users = require("./users");
 
@@ -49,7 +50,8 @@ class Messages extends BaseModel {
         "tw_status",
         "email_id",
         "created",
-        "status_cleared"
+        "status_cleared",
+        "recording_id",
       ]
     })
   }
@@ -269,7 +271,7 @@ class Messages extends BaseModel {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
     
     return new Promise((fulfill, reject) => {
-
+      let messages
       db("msgs")
         .select("msgs.*", 
                 "sentiment.sentiment",
@@ -287,8 +289,28 @@ class Messages extends BaseModel {
         .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
         .whereIn("convo", conversationIds)
         .orderBy("created", "asc")
-      .then((messages) => {
-        fulfill(messages)
+      .then((resp) => {
+        messages = resp
+        let emailIds = messages.map(msg => msg.email_id)
+
+        db("emails")
+          .select("attachments.*")
+          .whereIn("emails.id", emailIds)
+          .leftJoin("attachments", "emails.id", "attachments.email_id")
+          .then((attachments) => {
+            attachments = attachments.map(a => new Attachments(a))
+            messages = messages.map((message) => {
+              message.attachments = []
+              for(let i=0; i < attachments.length; i++ ){
+                if (attachments[i].email_id == message.email_id) {
+                  message.attachments.push(attachments[i])
+                }
+              }
+              return message
+            })
+            console.log(messages)
+            fulfill(messages)
+          })
       }).catch(reject);
     });
   }

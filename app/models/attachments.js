@@ -16,6 +16,7 @@ class Attachments extends BaseModel {
         'key',
         'filename',
         'created',
+        'contentType',
         'email_id',
       ]
     })
@@ -37,7 +38,7 @@ class Attachments extends BaseModel {
     return new Promise((fulfill, reject) => {
       s3.uploadMailGunAttachment(mailgunObj)
       .then((key) => {
-        return Attachment.create({
+        return Attachments.create({
           key: key,
           contentType: mailgunObj['content-type'],
           email_id: email.id,

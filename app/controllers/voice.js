@@ -57,35 +57,12 @@ module.exports = {
     Recordings.findOneByAttribute('RecordingSid', RecordingSid)
     .then((recording) => {
       if (recording) {
-        let communication, clients, conversations
         return recording.update({transcription: req.body.TranscriptionText})
         .then((recording) => {
-          return Communications.findById(recording.comm_id)
-        }).then((resp) => {
-          communication = resp
-          return sms.retrieveClients(recording.call_to, communication);
-        }).then((resp) =>{
-          clients = resp
-          return Conversations.retrieveByClientsAndCommunication(
-            clients, communication
-          )
-        }).then((resp) => {
-          conversations = resp;
-          let conversationIds = conversations.map((conversation) => {
-            return conversation.convid;
-          });
-
-          return Messages.insertIntoManyConversations(
-            conversationIds,
-            communication.commid,
-            req.body.TranscriptionText,
-            RecordingSid,
-            'recieved',
-            toNumber, {
-              recordingId: recording.id
-            }
-          );
-
+          return Messages.where({recording_id: recording.id})
+        }).map((message) => {
+          console.log(message)
+          return message.update({content: req.body.TranscriptionText})
         })
       }
     }).then(() => res.send('ok'))
@@ -189,11 +166,37 @@ module.exports = {
               "S3 key is " + key
             )
           } else {
+            let recording, conversations, clients;
             return Recordings.create({
-              comm_id: communication.id,
+              comm_id: communication.commid,
               recording_key: key,
               RecordingSid: req.body.RecordingSid,
               call_to: toNumber,
+            }).then((resp) => {
+              recording = resp
+              return sms.retrieveClients(recording.call_to, communication);
+            }).then((resp) =>{
+              clients = resp
+              console.log("CLIENTS FOUND", clients);
+              return Conversations.retrieveByClientsAndCommunication(
+                clients, communication
+              )
+            }).then((resp) => {
+              conversations = resp;
+              let conversationIds = conversations.map((conversation) => {
+                return conversation.convid;
+              });
+
+              return Messages.insertIntoManyConversations(
+                conversationIds,
+                communication.commid,
+                "Untranscribed voice message",
+                req.body.RecordingSid,
+                'recieved',
+                toNumber, {
+                  recordingId: recording.id
+                }
+              );
             })
           }
         })

@@ -42,12 +42,11 @@ module.exports = {
           if (error) {
             reject(error);
           } else {
-            jsonBody = JSON.parse(body)
-            if (jsonBody.message === "Queued. Thank you.") {
-              jsonBody.message = "queued"
+            console.log(body)
+            if (body.message === "Queued. Thank you.") {
+              body.message = "queued"
             }
-            console.log(jsonBody)
-            fulfill(jsonBody);
+            fulfill(body);
           }
         })
       }
@@ -57,12 +56,12 @@ module.exports = {
     return new Promise((fulfill, reject) => {
       mailgunWebhookUpdate(
         'deliver',
-        hostUrl + "webhook/email/status",
+        hostUrl + "/webhook/email/status",
         (error, resp, body) => {
           if (error) { return reject(error) }
           mailgunWebhookUpdate(
             'open',
-            hostUrl + "webhook/email/status",
+            hostUrl + "/webhook/email/status",
             (error, resp, body) => {
               if (error) { return reject(error) }
               mailgun.routes().list((error, routes) => {
@@ -70,7 +69,7 @@ module.exports = {
                 routes.items.forEach((route) => {
                   if (route.description === "Catch all") {
                     mailgun.routes(route.id).update({
-                      action: `store(notify="${hostUrl}webhook/email")`
+                      action: `store(notify="${hostUrl}/webhook/email")`
                     }, (error, body) => {
                       if (error) { return reject(error) }
                       fulfill(body)

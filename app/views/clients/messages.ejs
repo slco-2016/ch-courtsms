@@ -44,6 +44,10 @@
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
           <div class="content">
             <%= message.content %>
+
+            <% message.attachments.forEach((attachment) => { %>
+               <a href="<%= attachment.getUrl() %>">attachment</a> 
+            <% }) %>
           </div>
 
           <div class="bottomRow">

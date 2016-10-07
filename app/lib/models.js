@@ -33,7 +33,7 @@ class BaseModel {
         // and not just the new one so that
         // if it is re-used they are correct?
         this.constructor._getSingleResponse(objs, fulfill)
-      })      
+      }).catch(reject) 
     })
   }
 
@@ -82,11 +82,19 @@ class BaseModel {
 
   static where(attributes) {
     return new Promise((fulfill, reject) => {
-      db(this.tableName)
-      .where(this._cleanParams(attributes))
-      .then((objects) => {
-        this._getMultiResponse(objects, fulfill)
-      }).catch(reject)
+      let keyLength = Object.keys(attributes).length
+      let cleanParams = this._cleanParams(attributes)
+      console.log(attributes, cleanParams)
+      if (keyLength > Object.keys(cleanParams).length) {
+        reject(new Error("not all parameters were used in where method"))
+      } else {
+        db(this.tableName)
+        .where(cleanParams)
+        .returning("*")
+        .then((objects) => {
+          this._getMultiResponse(objects, fulfill)
+        }).catch(reject)        
+      }
     })
   }
 

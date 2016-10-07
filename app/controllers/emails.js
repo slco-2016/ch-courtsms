@@ -99,6 +99,9 @@ module.exports = {
       return Users.findByClientCommEmail(address.address)
     }).then((resp) => {
       users = resp;
+      
+      users = users.filter(user => user);
+
       return new Promise((fulfill, reject) => {
         fulfill(users);
       });
