@@ -22,6 +22,206 @@ $width_right:  50%;
   margin-right: auto;
 }
 
+#messagingActivity {
+  overflow: hidden;
+}
+
+.profileRow {
+  height: 100%;
+
+  .smallLeft {
+    float: left;
+    height: 100%;
+    width: 20%;
+
+    .clientImage {
+      font-size: 100px;
+      text-align: center;
+      border-radius: 50%;
+      // background-color: $lightblue;
+      color: $white;
+      height: 200px;
+    }
+    .clientInfoContainer {
+      padding: 10px;
+
+      .clientInfoRow {
+        font-size: 14px;
+        line-height: 20px;
+      }
+    }
+  }
+  .bigRight {
+    float: left;
+    height: 100%;
+    width: 80%;
+  }
+
+  .container {
+    padding: 30px;
+
+    .left {
+      width: 50%;
+      float: left;
+    }
+    .right {
+      width: 50%;
+      float: left;
+    }
+
+    .left, .right {
+      .container {
+        padding-top: 0px;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 30px;
+
+        .heading {
+          padding: 5px 0px 5px 0px;
+          color: $darkblue;
+          border-bottom: 2px solid $darkblue;
+          font-size: 18px;
+          font-weight: 700;
+          margin-bottom: 5px;
+        }
+
+        .body {
+          .row {
+            font-size: 16px;
+            line-height: 20px;
+            width: 100%;
+            .name {
+              text-align: left;
+              width: 60%;
+              float: left;
+            }
+            .val {
+              text-align: left;
+              width: 40%;
+              float: left;
+            }
+          }
+
+          .circlesSubtitles {
+            width: 100%;
+            .container {
+              padding: 0px;
+              .subtitle {
+                float: right;
+                text-align: center;
+                width: 33%;
+                float: left;
+                font-size: 12px;
+                padding: 0px;
+              }
+            }
+            &::after {
+              content:"";
+              display:block;
+              clear:both;
+            }
+          }
+
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+      }
+    }
+  }
+}
+
+.cssResponseTimeBarGraph {
+  padding-top: 5px;
+
+  .headings {
+    width: 100%;
+    line-height: 28px;
+    font-size: 14px;
+
+    .leftAttr, .rightAttr {
+      float: left;
+      width: 50%;
+      font-weight: 700;
+    }
+    .leftAttr {
+      color: $lightblue;
+      &.under {
+        text-align: center;
+        font-weight: 300;
+        color: $grey;
+        font-size: 12px;
+        line-height: 50px;
+      }
+    }
+    .rightAttr {
+      text-align: right;
+      color: $darkblue;
+      &.under {
+        text-align: center;
+        font-weight: 300;
+        color: $grey;
+        font-size: 12px;
+        line-height: 50px;
+      }
+    }
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+  .attr {
+    width: 100%;
+
+    .fullBarContainer {
+
+      .fullBar {
+        padding: 0px 5px 0px 5px;
+
+        height: 35px;
+        overflow: hidden;
+        background: repeating-linear-gradient(
+          45deg,
+          $lightgrey,
+          $lightgrey 2px,
+          $offwhite 3px,
+          $offwhite 6px
+        );
+
+        .leftBar {
+          width: 50%;
+          height: 35px;
+          float: left;
+          
+          .filledBar {
+            height: 100%;
+            background-color: $lightblue;
+            width: 44px;
+            float: right;
+            border-right: 1px solid $offwhite;
+          }        
+        }
+
+        .rightBar {
+          width: 50%;
+          height: 35px;
+          float: left;
+          
+          .filledBar {
+            height: 100%;
+            background-color: $darkblue;
+            width: 44px;
+          }        
+        }
+      }
+    }
+  }
+}
+
 .profileBlock {
   display: block;
   background-color: $white;
@@ -67,7 +267,6 @@ $width_right:  50%;
           background-color: $blue;
         }
       }
-
     }
 
     .graphic {

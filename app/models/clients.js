@@ -146,6 +146,7 @@ class Clients extends BaseModel {
       db("clients")
         .select("clients.*", 
                 "cms.cmid as user_id",
+                "departments.name as department_name",
                 "cms.first as user_first",
                 "cms.middle as user_middle",
                 "cms.last as user_last",
@@ -154,6 +155,7 @@ class Clients extends BaseModel {
                 "color_tags.name as color_name")
 
         .leftJoin("cms", "clients.cm", "cms.cmid")
+        .leftJoin("departments", "cms.department", "departments.department_id")
         .leftJoin(
           db("color_tags")
             .where("active", true)
@@ -229,6 +231,24 @@ class Clients extends BaseModel {
         return Clients.findByUsers(userIds, status)
       }).then((c) => {
         return fulfill(c);
+      }).catch(reject);
+    });
+  }
+
+  static findBySameName (client) {
+    return new Promise((fulfill, reject) => {
+      let clients, user;
+
+      Users.findById(client.cm)
+      .then((user) => {
+        return db("clients")
+        .select("clients.*")
+        .leftJoin("cms", "cms.cmid", "clients.cm")
+        .whereRaw(`LOWER(clients.first) LIKE LOWER('%${client.first}%') AND LOWER(clients.last) LIKE LOWER('%${client.last}%')`)
+        .andWhere("cms.org", user.org)
+      }).then((resp) => {
+        clients = resp;
+        return fulfill(clients);
       }).catch(reject);
     });
   }

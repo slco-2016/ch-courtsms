@@ -1,3 +1,12 @@
+function _getDatesArray (startDate, stopDate) {
+  var dateArray = new Array();
+  var currentDate = moment(startDate);
+  while (currentDate <= stopDate) {
+      dateArray.push(moment(new Date(currentDate)).format("YYYY-MM-DD"));
+      currentDate = currentDate.add(1, "days");
+  }
+  return dateArray;
+}
 
 $(function() {
   var executors = [
@@ -150,14 +159,23 @@ $(function() {
           toggleSubjectView("off");
         })
 
-        function toggleTypeBox () {
-          $(".full").show();
-          $("textarea[name='content']").show();
-          $(".name").show();
-          $(".actionButton").css("margin-top", "20px");
-          $("#placeHolderTypeBox").remove();
-          $(".messageStream").css("margin-bottom", 150);
-          scrollLast()
+        function toggleTypeBox (hide) {
+          if (hide == "close") {
+            // $(".full").hide();
+            // $("textarea[name='content']").hide();
+            // $(".name").hide();
+            // // $(".actionButton").css("margin-top", "20px");
+            // $("#placeHolderTypeBox").show();
+            // $(".messageStream").css("margin-bottom", 150);
+          } else {
+            $(".full").show();
+            $("textarea[name='content']").show();
+            $(".name").show();
+            $(".actionButton").css("margin-top", "20px");
+            $("#placeHolderTypeBox").hide();
+            $(".messageStream").css("margin-bottom", 150);
+            scrollLast()
+          }
         };
         // toggleTypeBox()
 
@@ -187,6 +205,11 @@ $(function() {
 
         $(window).resize(adjustDivs)
 
+        // $(".rightContent").scroll(function() {
+        //   if ($(".rightContent").scrollTop() >= 50) {
+        //   toggleTypeBox("close")
+        //   }
+        // });
         $("#placeHolderTypeBox").click(toggleTypeBox);
 
         $("textarea[name=content]").keyup(checkSubmitValid);
@@ -363,16 +386,6 @@ $(function() {
           return dat;
         }
 
-        function getDatesArray (startDate, stopDate) {
-          var dateArray = new Array();
-          var currentDate = startDate;
-          while (currentDate <= stopDate) {
-              dateArray.push(moment(new Date(currentDate)).format("YYYY-MM-DD"));
-              currentDate = currentDate.addDays(1);
-          }
-          return dateArray;
-        }
-
         buildPerformanceChart(countsByWeek, countsByDay);
 
         function buildPerformanceChart (countsByWeek, countsByDay) {
@@ -383,7 +396,7 @@ $(function() {
 
           var firstDay = new Date(keysDay[0]);
           var lastDay = new Date(keysDay[keysDay.length - 1]);
-          var newKeysDay = getDatesArray(firstDay, lastDay);
+          var newKeysDay = _getDatesArray(firstDay, lastDay);
           var newValsDay = [];
           newKeysDay.forEach(function (day) {
             var i = keysDay.indexOf(day);
@@ -463,36 +476,56 @@ $(function() {
     {
       cssClass: 'JSclientProfile',
       execute: function () {
-        if (sentiment.negative == 0 &&
-            sentiment.neutral == 0 &&
-            sentiment.positive == 0) {
-          $("#sentimentAnalysis").remove();
-        }
-        c3.generate({
-          data: {
-            columns: [
-                ['negative', sentiment.negative],
-                ['neutral', sentiment.neutral],
-                ['positive', sentiment.positive]
-            ],
-            type : 'pie',
-          },
-          bindto: "#sentimentAnalysis"
-        });
+        buildPerformanceChart(dailyCounts);
 
-        if (inboundCount == 0 && outboundCount == 0) {
-          $("#backAndForthRatio").remove();
+        function buildPerformanceChart (dailyCounts) {
+          var keysInbound   = dailyCounts.inbound.map( function (count) { return count.date; });
+          var keysOutbound  = dailyCounts.outbound.map(function (count) { return count.date; });
+          var valsInbound   = dailyCounts.inbound.map( function (count) { return Number(count.count); });
+          var valsOutbound  = dailyCounts.outbound.map(function (count) { return Number(count.count); });
+
+          try {
+            var firstDay = new Date(keysOutbound[0]);
+            var lastDay = new Date(keysOutbound[keysOutbound.length - 1]);
+            var newkeysOutbound = _getDatesArray(firstDay, lastDay);
+            var newvalsOutbound = [];
+
+            newkeysOutbound.forEach(function (day) {
+              var i = keysInbound.indexOf(day);
+              if (i > -1) newvalsOutbound.push(valsInbound[i]);
+              else newvalsOutbound.push(0);
+            });
+
+            keysOutbound = newkeysOutbound;
+            valsOutbound = newvalsOutbound;
+          } catch (e) { console.log(e); }
+
+          c3.generate({
+            data: {
+              xs:{
+                  "Inbound Messages": "x1",
+                  "Outbound Messages":  "x2"
+              },
+              columns: [
+                  ["x1"].concat(keysInbound),
+                  ["x2"].concat(keysOutbound),
+                  ["Inbound Messages"].concat(valsInbound),
+                  ["Outbound Messages"].concat(valsOutbound)
+              ],
+              types: {"Inbound Messages": "bar", "Outbound Messages": "bar"},
+              colors: {
+                  "Inbound Messages": "#FFC966",
+                  "Outbound Messages": "#FF6700"
+              }
+            },
+            legend: { hide: false },
+            axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
+            padding: { right: 0, top: 0, bottom: 0 },
+            size: { height: 175 },
+            grid: { y: { show: true }, x: { show: false } },
+            bindto: "#messagingActivity"
+          });
         };
-        c3.generate({
-          data: {
-            columns: [
-                ['inbound messages', inboundCount],
-                ['outbound messages', outboundCount]
-            ],
-            type : 'pie',
-          },
-          bindto: "#backAndForthRatio"
-        });
       }
     },
 

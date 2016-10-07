@@ -4,6 +4,12 @@ const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Organizations = require('./models/organizations');
 
+function _capitalize (word) {
+  return word.split(" ").map(function (name) {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }).join(" ");
+}
+
 module.exports = {
 
   attachLoggingTools(req, res, next) {
@@ -265,6 +271,10 @@ module.exports = {
       Clients.findByID(client)
       .then((c) => {
         if (c) {
+          c.first = _capitalize(c.first);
+          c.middle = _capitalize(c.middle);
+          c.last = _capitalize(c.last);
+
           res.locals.client = c;
 
           // If client is under user, then update user flag
