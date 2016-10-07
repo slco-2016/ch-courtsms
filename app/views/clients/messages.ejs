@@ -48,6 +48,11 @@
             <% message.attachments.forEach((attachment) => { %>
                <a href="<%= attachment.getUrl() %>">attachment</a> 
             <% }) %>
+            
+            <% if (message.recording) { %>
+               <a href="<%= message.recording.getUrl() %>">recording</a> 
+            <% } %>
+
           </div>
 
           <div class="bottomRow">

@@ -61,7 +61,6 @@ module.exports = {
         .then((recording) => {
           return Messages.where({recording_id: recording.id})
         }).map((message) => {
-          console.log(message)
           return message.update({content: req.body.TranscriptionText})
         })
       }
@@ -127,7 +126,6 @@ module.exports = {
   },
 
   save(req, res) {
-    console.log(req.body)
     let type = req.query.type
     if (!type) {
       return res.error500(new Error("save-recording needs a recording type"))

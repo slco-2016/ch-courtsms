@@ -49,7 +49,7 @@ exports.seed = function(knex, Promise) {
       return knex('outbound_voice_messages').insert(outboundVoiceMessage)
     }).catch((err) => {
       throw err
-    });        
+    });
   } else {
     throw new Error("Not the testing db!!".red)
   }
