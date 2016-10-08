@@ -11,15 +11,15 @@
     float: left;
     color: #FFF;
     line-height: 55px;
-    padding-right: 25px;
-    margin-right: 25px; }
+    padding-right: 35px; }
     .applicationFrame .navSub .leftTab:hover {
       background-color: #3F69B6; }
     .applicationFrame .navSub .leftTab.open {
       background-color: #344289; }
     .applicationFrame .navSub .leftTab .icon {
       float: left;
-      margin-left: 15px;
+      margin-left: 20px;
+      margin-right: 6px;
       font-size: 20px;
       color: #FFF; }
     .applicationFrame .navSub .leftTab .title {
@@ -99,8 +99,7 @@
   background-color: #E8ECEF; }
 
 .applicationFrame .emptyResultsGreeting {
-  text-align: middle;
-  background-color: #D3D3D3; }
+  text-align: middle; }
   .applicationFrame .emptyResultsGreeting .message {
     padding-top: 75px;
     padding-left: 15px;

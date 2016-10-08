@@ -35,7 +35,8 @@ Date.prototype.getWeek = function (dowOffset) {
 
 function _getDatesArray (startDate, stopDate) {
   var dateArray = new Array();
-  var currentDate = moment(startDate);
+  var currentDate = moment(startDate).add(-1, 'day');
+  stopDate = moment(stopDate).add(1, 'day');
   while (currentDate <= stopDate) {
       dateArray.push(moment(new Date(currentDate)).format("YYYY-MM-DD"));
       currentDate = currentDate.add(1, "days");
@@ -452,6 +453,7 @@ $(function() {
         }
 
         buildPerformanceChart(countsByWeek, countsByDay);
+
         function buildPerformanceChart (countsByWeek, countsByDay) {
           var keysWeek = countsByWeek.map( function (count) { return count.time_period; });
           var keysDay  = countsByDay.map(  function (count) { return count.time_period; });
@@ -460,6 +462,7 @@ $(function() {
 
           var firstDay = new Date(keysDay[0]);
           var lastDay = new Date(keysDay[keysDay.length - 1]);
+          
           var newKeysDay = _getDatesArray(firstDay, lastDay);
           var newValsDay = [];
           newKeysDay.forEach(function (day) {
@@ -500,12 +503,12 @@ $(function() {
           c3.generate({
             data: {
               columns: [
-                ['Successful',   surveySynopsis.closeout.success],
                 ['Unsuccessful', surveySynopsis.closeout.failure],
+                ['Successful',   surveySynopsis.closeout.success],
               ],
               type : 'donut',            },
             color: {
-              pattern: ['#3c5065', '#D3D3D3']
+              pattern: ['#e0e0e0', '#3c5065']
             },
             donut: {
               title: donutPercent + "%",
@@ -576,8 +579,9 @@ $(function() {
           var thisWeeksVal = 0;
           if (weeks.length) {
             var latest = weeks[weeks.length - 1];
-            var latestDate = new Date(latest.time_period).getWeek();
+            var latestDate = new Date(latest.time_period).getWeek() + 1;
             var todaysDate = new Date().getWeek();
+
             if (latestDate == todaysDate) {
               thisWeeksVal = Number(latest.message_count);
             }
@@ -602,20 +606,20 @@ $(function() {
         drawTodayVsPeakBarChart(countsByDay);
         function drawTodayVsPeakBarChart (days) {
           var highestCount = Math.max.apply(Math,days.map(function(o){return Number(o.message_count);}))
-          var thisdaysVal = 0;
+          var thisDaysVal = 0;
           if (days.length) {
             var latest = days[days.length - 1];
-            var latestDate = new Date(latest.time_period).getWeek();
-            var todaysDate = new Date().getWeek();
-            if (latestDate == todaysDate) {
+            var todaysDate = moment().format("YYYY-MM-DD");
+            if (moment(latest.time_period).add(0, 'day').format("YYYY-MM-DD") == todaysDate ||
+                moment(latest.time_period).add(1, 'day').format("YYYY-MM-DD") == todaysDate ||
+                moment(latest.time_period).add(2, 'day').format("YYYY-MM-DD") == todaysDate) {
               thisDaysVal = Number(latest.message_count);
             }
           }
-
           c3.generate({
               data: {
                 columns: [
-                  ["Today", thisdaysVal],
+                  ["Today", thisDaysVal],
                   ["Peak",  highestCount]
                 ],
                 type: "bar",

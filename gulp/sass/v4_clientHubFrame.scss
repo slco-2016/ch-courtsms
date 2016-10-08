@@ -41,8 +41,8 @@ $darkblue:    #344289;
       float: left;
       color: $white;
       line-height: 55px;
-      padding-right: 25px;
-      margin-right: 25px;
+      padding-right: 35px;
+      // margin-right: 25px;
       // background-color: $white;
 
       &:hover {
@@ -55,7 +55,8 @@ $darkblue:    #344289;
 
       .icon {
         float: left;
-        margin-left: 15px;
+        margin-left: 20px;
+        margin-right: 6px;
         font-size: 20px;
         color: $white;
       }
@@ -180,7 +181,7 @@ $darkblue:    #344289;
 
   .emptyResultsGreeting {
     text-align: middle;
-    background-color: $lightgrey;
+    // background-color: $lightgrey;
 
     .message {
       padding-top: 75px;

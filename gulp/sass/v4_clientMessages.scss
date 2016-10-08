@@ -108,22 +108,26 @@ $width_row5:  5%;
   .subjectToggle {
     position: absolute;
     left: 50%;
-    background-color: #5979BC;
+    background-color: $lightbluegrey;
     color: $white;
     line-height: 30px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
     margin-right: auto;
     margin-left: auto;
+    border-left: 1px solid $offwhite;
+    border-right: 1px solid $offwhite;
+    border-bottom: 1px solid $offwhite;
+    // box-shadow: 0px 1px 5px $lightgrey;
 
     .title {
       display: inline;
-      margin-left: 15px;
-      margin-right: 15px;
+      margin-left: 12px;
+      margin-right: 12px;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 12px;
       cursor: pointer;
     }
 
@@ -131,10 +135,10 @@ $width_row5:  5%;
       display: inline;
       font-size: 12px;
       padding: 3px;
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 7px;
+      padding-right: 7px;
       margin-right: 5px;
-      border-radius: 15px;
+      border-radius: 10px;
       cursor: pointer;
 
       &.selected, &:hover {

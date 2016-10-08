@@ -208,25 +208,25 @@ $darkblue:    #344289;
 
   .emptyResultsGreeting {
     text-align: middle;
-    background-color: $lightgrey;
+    // background-color: $lightgrey;
 
     .message {
       padding-top: 75px;
-      padding-left: 15px;
+      padding-left: 55px;
       float: left;
-      line-height: 50px;
-      font-size: 44px;
-      width: 80%;
+      line-height: 40px;
+      font-size: 32px;
+      width: 50%;
 
       small {
-        font-size: 36px;
+        font-size: 22px;
       }
     }
 
     .icon {
       float: right;
-      font-size: 150px;
-      padding: 25px 25px 0px 25px;
+      font-size: 120px;
+      padding: 25px 65px 0px 25px;
     }
 
     &::after {
@@ -241,8 +241,8 @@ $darkblue:    #344289;
 .applicationFrame {
   .viewingAsOtherBanner {
     font-size: 12px;
-    line-height: 18px;
-    background-color: $lightblue;
+    line-height: 23px;
+    background-color: $bluegrey;
     text-align: center;
     color: $white;
     position: fixed;
