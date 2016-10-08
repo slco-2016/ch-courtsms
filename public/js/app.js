@@ -405,9 +405,9 @@ $(function() {
                 buildUserActivityChart(res.result); 
                 $("#userActivity").parent().find(".loading").hide();
 
-                var staffCt = Number(50);
+                var staffCt = Number(users.length);
                 var activeStaffPercentage = Math.round(res.result.length/staffCt * 100);
-activeStaffPercentage = 87;
+
                 $("#activeStaffPercentage").html(activeStaffPercentage + "<small>%</small>");
               }
             });
@@ -433,6 +433,17 @@ activeStaffPercentage = 87;
           var dat = new Date(this.valueOf())
           dat.setDate(dat.getDate() + days);
           return dat;
+        }
+
+        var usersSortedByMessagingVolume = users.sort(function(a, b) {
+          return b["week_count"] - a["week_count"];
+        });
+        for (var i = 0; i < 5; i++) {
+          var top = usersSortedByMessagingVolume[i];
+          var oneMore = i + 1;
+          var bottom = usersSortedByMessagingVolume[usersSortedByMessagingVolume.length - oneMore];
+          $("#topUser-" + oneMore).html(top.first + " " + top.last);
+          $("#bottomUser-" + oneMore).html(bottom.first + " " + bottom.last);
         }
 
         buildPerformanceChart(countsByWeek, countsByDay);
@@ -464,7 +475,7 @@ activeStaffPercentage = 87;
                   ["Weekly Activity"].concat(valsWeek),
                   ["Daily Activity"].concat(newValsDay)
               ],
-              types: {"Weekly Activity": "area", "Daily Activity": "area"},
+              types: {"Weekly Activity": "area-spline", "Daily Activity": "area-spline"},
               colors: {
                   "Weekly Activity": "#6783a1",
                   "Daily Activity": "#3c5065"
@@ -480,18 +491,19 @@ activeStaffPercentage = 87;
           });
 
           // donut percent closed clients chart
+          var donutPercent = Math.floor(10000*surveySynopsis.closeout.success/(surveySynopsis.closeout.failure + surveySynopsis.closeout.success))/100;
           c3.generate({
             data: {
               columns: [
-                ['Successful',   120],
-                ['Unsuccessful', 80],
+                ['Successful',   surveySynopsis.closeout.success],
+                ['Unsuccessful', surveySynopsis.closeout.failure],
               ],
               type : 'donut',            },
             color: {
               pattern: ['#3c5065', '#D3D3D3']
             },
             donut: {
-              title: "45%",
+              title: donutPercent + "%",
               label: {format: function (value) { return ''; }},
 
             },
@@ -564,7 +576,7 @@ activeStaffPercentage = 87;
             }
           }
           var prctgeOfPeak = Math.floor(((thisWeeksVal/highestCount)*1000))/10
-  prctgeOfPeak = 78;
+
           c3.generate({
               data: {
                 columns: [ ["Proportion of Peak", prctgeOfPeak] ],
@@ -592,7 +604,7 @@ activeStaffPercentage = 87;
               thisDaysVal = Number(latest.message_count);
             }
           }
-thisdaysVal = 400;
+
           c3.generate({
               data: {
                 columns: [
@@ -600,6 +612,10 @@ thisdaysVal = 400;
                   ["Peak",  highestCount]
                 ],
                 type: "bar",
+              },
+              axis: {
+                x: {show:false},
+                y: {show:true}
               },
               color: {
                 pattern: ['#3c5065', '#6783a1']

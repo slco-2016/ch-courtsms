@@ -1,6 +1,11 @@
+const CloseoutSurveys = require('../models/closeoutSurveys');
 const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
+
+const messagesLib = require("../lib/messages");
+let moment = require("moment");
+let moment_tz = require("moment-timezone");
 
 module.exports = {
 
@@ -20,7 +25,7 @@ module.exports = {
           !req.query.department) {
       departmentFilter = null;
     }
-    // Hnadles is query is 'department=null'
+    // Handles is query is 'department=null'
     if (req.query.department && isNaN(req.query.department)) {
       departmentFilter = null;
     }
@@ -58,6 +63,37 @@ module.exports = {
       }
     }).then((counts) => {
       countsByWeek = counts;
+      let userIds = users.map((user) => {
+        return user.cmid;
+      });
+      return new Promise ((fulfill, reject) => {
+        fulfill(userIds);
+      })
+    }).map((userId) => {
+      return Messages.countsByUser(userId, "week");
+    }).then((usersWithMessageCountsList) => {
+
+      let usersWithMessageCounts = [];
+      let now = moment();
+      usersWithMessageCountsList.forEach((dates, i) => {
+        let pairedUser = users[i];
+        pairedUser.week_count = 0;
+        let dateCount = null;
+        dates.forEach((date) => {
+          let test = moment(date.time_period);
+          if (now.isSame(test, "week")) {
+            dateCount = date;
+          }
+        });
+        if (dateCount) {
+          pairedUser.week_count = Number(dateCount.message_count);
+        }
+        usersWithMessageCounts.push(pairedUser);
+      });
+      users = usersWithMessageCounts;
+
+      return CloseoutSurveys.getSuccessDistributionByOrg(req.user.org);
+    }).then((surveySynopsis) => {
 
       res.render("dashboard/index", {
         hub: {
@@ -69,7 +105,8 @@ module.exports = {
         departments:      departments,
         departmentFilter: departmentFilter || null,
         countsByDay:      countsByDay,
-        countsByWeek:     countsByWeek
+        countsByWeek:     countsByWeek,
+        surveySynopsis:   surveySynopsis,
       });
     }).catch(res.error500);
   },

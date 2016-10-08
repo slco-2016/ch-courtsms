@@ -57,14 +57,24 @@ router.get("/dashboard/overview", (req, res) => {
       });
     }
 
-    if (userFilterID) return Messages.countsByUser(orgID, userFilterID, "day");
-    else              return Messages.countsByDepartment(orgID, departmentID, "day");
+    if (userFilterID) return Messages.countsByUser(userFilterID, "day");
+    else              return Messages.countsByDepartment(departmentID, "day");
   }).then((counts) => {
     countsByDay = counts;
-    if (userFilterID) return Messages.countsByUser(orgID, userFilterID, "week");
-    else              return Messages.countsByDepartment(orgID, departmentID, "week");
+    if (userFilterID) return Messages.countsByUser(userFilterID, "week");
+    else              return Messages.countsByDepartment(departmentID, "week");
   }).then((counts) => {
     countsByWeek = counts;
+    let userIds = users.map((user) => {
+      return user.cmid;
+    });
+    return new Promise ((fulfill, reject) => {
+      fulfill(userIds);
+    })
+  }).map((userIds) => {
+    return Messages.countsByUser(userID, "week");
+  }).then((usersWithMessageCounts) => {
+
     res.render("v4/supervisor/dashboards/organization", {
       hub: {
         tab: "dashboard",
@@ -75,7 +85,8 @@ router.get("/dashboard/overview", (req, res) => {
       userFilterID, userFilterID,
       clients: clients,
       countsByWeek: countsByWeek,
-      countsByDay: countsByDay
+      countsByDay: countsByDay,
+      usersWithMessageCounts: usersWithMessageCounts
     });
   }).catch(error500(res));
 });
