@@ -84,7 +84,6 @@ class BaseModel {
     return new Promise((fulfill, reject) => {
       let keyLength = Object.keys(attributes).length
       let cleanParams = this._cleanParams(attributes)
-      console.log(attributes, cleanParams)
       if (keyLength > Object.keys(cleanParams).length) {
         reject(new Error("not all parameters were used in where method"))
       } else {
@@ -112,7 +111,6 @@ class BaseModel {
     if (!model) {
       model = this
     }
-    
     fulfill(objects.map((object) => {
       return new model(object);
     }))

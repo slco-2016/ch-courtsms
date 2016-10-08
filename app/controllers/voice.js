@@ -122,7 +122,7 @@ module.exports = {
     let resp = twilio.TwimlResponse();
     resp.say({voice: 'woman'}, "Hello! Please leave your message after the beep.")
     resp.record({action: url})
-    resp.send(resp.toString())
+    res.send(resp.toString())
   },
 
   save(req, res) {
@@ -154,7 +154,6 @@ module.exports = {
         if (toNumber.length == 10) { 
           toNumber = "1" + toNumber; 
         }
-        console.log(toNumber)
 
         return Communications.findById(commId)
         .then((communication) => {
@@ -175,7 +174,6 @@ module.exports = {
               return sms.retrieveClients(recording.call_to, communication);
             }).then((resp) =>{
               clients = resp
-              console.log("CLIENTS FOUND", clients);
               return Conversations.retrieveByClientsAndCommunication(
                 clients, communication
               )
