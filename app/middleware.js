@@ -252,46 +252,49 @@ module.exports = {
         res.locals.department = department;
         next();
         return null
-      }).catch(res.error500);     
-    } else {
-      next();      
-    }
-  },
-
-  fetchClient(req, res, next) {
-    // Set base case that you are viewing a client that is not yours
-    res.locals.userOwnsClient = false;
-
-    let p = req.params;
-
-    let client = p.client || p.clientId || p.clientID || null;
-    let isNumber = !isNaN(client);
-    
-    if (client && isNumber) {
-      Clients.findByID(client)
-      .then((c) => {
-        if (c) {
-          c.first = _capitalize(c.first);
-          c.middle = _capitalize(c.middle);
-          c.last = _capitalize(c.last);
-
-          res.locals.client = c;
-
-          // If client is under user, then update user flag
-          if (c.cm == req.user.cmid) {
-            res.locals.userOwnsClient = true;
-          }
-
-          next();
-        } else {
-          res.status(404).render('v4/general/404');
-        }
-        return null
       }).catch(res.error500);
     } else {
       next();
     }
+  },
 
+  fetchClient(req, res, next) {
+    if (req.user) {
+      // Set base case that you are viewing a client that is not yours
+      res.locals.userOwnsClient = false;
+
+      let p = req.params;
+
+      let client = p.client || p.clientId || p.clientID || null;
+      let isNumber = !isNaN(client);
+      
+      if (client && isNumber) {
+        Clients.findByID(client)
+        .then((c) => {
+          if (c) {
+            c.first = _capitalize(c.first);
+            c.middle = _capitalize(c.middle);
+            c.last = _capitalize(c.last);
+
+            res.locals.client = c;
+
+            // If client is under user, then update user flag
+            if (c.cm == req.user.cmid) {
+              res.locals.userOwnsClient = true;
+            }
+
+            next();
+          } else {
+            res.status(404).render('v4/general/404');
+          }
+          return null
+        }).catch(res.error500);
+      } else {
+        next();
+      }
+    } else {
+      next();      
+    }
   },
 
   setUserAndLevel(req, res, next) {
