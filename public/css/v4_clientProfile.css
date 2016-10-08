@@ -33,6 +33,13 @@
             margin-bottom: 5px; }
           .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager small {
             font-size: 12px; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager.miniButton {
+            text-indent: 5px; }
+            .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager.miniButton .ss {
+              color: #898989;
+              padding-right: 8px;
+              margin-right: 8px;
+              border-right: 1px solid rgba(0, 0, 0, 0.075); }
   .profileRow .bigRight {
     float: left;
     padding-top: 10px;

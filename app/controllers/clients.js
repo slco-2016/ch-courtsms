@@ -268,6 +268,11 @@ module.exports = {
       }).map((msg) => {
         return msg.msgid;
       })
+
+      // control to keep other people from "marking as read" someones messages
+      if (req.user.cmid !== client.cm) {
+        messageIds = [];
+      }
       return Messages.markAsRead(messageIds)
     }).then(() => {
       
@@ -278,7 +283,8 @@ module.exports = {
         return !conversation.accepted;
       })
 
-      if (unclaimed.length) {
+      // if there are unclaimed messages that need to be viewed and this the client's main cm
+      if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
         res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
       } else {

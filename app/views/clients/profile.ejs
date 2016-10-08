@@ -18,8 +18,6 @@
 
       <div class="clientInfoContainer">
         <div class="clientInfoRow">
-        </div>
-        <div class="clientInfoRow">
           Created:
           <%= moment.tz(client.created, organization.tz).format("MM/DD/YY") %>
         </div>
@@ -42,7 +40,6 @@
       </div>
 
       <div class="clientInfoContainer">
-        
           <div class="clientInfoRow">
             <b>Client served by</b>*
             <% otherPotentialManagers.forEach((otherPotentialManager) => { %>
@@ -63,6 +60,30 @@
               <i>* via name match</i>
             </small>
           </div>
+      </div>
+
+      <div class="clientInfoContainer">
+        <div class="clientInfoRow">
+          <b>Other Options</b>
+        </div>
+        
+        <a href="<%=`${clientBaseURL}`%>/edit">
+          <div class="clientInfoRow">
+            <div class="caseManager miniButton">
+              <i class="ss ss-write"></i>
+              <small>Edit Client</small>
+            </div>
+          </div>
+        </a>
+
+        <a href="<%=`/clients/${client.clid}/transcript`%>/">
+          <div class="clientInfoRow">
+            <div class="caseManager miniButton">
+              <i class="ss ss-download"></i>
+              <small>Download Transcript</small>
+            </div>
+          </div>
+        </a>
       </div>
 
     </div>

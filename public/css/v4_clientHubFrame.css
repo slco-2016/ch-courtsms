@@ -101,7 +101,7 @@
 .applicationFrame .emptyResultsGreeting {
   text-align: middle; }
   .applicationFrame .emptyResultsGreeting .message {
-    padding-top: 75px;
+    padding-top: 125px;
     padding-left: 55px;
     float: left;
     line-height: 40px;
@@ -110,9 +110,9 @@
     .applicationFrame .emptyResultsGreeting .message small {
       font-size: 22px; }
   .applicationFrame .emptyResultsGreeting .icon {
-    float: right;
-    font-size: 120px;
-    padding: 25px 65px 0px 25px; }
+    float: left;
+    font-size: 150px;
+    padding: 75px 45px 0px 120px; }
   .applicationFrame .emptyResultsGreeting::after {
     content: "";
     display: block;

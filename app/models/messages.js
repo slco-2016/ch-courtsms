@@ -268,13 +268,21 @@ class Messages extends BaseModel {
         
         // See if there are any new messages in any of the conversations
         let totalNewMessages = 0;
+        let totalNewMessagesInactive = 0;
         clients.forEach(function (ea) {
           if (!isNaN(ea.count)) {
-            totalNewMessages += Number(ea.count);
+            if (ea.active) {
+              totalNewMessages += Number(ea.count);
+            } else {
+              totalNewMessagesInactive += Number(ea.count);
+            }
           }
         });
 
-        fulfill(totalNewMessages > 0);
+        fulfill({
+          active: totalNewMessages > 0,
+          inactive: totalNewMessagesInactive > 0
+        });
       }).catch(reject);
     });
   }
