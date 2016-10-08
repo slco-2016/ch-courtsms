@@ -49,7 +49,7 @@ module.exports = {
 
       if (departmentFilter) {
         users = users.filter((departmentUser) => { return departmentUser.department == departmentFilter});
-        return Messages.countsByDepartment(req.user.org, departmentFilter, "day")
+        return Messages.countsByDepartment(departmentFilter, "day")
       } else {
         return Messages.countsByOrg(req.user.org, "day")
       }
@@ -57,7 +57,7 @@ module.exports = {
       countsByDay = counts;
 
       if (departmentFilter) {
-        return Messages.countsByDepartment(req.user.org, departmentFilter, "week")
+        return Messages.countsByDepartment(departmentFilter, "week")
       } else {
         return Messages.countsByOrg(req.user.org, "week")
       }

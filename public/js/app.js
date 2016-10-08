@@ -402,11 +402,12 @@ $(function() {
             });
             keenQueryClient.run(keenQuery, function (err, res){
               if (!err) {
-                buildUserActivityChart(res.result); 
+                var keenUsers = getRelevantKeenUsers(res.result);
+                buildUserActivityChart(keenUsers); 
                 $("#userActivity").parent().find(".loading").hide();
 
                 var staffCt = Number(users.length);
-                var activeStaffPercentage = Math.round(res.result.length/staffCt * 100);
+                var activeStaffPercentage = Math.round(keenUsers.length/staffCt * 100);
 
                 $("#activeStaffPercentage").html(activeStaffPercentage + "<small>%</small>");
               }
@@ -442,8 +443,12 @@ $(function() {
           var top = usersSortedByMessagingVolume[i];
           var oneMore = i + 1;
           var bottom = usersSortedByMessagingVolume[usersSortedByMessagingVolume.length - oneMore];
-          $("#topUser-" + oneMore).html(top.first + " " + top.last);
-          $("#bottomUser-" + oneMore).html(bottom.first + " " + bottom.last);
+          if (top) {
+            $("#topUser-" + oneMore).html(top.first + " " + top.last);  
+          }
+          if (bottom) {
+            $("#bottomUser-" + oneMore).html(bottom.first + " " + bottom.last);
+          }
         }
 
         buildPerformanceChart(countsByWeek, countsByDay);
@@ -513,8 +518,8 @@ $(function() {
           });
         };
 
-        function buildUserActivityChart(users) {
-          users = users.filter(function (ea) {
+        function getRelevantKeenUsers (users) {
+          return users.filter(function (ea) {
             if (departmentFilter) {
               if (userFilter) {
                 return userFilter === Number(ea["user.cmid"]);
@@ -533,7 +538,9 @@ $(function() {
           }).sort(function(a, b) {
             return b["User Activity"] - a["User Activity"];
           });
-          
+        }
+
+        function buildUserActivityChart(users) {          
           // Set height based off of remaining users post filter operation
           var height = Math.max(users.length * 30, 100);
           c3.generate({
