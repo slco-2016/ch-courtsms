@@ -31,10 +31,10 @@
         <br>
         
         <div class="clientInfoRow">
-          OTN: <%= client.otn || 'none' %>
+          OTN: <%= client.otn || 'unknown' %>
         </div>
         <div class="clientInfoRow">
-          SO: <%= client.so || 'none' %>
+          SO: <%= client.so || 'unknown' %>
         </div>
         <div class="clientInfoRow">
           Born: <%= moment(client.dob).format("MM/DD/YY") %>
@@ -46,12 +46,17 @@
           <div class="clientInfoRow">
             <b>Client served by</b>*
             <% otherPotentialManagers.forEach((otherPotentialManager) => { %>
-              <div class="caseManager">
-                <%= `${otherPotentialManager.first} ${otherPotentialManager.last}` %>,
-                <i><%= `${otherPotentialManager.department_name}` %></i>
-                <small><%= `${otherPotentialManager.email}` %></small>
-                <br>
-              </div>
+              <% if (["owner", "supervisor", "support"].indexOf(user.class) > -1) { %><a href="/org/clients?user=<%=otherPotentialManager.cmid%>"><% } %>
+                <div class="caseManager">
+                  <div class="name">
+                    <%= `${otherPotentialManager.first} ${otherPotentialManager.last}` %>
+                  </div>
+                  <i><%= `${otherPotentialManager.department_name || 'No Department'}` %></i>
+                  <br>
+                  <small><%= `${otherPotentialManager.email}` %></small>
+                  <br>
+                </div>
+              <% if (["owner", "supervisor", "support"].indexOf(user.class) > -1) { %></a><% } %>
             <% }) %>
 
             <small>

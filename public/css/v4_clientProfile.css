@@ -20,14 +20,17 @@
         font-size: 14px;
         line-height: 20px; }
         .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager {
-          margin-top: 2px;
-          margin-bottom: 2px;
           border: 1px solid #D3D3D3;
           color: #898989;
           padding: 5px;
-          border-radius: 5px; }
-          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager:nth-last-child(1) {
-            margin-bottom: 0px; }
+          border-radius: 5px;
+          margin-top: 5px;
+          margin-bottom: 5px; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager:hover {
+            box-shadow: 0px 1px 5px #D3D3D3; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager .name {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.075);
+            margin-bottom: 5px; }
           .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager small {
             font-size: 12px; }
   .profileRow .bigRight {

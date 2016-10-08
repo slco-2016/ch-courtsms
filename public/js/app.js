@@ -403,12 +403,20 @@ $(function() {
             });
             keenQueryClient.run(keenQuery, function (err, res){
               if (!err) {
-                var keenUsers = getRelevantKeenUsers(res.result);
+                var keenUsers = getRelevantKeenUsers(users, res.result);
                 buildUserActivityChart(keenUsers); 
                 $("#userActivity").parent().find(".loading").hide();
 
-                var staffCt = Number(users.length);
-                var activeStaffPercentage = Math.round(keenUsers.length/staffCt * 100);
+                var activeKeenUsers = keenUsers.filter(function(u) {
+                  return u.activity > 0;
+                });
+                var staffCt = users.length;
+                var activeStaffPercentage;
+                if (staffCt) {
+                  activeStaffPercentage = Math.round(activeKeenUsers.length/staffCt * 100);
+                } else {
+                  activeStaffPercentage = 0;
+                }
 
                 $("#activeStaffPercentage").html(activeStaffPercentage + "<small>%</small>");
               }
@@ -440,15 +448,22 @@ $(function() {
         var usersSortedByMessagingVolume = users.sort(function(a, b) {
           return b["week_count"] - a["week_count"];
         });
+        var topAndBottomThreshold = usersSortedByMessagingVolume.length/2;
+        // let everyone be in the top if less than 5 in department
+        if (topAndBottomThreshold < 5) topAndBottomThreshold = 1000000;
         for (var i = 0; i < 5; i++) {
           var top = usersSortedByMessagingVolume[i];
           var oneMore = i + 1;
           var bottom = usersSortedByMessagingVolume[usersSortedByMessagingVolume.length - oneMore];
           if (top) {
-            $("#topUser-" + oneMore).html(top.first + " " + top.last);  
+            var topname = top.first + " " + top.last;
+            if (i >= topAndBottomThreshold) topname = "-";
+            $("#topUser-" + oneMore).html(topname);
           }
           if (bottom) {
-            $("#bottomUser-" + oneMore).html(bottom.first + " " + bottom.last);
+            var bottomname = bottom.first + " " + bottom.last;
+            if (usersSortedByMessagingVolume.length - oneMore <= topAndBottomThreshold) bottomname = "-";
+            $("#bottomUser-" + oneMore).html(bottomname);
           }
         }
 
@@ -521,8 +536,8 @@ $(function() {
           });
         };
 
-        function getRelevantKeenUsers (users) {
-          return users.filter(function (ea) {
+        function getRelevantKeenUsers (users, keenUsers) {
+          keenUsers = keenUsers.filter(function (ea) {
             if (departmentFilter) {
               if (userFilter) {
                 return userFilter === Number(ea["user.cmid"]);
@@ -535,12 +550,27 @@ $(function() {
               return ea["user.first"] && ea["user.last"];
             }
           }).map(function (ea) {
-            ea["User Activity"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
+            ea["activity"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
             ea.name = [ea["user.last"], ea["user.first"]].join(", ").substring(0, 15);
+            ea.cmid = isNaN(ea["user.cmid"]) ? null : Number(ea["user.cmid"]);
             return ea;
           }).sort(function(a, b) {
-            return b["User Activity"] - a["User Activity"];
+            return b["activity"] - a["activity"];
           });
+
+          keenUserIds = keenUsers.map(function(u) {
+            return u.cmid;
+          });
+          users = users.filter(function (u) {
+            return keenUserIds.indexOf(u.cmid) < 0;
+          }).map(function (u) {
+            return {
+              activity: 0,
+              name: [u["last"], u["first"]].join(", ").substring(0, 15),
+              cmid: u.cmid
+            }
+          });
+          return keenUsers.concat(users);
         }
 
         function buildUserActivityChart(users) {          
@@ -551,7 +581,7 @@ $(function() {
               json: users,
               keys: {
                 x: "name",
-                value: ["User Activity"]
+                value: ["activity"]
               },
               type: "bar",
               color: function (color, d) { return "#6783a1"; }
@@ -686,7 +716,7 @@ $(function() {
               }
             },
             legend: { hide: false, position: 'inset', inset: {
-                anchor: 'top-left',
+                anchor: 'top-right',
                 x: 0,
                 y: 0,
                 step: undefined

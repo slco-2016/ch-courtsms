@@ -56,16 +56,20 @@ $width_right:  50%;
         line-height: 20px;
 
         .caseManager {
-          margin-top: 2px;
-          margin-bottom: 2px;
           border: 1px solid $lightgrey;
           color: $grey;
           padding: 5px;
           border-radius: 5px;
-          // margin-bottom: 10px;
+          margin-top: 5px;
+          margin-bottom: 5px;
 
-          &:nth-last-child(1) {
-            margin-bottom: 0px;
+          &:hover {
+            box-shadow: 0px 1px 5px $lightgrey;
+          }
+
+          .name {
+            border-bottom: 1px solid rgba(0,0,0,0.075);
+            margin-bottom: 5px;
           }
 
           small {
