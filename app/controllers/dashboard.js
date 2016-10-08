@@ -5,6 +5,10 @@ const Messages = require('../models/messages');
 module.exports = {
 
   org(req, res) {
+    if (req.user.class == "owner" || req.user.class == "support") {
+      req.user.department = null;
+    }
+
     let departments;
     let departmentFilter = req.user.department || req.query.department || null;
     let userFilter = req.query.user || null;
@@ -26,7 +30,11 @@ module.exports = {
       departments = depts;
 
       if (departmentFilter) {
-        if (req.user.department) departments = departments.filter((d) => { return d.department_id === departmentFilter});
+        if (req.user.department) {
+          departments = departments.filter((d) => { 
+            return d.department_id === departmentFilter
+          });
+        }
         return Users.findByDepartment(departmentFilter, true)
       } else {
         return Users.findByOrg(req.user.org, true)

@@ -1,12 +1,9 @@
 .applicationFrame .navSub {
   position: absolute;
   top: 41px;
-  width: 1022px;
+  width: 1024px;
   height: 55px;
   background-color: #4A90E2;
-  border-bottom: 1px solid #E8ECEF;
-  border-left: 1px solid #E8ECEF;
-  border-right: 1px solid #E8ECEF;
   overflow: hidden;
   position: fixed; }
   .applicationFrame .navSub .leftTab {

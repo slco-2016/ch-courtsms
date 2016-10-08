@@ -210,9 +210,25 @@ class Messages extends BaseModel {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .where("tw_sid", twSid)
-        .then((objects) => {
-          this._getMultiResponse(objects, fulfill)
-        }).catch(reject);
+      .then((objects) => {
+        this._getMultiResponse(objects, fulfill)
+      }).catch(reject);
+    })
+  }
+
+  static findNotClearedMessages () {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .leftJoin("comms", "comms.commid", "msgs.comm")
+        .whereNot("msgs.status_cleared", true)
+        .and.whereNotNull("tw_sid")
+      .then((messages) => {
+        messages = messages.filter((message) => {
+          let twSid = message.tw_sid;
+          return twSid.startsWith("MM") || twSid.startsWith("SM");
+        });
+        this._getMultiResponse(messages, fulfill)
+      }).catch(reject);
     })
   }
 

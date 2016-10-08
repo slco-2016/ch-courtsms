@@ -20,6 +20,8 @@
         font-size: 14px;
         line-height: 20px; }
         .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager {
+          margin-top: 2px;
+          margin-bottom: 2px;
           border: 1px solid #D3D3D3;
           color: #898989;
           padding: 5px;

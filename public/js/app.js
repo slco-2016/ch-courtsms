@@ -1,3 +1,38 @@
+/**
+ * Returns the week number for this date.  dowOffset is the day of week the week
+ * "starts" on for your locale - it can be from 0 to 6. If dowOffset is 1 (Monday),
+ * the week returned is the ISO 8601 week number.
+ * @param int dowOffset
+ * @return int
+ */
+Date.prototype.getWeek = function (dowOffset) {
+/*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
+
+    dowOffset = typeof(dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
+    var newYear = new Date(this.getFullYear(),0,1);
+    var day = newYear.getDay() - dowOffset; //the day of week the year begins on
+    day = (day >= 0 ? day : day + 7);
+    var daynum = Math.floor((this.getTime() - newYear.getTime() - 
+    (this.getTimezoneOffset()-newYear.getTimezoneOffset())*60000)/86400000) + 1;
+    var weeknum;
+    //if the year starts before the middle of a week
+    if(day < 4) {
+        weeknum = Math.floor((daynum+day-1)/7) + 1;
+        if(weeknum > 52) {
+            nYear = new Date(this.getFullYear() + 1,0,1);
+            nday = nYear.getDay() - dowOffset;
+            nday = nday >= 0 ? nday : nday + 7;
+            /*if the next year starts before the middle of
+              the week, it is week #1 of that year*/
+            weeknum = nday < 4 ? 1 : 53;
+        }
+    }
+    else {
+        weeknum = Math.floor((daynum+day-1)/7);
+    }
+    return weeknum;
+};
+
 function _getDatesArray (startDate, stopDate) {
   var dateArray = new Array();
   var currentDate = moment(startDate);
@@ -11,7 +46,7 @@ function _getDatesArray (startDate, stopDate) {
 $(function() {
   var executors = [
     {
-      cssClass: 'JStransferClient',
+    cssClass: 'JStransferClient',
       execute: function() {
         var substringMatcher = function (strs) {
           return function findMatches(q, cb) {
@@ -369,15 +404,29 @@ $(function() {
               if (!err) {
                 buildUserActivityChart(res.result); 
                 $("#userActivity").parent().find(".loading").hide();
+
+                var staffCt = Number(50);
+                var activeStaffPercentage = Math.round(res.result.length/staffCt * 100);
+activeStaffPercentage = 87;
+                $("#activeStaffPercentage").html(activeStaffPercentage + "<small>%</small>");
               }
             });
           });
         });
 
         function adjustDivs () {
-          $(".leftBar").height($(window).height() - 92);
-          $(".rightContent").height($(window).height() - 92);
+          $(".leftBar").height($(window).height() - 97);
+          $(".rightContent").height($(window).height() - 97);
         };
+
+        $("#seeUsers").click(usersShowToggle)
+        function usersShowToggle () {
+          $(".userTab").toggle();
+          $("#seeUsers").toggleClass("selected");
+        };
+        if (departmentFilter || userFilter) {
+          usersShowToggle();
+        }
 
         // Utility to facilitate adding of days
         Date.prototype.addDays = function (days) {
@@ -387,7 +436,6 @@ $(function() {
         }
 
         buildPerformanceChart(countsByWeek, countsByDay);
-
         function buildPerformanceChart (countsByWeek, countsByDay) {
           var keysWeek = countsByWeek.map( function (count) { return count.time_period; });
           var keysDay  = countsByDay.map(  function (count) { return count.time_period; });
@@ -418,16 +466,38 @@ $(function() {
               ],
               types: {"Weekly Activity": "area", "Daily Activity": "area"},
               colors: {
-                  "Weekly Activity": "#FFC966",
-                  "Daily Activity": "#FF6700"
+                  "Weekly Activity": "#6783a1",
+                  "Daily Activity": "#3c5065"
               }
             },
+            point: {show: false},
             legend: { hide: true },
             axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
-            padding: { right: 0, top: 20, bottom: 0 },
-            size: { width: 720, height: 230 },
+            padding: { right: 0, top: 0, left: 35, bottom: 25 },
+            size: { width: 750, height: 230 },
             grid: { y: { show: false }, x: { show: false } },
             bindto: "#overallGraph"
+          });
+
+          // donut percent closed clients chart
+          c3.generate({
+            data: {
+              columns: [
+                ['Successful',   120],
+                ['Unsuccessful', 80],
+              ],
+              type : 'donut',            },
+            color: {
+              pattern: ['#3c5065', '#D3D3D3']
+            },
+            donut: {
+              title: "45%",
+              label: {format: function (value) { return ''; }},
+
+            },
+            legend: { show: false },
+            size: { width: 150, height: 150 },
+            bindto: "#clientSuccessChart"
           });
         };
 
@@ -442,16 +512,18 @@ $(function() {
             } else if (userFilter) {
               return userFilter === Number(ea["user.cmid"]);
             } else {
-              return true;
+              return ea["user.first"] && ea["user.last"];
             }
           }).map(function (ea) {
             ea["User Activity"] = Math.ceil((ea.result/(1000*60*60))*100)/100; 
             ea.name = [ea["user.last"], ea["user.first"]].join(", ").substring(0, 15);
             return ea;
+          }).sort(function(a, b) {
+            return b["User Activity"] - a["User Activity"];
           });
           
           // Set height based off of remaining users post filter operation
-          var height = Math.max(users.length * 20, 100);
+          var height = Math.max(users.length * 30, 100);
           c3.generate({
             data: {
               json: users,
@@ -460,16 +532,84 @@ $(function() {
                 value: ["User Activity"]
               },
               type: "bar",
-              color: function (color, d) { return "#3F69B6"; }
+              color: function (color, d) { return "#6783a1"; }
             },
             axis: {
               rotated: true,
-              x: { type: "category" }
+              x: { type: "category" },
+              y: {
+                font: { size: '33px', },
+                label: {
+                  size: '33px',
+                }
+              },
             },
+            legend: { show: false },
             size: { width: 720, height: height },
             bindto: "#userActivity"
           });
         };
+
+        // Get the highest performing weeek
+        drawGaugeChart(countsByWeek);
+        function drawGaugeChart (weeks) {
+          var highestCount = Math.max.apply(Math,weeks.map(function(o){return Number(o.message_count);}))
+          var thisWeeksVal = 0;
+          if (weeks.length) {
+            var latest = weeks[weeks.length - 1];
+            var latestDate = new Date(latest.time_period).getWeek();
+            var todaysDate = new Date().getWeek();
+            if (latestDate == todaysDate) {
+              thisWeeksVal = Number(latest.message_count);
+            }
+          }
+          var prctgeOfPeak = Math.floor(((thisWeeksVal/highestCount)*1000))/10
+  prctgeOfPeak = 78;
+          c3.generate({
+              data: {
+                columns: [ ["Proportion of Peak", prctgeOfPeak] ],
+                type: "gauge",
+              },
+              color: {
+                pattern: ["#3c5065"], // Color levels for the percentage values
+                threshold: { values: [0] }
+              },
+              size: { height: 140, width: 245 },
+              bindto: "#gaugechart"
+          });
+        };
+
+        // Get the highest performing weeek
+        drawTodayVsPeakBarChart(countsByDay);
+        function drawTodayVsPeakBarChart (days) {
+          var highestCount = Math.max.apply(Math,days.map(function(o){return Number(o.message_count);}))
+          var thisdaysVal = 0;
+          if (days.length) {
+            var latest = days[days.length - 1];
+            var latestDate = new Date(latest.time_period).getWeek();
+            var todaysDate = new Date().getWeek();
+            if (latestDate == todaysDate) {
+              thisDaysVal = Number(latest.message_count);
+            }
+          }
+thisdaysVal = 400;
+          c3.generate({
+              data: {
+                columns: [
+                  ["Today", thisdaysVal],
+                  ["Peak",  highestCount]
+                ],
+                type: "bar",
+              },
+              color: {
+                pattern: ['#3c5065', '#6783a1']
+              },
+              size: { height: 175, width: 245 },
+              legend: { hide: true },
+              bindto: "#todayVsPeakBarChart"
+          });
+        };
+
       }
     },
 

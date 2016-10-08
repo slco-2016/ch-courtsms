@@ -150,7 +150,6 @@ module.exports = {
   },
 
   save(req, res) {
-    console.log(req.body)
     let type = req.query.type
     if (!type) {
       return res.error500(new Error("save-recording needs a recording type"))

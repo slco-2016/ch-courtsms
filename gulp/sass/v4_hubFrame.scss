@@ -27,12 +27,12 @@ $darkblue:    #344289;
   .navSub {
     position: absolute;
     top: 41px;
-    width: 1022px;
+    width: 1024px;
     height: 55px;
     background-color: $lightblue;
     border-bottom: 1px solid $offwhite;
-    border-left: 1px solid $offwhite;
-    border-right: 1px solid $offwhite;
+    // border-left: 1px solid #3a597a;
+    // border-right: 1px solid #3a597a;
     overflow: hidden;
     position: fixed;
 

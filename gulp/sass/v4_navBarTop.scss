@@ -30,7 +30,7 @@ $darkblue:    #344289;
   cursor: pointer;
   font-weight: 700;
   color: $white;
-  background-color: $darkblue;
+  // background-color: $darkblue;
   border-radius: 5px;
   padding: 2px 10px 2px 10px;
 
@@ -52,7 +52,7 @@ $darkblue:    #344289;
     .exclamationCircle {
       color: $lightorange;
     }
-    background-color: $blue;
+    // background-color: $blue;
   }
 
   .hiddenAlerts {
@@ -134,16 +134,20 @@ $darkblue:    #344289;
 
   .navHeader {
     height: 40px;
-    width: 1022px;
+    width: 1024px;
 
     color: $white;
     background-color: $darkblue;
     border-bottom: 1px solid $offwhite;
-    border-right: 1px solid $offwhite;
-    border-left: 1px solid $offwhite;
+    // border-right: 1px solid #43678e;
+    // border-left: 1px solid #43678e;
 
     overflow: hidden;
     position: fixed;
+
+    &.orgLevel {
+      background-color: $darkbluegrey;
+    }
 
     .leftLogo {
       color: $white;

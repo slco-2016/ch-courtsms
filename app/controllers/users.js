@@ -101,19 +101,24 @@ module.exports = {
   },
 
   update(req, res) {
-    Users.updateOne(
-            req.params.targetUser, 
-            req.body.first, 
-            req.body.middle, 
-            req.body.last, 
-            req.body.email, 
-            req.body.department, 
-            req.body.position, 
-            req.body.className
-    ).then(() => {
-      req.flash("success", "Updated user.");
-      res.redirect("/org/users");
-    }).catch(res.error500);
+    if (!req.body.department) {
+      req.flash("warning", "Missing a selected department.");
+      res.redirect(req.url);
+    } else {
+      Users.updateOne(
+              req.params.targetUser, 
+              req.body.first, 
+              req.body.middle, 
+              req.body.last, 
+              req.body.email, 
+              req.body.department, 
+              req.body.position, 
+              req.body.className
+      ).then(() => {
+        req.flash("success", "Updated user.");
+        res.redirect("/org/users");
+      }).catch(res.error500);
+    }
   },
 
   transferIndex(req, res) {
