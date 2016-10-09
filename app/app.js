@@ -169,6 +169,7 @@ app.post("/clients/:client/transfer", ClientsController.transferSubmit);
 app.get("/clients/:client/address", ClientsController.addressCraft);
 app.get("/clients/:client/address/templates", ClientsController.templates);
 app.post("/clients/:client/address", ClientsController.addressSubmit);
+app.get("/clients/:client/mediamessage", ClientsController.mediaAttachment);
 app.get("/clients/:client/voicemessage", VoiceController.new);
 app.post("/clients/:client/voicemessage", VoiceController.create);
 

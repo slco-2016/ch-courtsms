@@ -228,6 +228,11 @@ module.exports = {
     }).catch(res.error500);
   },
 
+  mediaAttachment(req, res) {
+    req.flash("warning", "Media attachments are not yet supported.");
+    res.levelSensitiveRedirect(`/clients/${req.params.client}/messages`);
+  },
+
   messagesIndex(req, res) {
     let client = req.params.client;
     let method = req.query.method;
