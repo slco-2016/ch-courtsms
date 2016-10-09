@@ -59,7 +59,7 @@ class Notifications extends BaseModel {
     })
   }
 
-  static findByClientID (clientID, sent) {
+  static findByClientID (clientId, sent) {
     if (typeof sent == "undefined") sent = false;
     const order = sent ? "desc" : "asc";
     
@@ -78,14 +78,14 @@ class Notifications extends BaseModel {
         .leftJoin(
           db("commconns")
             .select(db.raw("name as communication_name, comm, commconnid"))
+            .where("client", clientId)
             .as("commconns"), 
             "commconns.comm", "notifications.comm")
-        .where("client", clientID)
+        .where("client", clientId)
         .andWhere("sent", sent)
         .andWhere("closed", false)
         .orderBy("send", order)
       .then((notifications) => {
-        console.log(notifications)
         fulfill(notifications)
       }).catch(reject);
     })
