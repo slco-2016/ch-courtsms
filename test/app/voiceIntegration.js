@@ -5,6 +5,7 @@ const Users = require('../../app/models/users')
 const voice = require('../../app/lib/voice')
 const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 const OutboundVoiceMessages = require('../../app/models/outboundVoiceMessages')
+const Communications = require('../../app/models/communications')
 
 const ngrokTestServer = require('../ngrokTestServer')
 
@@ -13,6 +14,7 @@ let ngrokUrl;
 describe.skip('Voice lib checks', function() {
 
   before(function(done) {
+    this.timeout(100000)
     const app = require('../../app/app')
     let server = app.listen(4000, function() {
       ngrokTestServer(4000, function(url) {
@@ -27,14 +29,14 @@ describe.skip('Voice lib checks', function() {
     let deliveryDate = new Date()
     let userQuery = Users.findById(2)
     userQuery.then((user) => {
-      return user.getClients()
-    }).then((clients) => {
+      return Communications.findById(1)
+    }).then((communication) => {
       return voice.recordVoiceMessage(
-        ngrokUrl,
         userQuery.value(),
-        clients[0],
+        communication.commid,
         deliveryDate,
-        "+12033133609"
+        "+12033133609",
+        ngrokUrl
       )
     }).then((call) => {
       let i = setInterval(function() {
@@ -48,7 +50,7 @@ describe.skip('Voice lib checks', function() {
           })
         })
       }, 1000)
-    })
+    }).catch(done)
   })
 
   it('Should send messages that need to be sent', function(done) {

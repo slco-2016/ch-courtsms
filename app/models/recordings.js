@@ -24,7 +24,7 @@ class Recordings extends BaseModel {
       ],
     })
   }
-  getTemporaryRecordingUrl() {
+  getUrl() {
     return s3.getTemporaryUrl(this.recording_key)
   }
 }

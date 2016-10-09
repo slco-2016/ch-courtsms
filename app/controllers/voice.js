@@ -1,4 +1,6 @@
 const twilio = require('twilio');
+const moment = require('moment');
+let moment_tz = require("moment-timezone");
 
 const resourceRequire = require('../lib/resourceRequire')
 
@@ -8,6 +10,7 @@ const CommConns = resourceRequire('models', 'CommConns')
 const Communications = resourceRequire('models', 'Communications')
 const Conversations = resourceRequire('models', 'Conversations')
 const Messages = resourceRequire('models', 'Messages')
+const Notifications = resourceRequire('models', 'Notifications')
 const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Recordings = resourceRequire('models', 'Recordings')
 
@@ -57,35 +60,11 @@ module.exports = {
     Recordings.findOneByAttribute('RecordingSid', RecordingSid)
     .then((recording) => {
       if (recording) {
-        let communication, clients, conversations
         return recording.update({transcription: req.body.TranscriptionText})
         .then((recording) => {
-          return Communications.findById(recording.comm_id)
-        }).then((resp) => {
-          communication = resp
-          return sms.retrieveClients(recording.call_to, communication);
-        }).then((resp) =>{
-          clients = resp
-          return Conversations.retrieveByClientsAndCommunication(
-            clients, communication
-          )
-        }).then((resp) => {
-          conversations = resp;
-          let conversationIds = conversations.map((conversation) => {
-            return conversation.convid;
-          });
-
-          return Messages.insertIntoManyConversations(
-            conversationIds,
-            communication.commid,
-            req.body.TranscriptionText,
-            RecordingSid,
-            'recieved',
-            toNumber, {
-              recordingId: recording.id
-            }
-          );
-
+          return Messages.where({recording_id: recording.id})
+        }).map((message) => {
+          return message.update({content: req.body.TranscriptionText})
         })
       }
     }).then(() => res.send('ok'))
@@ -98,11 +77,20 @@ module.exports = {
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
       .then((ovm) => {
         if (ovm) {
-          return ovm.update({delivered: true})  
+          return ovm.update({delivered: true})
+          .then((ovm) => {
+            return Notifications.findOneByAttribute('ovm_id', ovm.id)
+          }).then((notification) => {
+            if (notification) {
+              return notification.update({sent: true})  
+            } else {
+              return null
+            }
+          })
         } else {
           return null
         }
-      }).then((ovm) => {
+      }).then((notification) => {
         res.send("ok")
       }).catch(res.error500)
     }
@@ -135,18 +123,20 @@ module.exports = {
 
   record(req, res) {
     let userId = req.query.userId
+    let commId = req.query.commId
     let clientId = req.query.clientId
     let deliveryDateEpoch = req.query.deliveryDate
 
-    let params = `?type=ovm&userId=${userId}&clientId=${clientId}`+
-      `&deliveryDate=${deliveryDateEpoch}`
+    let params = `?type=ovm&userId=${userId}&commId=${commId}`+
+      `&deliveryDate=${deliveryDateEpoch}`+
+      `&clientId=${clientId}`
 
     let url = `/webhook/voice/save-recording/${params}`
 
     let resp = twilio.TwimlResponse();
     resp.say({voice: 'woman'}, "Hello! Please leave your message after the beep.")
     resp.record({action: url})
-    resp.send(resp.toString())
+    res.send(resp.toString())
   },
 
   save(req, res) {
@@ -161,14 +151,22 @@ module.exports = {
       if (type === "ovm") {
 
         let userId = req.query.userId
+        let commId = req.query.commId
         let clientId = req.query.clientId
         let deliveryDateEpoch = Number(req.query.deliveryDate)
         let deliveryDate = new Date(deliveryDateEpoch)
+
         return OutboundVoiceMessages.create({
-          client_id: clientId,
+          commid: commId,
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
+        }).then((ovm) => {
+          return Notifications.create(
+            userId, clientId, 
+            commId, "Outbound Voice Message", "", 
+            deliveryDate, ovm.id
+          )
         })
 
       } else if (type === "message") {
@@ -178,7 +176,6 @@ module.exports = {
         if (toNumber.length == 10) { 
           toNumber = "1" + toNumber; 
         }
-        console.log(toNumber)
 
         return Communications.findById(commId)
         .then((communication) => {
@@ -188,11 +185,36 @@ module.exports = {
               "S3 key is " + key
             )
           } else {
+            let recording, conversations, clients;
             return Recordings.create({
-              comm_id: communication.id,
+              comm_id: communication.commid,
               recording_key: key,
               RecordingSid: req.body.RecordingSid,
               call_to: toNumber,
+            }).then((resp) => {
+              recording = resp
+              return sms.retrieveClients(recording.call_to, communication);
+            }).then((resp) =>{
+              clients = resp
+              return Conversations.retrieveByClientsAndCommunication(
+                clients, communication
+              )
+            }).then((resp) => {
+              conversations = resp;
+              let conversationIds = conversations.map((conversation) => {
+                return conversation.convid;
+              });
+
+              return Messages.insertIntoManyConversations(
+                conversationIds,
+                communication.commid,
+                "Untranscribed voice message",
+                req.body.RecordingSid,
+                'recieved',
+                toNumber, {
+                  recordingId: recording.id
+                }
+              );
             })
           }
         })
@@ -226,24 +248,30 @@ module.exports = {
 
   create(req, res) {
     let commId = req.body.commId;
-    let sendDate = req.body.sendDate;
-    let sendHour = req.body.sendHour;
-    let value = req.body.phonenumber || "";
-    value = value.replace(/[^0-9.]/g, "");
-    if (value.length == 10) { 
-      value = "1" + value; 
+
+    let deliveryDate = moment(req.body.sendDate)
+                    .tz(res.locals.organization.tz)
+                    .startOf("day")
+                    .add(Number(req.body.sendHour), "hours");
+
+    let phoneNumber = req.body.phonenumber || "";
+    phoneNumber = phoneNumber.replace(/[^0-9.]/g, "");
+    if (phoneNumber.length == 10) { 
+      phoneNumber = "1" + phoneNumber; 
     }
 
-    if (value.length == 11) {
-      // Somehow we initiate a call here?
-      // voice.recordVoiceMessage( user, 
-      //                           client, 
-      //                           deliveryDate, 
-      //                           phoneNumber)
-      
+    if (phoneNumber.length == 11) {
       res.render('voice/callComing', {
-        userProvidedNumber: value
+        userProvidedNumber: phoneNumber
       });
+      
+      voice.recordVoiceMessage(
+        req.user,
+        commId,
+        res.locals.client.clid,
+        deliveryDate.toDate(),
+        phoneNumber
+      )
 
     } else {
       req.flash("warning", "Phone number is not long enough.");

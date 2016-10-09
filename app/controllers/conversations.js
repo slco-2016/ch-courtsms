@@ -13,8 +13,9 @@ module.exports = {
   claimOption(req, res) {
     let conversationId = req.params.conversation;
     let clientId = req.params.client;
-    Conversations.findById(conversationId)
-    .then((conversation) => {
+    Conversations.findByIdsIncludeMessages(conversationId)
+    .then((conversations) => {
+      conversation = conversations[0]
       if (conversation &&
           conversation.client == Number(clientId) &&
           conversation.cm == req.user.cmid &&

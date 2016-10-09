@@ -10,12 +10,19 @@ const twilio = require("twilio");
 const twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
 
 const OutboundVoiceMessages = require('../models/outboundVoiceMessages')
-const Clients = require('../models/clients')
+const Communications = require('../models/communications')
 
 module.exports = {
-  recordVoiceMessage(domain, user, client, deliveryDate, phoneNumber) {
-    let params = `?userId=${user.cmid}&clientId=`+
-      `${client.clid}&deliveryDate=${deliveryDate.getTime()}`
+  recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
+    let params = `?userId=${user.cmid}&commId=`
+    params += `${commId}&deliveryDate=${deliveryDate.getTime()}`
+    params += `&clientId=${clientId}`
+    params += "&type=ovm"
+
+    if (!domain) {
+      domain = credentials.rootUrl  
+    }
+
     let url = `${domain}/webhook/voice/record/${params}`
     return new Promise((fulfill, reject) => {
       twClient.calls.create({
@@ -31,17 +38,16 @@ module.exports = {
       });
     })
   },
-  _processPendingOutboundVoiceMessages(ovm, domain) {
+  processPendingOutboundVoiceMessages(ovm, domain) {
+    domain = domain || credentials.rootUrl  
+
     return new Promise((fulfill, reject) =>{
       ovmId = ovm.id
-      return Clients.findById(ovm.client_id)
-      .then((client) => {
-        return client.communications()
-      }).then((communications) => {
-        // TODO use best communication
+      return Communications.findById(ovm.commid)
+      .then((communication) => {
         twClient.calls.create({
           url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
-          to: communications[0].value,
+          to: communication.value,
           from: credentials.twilioNum,
           IfMachine: 'Continue',
           record: true,
@@ -61,11 +67,13 @@ module.exports = {
     })
   },
   sendPendingOutboundVoiceMessages(domain) {
+    domain = domain || credentials.rootUrl  
+
     let ovmId
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.getNeedToBeSent()
       .map((ovm) => {
-        return this._processPendingOutboundVoiceMessages(ovm, domain)
+        return this.processPendingOutboundVoiceMessages(ovm, domain)
       }).then((ovms) => {
         fulfill(ovms)
       }).catch(reject)

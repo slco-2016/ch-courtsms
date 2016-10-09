@@ -13,7 +13,7 @@ class OutboundVoiceMessages extends BaseModel {
       data: data,
       columns: [
         'id',
-        'client_id',
+        'commid',
         'delivery_date',
         'recording_key',
         'RecordingSid',

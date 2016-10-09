@@ -108,7 +108,12 @@ class Conversations extends BaseModel {
   }
 
   static create(userId, clientId, subject, open) {
-    if (typeof open == "undefined") open = true;
+    if (typeof subject == "undefined") {
+      subject = 'Automatically created conversation';
+    }
+    if (typeof open == "undefined") {
+      open = true;
+    }
     return new Promise((fulfill, reject) => {
       Conversations.closeAllBetweenClientAndUser(userId)
       .then(() => {
@@ -457,11 +462,21 @@ class Conversations extends BaseModel {
             fulfill(conversations);
           });
         } else if (clients.length) {
-          return this.createNewNotAcceptedConversationsForAllClients(clients);
+          if (clients.length == 1) {
+            let client = clients[0];
+            let subject = 'Automatically created conversation';
+            let open = true;
+            return this.create(client.cm, client.clid, subject, open);
+          } else {
+            return this.createNewNotAcceptedConversationsForAllClients(clients);
+          }
         } else {
           return this.createOrAttachToExistingCaptureBoardConversation(communication);
         }
       }).then((conversations) => {
+        if (!Array.isArray(conversations)) {
+          conversations = [conversations];
+        }
         fulfill(conversations);
       }).catch(reject);
     });
