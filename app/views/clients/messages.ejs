@@ -44,6 +44,15 @@
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
           <div class="content">
             <%= message.content %>
+
+            <% message.attachments.forEach((attachment) => { %>
+               <a href="<%= attachment.getUrl() %>">attachment</a> 
+            <% }) %>
+            
+            <% if (message.recording) { %>
+               <a href="<%= message.recording.getUrl() %>">recording</a> 
+            <% } %>
+
           </div>
 
           <div class="bottomRow">
@@ -97,7 +106,7 @@
             </div>
           </a>
 
-          <a href="<%=`${clientBaseURL}/address/templates`%>">
+          <a href="<%=`/clients/${client.clid}/voicemessage`%>">
             <div class="actionButton">
               <div class="icon">
                 <i class="ss ss-phone"></i>

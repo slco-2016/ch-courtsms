@@ -1,5 +1,5 @@
 
-
+const relativeRequire = require('./relativeRequire')
 
 // SECRET STUFF
 var credentials = require("../../credentials");
@@ -14,6 +14,10 @@ var db  = require("../app/db");
 var twilio = require("twilio");
 var twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
 
+const OutboundVoiceMessages = relativeRequire('models', 'OutboundVoiceMessages')
+const Notifications = relativeRequire('models', 'Notifications')
+
+const voice = relativeRequire('lib', 'voice')
 
 module.exports = {
 
@@ -51,46 +55,59 @@ module.exports = {
 
 
 function initiateNotificationSend (n) {
-  var client = n.client;
-  db("convos")
-  .where("convos.client", client)
-  .andWhere("convos.accepted", true)
-  .andWhere("convos.open", true)
-  .orderBy("convos.updated", "desc")
-  .limit(1)
-  .then(function (convos) {
+  if (n.ovm_id) {
+    sendOVMNotification(n)
+  } else {
+    var client = n.client;
+    db("convos")
+    .where("convos.client", client)
+    .andWhere("convos.accepted", true)
+    .andWhere("convos.open", true)
+    .orderBy("convos.updated", "desc")
+    .limit(1)
+    .then(function (convos) {
 
-    if (convos.length == 0) {
+      if (convos.length == 0) {
 
-      var insertObj = {
-        cm:       n.cm,
-        client:   n.client,
-        subject:  n.subject,
-        open:     true,
-        accepted: true
-      };
+        var insertObj = {
+          cm:       n.cm,
+          client:   n.client,
+          subject:  n.subject,
+          open:     true,
+          accepted: true
+        };
 
-      db("convos")
-      .insert(insertObj)
-      .returning("convid")
-      .then(function (convoIDs) {
-        var convoID = convoIDs[0];
+        db("convos")
+        .insert(insertObj)
+        .returning("convid")
+        .then(function (convoIDs) {
+          var convoID = convoIDs[0];
+          n.convoID = convoID;
+          sendTwilioSMS(n)
+
+        }).catch(function (err) { 
+          console.log(err); 
+        });
+
+      } else {
+        var convoID = convos[0].convid;
         n.convoID = convoID;
         sendTwilioSMS(n)
-
-      }).catch(function (err) { 
-        console.log(err); 
-      });
-
-    } else {
-      var convoID = convos[0].convid;
-      n.convoID = convoID;
-      sendTwilioSMS(n)
-    }
-  }).catch(function (err) {
-    console.log(err);
-  })
+      }
+    }).catch(function (err) {
+      console.log(err);
+    })    
+  }
 };
+
+function sendOVMNotification(n) {
+  OutboundVoiceMessages.findById(n.ovm_id)
+  .then((ovm) => {
+    return voice.processPendingOutboundVoiceMessages(ovm)
+  }).catch((err) => {
+    console.log(err)
+  })
+}
 
 
 function sendTwilioSMS (n) {

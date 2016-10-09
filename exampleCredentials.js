@@ -5,9 +5,8 @@ var baseProductionReadyCredentials = {
   
   // BELOW: Main body of the credentials object
 
-  // Root url
+  // Root url, for testing something like https://16eb4a25.ngrok.io
   rootUrl: "http://localhost:4000",
-
 
   // Twilio-related
   accountSid: "****************",

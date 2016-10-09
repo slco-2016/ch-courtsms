@@ -3,6 +3,9 @@ const credentials = require('../../credentials')
 const Promise = require("bluebird");
 
 const aws = require('aws-sdk')
+
+const mock = require('./mock')
+
 aws.config.credentials = new aws.Credentials(
   credentials.aws.accessKey,
   credentials.aws.secretAccessKey
@@ -23,6 +26,10 @@ module.exports = {
 
   uploadFile(requestParams, name) {
     return new Promise((fulfill, reject) => {
+      if (mock.isEnabled()) {
+        return fulfill('fake-s3-key')
+      }
+
       let token = Math.random().toString(36).substring(7);
       let key = `${token}-${name}`
 

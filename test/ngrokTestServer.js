@@ -14,7 +14,7 @@ module.exports = function(port, callback) {
     .update({
         SmsUrl: `${url}/webhook/sms`,
         VoiceUrl: `${url}/webhook/voice`,
-        StatusCallback: `${url}/webhook/status`,
+        StatusCallback: `${url}/webhook/voice/status`,
     }, function(err, phoneNumber) {
         if (err) {
           throw err
