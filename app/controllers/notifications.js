@@ -30,16 +30,14 @@ module.exports = {
   },
 
   new(req, res) {
+    let preSelect = req.query.client || null;
+    if (isNaN(preSelect)) preSelect = null;
     let user = req.getUser();
     if (req.query.user) {
-      if (!isNaN(req.query.user)) {
+      if (!isNaN(req.query.user) && req.user.class !== "primary") {
         user = req.query.user;
       }
     }
-
-    let org = req.user.org;
-    let department = req.user.department;
-    let preSelect = req.query.client || null;
 
     Clients.findByUser(user, true)
     .then((clients) => {
@@ -154,6 +152,31 @@ module.exports = {
     ).then((notification) => {
       req.flash("success", "Edited notification.");
       res.redirect(`/clients/${notification.client}/notifications`);
+    }).catch(res.error500);
+  },
+
+  voiceRedirector(req, res) {
+    let preSelect = req.query.client || null;
+    if (isNaN(preSelect)) preSelect = null;
+    let user = req.getUser();
+    if (req.query.user) {
+      if (!isNaN(req.query.user) && req.user.class !== "primary") {
+        user = req.query.user;
+      }
+    }
+
+    Clients.findByUser(user, true)
+    .then((clients) => {
+      if (preSelect) {
+        clients = clients.filter((client) => {
+          return client.clid == Number(preSelect);
+        });
+      }
+
+      res.render("notifications/voice", {
+        clients: clients,
+        preSelect: preSelect
+      })
     }).catch(res.error500);
   },
 

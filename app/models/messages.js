@@ -263,8 +263,8 @@ class Messages extends BaseModel {
   static findUnreadsByUser (user) {
     return new Promise((fulfill, reject) => {
       db("msgs")
-        .count("msgid")
         .leftJoin("convos", "msgs.convo", "convos.convid")
+        .leftJoin("clients", "clients.clid", "convos.client")
         .where("msgs.read", false)
         .andWhere("convos.cm", user)
       .then(function (clients) {
@@ -273,12 +273,10 @@ class Messages extends BaseModel {
         let totalNewMessages = 0;
         let totalNewMessagesInactive = 0;
         clients.forEach(function (ea) {
-          if (!isNaN(ea.count)) {
-            if (ea.active) {
-              totalNewMessages += Number(ea.count);
-            } else {
-              totalNewMessagesInactive += Number(ea.count);
-            }
+          if (ea.active) {
+            totalNewMessages += 1;
+          } else {
+            totalNewMessagesInactive += 1;
           }
         });
 

@@ -861,7 +861,8 @@ $(function() {
         // Bind clients to update of comm list
         $("#clientID").change(function () {
           var v = $(this).val();
-          updateClientsAndComms(v)
+          updateClientsAndComms(v);
+          $("#voiceLink").attr("href", "/clients/" + String(v) + "/voicemessage");
         });
 
         function updateClientsAndComms (v) {
