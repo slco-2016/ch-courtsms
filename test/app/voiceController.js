@@ -145,7 +145,7 @@ describe('Voice reqs', function() {
   })
 
   it('should provide twiml for voice recording', function(done) {
-    let params = "?userId=HHH&clientId=JJJ&deliveryDate=XXX"
+    let params = "?userId=HHH&commId=JJJ&deliveryDate=XXX"
     twilioAgent.post('/webhook/voice/record' + params)
       .expect(200)
       .end((err, resp) => {

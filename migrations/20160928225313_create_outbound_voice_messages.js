@@ -12,9 +12,9 @@ exports.up = function(knex, Promise) {
       table.text("RecordingSid");
       table.boolean("delivered").defaultTo(false);
 
-      table.integer("client_id")
-        .references("clid")
-        .inTable("clients")
+      table.integer("commid")
+        .references("commid")
+        .inTable("comms")
 
       table.timestamp("updated");
       table.timestamp("created").defaultTo(knex.fn.now());

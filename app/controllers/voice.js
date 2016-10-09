@@ -111,10 +111,10 @@ module.exports = {
 
   record(req, res) {
     let userId = req.query.userId
-    let clientId = req.query.clientId
+    let commId = req.query.commId
     let deliveryDateEpoch = req.query.deliveryDate
 
-    let params = `?type=ovm&userId=${userId}&clientId=${clientId}`+
+    let params = `?type=ovm&userId=${userId}&commId=${commId}`+
       `&deliveryDate=${deliveryDateEpoch}`
 
     let url = `/webhook/voice/save-recording/${params}`
@@ -137,11 +137,11 @@ module.exports = {
       if (type === "ovm") {
 
         let userId = req.query.userId
-        let clientId = req.query.clientId
+        let commId = req.query.commId
         let deliveryDateEpoch = Number(req.query.deliveryDate)
         let deliveryDate = new Date(deliveryDateEpoch)
         return OutboundVoiceMessages.create({
-          client_id: clientId,
+          commid: commId,
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
@@ -233,9 +233,12 @@ module.exports = {
         userProvidedNumber: phoneNumber
       });
       
-      // voice.recordVoiceMessage(
-        
-      // )
+      voice.recordVoiceMessage(
+        req.user,
+        commId,
+        deliveryDate.toDate(),
+        phoneNumber
+      )
 
     } else {
       req.flash("warning", "Phone number is not long enough.");
