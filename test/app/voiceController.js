@@ -145,7 +145,7 @@ describe('Voice reqs', function() {
   })
 
   it('should provide twiml for voice recording', function(done) {
-    let params = "?userId=HHH&commId=JJJ&deliveryDate=XXX"
+    let params = "?userId=HHH&commId=JJJ&deliveryDate=XXX&clientId=888"
     twilioAgent.post('/webhook/voice/record' + params)
       .expect(200)
       .end((err, resp) => {
@@ -154,6 +154,7 @@ describe('Voice reqs', function() {
         resp.text.should.match(/Please leave your message/)
         resp.text.should.match(/HHH/)
         resp.text.should.match(/JJJ/)
+        resp.text.should.match(/888/)
         resp.text.should.match(/XXX/)
         done()
       })

@@ -10,6 +10,7 @@ const CommConns = resourceRequire('models', 'CommConns')
 const Communications = resourceRequire('models', 'Communications')
 const Conversations = resourceRequire('models', 'Conversations')
 const Messages = resourceRequire('models', 'Messages')
+const Notifications = resourceRequire('models', 'Notifications')
 const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Recordings = resourceRequire('models', 'Recordings')
 
@@ -74,11 +75,20 @@ module.exports = {
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
       .then((ovm) => {
         if (ovm) {
-          return ovm.update({delivered: true})  
+          return ovm.update({delivered: true})
+          .then((ovm) => {
+            return Notifications.findOneByAttribute('ovm_id', ovm.id)
+          }).then((notification) => {
+            if (notification) {
+              return notification.update({sent: true})  
+            } else {
+              return null
+            }
+          })
         } else {
           return null
         }
-      }).then((ovm) => {
+      }).then((notification) => {
         res.send("ok")
       }).catch(res.error500)
     }
@@ -112,10 +122,12 @@ module.exports = {
   record(req, res) {
     let userId = req.query.userId
     let commId = req.query.commId
+    let clientId = req.query.clientId
     let deliveryDateEpoch = req.query.deliveryDate
 
     let params = `?type=ovm&userId=${userId}&commId=${commId}`+
-      `&deliveryDate=${deliveryDateEpoch}`
+      `&deliveryDate=${deliveryDateEpoch}`+
+      `&clientId=${clientId}`
 
     let url = `/webhook/voice/save-recording/${params}`
 
@@ -138,13 +150,21 @@ module.exports = {
 
         let userId = req.query.userId
         let commId = req.query.commId
+        let clientId = req.query.clientId
         let deliveryDateEpoch = Number(req.query.deliveryDate)
         let deliveryDate = new Date(deliveryDateEpoch)
+
         return OutboundVoiceMessages.create({
           commid: commId,
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
+        }).then((ovm) => {
+          return Notifications.create(
+            userId, clientId, 
+            commId, "Outbound Voice Message", "", 
+            deliveryDate, ovm.id
+          )
         })
 
       } else if (type === "message") {
@@ -236,6 +256,7 @@ module.exports = {
       voice.recordVoiceMessage(
         req.user,
         commId,
+        res.locals.client.clid,
         deliveryDate.toDate(),
         phoneNumber
       )

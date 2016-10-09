@@ -13,9 +13,10 @@ const OutboundVoiceMessages = require('../models/outboundVoiceMessages')
 const Communications = require('../models/communications')
 
 module.exports = {
-  recordVoiceMessage(user, commId, deliveryDate, phoneNumber, domain) {
+  recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
     let params = `?userId=${user.cmid}&commId=`
     params += `${commId}&deliveryDate=${deliveryDate.getTime()}`
+    params += `&clientId=${clientId}`
     params += "&type=ovm"
 
     if (!domain) {
@@ -37,10 +38,11 @@ module.exports = {
       });
     })
   },
-  _processPendingOutboundVoiceMessages(ovm, domain) {
+  processPendingOutboundVoiceMessages(ovm, domain) {
+    domain = domain || credentials.rootUrl  
+
     return new Promise((fulfill, reject) =>{
       ovmId = ovm.id
-      console.log(ovm)
       return Communications.findById(ovm.commid)
       .then((communication) => {
         twClient.calls.create({
@@ -65,11 +67,13 @@ module.exports = {
     })
   },
   sendPendingOutboundVoiceMessages(domain) {
+    domain = domain || credentials.rootUrl  
+
     let ovmId
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.getNeedToBeSent()
       .map((ovm) => {
-        return this._processPendingOutboundVoiceMessages(ovm, domain)
+        return this.processPendingOutboundVoiceMessages(ovm, domain)
       }).then((ovms) => {
         fulfill(ovms)
       }).catch(reject)

@@ -3,6 +3,7 @@
 // Libraries
 const db      = require("../../app/db");
 const Promise = require("bluebird");
+const BaseModel = require("../lib/models").BaseModel
 
 let moment = require("moment");
 let moment_tz = require("moment-timezone");
@@ -12,8 +13,31 @@ let moment_tz = require("moment-timezone");
 
 
 // Class
-class Notifications {
+class Notifications extends BaseModel {
   
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        "notificationid",
+        "cm",
+        "client",
+        "comm", 
+        "subject",
+        "message",
+        "created",
+        "updated",
+        "send",
+        "repeat",
+        "frequency",
+        "sent",
+        "closed",
+        "repeat_terminus",
+        "ovm_id",
+      ]
+    })
+  }
+
   static findByUser (userID, sent) {
     if (typeof sent == "undefined") sent = false;
     const order = sent ? "desc" : "asc";
@@ -61,6 +85,7 @@ class Notifications {
         .andWhere("closed", false)
         .orderBy("send", order)
       .then((notifications) => {
+        console.log(notifications)
         fulfill(notifications)
       }).catch(reject);
     })
@@ -111,7 +136,7 @@ class Notifications {
     })
   }
 
-  static create (userID, clientID, commID, subject, message, send) {
+  static create (userID, clientID, commID, subject, message, send, ovm_id) {
     return new Promise((fulfill, reject) => {
       db("notifications")
         .insert({
@@ -121,6 +146,7 @@ class Notifications {
           subject: subject,
           message: message,
           send: send,
+          ovm_id: ovm_id || null,
           repeat: false,
           frequency: null,
           sent: false,
@@ -134,5 +160,8 @@ class Notifications {
   }
 
 }
+
+Notifications.primaryId = "notificationid"
+Notifications.tableName = "notifications"
 
 module.exports = Notifications
