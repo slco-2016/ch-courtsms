@@ -79,7 +79,7 @@ module.exports = {
 
   attachTemplateLibraries(req, res, next) {
     res.locals.moment = require('moment');
-    res.locals.moment_tz = require('moment-timezone');
+    res.locals.momentTz = require('moment-timezone');
     
     if (process.env.CCENV && process.env.CCENV == 'production') {
       console.log('Production env. New Relic running.');

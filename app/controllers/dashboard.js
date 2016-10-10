@@ -5,7 +5,7 @@ const Messages = require('../models/messages');
 
 const messagesLib = require('../lib/messages');
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 module.exports = {
 

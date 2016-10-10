@@ -6,7 +6,7 @@ const Promise = require('bluebird');
 const BaseModel = require('../lib/models').BaseModel;
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 // TO DOS
 // Check if arrays are indeed arrays and that they have length > 0

@@ -6,7 +6,7 @@ const Templates = require('../models/templates');
 const Users = require('../models/users');
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 const _average = (arr) => {
   let total = 0;

@@ -3,7 +3,7 @@ const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 module.exports = {
   index(req, res) {
