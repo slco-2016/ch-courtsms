@@ -1,0 +1,209 @@
+.leftTab.open {
+  min-width: 25%; }
+
+.leftBar {
+  width: 25%;
+  overflow-y: scroll;
+  float: left;
+  background-color: #FFF; }
+  .leftBar .departments {
+    padding: 5px 10px 5px 10px; }
+    .leftBar .departments .department {
+      padding: 5px 5px 5px 5px;
+      border-bottom: 1px solid #E8ECEF; }
+      .leftBar .departments .department .subject {
+        color: #4A90E2;
+        margin-bottom: 5px; }
+        .leftBar .departments .department .subject.showAll {
+          text-transform: uppercase;
+          text-align: center;
+          margin-top: 7px;
+          font-size: 12px;
+          letter-spacing: 1px; }
+      .leftBar .departments .department .date {
+        font-size: 12px;
+        padding-bottom: 5px; }
+        .leftBar .departments .department .date .day {
+          float: left; }
+        .leftBar .departments .department .date .time {
+          float: right; }
+        .leftBar .departments .department .date::after {
+          content: "";
+          display: block;
+          clear: both; }
+      .leftBar .departments .department.selected {
+        background-color: #4A90E2;
+        color: #FFF; }
+        .leftBar .departments .department.selected .subject {
+          color: #FFF;
+          font-weight: 700; }
+      .leftBar .departments .department:hover {
+        background-color: #E8ECEF;
+        color: #898989; }
+        .leftBar .departments .department:hover .subject {
+          color: #4A90E2;
+          font-weight: 700; }
+
+.rightContent {
+  width: 75%;
+  overflow-y: scroll;
+  float: right;
+  background-color: #E8ECEF; }
+  .rightContent .messageStream {
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 60px; }
+    .rightContent .messageStream .message {
+      padding: 15px 20px 10px 20px;
+      margin-bottom: 10px;
+      border-radius: 5px; }
+      .rightContent .messageStream .message.outbound {
+        border: 1px solid #FFF;
+        color: #2A2A2A; }
+      .rightContent .messageStream .message.inbound {
+        background-color: #FFF;
+        color: #2A2A2A; }
+      .rightContent .messageStream .message .bottomRow {
+        margin-top: 15px;
+        font-size: 12px;
+        line-height: 18px; }
+        .rightContent .messageStream .message .bottomRow .fa {
+          font-size: 18px; }
+        .rightContent .messageStream .message .bottomRow .state {
+          float: right; }
+  .rightContent .responseBox {
+    position: absolute;
+    bottom: 0px;
+    overflow: hidden;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px; }
+    .rightContent .responseBox .mini {
+      width: inherit;
+      background-color: #4A90E2;
+      padding: 10px 10px 10px 10px; }
+      .rightContent .responseBox .mini .messageInput {
+        width: 733px;
+        height: 45px;
+        background-color: #344289;
+        border-radius: 3px;
+        line-height: 45px;
+        font-size: 18px;
+        color: #FFF;
+        font-weight: 300;
+        padding-left: 15px;
+        cursor: pointer; }
+        .rightContent .responseBox .mini .messageInput .left {
+          float: left;
+          width: 50%;
+          text-align: left; }
+        .rightContent .responseBox .mini .messageInput .right {
+          float: left;
+          width: 50%;
+          text-align: right; }
+          .rightContent .responseBox .mini .messageInput .right .fa {
+            padding-right: 15px; }
+        .rightContent .responseBox .mini .messageInput:hover {
+          color: #E8ECEF;
+          box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5); }
+    .rightContent .responseBox .full {
+      display: none;
+      width: inherit;
+      background-color: #4A90E2;
+      padding: 10px 10px 10px 10px; }
+      .rightContent .responseBox .full .messageInput textarea {
+        width: 728px;
+        max-width: 728px;
+        height: 55px;
+        max-height: 55px;
+        background-color: #344289;
+        border-radius: 7px;
+        line-height: 20px;
+        font-size: 18px;
+        color: #FFF;
+        font-weight: 300;
+        padding: 10px;
+        border: 0px; }
+      .rightContent .responseBox .full .bottomRow {
+        display: block;
+        height: 32px;
+        margin-top: 5px;
+        margin-bottom: 15px; }
+        .rightContent .responseBox .full .bottomRow .optionButton {
+          float: left;
+          text-align: center;
+          height: 31px;
+          border: 1px solid #344289;
+          border-radius: 3px;
+          background-color: #3F69B6;
+          margin-right: 10px;
+          padding-left: 10px;
+          padding-right: 10px;
+          line-height: 31px;
+          font-size: 16px;
+          color: #FFF;
+          cursor: pointer; }
+          .rightContent .responseBox .full .bottomRow .optionButton:hover {
+            background-color: #FFF;
+            color: #3F69B6; }
+        .rightContent .responseBox .full .bottomRow .contactSelect {
+          float: left; }
+          .rightContent .responseBox .full .bottomRow .contactSelect select {
+            display: inline;
+            width: 250px;
+            height: 32px;
+            border: 1px solid #344289;
+            border-radius: 3px;
+            background-color: #3F69B6;
+            text-align: center;
+            font-size: 16px;
+            color: #FFF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-user-select: none;
+            /* Chrome/Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+ */
+            /* Rules below not implemented in browsers yet */
+            -o-user-select: none;
+            user-select: none; }
+            .rightContent .responseBox .full .bottomRow .contactSelect select:hover {
+              background-color: #FFF;
+              color: #3F69B6; }
+        .rightContent .responseBox .full .bottomRow .submit {
+          float: right;
+          height: 45px;
+          line-height: 45px;
+          border: 2px solid #344289;
+          border-radius: 5px;
+          background-color: #FFF;
+          padding-right: 25px;
+          padding-left: 25px;
+          font-size: 22px;
+          color: #3F69B6;
+          font-weight: 700;
+          cursor: pointer; }
+          .rightContent .responseBox .full .bottomRow .submit:hover {
+            background-color: #3F69B6;
+            color: #FFF; }
+          .rightContent .responseBox .full .bottomRow .submit.disabled {
+            cursor: not-allowed;
+            background-color: #D3D3D3;
+            color: #898989;
+            border: 2px solid #898989; }
+
+.chart {
+  margin: 15px;
+  border-bottom: 1px solid #D3D3D3; }
+  .chart .title {
+    text-align: right;
+    margin: 15px;
+    color: #898989;
+    font-size: 12px;
+    text-transform: uppercase; }
+  .chart .loading {
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 15px; }

@@ -1,0 +1,54 @@
+<% if (typeof client !== "undefined") { %>
+  <% include ../partials/clientFrameTop %>
+<% } else { %>
+  <% include ../partials/hubFrameTop %>
+<% } %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_notifications.css">
+
+<div class="header">
+  <div class="column">client name</div>
+  <div class="column">send at</div>
+  <div class="column">message</div>
+  <div class="column">edit</div>
+  <div class="column">delete</div>
+</div>
+
+<% if (notifications.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% notifications.forEach(function (n) { %>
+  <div class="notificationRow">
+    <div class="column">
+      <span class="clientName">
+        <%= `${n.last}, ${n.first} ${n.middle}` %>
+      </span>
+    </div>
+    <div class="column">
+      <span class="time">
+        <%= moment.tz(n.send, organization.tz).format('MMM. Do, hh:mmA') %>
+      </span>
+    </div>
+    <div class="column">
+      <span class="subject">
+        <%= n.subject %>
+      </span>
+      <span class="message">
+        <%= n.message.length > 210 ? n.message.substr(0,210) + '...' : n.message %>
+      </span>
+    </div>
+    <div class="column">
+      <% if (hub.sel == "pending") { %>
+        <a href="/notifications/<%=n.notificationid%>/edit">
+          <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+    <div class="column">
+      <a href="/notifications/<%=n.notificationid%>/remove">
+        <i class="fa highlight fa-trash" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+<% }) %>
+
+<% include ../partials/hubFrameBottom %>

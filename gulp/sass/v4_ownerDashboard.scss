@@ -1,0 +1,324 @@
+
+
+// Variables
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$darkgrey:    #2A2A2A;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+$width_row1:  8%;
+$width_row2:  22%;
+$width_row3:  60%;
+$width_row4:  5%;
+$width_row5:  5%;
+
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Special for Dashbaord view
+.leftTab {
+  &.open {
+    min-width: 25%;
+  }
+}
+
+
+.leftBar {
+  width: 25%;
+  overflow-y: scroll;
+  float: left;
+  background-color: $white;
+
+  .departments {
+    padding: 5px 10px 5px 10px;
+
+    .department {
+      padding: 5px 5px 5px 5px;
+      border-bottom: 1px solid $offwhite;
+
+      .subject {
+        color: $lightblue;
+        margin-bottom: 5px;
+
+        &.showAll {
+          text-transform: uppercase;
+          text-align: center;
+          margin-top: 7px;
+          font-size: 12px;
+          letter-spacing: 1px;
+        }
+      }
+
+      .date {
+        font-size: 12px;
+        padding-bottom: 5px;
+
+        .day {
+          float: left;
+        }
+        .time {
+          float: right;
+        }
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+
+      &.selected {
+        background-color: $lightblue;
+        color: $white;
+        .subject {
+          color: $white;
+          font-weight: 700;
+        }
+      }
+
+      &:hover {
+        background-color: $offwhite;
+        color: $grey;
+        .subject {
+          color: $lightblue;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+.rightContent {
+  width: 75%;
+  overflow-y: scroll;
+  float: right;
+  background-color: $offwhite;
+  
+  .messageStream {
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 60px;
+
+    .message {
+      padding: 15px 20px 10px 20px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+
+      &.outbound {
+        // background-color: $lightgrey;
+        border: 1px solid $white;
+        color: $darkgrey;
+      } 
+      
+      &.inbound {
+        background-color: $white;
+        color: $darkgrey;
+      } 
+
+      .bottomRow {
+        margin-top: 15px; 
+        font-size: 12px;
+        line-height: 18px;
+
+        .fa {
+          font-size: 18px;
+        }
+
+        .state {
+          float: right;
+        }
+      }
+    }
+  }
+
+  .responseBox {
+    position: absolute;
+    bottom: 0px;
+    overflow: hidden;
+    padding: 0px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
+
+    .mini {
+      width: inherit;
+      background-color: $lightblue;
+      padding: 10px 10px 10px 10px;
+
+      .messageInput {
+        width: 733px;
+        height: 45px;
+        background-color: $darkblue;
+        border-radius: 3px;
+        line-height: 45px;
+        font-size: 18px;
+        color: $white;
+        font-weight: 300;
+        padding-left: 15px;
+        cursor: pointer;
+
+        .left {
+          float: left;
+          width: 50%;
+          text-align: left;
+        }
+        .right {
+          float: left;
+          width: 50%;
+          text-align: right;
+
+          .fa {
+            padding-right: 15px;
+          }
+        }
+
+        &:hover {
+          color: $offwhite;
+          box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+        }
+      }
+    }
+
+    .full {
+      display: none;
+      width: inherit;
+      background-color: $lightblue;
+      padding: 10px 10px 10px 10px;
+
+      .messageInput {
+        textarea {
+          width: 728px;
+          max-width: 728px;
+          height: 55px;
+          max-height: 55px;
+          background-color: $darkblue;
+          border-radius: 7px;
+          line-height: 20px;
+          font-size: 18px;
+          color: $white;
+          font-weight: 300;
+          padding: 10px;
+          border: 0px;
+        }
+      }
+
+      .bottomRow {
+        display: block;
+        height: 32px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+
+        .optionButton {
+          float: left;
+          text-align: center;
+          height: 31px;
+          border: 1px solid $darkblue;
+          border-radius: 3px;
+          background-color: $blue;
+          margin-right: 10px;
+          padding-left: 10px;
+          padding-right: 10px;
+          line-height: 31px;
+          font-size: 16px;
+          color: $white;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $white;
+            color: $blue;
+          }
+        }
+
+        .contactSelect {
+          float: left;
+          select {
+            display: inline;
+            width: 250px;
+            height: 32px;
+            border: 1px solid $darkblue;
+            border-radius: 3px;
+            background-color: $blue;
+            text-align: center;
+            font-size: 16px;
+            color: $white;
+            
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            -webkit-user-select: none; /* Chrome/Safari */        
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+ */
+            /* Rules below not implemented in browsers yet */
+            -o-user-select: none;
+            user-select: none;
+
+            &:hover {
+              background-color: $white;
+              color: $blue;
+            }
+          }
+        }
+
+        .submit {
+          float: right;
+          height: 45px;
+          line-height: 45px;
+          border: 2px solid $darkblue;
+          border-radius: 5px;
+          background-color: $white;
+          padding-right: 25px;
+          padding-left: 25px;
+          font-size: 22px;
+          color: $blue;
+          font-weight: 700;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $blue;
+            color: $white;
+          }
+
+          &.disabled {
+            cursor: not-allowed;
+            background-color: $lightgrey;
+            color: $grey;
+            border: 2px solid $grey;
+          }
+        }
+      }
+    }
+  }
+}
+
+.chart {
+  margin: 15px;
+  border-bottom: 1px solid $lightgrey;
+
+  .title {
+    text-align: right;
+    margin: 15px;
+    color: $grey;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .loading {
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 15px;
+  }
+}
+
+
+

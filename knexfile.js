@@ -1,19 +1,12 @@
 // Update with your config settings.
-var credentials = require("./credentials")["db"];
-var USER = credentials.user;
-var PASS = credentials.password;
-var HOST = credentials.host;
-var localDbUser = credentials.localDbUser;
+var credentialsDB = require("./credentials")["db"];
+var USER = credentialsDB.user;
+var PASS = credentialsDB.password;
+var HOST = credentialsDB.host;
+var localDbUser = credentialsDB.localDbUser;
 
 module.exports = {
 
-  development: {
-    client: "postgresql",
-    connection: {
-      user: localDbUser,
-      database: "clientcomm"
-    }
-  },
 
   testing: {
     client: "postgresql",
@@ -23,6 +16,26 @@ module.exports = {
     }
   },
 
+  // Development and host are now the same, they just reference different Amazong RDS PG instances
+  development: {
+    client: "postgresql",
+    connection: {
+      host: HOST,
+      port: "5432",
+      database: "clientcomm",
+      user:     USER,
+      password: PASS
+    },
+
+    pool: {
+      min: 2,
+      max: 10
+    },
+
+    migrations: {
+      tableName: "knex_migrations"
+    },
+  },
 
   production: {
     client: "postgresql",

@@ -1,0 +1,62 @@
+<% include ./partials/cardFrameTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_colorSelector.css">
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="/clients">
+    <% include ./partials/cardExit %>
+  </a>
+  <div class="cardTitle">
+    Manage Color Tags
+  </div>
+  <div class="cardSubtitle">
+    Use color tags to help organize clients on the main clients view page.
+  </div>
+</div>
+
+<div class="cardBody">
+
+
+  <% colors.forEach(function (tag) { %>
+    <div class="formRow listedColor">
+      <div class="colorBox" style="background-color:<%=tag.color%>"></div>
+      <div class="colorName""><%=tag.name%></div>
+      <a href="/colors/<%=tag.color_tag_id%>/remove">
+        <div class="colorTagRemove">
+          <i class="fa fa-minus-square" aria-hidden="true"></i>
+        </div>
+      </a>
+    </div>
+  <% }) %>
+
+  <div class="formRow createNewColor">
+    <form id="addNewColorTagForm"
+          method="post" 
+          action="/colors">
+      <div class="colorTagAdd">
+        <i class="fa fa-plus-square" aria-hidden="true"></i>
+      </div>
+
+      <button class="jscolor {valueElement:'chosen-value'}">
+        Pick Color
+      </button>
+
+      <div class="formInput">
+        <input  type="text" 
+                class="colorTagName" 
+                name="name" 
+                value=""
+                placeholder="Color tag name"
+                required>
+        </input>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script src="/static/js/jscolor.min.js"></script>
+<script type="text/javascript" class="JScolorsManager"></script>
+
+<% include ./partials/cardFrameBottom %>

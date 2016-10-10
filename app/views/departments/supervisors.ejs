@@ -1,0 +1,59 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="<%=`/org/departments/${departmentId}/edit`%>"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Select Supervisors</div>
+  <div class="cardSubtitle">Use departments to organize your workforce.</div>
+</div>
+
+<% var supervisorIds = supervisors.map(function (s) { return s.cmid }) %>
+
+<div class="cardBody">
+
+  <% if (members.length) { %>
+    <form method="post" id="updateSupervisors">
+      <div class="scrollListBox">
+        <% members.forEach(function (m) { %>
+          <div class="scrollListRow 
+              <% if (supervisorIds.indexOf(m.cmid) > -1) { %>selected<% } %>" 
+              data-supervisorId="<%= m.cmid %>">
+
+            <div class="scrollListContent">
+              <div class="clientName"><%=`${m.last}, ${m.first} ${m.middle}`%></div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="formRow">
+        <div class="formLabel">Make removed supervisors to the following class</div>
+        <select class="blueSelect" name="revertClass" required>
+          <% ["primary", "support"].forEach(function (className) { %>
+              <option value="<%= className %>" <% if (className == "primary") { %>selected<% } %>>
+                <%= className.charAt(0).toUpperCase() + className.slice(1) %> User
+              </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <input  type="submit" 
+              class="formSubmit" 
+              value="Save Department">
+    </form>
+  <% } else { %>
+    <div class="formRow">
+      <div class="formLabel">Department has no members</div>
+      <div class="formInput">Add members to the department first, then you can promote them to supervisor.</div>
+    </div>
+
+    <div class="formRow">
+      <a href="/org/clients">
+        <input type="submit" class="formSubmit inverse" value="Add department members">
+      </a>
+    </div>
+  <% } %>
+
+</div>
+
+<script type="text/javascript" class="JSdepartmentSupervisorsManagement"></script>
+<% include ../partials/cardFrameBottom %>

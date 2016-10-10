@@ -1,0 +1,76 @@
+<% include ../partials/hubFrameTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_departments.css">
+
+<div class="header">
+  <div class="column">alert</div>
+  <div class="column">department name</div>
+  <div class="column">attached number</div>
+  <div class="column">members</div>
+  <div class="column">supervisor(s)</div>
+  <div class="column">created</div>
+  <div class="column">manage</div>
+  <div class="column"><%= hub.sel == 'active' ? 'deactivate' : 'activate' %></div>
+</div>
+
+<% if (departments.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% departments.forEach((d) => { %>
+  <div class="notificationRow">
+    
+    <div class="column">
+      <a href="<%=`/org/alerts/create?department=${d.department_id}`%>">
+        <i class="ss highlight ss-chat"></i>
+      </a>
+    </div>
+    
+    <div class="column">
+      <%= d.name %>
+    </div>
+
+    <div class="column">
+      <%= d.value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
+    </div>
+
+    <div class="column">
+      <span class="bigNumber"><%= d.members ? d.members : '0' %></span>
+    </div>
+
+    <div class="column">
+      <% if (d.supervisors.length == 0) { %><b>No supervisors</b><% } %>
+      <%= d.supervisors.map((s) => {return `${s.first} ${s.last}`}).join(', '); %>
+    </div>
+
+    <div class="column">
+      <span class="time">
+        <%= moment.tz(d.send, organization.tz).format('MMM. Do, YYYY hh:mm A') %>
+      </span>
+    </div>
+
+    <div class="column">
+      <% if (hub.sel == "active") { %>
+        <a href="/org/departments/<%=d.department_id%>/edit">
+          <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+
+    <div class="column">
+      <% if (hub.sel == "active") { %>
+        <!-- Can only deactivate a department if all clients and supers are removed -->
+        <% if (!d.members) { %>
+          <a href="/org/departments/<%=d.department_id%>/alter/close">
+            <i class="fa highlight fa-book" aria-hidden="true"></i>
+          </a>
+        <% } else { %>-<% } %>
+      <% } else { %>
+        <a href="/org/departments/<%=d.department_id%>/alter/open">
+          <i class="fa highlight fa-undo" aria-hidden="true"></i>
+        </a>
+      <% } %>
+    </div>
+
+  </div>
+<% }) %>
+
+<% include ../partials/hubFrameBottom %>

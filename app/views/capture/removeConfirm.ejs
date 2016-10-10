@@ -1,0 +1,36 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/org/captured"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Confirm Removal</div>
+  <div class="cardSubtitle">
+    Removing a conversation from the capture board means no user can see or retrieve that conversation ever again. Proceed with caution!
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method="post">
+
+    <div class="formRow">
+      <div class="formLabel"> Conversation stream </div>
+      <div class="formInput">
+        <ul>
+          <% conversation.msgs.forEach((msg) => { %>
+            <li><%= msg.content %></li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Are you sure you want to remove? </div>
+      <div class="formInput"></div>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Confirm Captured Conversation Removal">
+  </form>
+</div>
+
+<% include ../partials/cardFrameBottom %>

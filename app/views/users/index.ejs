@@ -1,0 +1,86 @@
+<% include ../partials/hubFrameTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_users_supervisor.css">
+
+<% if (typeof limitByUser !== "undefined" && limitByUser) { %>
+  <div class="viewingAsOtherBanner">
+    You are viewing 
+    <b><%= user.first + ' ' + user.last %>'s</b>
+    clients dashboard.
+  </div>
+  <div class="otherBannerBumber"> </div>
+<% } %>
+
+<div class="header">
+  <div class="column">clients</div>
+  <div class="column">name</div>
+  <div class="column">email</div>
+  <div class="column">class</div>
+  <div class="column">position</div>
+  <div class="column">department</div>
+  <div class="column">added</div>
+  <div class="column">edit</div>
+  <div class="column">transfer</div>
+  <div class="column"><%= hub.sel == 'active' ? 'deactivate' : 'activate' %></div>
+</div>
+
+<% if (users.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% users.forEach(function (targetUser) { %>
+  <div class="notificationRow">
+    <div class="column">
+      <a href="<%=`/org/clients?user=${targetUser.cmid}`%>">
+        <i class="fa highlight fa-users" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="column">
+      <%=`${targetUser.last}, ${targetUser.first} ${targetUser.middle}`%>
+    </div>
+    <div class="column">
+      <small><%= targetUser.email %></small>
+    </div>
+    <div class="column">
+      <small><%= targetUser.class.charAt(0).toUpperCase() + targetUser.class.slice(1) %></small>
+    </div>
+    <div class="column">
+      <small><%= targetUser.position %></small>
+    </div>
+    <div class="column">
+      <small><%= targetUser.department_name ? targetUser.department_name : '-' %></small>
+    </div>
+    <div class="column">
+      <span class="time">
+        <%= moment.tz(targetUser.created, organization.tz).format('MMM. Do, YYYY hh:mmA') %>
+      </span>
+    </div>
+    <div class="column">
+      <% if (targetUser.active) { %>
+        <a href="<%=`/org/users/${targetUser.cmid}/edit`%>">
+          <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+    <div class="column">
+      <% if (user.cmid !== targetUser.cmid && ["primary", "support"].indexOf(targetUser.class) > -1) { %>
+        <a href="<%=`/org/users/${targetUser.cmid}/transfer`%>">
+          <i class="fa highlight fa-mail-forward" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+    <div class="column">
+      <% if (hub.sel == "active") { %>
+        <% if (user.cmid !== targetUser.cmid && ["primary", "support"].indexOf(targetUser.class) > -1) { %>
+          <a href="<%=`/org/users/${targetUser.cmid}/alter/close`%>">
+            <i class="fa highlight fa-book" aria-hidden="true"></i>
+          </a>
+        <% } else { %>-<% } %>
+      <% } else { %>
+        <a href="<%=`/org/users/${targetUser.cmid}/alter/open`%>">
+          <i class="fa highlight fa-undo" aria-hidden="true"></i>
+        </a>
+      <% } %>
+    </div>
+  </div>
+<% }) %>
+
+<% include ../partials/hubFrameBottom %>

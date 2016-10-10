@@ -1,0 +1,485 @@
+
+
+// Variables
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$green:       #00e500;
+$grey:        #898989;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+// Modify main bg
+body {
+  background-color: $darkblue;
+  background-image: none;
+  box-shadow: none;
+  border: 0;
+  color: $darkblue;
+  margin: 0px;
+}
+
+.card {
+  position: relative;
+  background-color: $white;
+  width: 500px;
+  overflow-x: hidden;
+  
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 70px;
+  margin-bottom: 0px;
+
+  border-radius: 10px;
+
+  box-shadow: 0px 3px 20px rgba(0,0,0,0.5);
+
+  .cardHead {
+
+    .exitButton {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+
+      svg {
+        polygon {
+          fill: $lightgrey;
+        }
+        &:hover polygon {
+          fill: $darkblue;
+        }
+      }
+    }
+
+    .cardLogo {
+      font-size: 35px;
+      font-weight: 900;
+      text-align: center;
+      margin-top: 50px;
+      margin-bottom: 60px;
+      color: #2F8CE8;
+
+      .icon {
+        svg {
+          height: 120px;
+        }
+      }
+      .title {
+        svg {
+          width: 80%;
+        }
+      }
+      path {
+        fill: $darkblue;
+      }
+    }
+
+    .cardTitle {
+      font-size: 30px;
+      text-align: center;
+      font-weight: 100;
+      color: $darkblue;
+      padding-top: 15px;
+      padding-bottom: 15px;
+
+      // Float center
+      padding-left: 50px;
+      padding-right: 50px;
+      text-align: center;
+
+      border-bottom: 1px solid $lightgrey;
+      box-shadow: 0px 3px 5px rgba(0,0,0,0.075);
+    }
+
+    .cardSubtitle {
+      color: $grey;
+      font-size: 14px;
+      padding: 10px 20px 5px 20px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+  }
+
+  .cardBody {
+    .formRow {
+      padding: 5px 30px 25px 30px;
+
+      .formLabel {
+        font-size: 16px;
+        font-weight: 700;
+        padding-bottom: 3px;
+        color: $darkblue;
+
+        small {
+          font-weight: 300;
+          font-size: 12px;
+        }
+      }
+
+      &.subdued {
+        opacity: 0.5;
+        cursor: pointer;
+
+        .formLabel {
+          color: $grey;
+        }
+
+        .formInput {
+          input[type=text] {
+            border: 2px solid $grey;
+            background-color: $lightgrey;
+            cursor: pointer;
+          }
+        }
+
+        &:hover {
+          .formLabel {
+            color: $blue;
+          }
+          .formInput {
+            input[type=text] {
+              border: 2px solid $blue;
+              background-color: $white;
+            }
+          }
+        }
+      }
+
+      .formInput {
+        color: $darkblue;
+        font-size: 12;
+
+        .inputOption {
+          float: left;
+          margin-right: 20px;
+        }
+
+        input[type=text], input[type=email], input[list=suggestionList],  input[type=password] {
+          background: $white;
+          width: 420px;
+          font-size: 12px;
+          line-height: 18px;
+          height: 18px;
+          max-width: 420px;
+          border: 2px solid $lightblue;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px;
+        }
+
+        input[type=date] {
+          background: $white;
+          width: 420px;
+          font-size: 12px;
+          line-height: 18px;
+          height: 18px;
+          max-width: 420px;
+          border: 2px solid $lightblue;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px;
+        }
+
+        textarea {
+          background: $white;
+          width: 420px;
+          height: 50px;
+          max-width: 420px;
+          max-height: 50px;
+          border: 2px solid $lightblue;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px;
+        }
+
+        .tt-dataset {
+          background-color: $white;
+          width: 440px;
+          max-width: 440px;
+          border: 2px solid $lightblue;
+          border-radius: 4px;
+          margin-top: 5px;
+
+          .tt-suggestion, .tt-selectable {
+            max-width: 420px;
+            padding: 5px 10px 5px 10px;
+            cursor: pointer;
+
+            &:hover {
+              color: $white;
+              background-color: $lightblue;
+            }
+          }
+        }
+
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+
+      .formSelect {
+        width: 440px;
+        height: 35px;
+        border: 2px solid $grey;
+        border-radius: 7px;
+        background-color: $lightgrey;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: $darkblue;
+      }
+
+
+      .blueSelect {
+        width: 440px;
+        height: 35px;
+        border: 2px solid #2F8CE8;
+        border-radius: 7px;
+        background-color: #92C9FF;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #344289;
+      }
+
+      .opt {
+        font-size: small;
+        float: right;
+        font-weight: 300;
+        font-style: italic;
+      }
+    }
+
+    .scrollListBox {
+      width: 450px;
+      max-height: 400px;
+      border: 2px solid $grey;
+      border-radius: 7px;
+      background-color: $white;
+      color: $darkblue;
+      overflow-y: scroll;
+
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+
+      &::-webkit-scrollbar { 
+        display: none; 
+      }
+      
+      .scrollListRow {
+        max-height: 100px;
+        overflow: hidden;
+        cursor: pointer;
+        
+        // border on bottom except for last
+        border-bottom: 1px solid $lightgrey;
+        &:nth-last-child(1) {
+          border-bottom: 0px;
+        }
+
+        .useCount {
+          float: right;
+          width: 45px;
+          text-align: center;
+          line-height: 70px;
+          font-size: 18px;
+          font-weight: 700;
+          color: $lightblue;
+        }
+
+        .colorTag {
+          float: left;
+          width: 45px;
+          text-align: center;
+          line-height: 70px;
+          font-size: 18px;
+          font-weight: 700;
+          color: $lightblue;
+
+          .tag {
+            width: 15px;
+            height: 28px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid $white;
+            border-radius: 75px;
+          }
+        }
+
+        .scrollListContent {
+          float: right;
+          padding: 10px;
+          width: 365px;
+
+          .clientName {
+            font-size: 18px;
+            line-height: 30px;
+            word-wrap: break-word;
+            overflow: hidden;
+            color: $lightblue;
+          }
+
+          .titleText {
+            font-size: 14px;
+            line-height: 14px;
+            font-weight: bold;
+            word-wrap: break-word;
+            height: 14px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            color: $lightblue;
+            text-decoration: underline;
+          }
+
+          .bodyText {
+            word-wrap: break-word;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 14px;
+            max-height: 42px;
+            color: $grey;
+
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
+          .tags {
+            color: $lightgrey;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 14px;
+            margin-top: 5px;
+          }
+          
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+
+        &:hover, &.selected {
+          background-color: $lightblue;
+          color: $white;
+
+          .clientName, .titleText, .useCount, .bodyText, .tags {
+            color: $white;            
+          }
+        }
+        
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+    }
+
+    .formSubmit {
+      display: block;
+      border: 0px;
+      border-radius: 20px;
+      
+      height: 35px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 27px;
+      cursor: pointer;
+
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+
+      margin-bottom: 20px;
+      margin-right: auto;
+      margin-left: auto;
+
+      border: 2px solid $lightblue;
+      background-color: $white;
+      color: $lightblue;
+
+      &:hover {
+        background-color: $lightblue;
+        color: $white;
+      }
+
+      &.inverse {
+        background-color: $lightblue;
+        color: $white;
+        &:hover {
+          background-color: $white;
+          color: $lightblue;
+        }
+      }
+
+      &.inline {
+        display: inline;
+      }
+
+      &.red {
+        border: 2px solid $red;
+        color: $red;
+        background-color: $white;
+        &:hover {
+          background-color: $red;
+          color: $white;
+        }
+      }
+
+      &.green {
+        border: 2px solid $green;
+        color: $green;
+        background-color: $white;
+        &:hover {
+          background-color: $green;
+          color: $white;
+        }
+      }
+    }
+
+    .orBreak {
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 20px;
+      
+
+      .dash {
+        padding-left: 10px;
+        padding-right: 10px;
+        display:inline-block;
+        -webkit-transform:scale(5,1); /* Safari and Chrome */
+        -moz-transform:scale(5,1); /* Firefox */
+        -ms-transform:scale(5,1); /* IE 9 */
+        -o-transform:scale(5,1); /* Opera */
+        transform:scale(5,1); /* W3C */
+      }
+    }
+  }
+
+}

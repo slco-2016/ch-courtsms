@@ -1,0 +1,51 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/org/departments"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Edit Department</div>
+  <div class="cardSubtitle">Use departments to organize your workforce.</div>
+</div>
+
+<div class="cardBody">
+
+  <div class="formRow">
+    <a href="/org/departments/<%=department.department_id%>/supervisors">
+      <input type="submit" class="formSubmit inverse" value="Manage supervisors">
+    </a>
+  </div>
+
+  <form method = "post">
+
+    <div class="formRow">
+      <div class="formLabel"> Name of department </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="name" 
+                value="<%=department.name%>"
+                placeholder="Enter a name of the group" 
+                maxlength="160"
+                required="">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Which phone number to pair </div>
+      <select class="blueSelect" 
+              name="number" 
+              required>
+        <% phoneNumbers.forEach(function (phoneNumber) { %>
+            <option value="<%= phoneNumber.phone_number_id %>"
+                    <% if (department.phone_number == phoneNumber.phone_number_id) { %>selected<% } %>>
+              <%= phoneNumber.value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4'); %>
+            </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Save Department">
+  </form>
+</div>
+
+<% include ../partials/cardFrameBottom %>

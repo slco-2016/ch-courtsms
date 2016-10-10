@@ -1,0 +1,118 @@
+.createNewColor .jscolor {
+  float: left;
+  border: 2px solid #4A90E2;
+  border-radius: 4px;
+  cursor: pointer;
+  height: 32px;
+  width: 100px;
+  max-width: 100px;
+  padding: 5px 10px 5px 10px;
+  color: #898989; }
+
+.createNewColor .colorTagName {
+  float: left;
+  width: 265px !important;
+  margin-left: 15px; }
+
+.createNewColor .colorTagAdd {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+  color: #4A90E2; }
+  .createNewColor .colorTagAdd:hover {
+    color: #3F69B6; }
+
+.createNewColor::after {
+  content: "";
+  display: block;
+  clear: both; }
+
+.listedColor .colorBox {
+  float: left;
+  border: 2px solid #D3D3D3;
+  border-radius: 4px;
+  height: 28px;
+  width: 96px;
+  max-width: 100px; }
+
+.listedColor .colorName {
+  float: left;
+  line-height: 32px;
+  width: 265px;
+  margin-left: 15px;
+  border-bottom: 1px dashed #4A90E2; }
+
+.listedColor .colorTagRemove {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+  color: #4A90E2; }
+  .listedColor .colorTagRemove:hover {
+    color: #3F69B6; }
+
+.listedColor::after {
+  content: "";
+  display: block;
+  clear: both; }
+
+.manageColorsLink {
+  margin-left: 35px;
+  margin-right: 35px;
+  z-index: 10;
+  text-align: center;
+  background-color: #FFF;
+  color: #4A90E2;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px 5px 0px 0px;
+  font-size: 12px;
+  cursor: pointer; }
+  .manageColorsLink:hover {
+    background-color: #4A90E2;
+    color: #FFF; }
+
+.coloredClientFrame .clientNameBox {
+  margin-left: 35px;
+  margin-right: 35px;
+  height: 40px;
+  background-color: red;
+  text-align: center;
+  line-height: 40px;
+  font-size: 24px;
+  overflow: hidden;
+  color: #FFF; }
+
+.coloredClientFrame .clientColorNameSelected {
+  text-align: center;
+  font-size: 12px;
+  line-height: 22px;
+  color: #898989; }
+
+.colorList {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  margin-left: 35px;
+  margin-right: 35px; }
+  .colorList .colorTag {
+    float: left;
+    width: 15px;
+    height: 28px;
+    margin-left: 180px;
+    border: 1px solid #FFF;
+    border-radius: 10px;
+    content: " "; }
+  .colorList .colorName {
+    float: left;
+    line-height: 30px;
+    margin-left: 15px;
+    color: #898989; }
+  .colorList:hover {
+    background-color: #E8ECEF;
+    font-weight: 700; }
+  .colorList::after {
+    content: "";
+    display: block;
+    clear: both; }
+
+.formSubmit {
+  margin-top: 20px; }

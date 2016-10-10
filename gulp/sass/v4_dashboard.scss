@@ -1,0 +1,258 @@
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$lightbluegrey:#6783a1;
+$grey:        #898989;
+$darkgrey:    #2A2A2A;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$lightbluegrey:#6783a1;
+$blue:        #3F69B6;
+$bluegrey:    #516a84;
+$darkblue:    #344289;
+$darkbluegrey:#3c5065;
+
+$width_row1:  8%;
+$width_row2:  22%;
+$width_row3:  60%;
+$width_row4:  5%;
+$width_row5:  5%;
+
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.leftBar {
+  width: 200px;
+  overflow-y: scroll;
+  float: left;
+  background-color: $offwhite;
+  border-right: 1px solid $lightgrey;
+
+  .departments {
+
+    .department {
+      padding: 18px 10px 7px 10px;
+      border-bottom: 1px solid $lightgrey;
+
+      .subject {
+        color: $darkblue;
+        margin-bottom: 5px;
+
+        &.showAll {
+          text-transform: uppercase;
+          text-align: center;
+          margin-top: 7px;
+          font-size: 12px;
+          letter-spacing: 1px;
+        }
+      }
+
+      .date {
+        font-size: 12px;
+
+        .day {
+          text-align: right;
+          line-height: 16px;
+          font-size: 11px;
+        }
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+
+      &.selected {
+        background-color: $white;
+        color: $grey;
+        .subject {
+          color: $darkblue;
+          font-weight: 700;
+        }
+      }
+
+      &.userTab {
+        display: none;
+      }
+
+      &:hover {
+        background-color: $white;
+        color: $grey;
+        .subject {
+          color: $darkblue;
+        }
+      }
+    }
+  }
+}
+
+.subHeader {
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 32px;
+  font-size: 10px;
+  background-color: $lightgrey;
+  color: $darkblue;
+  letter-spacing: 1px;
+  padding-bottom: 0px;
+  border-bottom: 1px solid $lightgrey;
+
+  &:hover, &.selected {
+    color: $lightblue;
+    background-color: $white;
+    font-weight: 500;
+  }
+
+  &#seeUsers {
+    cursor: pointer;
+  }
+}
+
+.rightContent {
+  width: 823px;
+  overflow-y: scroll;
+  float: right;
+  background-color: $offwhite;
+  box-shadow: inset 1px 10px 20px -10px;
+  
+  .threeBlockRow {
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin: 30px;
+    border-bottom: 1px solid $lightgrey;
+
+    .block {
+      width: 33%;
+      height: inherit;
+      float: left;
+      // border: 1px solid red;
+      text-align: center;
+
+      .blockChart {
+        min-height: 160px;
+        height: 160px;
+        max-height: 160px;
+        overflow: hidden;
+
+        &.activeStaffPercentage {
+          font-family: Georgia, serif;
+          line-height: 75px;
+          // font-weight: bold;
+          font-size: 90px;
+          color: $darkblue;
+          min-height: 105px;
+          height: 105px;
+          max-height: 105px;
+
+          small {
+            font-size: 65px;
+          }
+
+          .fa {
+            // margin-top: 100px;
+            font-size: 25px;
+            color: $grey;
+          }
+        }
+      }
+
+      .subtitle {
+        font-size: 16px;
+        line-height: 23px;
+      }
+
+
+      .container {
+        padding-top: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 30px;
+
+        .heading {
+          text-align: left;
+          padding: 5px 0px 5px 0px;
+          color: $darkblue;
+          font-size: 16px;
+          font-weight: 700;
+          margin-bottom: 5px;
+        }
+
+        .body {
+          .row {
+            font-size: 16px;
+            line-height: 23px;
+            width: 100%;
+            .name {
+              text-align: left;
+            }
+          }
+
+          .circlesSubtitles {
+            width: 100%;
+            .container {
+              padding: 0px;
+              .subtitle {
+                float: right;
+                text-align: center;
+                width: 33%;
+                float: left;
+                font-size: 12px;
+                padding: 0px;
+              }
+            }
+            &::after {
+              content:"";
+              display:block;
+              clear:both;
+            }
+          }
+
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+      }
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+}
+
+.chart {
+  margin: 30px;
+  border-bottom: 1px solid $lightgrey;
+
+  .title {
+    text-align: left;
+    margin: 15px;
+    margin-bottom: 15px;
+    color: $grey;
+    font-size: 16px;
+    // text-transform: uppercase;
+  }
+
+  .loading {
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 15px;
+  }
+}
+
+
+

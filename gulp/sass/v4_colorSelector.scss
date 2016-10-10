@@ -1,0 +1,176 @@
+
+
+// Variables
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+.createNewColor {
+  .jscolor {
+    float: left;
+    border: 2px solid $lightblue;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 32px;
+    width: 100px;
+    max-width: 100px;
+    padding: 5px 10px 5px 10px;
+    color: $grey;
+  }
+
+  .colorTagName {
+    float: left;
+    width: 265px !important;
+    margin-left: 15px;
+  }
+
+  .colorTagAdd {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+    color: $lightblue;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  &::after {
+    content: "";
+    display:block;
+    clear:both;
+  }
+}
+
+.listedColor {
+  .colorBox {
+    float: left;
+    border: 2px solid $lightgrey;
+    border-radius: 4px;
+    height: 28px;
+    width: 96px;
+    max-width: 100px;
+  }
+  .colorName {
+    float: left;
+    line-height: 32px;
+    width: 265px;
+    margin-left: 15px;
+    border-bottom: 1px dashed $lightblue;
+  }
+  .colorTagRemove {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+    color: $lightblue;
+
+    &:hover {
+      color: $blue;
+    }
+  }
+
+  &::after {
+    content: "";
+    display:block;
+    clear:both;
+  }
+}
+
+.manageColorsLink {
+  margin-left: 35px;
+  margin-right: 35px;
+  z-index: 10;
+  text-align: center;
+  background-color: $white;
+  color: $lightblue;
+  padding: 5px 10px 5px 10px;
+  border-radius: 5px 5px 0px 0px;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $lightblue;
+    color: $white;
+  }
+}
+
+.coloredClientFrame {
+
+  .clientNameBox {
+    margin-left: 35px;
+    margin-right: 35px;
+    height: 40px;
+    background-color: red;
+    text-align: center;
+    line-height: 40px;
+    font-size: 24px;
+    overflow: hidden;
+    color: $white;
+  }
+  .clientColorNameSelected {
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+    color: $grey;
+  }
+}
+
+.colorList {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  margin-left: 35px;
+  margin-right: 35px;
+
+  .colorTag {
+    float: left;
+    width: 15px;
+    height: 28px;
+    margin-left: 180px;
+    border: 1px solid $white;
+    border-radius: 10px;
+    content: " ";
+  }
+
+  .colorName {
+    float: left;
+    line-height: 30px;
+    margin-left: 15px;
+    color: $grey;
+  }
+
+  &:hover {
+    background-color: $offwhite;
+    font-weight: 700;
+  }
+
+  &::after {
+    content: "";
+    display:block;
+    clear:both;
+  }
+}
+
+.formSubmit {
+  margin-top: 20px;
+}
+
+
+

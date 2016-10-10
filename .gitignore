@@ -1,5 +1,8 @@
-credentials.js
-node_modules/
 .DS_Store
+bower_components/
+credentials.js
+coverage
+node_modules/
 npm-debug.log
 newrelic_agent.log
+coverage/

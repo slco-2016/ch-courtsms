@@ -1,0 +1,105 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/org/users"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Edit User</div>
+  <div class="cardSubtitle">Keep user information reflective of organization structure.</div>
+</div>
+
+<div class="cardBody">
+
+  <form method = "post">
+
+    <div class="formRow">
+      <div class="formLabel"> First Name </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="first" 
+                value="<%=targetUser.first%>"
+                maxlength="160"
+                required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Middle Name </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="middle" 
+                value="<%=targetUser.middle%>"
+                maxlength="160">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Last Name </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="last" 
+                value="<%=targetUser.last%>"
+                maxlength="160"
+                required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Email Address </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="email" 
+                value="<%=targetUser.email%>"
+                maxlength="160"
+                required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Department </div>
+      <select class="blueSelect" 
+              name="department" 
+              required>
+        <option selected disabled>Select a department</option>
+        <% departments.forEach(function (department) { %>
+            <option value="<%= department.department_id %>"
+                    <% if (targetUser.department == department.department_id) { %>selected<% } %>>
+              <%= department.name; %>
+            </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Position </div>
+      <div class="formInput">
+        <input  type="text" 
+                name="position" 
+                value="<%=targetUser.position%>"
+                maxlength="160"
+                required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Account type </div>
+      <select class="blueSelect" 
+              name="className" 
+              required>
+        <% ["supervisor", "primary", "support"].forEach(function (className) { %>
+            <option value="<%= className %>"
+                    <% if (targetUser.class == className) { %>selected<% } %>>
+              <%= className %>
+              <% if (className == "primary") { %>
+                (e.g. case manager, therapist)
+              <% } %>
+            </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Submit Updates">
+  </form>
+</div>
+
+<% include ../partials/cardFrameBottom %>

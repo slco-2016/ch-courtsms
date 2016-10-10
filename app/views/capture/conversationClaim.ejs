@@ -1,0 +1,51 @@
+<% include ../partials/cardFrameTop %>
+
+<style type="text/css">
+  .inbound, .outbound {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  .inbound {
+    background-color: #eee;
+  }
+  .outbound {
+    text-align: right;
+  }
+</style>
+
+<div class="cardHead">
+  <a href="/clients"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Possible New Conversation</div>
+  <div class="cardSubtitle">
+    Accept or reject this conversation. Accepting it will allow you to continue speaking with the client, closing it will prevent you from receiving further messages within this conversation.
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method="post">
+    <input type="hidden" value="1" name="accept">
+    <input type="submit" class="formSubmit green" value="Accept Conversation">
+  </form>
+
+  <center>-or-<br><br></center>
+
+  <form method="post">
+    <input type="hidden" value="1" name="reject">
+    <input type="submit" class="formSubmit red" value="Reject Conversation">
+  </form>
+
+  <div class="formRow">
+    <div class="formLabel"> Conversation stream (for reference) </div>
+    <div class="formInput">
+      <% conversation.messages.forEach((msg) => { %>
+        <div class="<% if (msg.inbound) { %>inbound<% } else { %>outbound<% } %>">
+          <%= msg.content %>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+</div>
+
+<% include ../partials/cardFrameBottom %>

@@ -1,0 +1,72 @@
+<% include ./navBarTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
+
+  <div class="navSub <% if (level == "org") { %>orgLevel<% } %>">
+  
+    <div class="allLeftParent">
+      <div class="allLeft">
+        <% if (level == "org") { %>
+          <% if (user.class !== "support") { %>
+            <div class="leftTab <%= hub.tab == 'dashboard' ? 'open' : 'closed' %>">
+              <div class="title"><a href="/org">Dashboard</a></div>
+            </div>
+          <% } %>
+
+          <% if (user.class == "owner") { %>
+            <%- leftTab('departments', hub, level, ['active', 'inactive']) %>
+            <%- leftTab('numbers', hub, level, null) %>
+          <% } %>
+
+          <%- leftTab('users', hub, level, ['active', 'inactive']) %>
+        <% } %>
+
+        <%- leftTab('clients', hub, level, ['open', 'closed']) %>
+
+        <% if (level == "org") { %>
+          <%- leftTab('captured', hub, level, null) %>
+        <% } %>
+
+        <!-- Primary user level tabs -->
+        <% if (level == "user") { %>
+          <%- leftTab('notifications', hub, level, ['pending', 'sent']) %>
+          <%- leftTab('templates', hub, level, null) %>
+          <%- leftTab('groups', hub, level, ['current', 'deleted']) %>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="allRightParent">
+      <div class="allRight">
+        <!-- Right "action" buttons -->
+        <% if (level =="org") { %>
+          <% if (user.class !== "support") { %>
+            <%- rightTab('numbers', 'phone', level) %>
+            <%- rightTab('departments', 'building', level) %>
+            <%- rightTab('users', 'user-plus', level) %>
+          <% } %>
+        <% } %>
+
+        <!-- primary -->
+        <% if (level == "user") { %>
+          <%- rightTab('groups', 'users', level) %>
+          <%- rightTab('templates', 'clipboard', level) %> 
+          <%- rightTab('notifications', 'bell', level) %>
+        <% } %>
+
+        <%- rightTab('clients', 'user', level) %>
+      </div>
+    </div>
+      
+  </div>
+
+  <div class="coreContent">
+
+  <% if (typeof viewingAsOther !== "undefined" && viewingAsOther) { %>
+    <div class="viewingAsOtherBanner">
+      You are viewing 
+      <b><%= viewingAsOther.first + ' ' + viewingAsOther.last %>'s</b>
+      clients dashboard.
+    </div>
+    <div class="otherBannerBumber"> </div>
+  <% } %>

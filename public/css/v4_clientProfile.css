@@ -1,0 +1,203 @@
+#messagingActivity {
+  overflow: hidden; }
+
+.profileRow {
+  height: 100%; }
+  .profileRow .smallLeft {
+    padding-top: 10px;
+    float: left;
+    width: 20%; }
+    .profileRow .smallLeft .container {
+      padding-right: 0px; }
+    .profileRow .smallLeft .clientImage svg {
+      width: 80%;
+      padding-left: 15px;
+      padding-bottom: 5px; }
+    .profileRow .smallLeft .clientInfoContainer {
+      padding-top: 15px;
+      padding-bottom: 15px; }
+      .profileRow .smallLeft .clientInfoContainer .clientInfoRow {
+        font-size: 14px;
+        line-height: 20px; }
+        .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager {
+          border: 1px solid #D3D3D3;
+          color: #898989;
+          padding: 5px;
+          border-radius: 5px;
+          margin-top: 5px;
+          margin-bottom: 5px; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager:hover {
+            box-shadow: 0px 1px 5px #D3D3D3; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager .name {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.075);
+            margin-bottom: 5px; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager small {
+            font-size: 12px; }
+          .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager.miniButton {
+            text-indent: 5px; }
+            .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager.miniButton .ss {
+              color: #898989;
+              padding-right: 8px;
+              margin-right: 8px;
+              border-right: 1px solid rgba(0, 0, 0, 0.075); }
+  .profileRow .bigRight {
+    float: left;
+    padding-top: 10px;
+    width: 80%; }
+  .profileRow .container {
+    padding: 30px; }
+    .profileRow .container .left {
+      width: 50%;
+      float: left; }
+    .profileRow .container .right {
+      width: 50%;
+      float: left; }
+    .profileRow .container .left .container, .profileRow .container .right .container {
+      padding-top: 0px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 30px; }
+      .profileRow .container .left .container .heading, .profileRow .container .right .container .heading {
+        margin-top: 15px;
+        padding: 5px 0px 5px 0px;
+        color: #344289;
+        border-bottom: 2px solid #D3D3D3;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 5px; }
+      .profileRow .container .left .container .body .row, .profileRow .container .right .container .body .row {
+        font-size: 16px;
+        line-height: 22px;
+        width: 100%; }
+        .profileRow .container .left .container .body .row .name, .profileRow .container .right .container .body .row .name {
+          text-align: left;
+          width: 60%;
+          float: left; }
+        .profileRow .container .left .container .body .row .val, .profileRow .container .right .container .body .row .val {
+          text-align: left;
+          width: 40%;
+          float: left; }
+      .profileRow .container .left .container .body .circlesSubtitles, .profileRow .container .right .container .body .circlesSubtitles {
+        width: 100%; }
+        .profileRow .container .left .container .body .circlesSubtitles .container, .profileRow .container .right .container .body .circlesSubtitles .container {
+          padding: 0px; }
+          .profileRow .container .left .container .body .circlesSubtitles .container .subtitle, .profileRow .container .right .container .body .circlesSubtitles .container .subtitle {
+            float: right;
+            text-align: center;
+            width: 33%;
+            float: left;
+            font-size: 12px;
+            padding: 0px; }
+        .profileRow .container .left .container .body .circlesSubtitles::after, .profileRow .container .right .container .body .circlesSubtitles::after {
+          content: "";
+          display: block;
+          clear: both; }
+      .profileRow .container .left .container .body::after, .profileRow .container .right .container .body::after {
+        content: "";
+        display: block;
+        clear: both; }
+
+.cssResponseTimeBarGraph {
+  padding-top: 5px; }
+  .cssResponseTimeBarGraph .headings {
+    width: 100%;
+    line-height: 28px;
+    font-size: 14px; }
+    .cssResponseTimeBarGraph .headings .leftAttr, .cssResponseTimeBarGraph .headings .rightAttr {
+      float: left;
+      width: 50%;
+      font-weight: 700;
+      padding-top: 5px; }
+    .cssResponseTimeBarGraph .headings .leftAttr {
+      color: #4A90E2; }
+      .cssResponseTimeBarGraph .headings .leftAttr.under {
+        text-align: center;
+        font-weight: 300;
+        color: #898989;
+        font-size: 12px;
+        line-height: 50px;
+        font-weight: bold; }
+    .cssResponseTimeBarGraph .headings .rightAttr {
+      text-align: right;
+      color: #344289; }
+      .cssResponseTimeBarGraph .headings .rightAttr.under {
+        text-align: center;
+        font-weight: 300;
+        color: #898989;
+        font-size: 12px;
+        line-height: 50px;
+        font-weight: bold; }
+    .cssResponseTimeBarGraph .headings::after {
+      content: "";
+      display: block;
+      clear: both; }
+  .cssResponseTimeBarGraph .attr {
+    width: 100%; }
+    .cssResponseTimeBarGraph .attr .fullBarContainer .fullBar {
+      padding: 0px 5px 0px 5px;
+      height: 35px;
+      overflow: hidden;
+      background: repeating-linear-gradient(45deg, #D3D3D3, #D3D3D3 2px, #E8ECEF 3px, #E8ECEF 6px); }
+      .cssResponseTimeBarGraph .attr .fullBarContainer .fullBar .leftBar {
+        width: 50%;
+        height: 35px;
+        float: left; }
+        .cssResponseTimeBarGraph .attr .fullBarContainer .fullBar .leftBar .filledBar {
+          height: 100%;
+          background-color: #4A90E2;
+          width: 44px;
+          float: right;
+          border-right: 1px solid #E8ECEF; }
+      .cssResponseTimeBarGraph .attr .fullBarContainer .fullBar .rightBar {
+        width: 50%;
+        height: 35px;
+        float: left; }
+        .cssResponseTimeBarGraph .attr .fullBarContainer .fullBar .rightBar .filledBar {
+          height: 100%;
+          background-color: #344289;
+          width: 44px; }
+
+.profileBlock {
+  display: block;
+  background-color: #FFF;
+  overflow: hidden; }
+  .profileBlock .left {
+    width: 50%;
+    float: left; }
+  .profileBlock .right {
+    width: 50%;
+    float: left; }
+  .profileBlock .whole {
+    width: 100%; }
+  .profileBlock .section {
+    padding: 20px 10px 20px 10px; }
+    .profileBlock .section .heading {
+      color: #4A90E2;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 28px;
+      margin-bottom: 5px; }
+      .profileBlock .section .heading .action {
+        background-color: #4A90E2;
+        color: #FFF;
+        display: inline;
+        float: right;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 3px 10px 3px 10px;
+        margin-top: 6px;
+        margin-left: 5px;
+        border-radius: 2px; }
+        .profileBlock .section .heading .action:hover {
+          background-color: #3F69B6; }
+    .profileBlock .section .graphic {
+      min-height: 250px; }
+    .profileBlock .section .details .row {
+      padding: 5px 10px 5px 10px;
+      font-size: 16px;
+      line-height: 22px; }
+      .profileBlock .section .details .row:nth-child(odd) {
+        background-color: #E8ECEF; }
+      .profileBlock .section .details .row:hover {
+        background-color: #898989;
+        color: #FFF; }

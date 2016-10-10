@@ -1,0 +1,152 @@
+.leftBar {
+  width: 200px;
+  overflow-y: scroll;
+  float: left;
+  background-color: #E8ECEF;
+  border-right: 1px solid #D3D3D3; }
+  .leftBar .departments .department {
+    padding: 18px 10px 7px 10px;
+    border-bottom: 1px solid #D3D3D3; }
+    .leftBar .departments .department .subject {
+      color: #344289;
+      margin-bottom: 5px; }
+      .leftBar .departments .department .subject.showAll {
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 7px;
+        font-size: 12px;
+        letter-spacing: 1px; }
+    .leftBar .departments .department .date {
+      font-size: 12px; }
+      .leftBar .departments .department .date .day {
+        text-align: right;
+        line-height: 16px;
+        font-size: 11px; }
+      .leftBar .departments .department .date::after {
+        content: "";
+        display: block;
+        clear: both; }
+    .leftBar .departments .department.selected {
+      background-color: #FFF;
+      color: #898989; }
+      .leftBar .departments .department.selected .subject {
+        color: #344289;
+        font-weight: 700; }
+    .leftBar .departments .department.userTab {
+      display: none; }
+    .leftBar .departments .department:hover {
+      background-color: #FFF;
+      color: #898989; }
+      .leftBar .departments .department:hover .subject {
+        color: #344289; }
+
+.subHeader {
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 32px;
+  font-size: 10px;
+  background-color: #D3D3D3;
+  color: #344289;
+  letter-spacing: 1px;
+  padding-bottom: 0px;
+  border-bottom: 1px solid #D3D3D3; }
+  .subHeader:hover, .subHeader.selected {
+    color: #4A90E2;
+    background-color: #FFF;
+    font-weight: 500; }
+  .subHeader#seeUsers {
+    cursor: pointer; }
+
+.rightContent {
+  width: 823px;
+  overflow-y: scroll;
+  float: right;
+  background-color: #E8ECEF;
+  box-shadow: inset 1px 10px 20px -10px; }
+  .rightContent .threeBlockRow {
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin: 30px;
+    border-bottom: 1px solid #D3D3D3; }
+    .rightContent .threeBlockRow .block {
+      width: 33%;
+      height: inherit;
+      float: left;
+      text-align: center; }
+      .rightContent .threeBlockRow .block .blockChart {
+        min-height: 160px;
+        height: 160px;
+        max-height: 160px;
+        overflow: hidden; }
+        .rightContent .threeBlockRow .block .blockChart.activeStaffPercentage {
+          font-family: Georgia, serif;
+          line-height: 75px;
+          font-size: 90px;
+          color: #344289;
+          min-height: 105px;
+          height: 105px;
+          max-height: 105px; }
+          .rightContent .threeBlockRow .block .blockChart.activeStaffPercentage small {
+            font-size: 65px; }
+          .rightContent .threeBlockRow .block .blockChart.activeStaffPercentage .fa {
+            font-size: 25px;
+            color: #898989; }
+      .rightContent .threeBlockRow .block .subtitle {
+        font-size: 16px;
+        line-height: 23px; }
+      .rightContent .threeBlockRow .block .container {
+        padding-top: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 30px; }
+        .rightContent .threeBlockRow .block .container .heading {
+          text-align: left;
+          padding: 5px 0px 5px 0px;
+          color: #344289;
+          font-size: 16px;
+          font-weight: 700;
+          margin-bottom: 5px; }
+        .rightContent .threeBlockRow .block .container .body .row {
+          font-size: 16px;
+          line-height: 23px;
+          width: 100%; }
+          .rightContent .threeBlockRow .block .container .body .row .name {
+            text-align: left; }
+        .rightContent .threeBlockRow .block .container .body .circlesSubtitles {
+          width: 100%; }
+          .rightContent .threeBlockRow .block .container .body .circlesSubtitles .container {
+            padding: 0px; }
+            .rightContent .threeBlockRow .block .container .body .circlesSubtitles .container .subtitle {
+              float: right;
+              text-align: center;
+              width: 33%;
+              float: left;
+              font-size: 12px;
+              padding: 0px; }
+          .rightContent .threeBlockRow .block .container .body .circlesSubtitles::after {
+            content: "";
+            display: block;
+            clear: both; }
+        .rightContent .threeBlockRow .block .container .body::after {
+          content: "";
+          display: block;
+          clear: both; }
+    .rightContent .threeBlockRow::after {
+      content: "";
+      display: block;
+      clear: both; }
+
+.chart {
+  margin: 30px;
+  border-bottom: 1px solid #D3D3D3; }
+  .chart .title {
+    text-align: left;
+    margin: 15px;
+    margin-bottom: 15px;
+    color: #898989;
+    font-size: 16px; }
+  .chart .loading {
+    text-align: center;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 15px; }

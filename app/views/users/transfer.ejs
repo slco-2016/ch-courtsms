@@ -1,0 +1,34 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/org/users"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Transfer User</div>
+  <div class="cardSubtitle">
+    Transfer a user within your department to a different department. Note that all of the case manager's clients will be transferred with them to the target department. Transfer those clients to other case managers within your department prior to transfer to keep those client cases.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post">
+    <div class="formRow">
+      <div class="formLabel"> Transfer <%= targetUser.first %> to </div>
+      <select class="blueSelect" 
+              name="department" 
+              required>
+        <% departments.forEach(function (department) { %>
+            <option value="<%= department.department_id %>"
+                    <% if (targetUser.department == department.department_id) { %>selected<% } %>>
+              <%= department.name %>
+            </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit" 
+            value="Transfer User">
+    </form>
+</div>
+
+<% include ../partials/cardFrameBottom %>

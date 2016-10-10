@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+  <head>
+
+    <!-- Invoke New Relic monitoring before all else -->
+    <% if (newrelic !== null) { %>
+      <%- newrelic.getBrowserTimingHeader() %>
+    <% } %>
+
+    <meta charset="utf-8">
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>
+      ClientComm
+      <% if (typeof client !== "undefined") { %>
+        - Viewing <%= `${client.first} ${client.last}` %>
+      <% } else if (typeof user !== "undefined") { %>
+        - <%= `${user.first} ${user.last}` %>
+      <% } %>
+    </title>
+
+    <% include ./favicon %>
+
+  </head>
+
+  <link rel="stylesheet" type="text/css" href="/modules/font-awesome/css/font-awesome.min.css">
+
+  <!-- deal with ss font weirdness below -->
+  <link href="/static/webfonts/ss/ss-community.css" rel="stylesheet" />
+
+  <link rel="stylesheet" type="text/css" href="/static/css/v4_base.css">
+
+  <script src="/modules/jquery/dist/jquery.min.js"></script>
+
+  <body>
+
+  <% include ./flashMessages %>
+  

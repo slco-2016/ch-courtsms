@@ -1,0 +1,63 @@
+<% include ../partials/cardFrameTop %>
+
+<style type="text/css">
+  .inbound, .outbound {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  .inbound {
+    background-color: #eee;
+  }
+  .outbound {
+    text-align: right;
+  }
+</style>
+
+<div class="cardHead">
+  <a href="/org/captured"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Attach Conversation</div>
+  <div class="cardSubtitle">
+    Attach this conversation to an existing, active user in this organization.
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method = "post"
+        id="clientSearch">
+
+    <div class="formRow">
+      <div class="formLabel">
+        Search for one of <%= `${clients[0].user_first} ${clients[0].user_last}` %>'s Clients
+      </div>
+      <div class="formInput">
+        <input class="typeahead" type="text" placeholder="Case manager name">
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Conversation stream </div>
+      <div class="formInput">
+        <% conversation.msgs.forEach((msg) => { %>
+          <div class="<% if (msg.inbound) { %>inbound<% } else { %>outbound<% } %>">
+            <%= msg.content %>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <input type="hidden" id="targetClient" name="client">
+    <input type="submit" class="formSubmit" value="Attach conversation to user">
+
+  </form>
+</div>
+
+
+
+<script src="/components/typeahead.js/dist/typeahead.jquery.min.js"></script>
+<script type="text/javascript" class="JSfindClient">
+  // using script for users typeahead, so just loading clients as "users"
+  var clients = <%- JSON.stringify(clients); %>;
+</script>
+
+<% include ../partials/cardFrameBottom %>

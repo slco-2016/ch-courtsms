@@ -1,0 +1,196 @@
+
+
+// Variables
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+$width_row1:  5%;
+$width_row2:  5%;
+$width_row3:  25%;
+$width_row4:  20%;
+$width_row5:  9%;
+$width_row6:  8%;
+$width_row7:  13%;
+$width_row8:  5%;
+$width_row9:  5%;
+$width_row10:  5%;
+
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// SCSS
+.limitedByBanner {
+  font-size: 12px;
+  line-height: 18px;
+  background-color: $lightblue;
+  text-align: center;
+  color: $white;
+}
+
+.header {
+  height: 20px;
+  overflow: hidden;
+  color: $grey;
+  background-color: $lightgrey;
+  line-height: 20px;
+  font-size: 0.65em;
+
+  .column {
+    float: left;
+    text-align: left;
+    cursor: pointer;
+
+    &:nth-child(1) {
+      width: $width_row1;
+      text-align: center;
+    }
+    &:nth-child(2) {
+      width: $width_row2;
+      text-align: center;
+    }
+    &:nth-child(3) {
+      width: $width_row3;
+    }
+    &:nth-child(4) {
+      width: $width_row4;
+    }
+    &:nth-child(5) {
+      width: $width_row5;
+      text-align: center;
+    }
+    &:nth-child(6) {
+      width: $width_row6;
+      text-align: center;
+    }
+    &:nth-child(7) {
+      width: $width_row7;
+    }
+    &:nth-child(8) {
+      width: $width_row8;
+      text-align: center;
+    }
+    &:nth-child(9) {
+      width: $width_row9;
+      text-align: center;
+    }
+    &:nth-child(10) {
+      width: $width_row10;
+      text-align: center;
+    }
+  }
+}
+
+.clientRow {
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  color: $grey;
+  background-color: $white;
+
+  &:hover {
+    color: $white;
+    font-weight: 700;
+  }
+
+  .column {
+    float: left;
+    text-align: left;
+
+    .clientName {
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    .colorTag {
+      width: 15px;
+      height: 28px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid $white;
+      border-radius: 75px;
+    }
+
+    .bigNumber {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: $lightblue;
+    }
+
+    .fa.highlight {
+      padding: 5px;
+      width: 16px;
+      max-width: 16px;
+      height: 16px;
+      max-height: 16px;
+      border-radius: 50%;
+      text-align: center;
+
+      &:hover {
+        color: $grey;
+        background-color: $white;
+      }
+    }
+
+    &:nth-child(1) {
+      width: $width_row1;
+      text-align: center;
+    }
+    &:nth-child(2) {
+      width: $width_row2;
+      text-align: center;
+    }
+    &:nth-child(3) {
+      width: $width_row3;
+    }
+    &:nth-child(4) {
+      width: $width_row4;
+    }
+    &:nth-child(5) {
+      width: $width_row5;
+      text-align: center;
+    }
+    &:nth-child(6) {
+      width: $width_row6;
+      text-align: center;
+    }
+    &:nth-child(7) {
+      width: $width_row7;
+    }
+    &:nth-child(8) {
+      width: $width_row8;
+      text-align: center;
+    }
+    &:nth-child(9) {
+      width: $width_row9;
+      text-align: center;
+    }
+    &:nth-child(10) {
+      width: $width_row10;
+      text-align: center;
+    }
+  }
+
+  &:nth-child(even) {
+    background-color: $offwhite;
+  }
+}

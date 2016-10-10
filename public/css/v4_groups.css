@@ -1,0 +1,89 @@
+@charset "UTF-8";
+.header {
+  height: 20px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #D3D3D3;
+  line-height: 20px;
+  font-size: 0.65em; }
+  .header .column {
+    float: left;
+    text-align: left;
+    cursor: pointer; }
+    .header .column:nth-child(1) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(2) {
+      width: 20%; }
+    .header .column:nth-child(3) {
+      width: 15%; }
+    .header .column:nth-child(4) {
+      width: 50%; }
+    .header .column:nth-child(5) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(6) {
+      width: 5%;
+      text-align: center; }
+
+.groupRow {
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #FFF; }
+  .groupRow:hover {
+    color: #FFF;
+    background-color: #4A90E2 !important; }
+    .groupRow:hover .bigNumber {
+      color: #FFF !important; }
+  .groupRow .column {
+    float: left;
+    text-align: left; }
+    .groupRow .column .bigNumber {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #4A90E2; }
+    .groupRow .column .groupName {
+      padding-left: 15px; }
+    .groupRow .column .time {
+      font-size: 12px; }
+    .groupRow .column .subject {
+      font-weight: 700; }
+    .groupRow .column .subject, .groupRow .column .message {
+      font-size: 12px; }
+    .groupRow .column .fa.highlight {
+      padding: 5px;
+      width: 16px;
+      max-width: 16px;
+      height: 16px;
+      max-height: 16px;
+      border-radius: 50%; }
+      .groupRow .column .fa.highlight:hover {
+        color: #898989;
+        background-color: #FFF; }
+    .groupRow .column:nth-child(1) {
+      width: 5%;
+      text-align: center; }
+    .groupRow .column:nth-child(2) {
+      width: 20%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      text-overflow: ellipsis;
+      text-overflow: "…"; }
+    .groupRow .column:nth-child(3) {
+      width: 15%; }
+    .groupRow .column:nth-child(4) {
+      width: 50%;
+      padding-top: 5px;
+      line-height: 20px;
+      font-size: 12px; }
+    .groupRow .column:nth-child(5) {
+      width: 5%;
+      text-align: center; }
+    .groupRow .column:nth-child(6) {
+      width: 5%;
+      text-align: center; }
+  .groupRow:nth-child(even) {
+    background-color: #E8ECEF; }

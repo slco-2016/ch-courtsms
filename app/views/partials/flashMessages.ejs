@@ -1,0 +1,21 @@
+<% FLASH_ALERTS.SUCCESSES.forEach(function (success) { %>
+  <div class="FLASH">
+    <div class="ALERTS" style="background-color:#62D651">
+      <div class="ICON">
+        <i class="fa fa-check" aria-hidden="true"></i>
+      </div>
+      <%= success %>
+    </div>
+  </div>
+<% }) %>
+
+<% FLASH_ALERTS.WARNINGS.forEach(function (warning) { %>
+  <div class="FLASH">
+    <div class="ALERTS" style="background-color:#EF2258">
+      <div class="ICON">
+        <i class="fa fa-exclamation" aria-hidden="true"></i>
+      </div>
+      <%= warning %>
+    </div>
+  </div>
+<% }) %>

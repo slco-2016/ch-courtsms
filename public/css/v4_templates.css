@@ -1,0 +1,72 @@
+.header {
+  height: 20px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #D3D3D3;
+  line-height: 20px;
+  font-size: 0.65em; }
+  .header .column {
+    float: left;
+    text-align: left;
+    cursor: pointer; }
+    .header .column:nth-child(1) {
+      width: 8%;
+      text-align: center; }
+    .header .column:nth-child(2) {
+      width: 22%; }
+    .header .column:nth-child(3) {
+      width: 60%; }
+    .header .column:nth-child(4) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(5) {
+      width: 5%;
+      text-align: center; }
+
+.templateRow {
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #FFF; }
+  .templateRow:hover {
+    color: #FFF;
+    background-color: #4A90E2 !important; }
+    .templateRow:hover .bigNumber {
+      color: #FFF !important; }
+  .templateRow .column {
+    float: left;
+    text-align: left; }
+    .templateRow .column .bigNumber {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #4A90E2; }
+    .templateRow .column .fa.highlight, .templateRow .column .ss.highlight {
+      padding: 5px;
+      width: 16px;
+      max-width: 16px;
+      height: 16px;
+      max-height: 16px;
+      border-radius: 50%; }
+      .templateRow .column .fa.highlight:hover, .templateRow .column .ss.highlight:hover {
+        color: #898989;
+        background-color: #FFF; }
+    .templateRow .column:nth-child(1) {
+      width: 8%;
+      text-align: center; }
+    .templateRow .column:nth-child(2) {
+      width: 22%;
+      font-weight: 700; }
+    .templateRow .column:nth-child(3) {
+      width: 60%;
+      padding-top: 5px;
+      line-height: 20px;
+      font-size: 12px; }
+    .templateRow .column:nth-child(4) {
+      width: 5%;
+      text-align: center; }
+    .templateRow .column:nth-child(5) {
+      width: 5%;
+      text-align: center; }
+  .templateRow:nth-child(even) {
+    background-color: #E8ECEF; }

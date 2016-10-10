@@ -1,0 +1,16 @@
+<script type="text/javascript">
+  // Place user object as global
+  <% if (typeof user == 'undefined') { %>
+    var SESSION_USER = null;
+  <% } else { %>
+    var SESSION_USER = <%- JSON.stringify(user) %>;
+  <% } %>
+</script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/operations.js"></script>
+<script src="/static/js/keen.js"></script>
+<script src="/static/js/crisp.js"></script>
+</body>
+
+
+</html>

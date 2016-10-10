@@ -1,0 +1,280 @@
+.leftBar {
+  width: 25%;
+  overflow-y: scroll;
+  float: left;
+  background-color: #FFF; }
+  .leftBar .conversations {
+    padding: 0px; }
+    .leftBar .conversations .conversation {
+      padding: 5px 15px 5px 15px;
+      border-bottom: 1px solid #E8ECEF; }
+      .leftBar .conversations .conversation .subject {
+        margin-top: 7px;
+        color: #4A90E2;
+        margin-bottom: 5px; }
+        .leftBar .conversations .conversation .subject.showAll {
+          text-transform: uppercase;
+          text-align: center;
+          margin-top: 7px;
+          font-size: 12px;
+          letter-spacing: 1px; }
+      .leftBar .conversations .conversation .date {
+        font-size: 11px;
+        line-height: 14px;
+        padding-bottom: 5px; }
+        .leftBar .conversations .conversation .date .day {
+          text-align: right; }
+        .leftBar .conversations .conversation .date .time {
+          text-align: right; }
+        .leftBar .conversations .conversation .date::after {
+          content: "";
+          display: block;
+          clear: both; }
+      .leftBar .conversations .conversation.selected {
+        background-color: #4A90E2;
+        color: #FFF; }
+        .leftBar .conversations .conversation.selected .subject {
+          color: #FFF;
+          font-weight: 700; }
+      .leftBar .conversations .conversation:hover {
+        background-color: #E8ECEF;
+        color: #898989; }
+        .leftBar .conversations .conversation:hover .subject, .leftBar .conversations .conversation:hover .date {
+          color: #344289; }
+
+.rightContent {
+  width: 75%;
+  overflow-y: scroll;
+  float: right;
+  background-color: #E8ECEF;
+  box-shadow: inset 1px 10px 20px -10px; }
+  .rightContent .subjectToggle {
+    position: absolute;
+    left: 50%;
+    background-color: #6783a1;
+    color: #FFF;
+    line-height: 30px;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    border-left: 1px solid #E8ECEF;
+    border-right: 1px solid #E8ECEF;
+    border-bottom: 1px solid #E8ECEF; }
+    .rightContent .subjectToggle .title {
+      display: inline;
+      margin-left: 12px;
+      margin-right: 12px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer; }
+    .rightContent .subjectToggle .option {
+      display: inline;
+      font-size: 12px;
+      padding: 3px;
+      padding-left: 7px;
+      padding-right: 7px;
+      margin-right: 5px;
+      border-radius: 10px;
+      cursor: pointer; }
+      .rightContent .subjectToggle .option.selected, .rightContent .subjectToggle .option:hover {
+        background-color: #FFF;
+        color: #4A90E2; }
+      .rightContent .subjectToggle .option:nth-last-child(1) {
+        margin-right: 15px; }
+  .rightContent .messageStream {
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 60px; }
+    .rightContent .messageStream .messageDiv .message {
+      padding: 15px 20px 10px 20px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      width: 695px; }
+      .rightContent .messageStream .messageDiv .message.outbound {
+        border: 1px solid #FFF;
+        color: #2A2A2A; }
+      .rightContent .messageStream .messageDiv .message.inbound {
+        background-color: #FFF;
+        color: #2A2A2A; }
+      .rightContent .messageStream .messageDiv .message .bottomRow {
+        margin-top: 15px;
+        font-size: 12px;
+        line-height: 18px; }
+        .rightContent .messageStream .messageDiv .message .bottomRow .fa {
+          font-size: 18px; }
+        .rightContent .messageStream .messageDiv .message .bottomRow .state {
+          float: right; }
+
+.mainVisibleRow::after {
+  content: "";
+  display: block;
+  clear: both; }
+
+.responseBox {
+  position: absolute;
+  bottom: 0px;
+  overflow: hidden;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  width: 1024px; }
+  .responseBox .miniAlt .messageInput {
+    color: #FFF; }
+  .responseBox .mini {
+    width: inherit;
+    background-color: #4A90E2;
+    padding: 15px; }
+    .responseBox .mini .actionButtons {
+      color: #FFF;
+      width: 241px; }
+      .responseBox .mini .actionButtons .actionButton {
+        float: left;
+        width: 58px;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer; }
+        .responseBox .mini .actionButtons .actionButton .icon {
+          font-size: 24px;
+          line-height: 38px; }
+        .responseBox .mini .actionButtons .actionButton .name {
+          line-height: 16px;
+          font-size: 12px;
+          display: none; }
+        .responseBox .mini .actionButtons .actionButton:hover {
+          color: #344289; }
+    .responseBox .mini .messageInput {
+      width: 735px;
+      height: 45px;
+      background-color: #E8ECEF;
+      border-radius: 7px;
+      line-height: 45px;
+      font-size: 18px;
+      color: #2A2A2A;
+      font-weight: 300;
+      margin-left: 25px;
+      cursor: pointer;
+      float: right; }
+      .responseBox .mini .messageInput .left {
+        padding-left: 15px;
+        width: 50%;
+        text-align: left; }
+      .responseBox .mini .messageInput .right {
+        width: 50%;
+        text-align: right; }
+        .responseBox .mini .messageInput .right .fa {
+          padding-right: 15px; }
+      .responseBox .mini .messageInput.disabled {
+        cursor: not-allowed;
+        font-size: 12px;
+        overflow: hidden;
+        background-color: #3F69B6; }
+        .responseBox .mini .messageInput.disabled:hover {
+          box-shadow: none;
+          background-color: #3F69B6; }
+      .responseBox .mini .messageInput:hover {
+        box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5); }
+    .responseBox .mini::after {
+      content: "";
+      display: block;
+      clear: both; }
+  .responseBox #actualTypeBox {
+    display: none;
+    float: right; }
+    .responseBox #actualTypeBox textarea {
+      width: 708px;
+      max-width: 708px;
+      height: 85px;
+      max-height: 85px;
+      background-color: #E8ECEF;
+      border-radius: 7px;
+      color: #2A2A2A;
+      font-weight: 300;
+      cursor: pointer;
+      line-height: 20px;
+      font-size: 18px;
+      padding: 15px;
+      border: 0px; }
+    .responseBox #actualTypeBox::after {
+      content: "";
+      display: block;
+      clear: both; }
+  .responseBox .full {
+    display: none;
+    width: inherit; }
+    .responseBox .full .bottomRow {
+      display: block;
+      height: 32px;
+      margin-top: 10px;
+      margin-bottom: 0px; }
+      .responseBox .full .bottomRow .optionButton {
+        text-align: center;
+        height: 31px;
+        border: 1px solid #344289;
+        border-radius: 3px;
+        background-color: #3F69B6;
+        margin-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        line-height: 31px;
+        font-size: 16px;
+        color: #FFF;
+        cursor: pointer; }
+        .responseBox .full .bottomRow .optionButton:hover {
+          background-color: #FFF;
+          color: #3F69B6; }
+      .responseBox .full .bottomRow .contactSelect {
+        float: right; }
+        .responseBox .full .bottomRow .contactSelect select {
+          display: inline;
+          width: 250px;
+          height: 32px;
+          border: 1px solid #FFF;
+          border-radius: 3px;
+          background-color: #3F69B6;
+          text-align: center;
+          font-size: 16px;
+          color: #FFF;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-user-select: none;
+          /* Chrome/Safari */
+          -moz-user-select: none;
+          /* Firefox */
+          -ms-user-select: none;
+          /* IE10+ */
+          /* Rules below not implemented in browsers yet */
+          -o-user-select: none;
+          user-select: none; }
+          .responseBox .full .bottomRow .contactSelect select:hover {
+            background-color: #FFF;
+            color: #3F69B6; }
+      .responseBox .full .bottomRow .submit {
+        float: right;
+        height: 32px;
+        line-height: 32px;
+        border: 2px solid #344289;
+        border-radius: 25px;
+        background-color: #FFF;
+        padding-right: 15px;
+        padding-left: 15px;
+        font-size: 14px;
+        color: #3F69B6;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 25px; }
+        .responseBox .full .bottomRow .submit .ss {
+          margin-right: 5px; }
+        .responseBox .full .bottomRow .submit:hover {
+          background-color: #3F69B6;
+          color: #FFF; }
+        .responseBox .full .bottomRow .submit.disabled {
+          cursor: not-allowed;
+          background-color: #D3D3D3;
+          color: #898989;
+          border: 2px solid #898989; }
+    .responseBox .full::after {
+      content: "";
+      display: block;
+      clear: both; }

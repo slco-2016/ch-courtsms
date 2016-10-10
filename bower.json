@@ -1,0 +1,31 @@
+{
+  "name": "client-comm",
+  "description": "Client to case manager communications management service.",
+  "main": "app/app.js",
+  "authors": [
+    "Kuan Butts <kuanbutts@gmail.com> (http://kuanbutts.com)"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "node",
+    "express",
+    "twilio",
+    "case",
+    "management",
+    "communications"
+  ],
+  "homepage": "https://github.com/slco-2016/ch-courtsms",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "typeahead.js": "^0.11.1",
+    "d3": "^4.2.2",
+    "c3": "^0.4.11",
+    "moment": "^2.14.1"
+  }
+}

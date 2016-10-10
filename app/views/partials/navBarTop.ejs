@@ -1,0 +1,57 @@
+<% include ./headerBase %>
+
+<!-- Load in addition CSS -->
+<link rel="stylesheet" type="text/css" href="/static/css/v4_navBarTop.css">
+
+<% include ./alertsFeed %>
+
+<!-- Structure -->
+<div class="applicationFrame">
+
+  <div class="navHeader <%if (level=="org") {%>orgLevel<%}%>">
+    <div class="leftLogo">
+      <% include ../../../public/icons/logo.svg %>
+      <a href="/">
+        <div class="button">
+          <div class="name">
+            <b><%= user.first %> <%= user.last %></b>
+            
+          </div>
+          <div class="organization">
+            <%= department.name %>, 
+            <%= organization.name %>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="rightLogout">
+
+      <% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
+        <a href="/">
+          <span class="button levels <%if (level=="org") {%>selected<%}%>">
+            Organization
+          </span>
+        </a>
+
+        <a href="/clients">
+          <span class="button levels <%if (level=="user") {%>selected<%}%>">
+            Caseload
+          </span>
+        </a>
+      <% } %>
+
+      <a href="/settings">
+        <span class="button">
+          <i class="fa fa-cog"></i>
+          <span class="hidden">Settings</span>
+        </span>
+      </a>
+
+      <a href="/logout">
+        <span class="button">
+          <i class="fa fa-close"></i>
+          <span class="hidden">Logout </span></span>
+      </a>
+    </div>
+  </div>

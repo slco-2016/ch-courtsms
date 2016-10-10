@@ -1,0 +1,256 @@
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$lightbluegrey:#6783a1;
+$bluegrey:    #516a84;
+$darkbluegrey:#3c5065;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$lightblue:   #4A90E2;
+$blue:        #3F69B6;
+$darkblue:    #344289;
+
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// SCSS
+
+.applicationFrame {
+
+  .navSub {
+    position: absolute;
+    top: 41px;
+    width: 1024px;
+    height: 55px;
+    background-color: $lightblue;
+    border-bottom: 1px solid $offwhite;
+    // border-left: 1px solid #3a597a;
+    // border-right: 1px solid #3a597a;
+    overflow: hidden;
+    position: fixed;
+
+    &.orgLevel {
+      background-color: $lightbluegrey;
+      color: $bluegrey;
+      .allLeftParent {
+        .allLeft {
+          .leftTab {
+            &.open {
+              background-color: $darkbluegrey;
+              color: $white;
+
+              &.selected, &:hover {
+                background-color: $darkbluegrey;
+                color: $white;
+              }
+
+              .option {
+                &.selected, &:hover {
+                  background-color: $white;
+                  color: $lightbluegrey;
+                }
+              }
+            }
+            &.closed {
+              background-color: $lightbluegrey;
+              color: $white;
+              &.selected, &:hover {
+                background-color: $bluegrey;
+                color: $white;
+              }
+            }
+          }
+        }
+      }
+      .allRightParent {
+        .allRight {
+          .rightActions {
+            .fa.fa-inverse {
+              color: $lightbluegrey;
+            }
+
+            &:hover {
+              background-color: $bluegrey;
+              .fa.fa-inverse {
+                color: $bluegrey;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .allLeftParent {
+      max-width: 75%;
+      overflow: hidden;
+      float: left;
+
+      .allLeft {
+        width: 1024px;
+
+        .leftTab {
+          height: inherit;
+          width: auto;
+          float: left;
+          color: $white;
+          line-height: 55px;
+
+          &.open {
+            background-color: $darkblue;
+            padding-left: 10px;
+            padding-right: 10px;
+
+            .title {
+              display: inline;
+              margin-left: 15px;
+              margin-right: 15px;
+              font-weight: 700;
+              font-size: 18px;
+              cursor: pointer;
+            }
+
+            .option {
+              display: inline;
+              font-size: 14px;
+              padding: 3px;
+              padding-left: 10px;
+              padding-right: 10px;
+              margin-right: 5px;
+              border-radius: 15px;
+              cursor: pointer;
+
+              &.selected, &:hover {
+                background-color: $white;
+                color: $lightblue;
+              }
+
+              &:nth-last-child(1) {
+                margin-right: 15px;
+              }
+            }
+          }
+
+          &.closed {
+            .title {
+              display: inline;
+              margin-left: 15px;
+              margin-right: 15px;
+              cursor: pointer;
+            }
+
+            .option {
+              display: none;
+            }
+
+            &:hover {
+              background-color: $blue;
+            }
+          }
+        }
+      }
+    }
+
+    .allRightParent {
+      max-width: 25%;
+      overflow: hidden;
+      float: right;
+
+      .allRight {
+        width: 500px;
+        float: right;
+
+        .rightActions {
+          float: right;
+          line-height: 55px;
+          font-size: 12px;
+          color: $white;
+          padding-left: 7px;
+          padding-right: 12px;
+
+          .fa-stack.fa-lg {
+            font-size: 15px;
+          }
+
+          .fa.fa-inverse {
+            color: $lightblue;
+          }
+
+          .text {
+            display: none;
+          }
+
+          &:hover {
+            background-color: $blue;
+            .fa.fa-inverse {
+              color: $blue;
+            }
+            .text {
+              display: inline;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+  .coreContent {
+    padding-top: 97px;
+    background-color: $offwhite;
+  }
+
+  .emptyResultsGreeting {
+    text-align: middle;
+    // background-color: $lightgrey;
+
+    .message {
+      padding-top: 125px;
+      padding-left: 55px;
+      float: left;
+      line-height: 40px;
+      font-size: 32px;
+      width: 50%;
+
+      small {
+        font-size: 22px;
+      }
+    }
+
+    .icon {
+      float: left;
+      font-size: 150px;
+      padding: 75px 45px 0px 120px;
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+}
+
+.applicationFrame {
+  .viewingAsOtherBanner {
+    font-size: 12px;
+    line-height: 23px;
+    background-color: $bluegrey;
+    text-align: center;
+    color: $white;
+    position: fixed;
+    top: 92px;
+    width: 1024px;
+  }
+  .otherBannerBumber {
+    height: 18px;
+  }
+}
+

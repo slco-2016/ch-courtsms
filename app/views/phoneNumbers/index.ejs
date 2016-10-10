@@ -1,0 +1,48 @@
+<% include ../partials/hubFrameTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_departments.css">
+
+<div class="header">
+  <div class="column">phone number</div>
+  <div class="column">-</div>
+  <div class="column">-</div>
+  <div class="column">-</div>
+  <div class="column">created</div>
+  <div class="column">manage</div>
+  <div class="column">deactivate</div>
+</div>
+
+<% if (numbers.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% numbers.forEach(function (number) { %>
+  <div class="notificationRow">
+    <div class="column">
+      <span class="clientName">
+        <%= number.value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
+      </span>
+    </div>
+    <div class="column">
+      -
+    </div>
+    <div class="column">
+      -
+    </div>
+    <div class="column">
+      Contact ClientComm support to modify
+    </div>
+    <div class="column">
+      <span class="time">
+        <%= moment.tz(number.created, organization.tz).format('MMM. Do, YYYY hh:mmA') %>
+      </span>
+    </div>
+    <div class="column">
+      -
+    </div>
+    <div class="column">
+      -
+    </div>
+  </div>
+<% }) %>
+
+
+<% include ../partials/hubFrameBottom %>

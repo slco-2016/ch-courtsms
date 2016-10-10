@@ -1,0 +1,39 @@
+<% include ../partials/hubFrameTop %>
+
+<link rel="stylesheet" type="text/css" href="/static/css/v4_templates.css">
+
+<div class="header">
+  <div class="column">use count</div>
+  <div class="column">subject</div>
+  <div class="column">message</div>
+  <div class="column">edit</div>
+  <div class="column">delete</div>
+</div>
+
+<% if (templates.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% templates.forEach(function (template) { %>
+  <div class="templateRow">
+    <div class="column">
+      <span class="bigNumber"><%= template.times_used %></span>
+    </div>
+    <div class="column">
+      <%= template.title.substr(0,25) %>
+    </div>
+    <div class="column">
+      <%= template.content.length > 210 ? template.content.substr(0,210) + '...' : template.content %>
+    </div>
+    <div class="column">
+      <a href="/templates/edit/<%=template.template_id%>">
+        <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="column">
+      <a href="/templates/remove/<%=template.template_id%>">
+        <i class="fa highlight fa-trash" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+<% }) %>
+
+<% include ../partials/hubFrameBottom %>

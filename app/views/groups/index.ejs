@@ -1,0 +1,62 @@
+<% include ../partials/hubFrameTop %>
+
+<!-- Load in addition CSS -->
+<link rel="stylesheet" type="text/css" href="/static/css/v4_groups.css">
+
+<div class="header">
+  <div class="column">contact</div>
+  <div class="column">group name</div>
+  <div class="column">last used</div>
+  <div class="column">clients</div>
+  <div class="column">edit</div>
+  <div class="column">delete</div>
+</div>
+
+<% if (groups.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
+
+<% groups.forEach(function (group) { %>
+  <div class="groupRow">
+    <div class="column">
+      <% if (group.active) { %>
+        <a href="/groups/address/<%=group.group_id%>">
+          <i class="fa highlight fa-send" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+    <div class="column">
+      <span class="groupName">
+        <%= group.name %>
+      </span>
+    </div>
+    <div class="column">
+      <span class="time">
+        <%= moment.tz(group.last_used, organization.tz).format('MMM. Do, hh:mmA') %>
+      </span>
+    </div>
+    <div class="column">
+      <span class="message">
+        <%= group.members.map(function (m) { return m.first + ' ' + m.last }).join(', ') %>
+      </span>
+    </div>
+    <div class="column">
+      <% if (group.active) { %>
+        <a href="/groups/edit/<%=group.group_id%>">
+          <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+        </a>
+      <% } else { %>-<% } %>
+    </div>
+    <div class="column">
+      <% if (group.active) { %>
+        <a href="/groups/remove/<%=group.group_id%>">
+          <i class="fa highlight fa-trash" aria-hidden="true"></i>
+        </a>
+      <% } else { %>
+        <a href="/groups/activate/<%=group.group_id%>">
+          <i class="fa highlight fa-undo" aria-hidden="true"></i>
+        </a>
+      <% } %>
+    </div>
+  </div>
+<% }) %>
+
+<% include ../partials/hubFrameBottom %>

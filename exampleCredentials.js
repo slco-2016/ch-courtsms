@@ -5,6 +5,9 @@ var baseProductionReadyCredentials = {
   
   // BELOW: Main body of the credentials object
 
+  // Root url, for testing something like https://16eb4a25.ngrok.io
+  rootUrl: "http://localhost:4000",
+
   // Twilio-related
   accountSid: "****************",
   authToken: "****************",
@@ -21,7 +24,7 @@ var baseProductionReadyCredentials = {
   db: {
     user:     "jane",
     password: "password",
-    host: "foobar.abc123.us-west-1.rds.amazonaws.com"
+    host:     "foobar.abc123.us-west-1.rds.amazonaws.com"
   },
 
   // Currently we use Gmail Node library for email comms
@@ -32,6 +35,10 @@ var baseProductionReadyCredentials = {
   // New Relic monitoring information
   newrelic: {
     key: "abc123efg456"
+  },
+
+  mailgun: {
+    key: "fake-key"
   },
 
   // AWS interface/access secrets
@@ -49,7 +56,15 @@ if (TESTENV && TESTENV == "true") {
   // Update to the test number that we use (so as to not use production Twilio phone number)
   baseProductionReadyCredentials.twilioNum = "+15671234567";
   baseProductionReadyCredentials.testRecipientNumber = "+13459057365";
+
+  baseProductionReadyCredentials.db = {
+    user:     "jane",
+    password: "password",
+    host:     "foobar-staging.abc123.us-west-1.rds.amazonaws.com"
+  };
+
   console.log("Credentials have been modified with test environment values.");
+  console.log("Database being used: " + baseProductionReadyCredentials.db.host.split(".")[0]);
 }
 
 

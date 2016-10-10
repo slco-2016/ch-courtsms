@@ -1,0 +1,105 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/notifications">
+    <% include ../partials/cardExit %>
+  </a>
+  <div class="cardTitle">
+    Notification Parameters
+  </div>
+  <div class="cardSubtitle">
+    Use notifications to schedule messages to be sent in the future.
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method="post" action="/notifications/create/compose">
+      <div class="formRow">
+      <div class="formLabel"> Which client to notify  </div>
+      <select class="blueSelect" 
+              id="clientID" 
+              name="clientID" 
+              required>
+        <option value="" disabled selected> Client </option>
+        <% clients.forEach(function (client) { %>
+          <option value="<%= client.clid %>" <%if (preSelect == client.clid) {%>selected<%}%>>
+            <%= client.last + ', ' + client.first + ' ' + client.middle %> 
+          </option>
+        <% }); %>
+      </select>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Which device to send to </div>
+      <select class="blueSelect" 
+              id="commConn" 
+              name="commConn" 
+              required>
+        <option value="" disabled selected> Contact Options </option>
+      </select>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
+      <div class="formInput">
+        <input  type="date" 
+                id="sendDate" 
+                name="sendDate" 
+                value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
+                required>
+        </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
+
+      <div class="formInput">
+        <select class="blueSelect" id="sendHour" name="sendHour" required>
+          <option value="00"> 12:00 AM (Midnight) </option>
+          <option value="01"> 01:00 AM </option>
+          <option value="02"> 02:00 AM </option>
+          <option value="03"> 03:00 AM </option>
+          <option value="04"> 04:00 AM </option>
+          <option value="05"> 05:00 AM </option>
+          <option value="06"> 06:00 AM </option>
+          <option value="07"> 07:00 AM </option>
+          <option value="08" selected> 08:00 AM </option>
+          <option value="09"> 09:00 AM </option>
+          <option value="10"> 10:00 AM </option>
+          <option value="11"> 11:00 AM </option>
+          <option value="12"> 12:00 PM (Noon) </option>
+          <option value="13"> 01:00 PM </option>
+          <option value="14"> 02:00 PM </option>
+          <option value="15"> 03:00 PM  </option>
+          <option value="16"> 04:00 PM  </option>
+          <option value="17"> 05:00 PM  </option>
+          <option value="18"> 06:00 PM  </option>
+          <option value="19"> 07:00 PM  </option>
+          <option value="20"> 08:00 PM  </option>
+          <option value="21"> 09:00 PM  </option>
+          <option value="22"> 10:00 PM  </option>
+          <option value="23"> 11:00 PM  </option>
+        </select>
+      </div>
+    </div>
+
+    <input  type="submit" 
+            class="formSubmit"
+            value="Craft Notification Message">
+  </form>
+
+  <a id="voiceLink" href="<%=`/clients/${preSelect ? preSelect : clients[0].clid}/voicemessage`%>/">
+    <button class="formSubmit">
+      Set up a voice notification
+    </button>
+  </a>
+</div>
+
+<script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="/modules/moment-timezone/moment-timezone.js"></script>
+<script type="text/javascript" class="JSnotificationsCreate">
+  window.clients = <%- JSON.stringify(clients) %>;
+  window.preSelect = <%= preSelect || false %>;
+</script>
+
+<% include ../partials/cardFrameBottom %>

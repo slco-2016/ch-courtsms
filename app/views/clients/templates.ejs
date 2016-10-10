@@ -1,0 +1,57 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <a href="/clients"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Select template</div>
+  <div class="cardSubtitle">
+    Use templates to make sending messages quicker and easier.
+  </div>
+</div>
+
+<div class="cardBody">
+  
+  <div class="scrollListBox">
+    <% for (var i=0; i < templates.length; i++) { %>
+      <div class="scrollListRow"
+        templateID="<%= templates[i].template_id %>"
+        data-title="<%= templates[i].title %>"
+        data-content="<%= templates[i].content %>">
+        
+        <div class="useCount">
+          <%= templates[i].times_used %>
+        </div>
+
+        <div class="scrollListContent">
+          <div class="titleText">
+            <% if (templates[i].title) { %>
+              <%= templates[i].title %>
+            <% } else { %>
+              No title available.
+            <% } %>
+          </div>
+          <div class="bodyText">
+            <%= templates[i].content %>
+          </div>
+          <div class="tags">
+            
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
+    <input type="hidden" name="title"   id="templateTitle">    
+    <input type="hidden" name="content" id="templateContent">
+
+    <div class="formRow">
+      <input type="submit" class="formSubmit" value="Select template">
+    </div>
+
+  </form>
+
+</div>
+
+<script type="text/javascript" class="JSselectTemplateWhenAddressingClient"></script>
+
+<% include ../partials/cardFrameBottom %>

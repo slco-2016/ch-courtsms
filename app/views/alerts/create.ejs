@@ -1,0 +1,51 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="<%=`/org`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    <% if (scope == "department") { %>
+      Department-wide
+    <% } else if (scope == "user") { %>
+      User
+    <% } else { %>
+      Organization-wide 
+    <% } %>
+    alert
+
+  </div>
+  <div class="cardSubtitle">
+    Sending out an alert creates a notification for the affected user(s) that will immediately become visible on the navbar when logged in to ClientComm.
+  </div>
+</div>
+
+<div class="cardBody">
+
+  <form method="post">
+    <input type="hidden" name="orgId" value="<%= orgId %>" required>
+    <input type="hidden" name="departmentId" value="<%= departmentId %>" required>
+    <input type="hidden" name="targetUserId" value="<%= targetUserId %>" required>
+
+    <div class="formRow">
+      <div class="formLabel"> Message <span class="opt">limit 100 characters</span> </div>
+      <div class="formInput">
+        <input type="text" maxlength="100" name="subject" value="" required>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> Need more space? Expanded message body <span class="opt">optional</span> </div>
+      <div class="formInput">
+        <input type="text" name="message" value="">
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit" value="Submit">
+
+  </form>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>

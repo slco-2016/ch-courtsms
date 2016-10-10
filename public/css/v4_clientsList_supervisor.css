@@ -1,0 +1,116 @@
+.limitedByBanner {
+  font-size: 12px;
+  line-height: 18px;
+  background-color: #4A90E2;
+  text-align: center;
+  color: #FFF; }
+
+.header {
+  height: 20px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #D3D3D3;
+  line-height: 20px;
+  font-size: 0.65em; }
+  .header .column {
+    float: left;
+    text-align: left;
+    cursor: pointer; }
+    .header .column:nth-child(1) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(2) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(3) {
+      width: 25%; }
+    .header .column:nth-child(4) {
+      width: 20%; }
+    .header .column:nth-child(5) {
+      width: 9%;
+      text-align: center; }
+    .header .column:nth-child(6) {
+      width: 8%;
+      text-align: center; }
+    .header .column:nth-child(7) {
+      width: 13%; }
+    .header .column:nth-child(8) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(9) {
+      width: 5%;
+      text-align: center; }
+    .header .column:nth-child(10) {
+      width: 5%;
+      text-align: center; }
+
+.clientRow {
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  color: #898989;
+  background-color: #FFF; }
+  .clientRow:hover {
+    color: #FFF;
+    font-weight: 700; }
+  .clientRow .column {
+    float: left;
+    text-align: left; }
+    .clientRow .column .clientName {
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px; }
+      .clientRow .column .clientName:hover {
+        background-color: rgba(255, 255, 255, 0.5); }
+    .clientRow .column .colorTag {
+      width: 15px;
+      height: 28px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid #FFF;
+      border-radius: 75px; }
+    .clientRow .column .bigNumber {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #4A90E2; }
+    .clientRow .column .fa.highlight {
+      padding: 5px;
+      width: 16px;
+      max-width: 16px;
+      height: 16px;
+      max-height: 16px;
+      border-radius: 50%;
+      text-align: center; }
+      .clientRow .column .fa.highlight:hover {
+        color: #898989;
+        background-color: #FFF; }
+    .clientRow .column:nth-child(1) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(2) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(3) {
+      width: 25%; }
+    .clientRow .column:nth-child(4) {
+      width: 20%; }
+    .clientRow .column:nth-child(5) {
+      width: 9%;
+      text-align: center; }
+    .clientRow .column:nth-child(6) {
+      width: 8%;
+      text-align: center; }
+    .clientRow .column:nth-child(7) {
+      width: 13%; }
+    .clientRow .column:nth-child(8) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(9) {
+      width: 5%;
+      text-align: center; }
+    .clientRow .column:nth-child(10) {
+      width: 5%;
+      text-align: center; }
+  .clientRow:nth-child(even) {
+    background-color: #E8ECEF; }

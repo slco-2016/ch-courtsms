@@ -1,0 +1,440 @@
+$white:       #FFF;
+$offwhite:    #E8ECEF;
+$lightgrey:   #D3D3D3;
+$grey:        #898989;
+$darkgrey:    #2A2A2A;
+$black:       #000;
+$lightorange: #FFA500;
+$orange:      #E96100;
+$red:         #E50000;
+$lightblue:   #4A90E2;
+$lightbluegrey:#6783a1;
+$blue:        #3F69B6;
+$bluegrey:    #516a84;
+$darkblue:    #344289;
+$darkbluegrey:#3c5065;
+
+$width_row1:  8%;
+$width_row2:  22%;
+$width_row3:  60%;
+$width_row4:  5%;
+$width_row5:  5%;
+
+
+
+// Mixins
+@mixin float-center() {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.leftBar {
+  width: 25%;
+  overflow-y: scroll;
+  float: left;
+  background-color: $white;
+
+  .conversations {
+    // padding: 5px 10px 5px 10px;
+    padding: 0px;
+
+    .conversation {
+      padding: 5px 15px 5px 15px;
+      border-bottom: 1px solid $offwhite;
+
+      .subject {
+        margin-top: 7px;
+        color: $lightblue;
+        margin-bottom: 5px;
+
+        &.showAll {
+          text-transform: uppercase;
+          text-align: center;
+          margin-top: 7px;
+          font-size: 12px;
+          letter-spacing: 1px;
+        }
+      }
+
+      .date {
+        font-size: 11px;
+        line-height: 14px;
+        padding-bottom: 5px;
+
+        .day {
+          // float: left;
+          text-align: right;
+        }
+        .time {
+          // float: right;
+          text-align: right;
+        }
+        &::after {
+          content:"";
+          display:block;
+          clear:both;
+        }
+      }
+
+      &.selected {
+        background-color: $lightblue;
+        color: $white;
+        .subject {
+          color: $white;
+          font-weight: 700;
+        }
+      }
+
+      &:hover {
+        background-color: $offwhite;
+        color: $grey;
+        .subject, .date {
+          color: $darkblue;
+          // font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+.rightContent {
+  width: 75%;
+  overflow-y: scroll;
+  float: right;
+  background-color: $offwhite;
+  box-shadow: inset 1px 10px 20px -10px;
+
+  .subjectToggle {
+    position: absolute;
+    left: 50%;
+    background-color: $lightbluegrey;
+    color: $white;
+    line-height: 30px;
+    padding-left: 0px;
+    padding-right: 0px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin-right: auto;
+    margin-left: auto;
+    border-left: 1px solid $offwhite;
+    border-right: 1px solid $offwhite;
+    border-bottom: 1px solid $offwhite;
+    // box-shadow: 0px 1px 5px $lightgrey;
+
+    .title {
+      display: inline;
+      margin-left: 12px;
+      margin-right: 12px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .option {
+      display: inline;
+      font-size: 12px;
+      padding: 3px;
+      padding-left: 7px;
+      padding-right: 7px;
+      margin-right: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+
+      &.selected, &:hover {
+        background-color: $white;
+        color: $lightblue;
+      }
+
+      &:nth-last-child(1) {
+        margin-right: 15px;
+      }
+    }
+  }
+  
+  .messageStream {
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 60px;
+
+    .messageDiv {
+
+      &.rightAligned {
+        // padding-left: 20px;
+      }
+
+      .message {
+        padding: 15px 20px 10px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        width: 695px;
+
+        &.outbound {
+          border: 1px solid $white;
+          color: $darkgrey;
+          .content {
+            // text-align: right;
+          }
+        } 
+        
+        &.inbound {
+          background-color: $white;
+          color: $darkgrey;
+        }
+
+        .bottomRow {
+          margin-top: 15px; 
+          font-size: 12px;
+          line-height: 18px;
+
+          .fa {
+            font-size: 18px;
+          }
+
+          .state {
+            float: right;
+          }
+        }
+      }
+    }
+  }
+}
+
+.mainVisibleRow {
+
+  &::after {
+    content:"";
+    display:block;
+    clear:both;
+  }
+}
+
+.responseBox {
+  position: absolute;
+  bottom: 0px;
+  overflow: hidden;
+  padding: 0px 0px 0px 0px;
+  margin: 0px 0px 0px 0px;
+  width: 1024px;
+
+  .miniAlt {
+    .messageInput {
+      color: $white;
+    } 
+  }
+
+  .mini {
+    width: inherit;
+    background-color: $lightblue;
+    padding: 15px;
+
+    .actionButtons {
+      color: $white;
+      width: 241px; // 256 - 15
+      // overflow: hidden;
+
+      .actionButton {
+        float: left;
+        width: 58px;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        .icon {
+          font-size: 24px;
+          line-height: 38px;
+        }
+        .name {
+          line-height: 16px;
+          font-size: 12px;
+          display: none;
+        }
+
+        &:hover {
+          color: $darkblue;
+        }
+      }
+    }
+
+    .messageInput {
+      width: 735px;
+      height: 45px;
+      background-color: $offwhite;
+      border-radius: 7px;
+      line-height: 45px;
+      font-size: 18px;
+      color: $darkgrey;
+      font-weight: 300;
+      margin-left: 25px;
+      cursor: pointer;
+      float: right;
+
+      .left {
+        padding-left: 15px;
+        width: 50%;
+        text-align: left;
+      }
+      .right {
+        width: 50%;
+        text-align: right;
+
+        .fa {
+          padding-right: 15px;
+        }
+      }
+
+      &.disabled {
+        cursor: not-allowed;
+        font-size: 12px;
+        overflow: hidden;
+        background-color: $blue;
+
+        &:hover {
+          box-shadow: none;
+          background-color: $blue;
+        }
+      }
+
+      &:hover {
+        box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
+      }
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+  #actualTypeBox {
+    display: none;
+    float: right;
+
+    textarea {
+      width: 708px;
+      max-width: 708px;
+      height: 85px;
+      max-height: 85px;
+
+      background-color: $offwhite;
+      border-radius: 7px;
+      color: $darkgrey;
+      font-weight: 300;
+      cursor: pointer;
+
+      line-height: 20px;
+      font-size: 18px;
+      padding: 15px;
+      border: 0px;
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+  .full {
+    display: none;
+    width: inherit;
+
+    .bottomRow {
+      display: block;
+      height: 32px;
+      margin-top: 10px;
+      margin-bottom: 0px;
+
+      .optionButton {
+        text-align: center;
+        height: 31px;
+        border: 1px solid $darkblue;
+        border-radius: 3px;
+        background-color: $blue;
+        margin-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        line-height: 31px;
+        font-size: 16px;
+        color: $white;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $white;
+          color: $blue;
+        }
+      }
+
+      .contactSelect {
+        float: right;
+        select {
+          display: inline;
+          width: 250px;
+          height: 32px;
+          border: 1px solid $white;
+          border-radius: 3px;
+          background-color: $blue;
+          text-align: center;
+          font-size: 16px;
+          color: $white;
+          
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          -webkit-user-select: none; /* Chrome/Safari */        
+          -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* IE10+ */
+          /* Rules below not implemented in browsers yet */
+          -o-user-select: none;
+          user-select: none;
+
+          &:hover {
+            background-color: $white;
+            color: $blue;
+          }
+        }
+      }
+
+      .submit {
+        float: right;
+        height: 32px;
+        line-height: 32px;
+        border: 2px solid $darkblue;
+        border-radius: 25px;
+        background-color: $white;
+        padding-right: 15px;
+        padding-left: 15px;
+        font-size: 14px;
+        color: $blue;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: 25px;
+
+        .ss {
+          margin-right: 5px;
+        }
+
+        &:hover {
+          background-color: $blue;
+          color: $white;
+        }
+
+        &.disabled {
+          cursor: not-allowed;
+          background-color: $lightgrey;
+          color: $grey;
+          border: 2px solid $grey;
+        }
+      }
+    }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+}
+
+
+
