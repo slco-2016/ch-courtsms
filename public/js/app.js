@@ -716,7 +716,7 @@ $(function() {
               }
             },
             legend: { hide: false, position: 'inset', inset: {
-                anchor: 'top-right',
+                anchor: 'top-left',
                 x: 0,
                 y: 0,
                 step: undefined

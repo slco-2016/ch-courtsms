@@ -13,6 +13,7 @@ const OutboundVoiceMessages = require('../models/outboundVoiceMessages')
 const Communications = require('../models/communications')
 
 module.exports = {
+  
   recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
     let params = `?userId=${user.cmid}&commId=`
     params += `${commId}&deliveryDate=${deliveryDate.getTime()}`
@@ -38,6 +39,7 @@ module.exports = {
       });
     })
   },
+
   processPendingOutboundVoiceMessages(ovm, domain) {
     domain = domain || credentials.rootUrl  
 
@@ -66,6 +68,7 @@ module.exports = {
       }).catch(reject)
     })
   },
+
   sendPendingOutboundVoiceMessages(domain) {
     domain = domain || credentials.rootUrl  
 

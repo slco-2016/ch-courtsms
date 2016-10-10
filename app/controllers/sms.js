@@ -62,13 +62,9 @@ module.exports = {
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
               return Messages.sendOne(commId, messageContent, conversation)
-            }).then(() => { }).catch((error) => {
-              console.log(error);
-            });
+            }).then(() => { }).catch(res.error500);
           }
-        }).catch((err) => {
-          console.log("Error finding by conversation: ", err);
-        });
+        }).catch(res.error500);
 
         req.logActivity.client(conversation.client)
         req.logActivity.conversation(conversation.convid);

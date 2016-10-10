@@ -463,7 +463,6 @@ class Messages extends BaseModel {
           }).then(fulfill).catch(reject)
 
         } else if (communication.type == "cell") {
-
           return Departments.findByConversationId(conversation.convid)
           .then((department) => {
             let phoneNumberId = department.phone_number;
@@ -489,10 +488,16 @@ class Messages extends BaseModel {
                                     MessageSid,
                                     MessageStatus)
                     .then(() => {
-                      if (contentIndex == contentArray.length - 1) fulfill();
+                      if (contentIndex == contentArray.length - 1) {
+                        fulfill();
+                      } else {
+                        reject(new Error("contentIndex does not match contentArray length in Messages.sendOne"));
+                      }
                     }).catch(reject);
                   }
                 })
+              } else {
+                fulfill();
               }
             });
 
@@ -523,7 +528,6 @@ class Messages extends BaseModel {
             fulfill();
           }).catch(reject);
         } else {
-          // Issue: It will fail silently here.
           fulfill();
         }
       }).catch(reject);
@@ -532,13 +536,13 @@ class Messages extends BaseModel {
 
   static startNewConversation (userID, clientID, subject, content, commID) {
     return new Promise((fulfill, reject) => {
-      var conversation;
+      let conversation;
 
       Conversations.closeAllWithClient(clientID)
       .then(() => {
         return Conversations.create(userID, clientID, subject, true)
       }).then((resp) => {
-        conversation = resp
+        conversation = resp;
         return Communications.findById(commID)
       }).then((communication) => {
         Messages.sendOne(commID, content, conversation)

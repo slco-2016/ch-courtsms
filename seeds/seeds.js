@@ -47,6 +47,10 @@ exports.seed = function(knex, Promise) {
       return knex('msgs').insert(outboundEmailMessage)
     }).then(() => {
       return knex('outbound_voice_messages').insert(outboundVoiceMessage)
+    }).then(() => {
+      return knex('notifications').insert(notificationSmartSend)
+    }).then(() => {
+      return knex('notifications').insert(notification)
     }).catch((err) => {
       throw err
     });
@@ -207,4 +211,34 @@ let outboundVoiceMessage = {
   delivered: false,
   commid: 1,
   call_sid: 'CA3042ffc8b5de3dfcd0d85e57cec02605',
+}
+
+let notificationSmartSend = {
+  cm: 2,
+  client: 1,
+  comm: null,
+  subject: "Reminder",
+  message: "Bursh teeth",
+  send: "2016-09-29 17:07:11.726-04",
+  repeat: null,
+  frequency: null,
+  sent: false,
+  closed: false,
+  repeat_terminus: null,
+  ovm_id: null,
+}
+
+let notification = {
+  cm: 2,
+  client: 1,
+  comm: 1,
+  subject: "Reminder2",
+  message: "Bursh teeth again",
+  send: "2016-09-29 17:07:11.726-04",
+  repeat: null,
+  frequency: null,
+  sent: false,
+  closed: false,
+  repeat_terminus: null,
+  ovm_id: null,
 }

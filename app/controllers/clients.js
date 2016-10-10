@@ -234,7 +234,7 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    let client = req.params.client;
+    let clientId = req.params.client;
     let method = req.query.method;
     let user = req.getUser();
 
@@ -245,13 +245,16 @@ module.exports = {
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
 
-    let conversations, messages;
-    Conversations.findByUserAndClient(user, client)
+    let client, conversations, messages;
+    Clients.findById(clientId)
     .then((resp) => {
+      client = resp;
+      return Conversations.findByUserAndClient(user, clientId)
+    }).then((resp) => {
       conversations = resp;
 
       let conversationIds = conversations.filter((conversation) => {
-        return conversation.client == Number(client);
+        return conversation.client == Number(clientId);
       }).map((conversation) => {
         return conversation.convid;
       });
@@ -281,7 +284,7 @@ module.exports = {
       return Messages.markAsRead(messageIds)
     }).then(() => {
       
-      return CommConns.findByClientIdWithCommMetaData(client)
+      return CommConns.findByClientIdWithCommMetaData(clientId)
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {
@@ -291,7 +294,7 @@ module.exports = {
       // if there are unclaimed messages that need to be viewed and this the client's main cm
       if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
-        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
+        res.redirect(`/clients/${clientId}/conversations/${unclaimed.convid}/claim`)
       } else {
         res.render("clients/messages", {
           hub: {
