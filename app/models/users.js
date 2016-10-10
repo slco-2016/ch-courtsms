@@ -58,10 +58,6 @@ class Users extends BaseModel {
     return `${this.getFullName()} <${rawEmail}>`;
   }
 
-  static returnUserIdFromResponse(res) {
-
-  }
-
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
       // joanne@slco.org => joanne.slco@clientcomm.org
@@ -77,8 +73,6 @@ class Users extends BaseModel {
         this._getSingleResponse(users, fulfill);
       }).catch(reject);
     });
-
-
   }
 
   static findByOrg (orgID, activeStatus) {
