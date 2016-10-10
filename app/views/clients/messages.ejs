@@ -38,7 +38,7 @@
   </div>
 
   <div class="messageStream">
-    <% messages.forEach(function (message, messageIndex) { %>
+    <% messages.forEach((message, messageIndex) => { %>
       <div class="messageDiv <%= !message.inbound ? 'rightAligned' : '' %>">
         <div class="message <%= message.inbound ? 'inbound' : 'outbound' %>"
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
@@ -46,11 +46,11 @@
             <%= message.content %>
 
             <% message.attachments.forEach((attachment) => { %>
-               <a href="<%= attachment.getUrl() %>">attachment</a> 
+               <a href="<%= attachment.getUrl() %>">View attachment</a> 
             <% }) %>
-            
+
             <% if (message.recording) { %>
-               <a href="<%= message.recording.getUrl() %>">recording</a> 
+               <a href="<%= message.recording.getUrl() %>">View recording</a> 
             <% } %>
 
           </div>

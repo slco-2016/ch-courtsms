@@ -234,9 +234,9 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    const client = req.params.client;
-    const method = req.query.method;
-    const user = req.getUser();
+    let clientId = req.params.client;
+    let method = req.query.method;
+    let user = req.getUser();
 
     // determine if we should filter by type
     let methodFilter = 'all';
@@ -245,9 +245,12 @@ module.exports = {
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
 
-    let conversations, messages;
-    Conversations.findByUserAndClient(user, client)
+    let client, conversations, messages;
+    Clients.findById(clientId)
     .then((resp) => {
+      client = resp;
+      return Conversations.findByUserAndClient(user, clientId)
+    }).then((resp) => {
       conversations = resp;
 
       const conversationIds = conversations.filter((conversation) => {
@@ -280,7 +283,7 @@ module.exports = {
       }
       return Messages.markAsRead(messageIds);
     }).then(() => {
-      
+
       return CommConns.findByClientIdWithCommMetaData(client);
     }).then((communications) => {
 

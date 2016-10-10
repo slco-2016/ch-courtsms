@@ -26,24 +26,24 @@ describe('Sms inbound message endpoint', function() {
   });
 
   it('twilio sends an sms from an brand new number', function(done) {
-    let newSmsBody = smsData;
-    newSmsBody.From = "10008384828"
+    const newSmsBody = smsData;
+    newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
       .expect(200)
       .end(function(err, res) {
         done(err);
-      })
+      });
   });
 
   it('twilio sends an sms from that same new number again', function(done) {
-    let newSmsBody = smsData;
-    newSmsBody.From = "10008384828"
+    const newSmsBody = smsData;
+    newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
       .expect(200)
       .end(function(err, res) {
-        Conversations.findByCommunicationValue("10008384828")
+        Conversations.findByCommunicationValue('10008384828')
         .then((conversations) => {
           // both messages should have been placed in the same new captured conversation
           conversations.length.should.be.exactly(1);
@@ -53,15 +53,15 @@ describe('Sms inbound message endpoint', function() {
           messages.length.should.be.exactly(2);
           done(err);
         });
-      })
+      });
   });
 
   it('twilio sends an an sms to an existing number', function(done) {
-    let newSmsBody = smsData;
-    newSmsBody.From = "12033133609";
+    const newSmsBody = smsData;
+    newSmsBody.From = '12033133609';
 
     // this is the number that is assoc. with main department in seed
-    newSmsBody.To = "12435678910";
+    newSmsBody.To = '12435678910';
 
     CommConns.findByValue(newSmsBody.From)
     .then((commConns) => {
@@ -78,28 +78,28 @@ describe('Sms inbound message endpoint', function() {
               // We should not have any new capture board convos
               conversation.cm.should.not.be.exactly(null);
               conversation.client.should.not.be.exactly(null);
-            })
+            });
             done(err);
           });
-        })
+        });
     }).catch(done);
 
   });
 
   it('claim the conversation with one case manager so it closes for all others', function(done) {
-    let newSmsBody = smsData;
-    newSmsBody.From = "12033133609";
+    const newSmsBody = smsData;
+    newSmsBody.From = '12033133609';
 
     // this is the number that is assoc. with main department in seed
-    newSmsBody.To = "12435678910";
+    newSmsBody.To = '12435678910';
 
     Conversations.findByCommunicationValue(newSmsBody.From)
     .then((conversations) => {
       // just take the first one
-      let conversation = conversations[0];
-      let userId = conversation.cm;
-      let clientId = conversation.client;
-      let conversationId = conversation.convid;
+      const conversation = conversations[0];
+      const userId = conversation.cm;
+      const clientId = conversation.client;
+      const conversationId = conversation.convid;
       Capture.associateConversation(userId,
                                     clientId,
                                     conversationId)
@@ -117,4 +117,4 @@ describe('Sms inbound message endpoint', function() {
 
   });
 
-})
+});

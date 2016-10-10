@@ -492,6 +492,8 @@ class Messages extends BaseModel {
                     }).catch(reject);
                   }
                 });
+              } else {
+                fulfill();
               }
             });
 
@@ -504,9 +506,11 @@ class Messages extends BaseModel {
 
   static sendMultiple (userID, clientIDs, title, content) {
     return new Promise((fulfill, reject) => {
-      clientIDs.forEach(function (clientID, i) {
+      clientIDs.forEach(function (clientID) {
         Messages.smartSend(userID, clientID, title, content)
-        .then(() => {}).catch(function (err) {});
+        .then(() => {
+          // do nothing
+        }).catch(function (err) {});
       });
       fulfill();
     });

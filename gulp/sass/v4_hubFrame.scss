@@ -122,17 +122,13 @@ $darkblue:    #344289;
               padding: 3px;
               padding-left: 10px;
               padding-right: 10px;
-              margin-right: 5px;
+              margin-right: 0px;
               border-radius: 15px;
               cursor: pointer;
 
               &.selected, &:hover {
                 background-color: $white;
                 color: $lightblue;
-              }
-
-              &:nth-last-child(1) {
-                margin-right: 15px;
               }
             }
           }

@@ -19,12 +19,15 @@ module.exports = function (passport) {
     db('cms')
     .where('cmid', id)
     .limit(1)
-    .then(function (cm) {
+    .then(function (user) {
+      if (user.constructor === Array) { 
+        user = user[0]; 
+      }
+      done(null, user);
 
-      if (cm.constructor === Array) { cm = cm[0]; }
-      done(null, cm);
-
-    }).catch(function (err) { done(err, null); });
+    }).catch((err) => { 
+      done(err, false); 
+    });
   });
 
   passport.use('local-login', new local({
