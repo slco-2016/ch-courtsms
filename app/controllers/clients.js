@@ -18,6 +18,66 @@ const _average = (arr) => {
   } else {
     return null
   }
+};
+
+function _addNewMessageEvent (arr, date) {
+  let added = false;
+  date = moment(date).format("YYYY-MM-DD");
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].date == date) {
+      arr[i].count += 1;
+      added = true;
+    }
+  }
+  if (!added) {
+    arr.push({
+      date: date,
+      count: 1
+    });
+  }
+  return arr;
+};
+
+function _getDailyVolumes (messages) {
+  let inbound = [];
+  let outbound = [];
+
+  messages.forEach((msg) => {
+    let date = moment(msg.created).format("YYYY-MM-DD");
+    let alreadyExists = false;
+    let insert = {
+      date: date,
+      created: msg.created,
+      count: 1
+    };
+
+    if (msg.inbound) {
+      inbound.forEach((m, i) => {
+        if (m.date == date) {
+          alreadyExists = true;
+          inbound[i].count += 1;
+        }
+      });
+      if (!alreadyExists) {
+        inbound.push(insert);
+      }
+    } else {
+      outbound.forEach((m, i) => {
+        if (m.date == date) {
+          alreadyExists = true;
+          outbound[i].count += 1;
+        }
+      });
+      if (!alreadyExists) {
+        outbound.push(insert);
+      }
+    }
+  });
+
+  return {
+    inbound: inbound,
+    outbound: outbound
+  }
 }
 
 module.exports = {
@@ -168,6 +228,11 @@ module.exports = {
     }).catch(res.error500);
   },
 
+  mediaAttachment(req, res) {
+    req.flash("warning", "Media attachments are not yet supported.");
+    res.levelSensitiveRedirect(`/clients/${req.params.client}/messages`);
+  },
+
   messagesIndex(req, res) {
     let client = req.params.client;
     let method = req.query.method;
@@ -208,6 +273,11 @@ module.exports = {
       }).map((msg) => {
         return msg.msgid;
       })
+
+      // control to keep other people from "marking as read" someones messages
+      if (req.user.cmid !== client.cm) {
+        messageIds = [];
+      }
       return Messages.markAsRead(messageIds)
     }).then(() => {
       
@@ -218,7 +288,8 @@ module.exports = {
         return !conversation.accepted;
       })
 
-      if (unclaimed.length) {
+      // if there are unclaimed messages that need to be viewed and this the client's main cm
+      if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
         res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
       } else {
@@ -356,10 +427,18 @@ module.exports = {
     let client = req.params.client;
     let user = req.getUser();
 
-    let messages;
+    let messages, otherPotentialManagers, lastCommuncationUsed;
 
-    Messages.findBetweenUserAndClient(user, client)
-    .then((msgs) => {
+    Clients.findBySameName(res.locals.client)
+    .then((clients) => {
+      let userIds = clients.map((client) => {
+        return client.cm;
+      })
+      return Users.findByIds(userIds)
+    }).then((users) => {
+      otherPotentialManagers = users;
+      return Messages.findBetweenUserAndClient(user, client)
+    }).then((msgs) => {
       messages = msgs;
       return CommConns.findByClientIdWithCommMetaData(client)
     }).then((communications) => {
@@ -384,24 +463,6 @@ module.exports = {
           // counting by day
           countsOutbound = [],
           countsInbound = [];
-
-      function _addNewMessageEvent (arr, date) {
-        let added = false;
-        date = moment(date).format("YYYY-MM-DD");
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i].date == date) {
-            arr[i].count += 1;
-            added = true;
-          }
-        }
-        if (!added) {
-          arr.push({
-            date: date,
-            count: 1
-          });
-        }
-        return arr;
-      }
 
       messages.forEach((msg, i) => {
         if (!msg.read) {
@@ -468,23 +529,40 @@ module.exports = {
       let inboundCount = messages.filter((msg) => { return msg.inbound; }).length;
       let outboundCount = messages.length - inboundCount;
 
+      //Find last used contact
+      if (messages.length) {
+        let lastMessage = messages[messages.length -1];
+        let lastMessageComm = lastMessage.comm;
+        communications.forEach((comm) => {
+          if (comm.commid == lastMessageComm) {
+            lastCommuncationUsed = comm;
+          }
+        });
+      }
+
+      // Get counts
+      let dailyCounts = _getDailyVolumes(messages);
+
       res.render("clients/profile", {
         hub: {
-          tab: null,
+          tab: "profile",
           sel: null
         },
         messages: {
           all: messages,
+          dailyCounts: dailyCounts,
           unreadCount: unreadCount,
           inboundCount: inboundCount,
           outboundCount: outboundCount,
           sentiment: sentiment,
-          averageClientResponseTime: averageClientResponseTime,
-          averageUserResponseTime: averageUserResponseTime,
+          averageClientResponseTime: averageClientResponseTime || 0,
+          averageUserResponseTime: averageUserResponseTime || 0,
           lastInbound: lastInbound,
           lastOutbound: lastOutbound
         },
-        communications: communications
+        communications: communications,
+        lastCommuncationUsed: lastCommuncationUsed,
+        otherPotentialManagers: otherPotentialManagers,
       });
     }).catch(res.error500);
   }

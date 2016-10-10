@@ -6,11 +6,16 @@
   <div class="departments">
     
     <% if (user.class == "owner") { -%>
-      <div class="department">
-        <div class="subject showAll">
-          <a href="<%= `/org` %>">Show for all departments</a>
+      <a href="/org">
+        <div class="department <% if (!departmentFilter) { %>selected<% } %>">
+          <div class="subject">
+            All departments
+          </div>
+          <div class="date">
+            <div class="day">Created <%= moment.tz(organization.created, organization.tz).format("MM/DD/YY") %></div>
+          </div>
         </div>
-      </div>
+      </a>
     <% } -%>
     
     <% departments.forEach(function (department) { %>
@@ -20,28 +25,39 @@
             <%= department.name %>
           </div>
           <div class="date">
-            <div class="day">Created on <%= moment.tz(department.updated, organization.tz).format("DD/MM/YY") %></div>
+            <div class="day">Created <%= moment.tz(department.updated, organization.tz).format("MM/DD/YY") %></div>
           </div>
         </div>
       </a>
     <% }) %>
 
-    <div class="department">
-      <div class="subHeader">
+    <div class="subHeader" id="seeUsers">
+      <% if (departmentFilter || userFilter) { %>
+        Users by department
+      <% } else { %>
         Observe activity by user
-      </div>
+      <% } %>
     </div>
+
     <% users.forEach(function(targetUser) { %>
-      <a href="<%= `/org?user=${targetUser.cmid}&department=${targetUser.department}` %>">
-        <div class="department <% if (userFilter == targetUser.cmid) { %>selected<% } %>">
-          <div class="subject">
+      <div class="department userTab <% if (userFilter == targetUser.cmid) { %>selected<% } %>">
+        <div class="subject">
+          <a href="<%= `/org?user=${targetUser.cmid}&department=${targetUser.department}` %>">
             <%= targetUser.last + ', ' + targetUser.first  %>
-          </div>
-          <div class="date">
-            <div class="day">Updated on <%= moment.tz(targetUser.updated, organization.tz).format("MM/DD/YY") %></div>
+          </a>
+        </div>
+        <div class="date">
+          <div class="day">
+            <% if (targetUser.department) { %>
+              <%= targetUser.position %>, <%= targetUser.department_name %>
+            <% } else { %>
+              <a href="/org/users/<%=targetUser.cmid%>/edit">
+                <span style="color: red">ASSIGN TO DEPARTMENT</span>
+              </a>
+            <% } %>
           </div>
         </div>
-      </a>
+      </div>
     <% }) %>
     
 
@@ -55,6 +71,122 @@
     <div class="title">Yearly Activity Log</div>
     <div class="graphic" id="overallGraph"></div>
   </div>
+
+  <div class="threeBlockRow">
+    <div class="block">
+      <div class="blockChart">
+        <div id="gaugechart"></div>
+      </div>
+      <div class="subtitle">
+        Current week use <br>compared to peak week
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="blockChart">
+        <div id="todayVsPeakBarChart"></div>
+      </div>
+      <div class="subtitle">
+        Today's messaging activity <br>compared to peak day
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="blockChart">
+        <style type="text/css">.c3-chart-arc path { stroke-width: 0; } </style>
+        <div id="clientSuccessChart"></div>
+      </div>
+      <div class="subtitle">
+        Reported successful <br>client closures
+      </div>
+    </div>
+  </div>
+
+
+  <div class="threeBlockRow">
+
+    <div class="block">
+      <div class="container">
+        <div class="heading">
+          Top 5 Users This Week
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="name" id="topUser-1">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="topUser-2">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="topUser-3">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="topUser-4">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="topUser-5">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="container">
+        <div class="heading">
+          Bottom 5 Users This Week
+        </div>
+        <div class="body">
+          <div class="row">
+            <div class="name" id="bottomUser-1">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="bottomUser-2">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="bottomUser-3">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="bottomUser-4">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+          <div class="row">
+            <div class="name" id="bottomUser-5">
+              <small><i>not enough data</i></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="blockChart activeStaffPercentage">
+        <span id="activeStaffPercentage">
+          <i class="fa fa-spinner fa-pulse fa-3x fa-fw" aria-hidden="true"></i>
+        </span>
+      </div>
+      <div class="subtitle">
+        Users logged in <br>over the past 24 hours
+      </div>
+    </div>
+  </div>
+
 
   <div class="chart">
     <div class="title">Previous 24 Hours' User Activity</div>
@@ -72,10 +204,12 @@
 <script src="/components/d3/d3.min.js"></script>
 <script src="/components/c3/c3.min.js"></script>
 <script type="text/javascript" class="JSdashboard">
+  var users = <%- JSON.stringify(users) %>;
   var countsByWeek = <%- JSON.stringify(countsByWeek) %>;
   var countsByDay = <%- JSON.stringify(countsByDay) %>;
   var departmentFilter = Number(<%= departmentFilter %>) || null;
   var userFilter = Number(<%= userFilter %>) || null;
+  var surveySynopsis = <%- JSON.stringify(surveySynopsis) %>;
 </script>
 
 <% include ../partials/hubFrameBottom %>

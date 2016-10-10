@@ -27,12 +27,12 @@ $darkblue:    #344289;
   .navSub {
     position: absolute;
     top: 41px;
-    width: 1022px;
+    width: 1024px;
     height: 55px;
     background-color: $lightblue;
-    border-bottom: 1px solid $offwhite;
-    border-left: 1px solid $offwhite;
-    border-right: 1px solid $offwhite;
+    // border-bottom: 1px solid $offwhite;
+    // border-left: 1px solid #3a597a;
+    // border-right: 1px solid #3a597a;
     overflow: hidden;
     position: fixed;
 
@@ -41,13 +41,22 @@ $darkblue:    #344289;
       float: left;
       color: $white;
       line-height: 55px;
-        margin-right: 50px;
+      padding-right: 35px;
+      // margin-right: 25px;
       // background-color: $white;
 
+      &:hover {
+        background-color: $blue;
+      }
+
+      &.open {
+        background-color: $darkblue;
+      }
 
       .icon {
         float: left;
-        margin-left: 15px;
+        margin-left: 20px;
+        margin-right: 6px;
         font-size: 20px;
         color: $white;
       }
@@ -168,29 +177,27 @@ $darkblue:    #344289;
     background-color: $offwhite;
   }
 
-
-
   .emptyResultsGreeting {
     text-align: middle;
-    background-color: $lightgrey;
+    // background-color: $lightgrey;
 
     .message {
-      padding-top: 75px;
-      padding-left: 15px;
+      padding-top: 125px;
+      padding-left: 55px;
       float: left;
-      line-height: 50px;
-      font-size: 44px;
-      width: 80%;
+      line-height: 40px;
+      font-size: 32px;
+      width: 50%;
 
       small {
-        font-size: 36px;
+        font-size: 22px;
       }
     }
 
     .icon {
-      float: right;
+      float: left;
       font-size: 150px;
-      padding: 25px 25px 0px 25px;
+      padding: 75px 45px 0px 120px;
     }
 
     &::after {
@@ -199,5 +206,4 @@ $darkblue:    #344289;
       clear:both;
     }
   }
-
 }

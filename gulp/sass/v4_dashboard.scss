@@ -1,9 +1,7 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
+$lightbluegrey:#6783a1;
 $grey:        #898989;
 $darkgrey:    #2A2A2A;
 $black:       #000;
@@ -11,8 +9,11 @@ $lightorange: #FFA500;
 $orange:      #E96100;
 $red:         #E50000;
 $lightblue:   #4A90E2;
+$lightbluegrey:#6783a1;
 $blue:        #3F69B6;
+$bluegrey:    #516a84;
 $darkblue:    #344289;
+$darkbluegrey:#3c5065;
 
 $width_row1:  8%;
 $width_row2:  22%;
@@ -29,20 +30,20 @@ $width_row5:  5%;
 }
 
 .leftBar {
-  width: 25%;
+  width: 200px;
   overflow-y: scroll;
   float: left;
-  background-color: $white;
+  background-color: $offwhite;
+  border-right: 1px solid $lightgrey;
 
   .departments {
-    padding: 5px 10px 5px 10px;
 
     .department {
-      padding: 5px 5px 5px 5px;
-      border-bottom: 1px solid $offwhite;
+      padding: 18px 10px 7px 10px;
+      border-bottom: 1px solid $lightgrey;
 
       .subject {
-        color: $lightblue;
+        color: $darkblue;
         margin-bottom: 5px;
 
         &.showAll {
@@ -56,13 +57,11 @@ $width_row5:  5%;
 
       .date {
         font-size: 12px;
-        padding-bottom: 5px;
 
         .day {
-          float: left;
-        }
-        .time {
-          float: right;
+          text-align: right;
+          line-height: 16px;
+          font-size: 11px;
         }
         &::after {
           content:"";
@@ -72,251 +71,179 @@ $width_row5:  5%;
       }
 
       &.selected {
-        background-color: $lightblue;
-        color: $white;
+        background-color: $white;
+        color: $grey;
         .subject {
-          color: $white;
+          color: $darkblue;
           font-weight: 700;
         }
       }
 
+      &.userTab {
+        display: none;
+      }
+
       &:hover {
-        background-color: $offwhite;
+        background-color: $white;
         color: $grey;
         .subject {
-          color: $lightblue;
-          font-weight: 700;
+          color: $darkblue;
         }
       }
     }
+  }
+}
 
-    .subHeader {
-      text-transform: uppercase;
-      text-align: center;
-      margin-top: 3px;
-      font-size: 10px;
-      color: $grey;
-      letter-spacing: 1px;
-      padding-bottom: 3px;
+.subHeader {
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 32px;
+  font-size: 10px;
+  background-color: $lightgrey;
+  color: $darkblue;
+  letter-spacing: 1px;
+  padding-bottom: 0px;
+  border-bottom: 1px solid $lightgrey;
 
-      &:hover {
-        color: $grey;
-        font-weight: 500;
-      }
-    }
+  &:hover, &.selected {
+    color: $lightblue;
+    background-color: $white;
+    font-weight: 500;
+  }
+
+  &#seeUsers {
+    cursor: pointer;
   }
 }
 
 .rightContent {
-  width: 75%;
+  width: 823px;
   overflow-y: scroll;
   float: right;
   background-color: $offwhite;
+  box-shadow: inset 1px 10px 20px -10px;
   
-  .messageStream {
-    padding: 5px 15px 5px 15px;
-    margin-bottom: 60px;
+  .threeBlockRow {
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin: 30px;
+    border-bottom: 1px solid $lightgrey;
 
-    .message {
-      padding: 15px 20px 10px 20px;
-      margin-bottom: 10px;
-      border-radius: 5px;
+    .block {
+      width: 33%;
+      height: inherit;
+      float: left;
+      // border: 1px solid red;
+      text-align: center;
 
-      &.outbound {
-        // background-color: $lightgrey;
-        border: 1px solid $white;
-        color: $darkgrey;
-      } 
-      
-      &.inbound {
-        background-color: $white;
-        color: $darkgrey;
-      } 
+      .blockChart {
+        min-height: 160px;
+        height: 160px;
+        max-height: 160px;
+        overflow: hidden;
 
-      .bottomRow {
-        margin-top: 15px; 
-        font-size: 12px;
-        line-height: 18px;
+        &.activeStaffPercentage {
+          font-family: Georgia, serif;
+          line-height: 75px;
+          // font-weight: bold;
+          font-size: 90px;
+          color: $darkblue;
+          min-height: 105px;
+          height: 105px;
+          max-height: 105px;
 
-        .fa {
-          font-size: 18px;
-        }
-
-        .state {
-          float: right;
-        }
-      }
-    }
-  }
-
-  .responseBox {
-    position: absolute;
-    bottom: 0px;
-    overflow: hidden;
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
-
-    .mini {
-      width: inherit;
-      background-color: $lightblue;
-      padding: 10px 10px 10px 10px;
-
-      .messageInput {
-        width: 733px;
-        height: 45px;
-        background-color: $darkblue;
-        border-radius: 3px;
-        line-height: 45px;
-        font-size: 18px;
-        color: $white;
-        font-weight: 300;
-        padding-left: 15px;
-        cursor: pointer;
-
-        .left {
-          float: left;
-          width: 50%;
-          text-align: left;
-        }
-        .right {
-          float: left;
-          width: 50%;
-          text-align: right;
+          small {
+            font-size: 65px;
+          }
 
           .fa {
-            padding-right: 15px;
+            // margin-top: 100px;
+            font-size: 25px;
+            color: $grey;
           }
         }
-
-        &:hover {
-          color: $offwhite;
-          box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
-        }
-      }
-    }
-
-    .full {
-      display: none;
-      width: inherit;
-      background-color: $lightblue;
-      padding: 10px 10px 10px 10px;
-
-      .messageInput {
-        textarea {
-          width: 728px;
-          max-width: 728px;
-          height: 55px;
-          max-height: 55px;
-          background-color: $darkblue;
-          border-radius: 7px;
-          line-height: 20px;
-          font-size: 18px;
-          color: $white;
-          font-weight: 300;
-          padding: 10px;
-          border: 0px;
-        }
       }
 
-      .bottomRow {
-        display: block;
-        height: 32px;
-        margin-top: 5px;
-        margin-bottom: 15px;
+      .subtitle {
+        font-size: 16px;
+        line-height: 23px;
+      }
 
-        .optionButton {
-          float: left;
-          text-align: center;
-          height: 31px;
-          border: 1px solid $darkblue;
-          border-radius: 3px;
-          background-color: $blue;
-          margin-right: 10px;
-          padding-left: 10px;
-          padding-right: 10px;
-          line-height: 31px;
+
+      .container {
+        padding-top: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 30px;
+
+        .heading {
+          text-align: left;
+          padding: 5px 0px 5px 0px;
+          color: $darkblue;
           font-size: 16px;
-          color: $white;
-          cursor: pointer;
-
-          &:hover {
-            background-color: $white;
-            color: $blue;
-          }
+          font-weight: 700;
+          margin-bottom: 5px;
         }
 
-        .contactSelect {
-          float: left;
-          select {
-            display: inline;
-            width: 250px;
-            height: 32px;
-            border: 1px solid $darkblue;
-            border-radius: 3px;
-            background-color: $blue;
-            text-align: center;
+        .body {
+          .row {
             font-size: 16px;
-            color: $white;
-            
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            -webkit-user-select: none; /* Chrome/Safari */        
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE10+ */
-            /* Rules below not implemented in browsers yet */
-            -o-user-select: none;
-            user-select: none;
-
-            &:hover {
-              background-color: $white;
-              color: $blue;
+            line-height: 23px;
+            width: 100%;
+            .name {
+              text-align: left;
             }
           }
-        }
 
-        .submit {
-          float: right;
-          height: 45px;
-          line-height: 45px;
-          border: 2px solid $darkblue;
-          border-radius: 5px;
-          background-color: $white;
-          padding-right: 25px;
-          padding-left: 25px;
-          font-size: 22px;
-          color: $blue;
-          font-weight: 700;
-          cursor: pointer;
-
-          &:hover {
-            background-color: $blue;
-            color: $white;
+          .circlesSubtitles {
+            width: 100%;
+            .container {
+              padding: 0px;
+              .subtitle {
+                float: right;
+                text-align: center;
+                width: 33%;
+                float: left;
+                font-size: 12px;
+                padding: 0px;
+              }
+            }
+            &::after {
+              content:"";
+              display:block;
+              clear:both;
+            }
           }
 
-          &.disabled {
-            cursor: not-allowed;
-            background-color: $lightgrey;
-            color: $grey;
-            border: 2px solid $grey;
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
           }
         }
       }
     }
+
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
   }
+
 }
 
 .chart {
-  margin: 15px;
+  margin: 30px;
   border-bottom: 1px solid $lightgrey;
 
   .title {
-    text-align: right;
+    text-align: left;
     margin: 15px;
+    margin-bottom: 15px;
     color: $grey;
-    font-size: 12px;
-    text-transform: uppercase;
+    font-size: 16px;
+    // text-transform: uppercase;
   }
 
   .loading {

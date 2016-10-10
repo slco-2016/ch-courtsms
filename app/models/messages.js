@@ -57,7 +57,7 @@ class Messages extends BaseModel {
     })
   }
 
-  static countsByDepartment (orgID, departmentID, timeframe) {
+  static countsByDepartment (departmentID, timeframe) {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .select(db.raw("date_trunc('" + timeframe + "', created) AS time_period , count(*) AS message_count"))
@@ -68,7 +68,6 @@ class Messages extends BaseModel {
             .as("convos"),
           "convos.convid", "msgs.convo")
         .whereRaw("msgs.created > now() - INTERVAL '12 months'")
-        .andWhere("convos.org", orgID)
         .andWhere("convos.department", departmentID)
         .groupBy(db.raw("1"))
         .orderBy(db.raw("1"))
@@ -106,18 +105,17 @@ class Messages extends BaseModel {
     });
   }
 
-  static countsByUser (orgID, userID, timeframe) {
+  static countsByUser (userID, timeframe) {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .select(db.raw("date_trunc('" + timeframe + "', created) AS time_period , count(*) AS message_count"))
         .leftJoin(
           db("convos")
-            .select("convos.convid", "cms.org", "cms.cmid")
+            .select("convos.convid", "cms.org", "cms.cmid", "cms.department")
             .leftJoin("cms", "cms.cmid", "convos.cm")
             .as("convos"),
           "convos.convid", "msgs.convo")
         .whereRaw("msgs.created > now() - INTERVAL '12 months'")
-        .andWhere("convos.org", orgID)
         .andWhere("convos.cmid", userID)
         .groupBy(db.raw("1"))
         .orderBy(db.raw("1"))
@@ -213,9 +211,25 @@ class Messages extends BaseModel {
     return new Promise((fulfill, reject) => {
       db("msgs")
         .where("tw_sid", twSid)
-        .then((objects) => {
-          this._getMultiResponse(objects, fulfill)
-        }).catch(reject);
+      .then((objects) => {
+        this._getMultiResponse(objects, fulfill)
+      }).catch(reject);
+    })
+  }
+
+  static findNotClearedMessages () {
+    return new Promise((fulfill, reject) => {
+      db("msgs")
+        .leftJoin("comms", "comms.commid", "msgs.comm")
+        .whereNot("msgs.status_cleared", true)
+        .and.whereNotNull("tw_sid")
+      .then((messages) => {
+        messages = messages.filter((message) => {
+          let twSid = message.tw_sid;
+          return twSid.startsWith("MM") || twSid.startsWith("SM");
+        });
+        this._getMultiResponse(messages, fulfill)
+      }).catch(reject);
     })
   }
 
@@ -249,21 +263,27 @@ class Messages extends BaseModel {
   static findUnreadsByUser (user) {
     return new Promise((fulfill, reject) => {
       db("msgs")
-        .count("msgid")
         .leftJoin("convos", "msgs.convo", "convos.convid")
+        .leftJoin("clients", "clients.clid", "convos.client")
         .where("msgs.read", false)
         .andWhere("convos.cm", user)
       .then(function (clients) {
         
         // See if there are any new messages in any of the conversations
         let totalNewMessages = 0;
+        let totalNewMessagesInactive = 0;
         clients.forEach(function (ea) {
-          if (!isNaN(ea.count)) {
-            totalNewMessages += Number(ea.count);
+          if (ea.active) {
+            totalNewMessages += 1;
+          } else {
+            totalNewMessagesInactive += 1;
           }
         });
 
-        fulfill(totalNewMessages > 0);
+        fulfill({
+          active: totalNewMessages > 0,
+          inactive: totalNewMessagesInactive > 0
+        });
       }).catch(reject);
     });
   }

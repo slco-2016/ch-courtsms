@@ -87,6 +87,12 @@
             class="formSubmit"
             value="Craft Notification Message">
   </form>
+
+  <a id="voiceLink" href="<%=`/clients/${preSelect ? preSelect : clients[0].clid}/voicemessage`%>/">
+    <button class="formSubmit">
+      Set up a voice notification
+    </button>
+  </a>
 </div>
 
 <script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>

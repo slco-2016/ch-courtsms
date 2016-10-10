@@ -19,6 +19,7 @@ const s3 = require('../lib/s3');
 const voice = require('../lib/voice');
 
 module.exports = {
+  
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, "");
     if (fromNumber.length == 10) { 
@@ -53,6 +54,7 @@ module.exports = {
       }
     })
   },
+
   transcribe(req, res) {
     let RecordingSid = req.body.RecordingSid
     Recordings.findOneByAttribute('RecordingSid', RecordingSid)
@@ -225,16 +227,26 @@ module.exports = {
     let clientId = req.params.client;
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
+
+      // filter out communications that are not type cell or landli
       communications = communications.filter((communication) => {
-        return communication.type == "cell"
-      })
-      res.render('voice/create', {
-        communications: communications
+        let ok = false;
+        if (communication.type == "landline") ok = true;
+        if (communication.type == "cell") ok = true;
+        return ok;
       });
+
+      if (communications.length) {
+        res.render('voice/create', {
+          communications: communications
+        });
+      } else {
+        res.render('voice/noGoodNumbers');
+      }
     }).catch(res.error500);
   },
 
-  submitCallbackNumber(req, res) {
+  create(req, res) {
     let commId = req.body.commId;
 
     let deliveryDate = moment(req.body.sendDate)
@@ -270,20 +282,6 @@ module.exports = {
       redirectAddress = redirectAddress + res.locals.client.clid + "/voicemessage";
       res.redirect(redirectAddress);
     }
-  },
-
-  reviewRecording(req, res) {
-    res.render('voice/review');
-  },
-
-  acceptRecording(req, res) {
-    // at this time we could use twilio to get transcript in text form
-    // make it easy to do this at a later date?
-    res.render('voice/transcript')
-  },
-
-  acceptTranscript(req, res) {
-    res.render('voice/schedule');
   }
 
 };

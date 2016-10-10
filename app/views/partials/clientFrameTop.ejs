@@ -8,9 +8,9 @@
 
   <div class="navSub">
 
-    <div class="leftTab">
+    <div class="leftTab <%= hub.tab == 'profile' ? 'open' : '' %>">
       <div class="icon">
-        <a href="<%=`${clientBaseURL}`%>">
+        <a href="<%=`${clientBaseURL}`%>/edit">
           <i class="fa fa-cog" aria-hidden="true"></i>
         </a>
       </div>
@@ -34,42 +34,44 @@
     </div>
 
     <div class="rightTab <%= hub.tab == 'contactMethods' ? 'open' : 'closed' %>">
-      <div class="title"><a href="<%=`/clients/${client.clid}/communications`%>">Methods</a></div>
+      <div class="title"><a href="<%=`/clients/${client.clid}/communications`%>">Contact Methods</a></div>
     </div>
 
-    <div class="rightActions">
-      <a href="<%=`/clients/${client.clid}/communications/create`%>">
-        <span class="fa-stack fa-lg">
-          <i class="fa fa-circle fa-stack-2x"></i>
-          <i class="fa fa-plus fa-stack-1x fa-inverse"></i>
-        </span>
-        <span class="text">New Contact Method</span>
-      </a>
-    </div>
+    <% if (client.active) { %>
+      <div class="rightActions">
+        <a href="<%=`/clients/${client.clid}/communications/create`%>">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-lg fa-mobile fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="text">New Contact Method</span>
+        </a>
+      </div>
 
-    <div class="rightActions">
-        <% if (typeof client == "undefined") { %>
-          <a href="<%=`/notifications/create`%>">
-        <% } else { %>
-          <a href="<%=`/notifications/create?client=${client.clid}&user=${client.cm}`%>">
-        <% } %>
-        <span class="fa-stack fa-lg">
-          <i class="fa fa-circle fa-stack-2x"></i>
-          <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
-        </span>
-        <span class="text">New Notification</span>
-      </a>
-    </div>
+      <div class="rightActions">
+          <% if (typeof client == "undefined") { %>
+            <a href="<%=`/notifications/create`%>">
+          <% } else { %>
+            <a href="<%=`/notifications/create?client=${client.clid}&user=${client.cm}`%>">
+          <% } %>
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="text">New Notification</span>
+        </a>
+      </div>
 
-    <div class="rightActions">
-      <a href="<%=`/clients/${client.clid}/address`%>">
-        <span class="fa-stack fa-lg">
-          <i class="fa fa-circle fa-stack-2x"></i>
-          <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
-        </span>
-        <span class="text">New Conversation</span>
-      </a>
-    </div>
+      <div class="rightActions">
+        <a href="<%=`/clients/${client.clid}/address`%>">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="text">New Conversation</span>
+        </a>
+      </div>
+    <% } %>
 
   </div>
 

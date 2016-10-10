@@ -43,6 +43,7 @@ $width_row5:  5%;
 
     &:nth-child(1) {
       width: $width_row1;
+      text-indent: 15px;
     }
     &:nth-child(2) {
       width: $width_row2;

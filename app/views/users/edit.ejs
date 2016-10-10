@@ -54,10 +54,11 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Assigned department </div>
+      <div class="formLabel"> Department </div>
       <select class="blueSelect" 
               name="department" 
               required>
+        <option selected disabled>Select a department</option>
         <% departments.forEach(function (department) { %>
             <option value="<%= department.department_id %>"
                     <% if (targetUser.department == department.department_id) { %>selected<% } %>>
@@ -79,14 +80,17 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Assigned class </div>
+      <div class="formLabel"> Account type </div>
       <select class="blueSelect" 
               name="className" 
               required>
-        <% ["owner", "supervisor", "primary", "support", "developer"].forEach(function (className) { %>
+        <% ["supervisor", "primary", "support"].forEach(function (className) { %>
             <option value="<%= className %>"
                     <% if (targetUser.class == className) { %>selected<% } %>>
               <%= className %>
+              <% if (className == "primary") { %>
+                (e.g. case manager, therapist)
+              <% } %>
             </option>
         <% }) %>
       </select>

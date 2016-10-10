@@ -1,10 +1,19 @@
+const CloseoutSurveys = require('../models/closeoutSurveys');
 const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
 
+const messagesLib = require("../lib/messages");
+let moment = require("moment");
+let moment_tz = require("moment-timezone");
+
 module.exports = {
 
   org(req, res) {
+    if (req.user.class == "owner" || req.user.class == "support") {
+      req.user.department = null;
+    }
+
     let departments;
     let departmentFilter = req.user.department || req.query.department || null;
     let userFilter = req.query.user || null;
@@ -16,7 +25,7 @@ module.exports = {
           !req.query.department) {
       departmentFilter = null;
     }
-    // Hnadles is query is 'department=null'
+    // Handles is query is 'department=null'
     if (req.query.department && isNaN(req.query.department)) {
       departmentFilter = null;
     }
@@ -26,7 +35,11 @@ module.exports = {
       departments = depts;
 
       if (departmentFilter) {
-        if (req.user.department) departments = departments.filter((d) => { return d.department_id === departmentFilter});
+        if (req.user.department) {
+          departments = departments.filter((d) => { 
+            return d.department_id === departmentFilter
+          });
+        }
         return Users.findByDepartment(departmentFilter, true)
       } else {
         return Users.findByOrg(req.user.org, true)
@@ -36,7 +49,7 @@ module.exports = {
 
       if (departmentFilter) {
         users = users.filter((departmentUser) => { return departmentUser.department == departmentFilter});
-        return Messages.countsByDepartment(req.user.org, departmentFilter, "day")
+        return Messages.countsByDepartment(departmentFilter, "day")
       } else {
         return Messages.countsByOrg(req.user.org, "day")
       }
@@ -44,12 +57,43 @@ module.exports = {
       countsByDay = counts;
 
       if (departmentFilter) {
-        return Messages.countsByDepartment(req.user.org, departmentFilter, "week")
+        return Messages.countsByDepartment(departmentFilter, "week")
       } else {
         return Messages.countsByOrg(req.user.org, "week")
       }
     }).then((counts) => {
       countsByWeek = counts;
+      let userIds = users.map((user) => {
+        return user.cmid;
+      });
+      return new Promise ((fulfill, reject) => {
+        fulfill(userIds);
+      })
+    }).map((userId) => {
+      return Messages.countsByUser(userId, "week");
+    }).then((usersWithMessageCountsList) => {
+
+      let usersWithMessageCounts = [];
+      let now = moment();
+      usersWithMessageCountsList.forEach((dates, i) => {
+        let pairedUser = users[i];
+        pairedUser.week_count = 0;
+        let dateCount = null;
+        dates.forEach((date) => {
+          let test = moment(date.time_period);
+          if (now.isSame(test, "week")) {
+            dateCount = date;
+          }
+        });
+        if (dateCount) {
+          pairedUser.week_count = Number(dateCount.message_count);
+        }
+        usersWithMessageCounts.push(pairedUser);
+      });
+      users = usersWithMessageCounts;
+
+      return CloseoutSurveys.getSuccessDistributionByOrg(req.user.org);
+    }).then((surveySynopsis) => {
 
       res.render("dashboard/index", {
         hub: {
@@ -61,7 +105,8 @@ module.exports = {
         departments:      departments,
         departmentFilter: departmentFilter || null,
         countsByDay:      countsByDay,
-        countsByWeek:     countsByWeek
+        countsByWeek:     countsByWeek,
+        surveySynopsis:   surveySynopsis,
       });
     }).catch(res.error500);
   },

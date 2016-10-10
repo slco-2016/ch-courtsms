@@ -1,12 +1,10 @@
 .applicationFrame .navSub {
   position: absolute;
   top: 41px;
-  width: 1022px;
+  width: 1024px;
   height: 55px;
   background-color: #4A90E2;
   border-bottom: 1px solid #E8ECEF;
-  border-left: 1px solid #E8ECEF;
-  border-right: 1px solid #E8ECEF;
   overflow: hidden;
   position: fixed; }
   .applicationFrame .navSub.orgLevel {
@@ -35,7 +33,7 @@
         color: #516a84; }
   .applicationFrame .navSub .allLeftParent {
     max-width: 75%;
-    overflow-x: scroll;
+    overflow: hidden;
     float: left; }
     .applicationFrame .navSub .allLeftParent .allLeft {
       width: 1024px; }
@@ -81,7 +79,7 @@
           background-color: #3F69B6; }
   .applicationFrame .navSub .allRightParent {
     max-width: 25%;
-    overflow-x: scroll;
+    overflow: hidden;
     float: right; }
     .applicationFrame .navSub .allRightParent .allRight {
       width: 500px;
@@ -111,21 +109,20 @@
   background-color: #E8ECEF; }
 
 .applicationFrame .emptyResultsGreeting {
-  text-align: middle;
-  background-color: #D3D3D3; }
+  text-align: middle; }
   .applicationFrame .emptyResultsGreeting .message {
-    padding-top: 75px;
-    padding-left: 15px;
+    padding-top: 125px;
+    padding-left: 55px;
     float: left;
-    line-height: 50px;
-    font-size: 44px;
-    width: 80%; }
+    line-height: 40px;
+    font-size: 32px;
+    width: 50%; }
     .applicationFrame .emptyResultsGreeting .message small {
-      font-size: 36px; }
+      font-size: 22px; }
   .applicationFrame .emptyResultsGreeting .icon {
-    float: right;
+    float: left;
     font-size: 150px;
-    padding: 25px 25px 0px 25px; }
+    padding: 75px 45px 0px 120px; }
   .applicationFrame .emptyResultsGreeting::after {
     content: "";
     display: block;
@@ -133,8 +130,8 @@
 
 .applicationFrame .viewingAsOtherBanner {
   font-size: 12px;
-  line-height: 18px;
-  background-color: #4A90E2;
+  line-height: 23px;
+  background-color: #516a84;
   text-align: center;
   color: #FFF;
   position: fixed;

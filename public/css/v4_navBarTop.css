@@ -1,7 +1,7 @@
 .alerts {
   position: fixed;
   z-index: 100;
-  top: 9px;
+  top: 7px;
   left: 47%;
   line-height: 24px;
   font-size: 12px;
@@ -23,10 +23,8 @@
     line-height: 24px;
     text-align: center;
     margin-right: 5px; }
-  .alerts:hover {
-    background-color: #3F69B6; }
-    .alerts:hover .exclamationCircle {
-      color: #FFA500; }
+  .alerts:hover .exclamationCircle {
+    color: #FFA500; }
   .alerts .hiddenAlerts {
     display: none; }
     .alerts .hiddenAlerts .arrowTop {
@@ -82,14 +80,14 @@
   background-color: #FFF; }
   .applicationFrame .navHeader {
     height: 40px;
-    width: 1022px;
+    width: 1024px;
     color: #FFF;
     background-color: #344289;
     border-bottom: 1px solid #E8ECEF;
-    border-right: 1px solid #E8ECEF;
-    border-left: 1px solid #E8ECEF;
     overflow: hidden;
     position: fixed; }
+    .applicationFrame .navHeader.orgLevel {
+      background-color: #3c5065; }
     .applicationFrame .navHeader .leftLogo {
       color: #FFF;
       display: inline; }

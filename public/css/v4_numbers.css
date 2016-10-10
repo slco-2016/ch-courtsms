@@ -10,7 +10,8 @@
     text-align: left;
     cursor: pointer; }
     .header .column:nth-child(1) {
-      width: 20%; }
+      width: 20%;
+      text-indent: 15px; }
     .header .column:nth-child(2) {
       width: 15%; }
     .header .column:nth-child(3) {

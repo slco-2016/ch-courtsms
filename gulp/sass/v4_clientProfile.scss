@@ -1,17 +1,19 @@
-
-
-// Variables
 $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
+$lightbluegrey:#6783a1;
 $grey:        #898989;
+$darkgrey:    #2A2A2A;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
 $red:         #E50000;
 $lightblue:   #4A90E2;
+$lightbluegrey:#6783a1;
 $blue:        #3F69B6;
+$bluegrey:    #516a84;
 $darkblue:    #344289;
+$darkbluegrey:#3c5065;
 
 $width_left:  50%;
 $width_right:  50%;
@@ -20,6 +22,246 @@ $width_right:  50%;
 @mixin float-center() {
   margin-left: auto;
   margin-right: auto;
+}
+
+#messagingActivity {
+  overflow: hidden;
+}
+
+.profileRow {
+  height: 100%;
+
+  .smallLeft {
+    padding-top: 10px;
+    float: left;
+    width: 20%;
+
+    .container {
+      padding-right: 0px;
+    }
+
+    .clientImage {
+      svg {
+        width: 80%;
+        padding-left: 15px;
+        padding-bottom: 5px;
+      }
+    }
+    .clientInfoContainer {
+      padding-top: 15px;
+      padding-bottom: 15px;
+
+      .clientInfoRow {
+        font-size: 14px;
+        line-height: 20px;
+
+        .caseManager {
+          border: 1px solid $lightgrey;
+          color: $grey;
+          padding: 5px;
+          border-radius: 5px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+
+          &:hover {
+            box-shadow: 0px 1px 5px $lightgrey;
+          }
+
+          .name {
+            border-bottom: 1px solid rgba(0,0,0,0.075);
+            margin-bottom: 5px;
+          }
+
+          small {
+            font-size: 12px;
+          }
+
+          &.miniButton {
+            text-indent: 5px;
+            .ss {
+              color: $grey;
+              padding-right: 8px;
+              margin-right: 8px;
+              border-right: 1px solid rgba(0,0,0,0.075);
+            }
+          }
+        }
+      }
+    }
+  }
+  .bigRight {
+    float: left;
+    padding-top: 10px;
+    width: 80%;
+  }
+
+  .container {
+    padding: 30px;
+
+    .left {
+      width: 50%;
+      float: left;
+    }
+    .right {
+      width: 50%;
+      float: left;
+    }
+
+    .left, .right {
+      .container {
+        padding-top: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 30px;
+
+        .heading {
+          margin-top: 15px;
+          padding: 5px 0px 5px 0px;
+          color: $darkblue;
+          border-bottom: 2px solid $lightgrey;
+          font-size: 16px;
+          font-weight: 700;
+          margin-bottom: 5px;
+        }
+
+        .body {
+          .row {
+            font-size: 16px;
+            line-height: 22px;
+            width: 100%;
+            .name {
+              text-align: left;
+              width: 60%;
+              float: left;
+            }
+            .val {
+              text-align: left;
+              width: 40%;
+              float: left;
+            }
+          }
+
+          .circlesSubtitles {
+            width: 100%;
+            .container {
+              padding: 0px;
+              .subtitle {
+                float: right;
+                text-align: center;
+                width: 33%;
+                float: left;
+                font-size: 12px;
+                padding: 0px;
+              }
+            }
+            &::after {
+              content:"";
+              display:block;
+              clear:both;
+            }
+          }
+
+          &::after {
+            content:"";
+            display:block;
+            clear:both;
+          }
+        }
+      }
+    }
+  }
+}
+
+.cssResponseTimeBarGraph {
+  padding-top: 5px;
+
+  .headings {
+    width: 100%;
+    line-height: 28px;
+    font-size: 14px;
+
+    .leftAttr, .rightAttr {
+      float: left;
+      width: 50%;
+      font-weight: 700;
+      padding-top: 5px;
+    }
+    .leftAttr {
+      color: $lightblue;
+      &.under {
+        text-align: center;
+        font-weight: 300;
+        color: $grey;
+        font-size: 12px;
+        line-height: 50px;
+        font-weight: bold;
+      }
+    }
+    .rightAttr {
+      text-align: right;
+      color: $darkblue;
+      &.under {
+        text-align: center;
+        font-weight: 300;
+        color: $grey;
+        font-size: 12px;
+        line-height: 50px;
+        font-weight: bold;
+      }
+    }
+    &::after {
+      content:"";
+      display:block;
+      clear:both;
+    }
+  }
+
+  .attr {
+    width: 100%;
+
+    .fullBarContainer {
+
+      .fullBar {
+        padding: 0px 5px 0px 5px;
+
+        height: 35px;
+        overflow: hidden;
+        background: repeating-linear-gradient(
+          45deg,
+          $lightgrey,
+          $lightgrey 2px,
+          $offwhite 3px,
+          $offwhite 6px
+        );
+
+        .leftBar {
+          width: 50%;
+          height: 35px;
+          float: left;
+          
+          .filledBar {
+            height: 100%;
+            background-color: $lightblue;
+            width: 44px;
+            float: right;
+            border-right: 1px solid $offwhite;
+          }        
+        }
+
+        .rightBar {
+          width: 50%;
+          height: 35px;
+          float: left;
+          
+          .filledBar {
+            height: 100%;
+            background-color: $darkblue;
+            width: 44px;
+          }        
+        }
+      }
+    }
+  }
 }
 
 .profileBlock {
@@ -67,7 +309,6 @@ $width_right:  50%;
           background-color: $blue;
         }
       }
-
     }
 
     .graphic {
