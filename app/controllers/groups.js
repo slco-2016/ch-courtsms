@@ -4,16 +4,16 @@ const Clients = require('../models/clients');
 module.exports = {
 
   index(req, res) {
-    let status = req.query.status === "deleted" ? false : true;
+    const status = req.query.status === 'deleted' ? false : true;
 
     Groups.findByUser(req.user.cmid, status)
     .then((groups) => {
-      res.render("groups/index", {
+      res.render('groups/index', {
         hub: {
-          tab: "groups",
-          sel: status ? "current" : "deleted"
+          tab: 'groups',
+          sel: status ? 'current' : 'deleted',
         },
-        groups: groups
+        groups: groups,
       });
     }).catch(res.error500);
   },
@@ -21,20 +21,20 @@ module.exports = {
   new(req, res) {
     Clients.findByUser(Number(req.user.cmid), true)
     .then((clients) => {
-        res.render("groups/create", {
-          clients: clients
-        });
+      res.render('groups/create', {
+        clients: clients,
+      });
     }).catch(res.error500);
   },
 
   create(req, res) {
-    let userID = Number(req.user.cmid);
-    let name = req.body.name;
-    let clientIDs = req.body.clientIDs;
+    const userID = Number(req.user.cmid);
+    const name = req.body.name;
+    const clientIDs = req.body.clientIDs;
     Groups.insertNew(userID, name, clientIDs)
     .then(() => {
-      req.flash("success", "Created new group.");
-      res.redirect(`/groups`);
+      req.flash('success', 'Created new group.');
+      res.redirect('/groups');
     }).catch(res.error500);
   },
 
@@ -44,9 +44,9 @@ module.exports = {
       if (group) {
         Clients.findByUser(Number(req.user.cmid), true)
         .then((clients) => {
-          res.render("groups/edit", {
+          res.render('groups/edit', {
             group: group,
-            clients: clients
+            clients: clients,
           });
         }).catch(res.error500);
       } else {
@@ -56,23 +56,23 @@ module.exports = {
   },
 
   update(req, res) {
-    let userID = req.user.cmid;
-    let groupId = req.params.group;
-    let name = req.body.name;
+    const userID = req.user.cmid;
+    const groupId = req.params.group;
+    const name = req.body.name;
 
     // Clean clientIDs
     let clientIDs = req.body.clientIDs;
     if (!clientIDs) clientIDs = [];
-    if (typeof clientIDs == "string") clientIDs = isNaN(Number(clientIDs)) ? [] : Number(clientIDs);
-    if (typeof clientIDs == "number") clientIDs = [clientIDs];
+    if (typeof clientIDs == 'string') clientIDs = isNaN(Number(clientIDs)) ? [] : Number(clientIDs);
+    if (typeof clientIDs == 'number') clientIDs = [clientIDs,];
     if (Array.isArray(clientIDs)) {
       clientIDs
       .map(function (ID) { return Number(ID); })
       .filter(function (ID) { return !(isNaN(ID)); });
       Groups.editOne(userID, groupId, name, clientIDs)
       .then(() => {
-        req.flash("success", "Edited group.");
-        res.redirect(`/groups`);
+        req.flash('success', 'Edited group.');
+        res.redirect('/groups');
       }).catch(res.error500);
     } else {
       notFound(res);
@@ -82,36 +82,36 @@ module.exports = {
   destroy(req, res) {
     Groups.removeOne(Number(req.params.group))
     .then(() => {
-      res.redirect(`/groups`);
+      res.redirect('/groups');
     }).catch(res.error500);
   },
 
   activate(req, res) {
     Groups.activateOne(Number(req.params.group))
     .then(() => {
-      res.redirect(`/groups`);
+      res.redirect('/groups');
     }).catch(res.error500);
   },
 
   address(req, res) {
-    res.render("groups/address", {
-      parameters: req.params
+    res.render('groups/address', {
+      parameters: req.params,
     });
   },
 
   addressUpdate(req, res) {
-    let userID = req.user.cmid;
-    let groupId = Number(req.params.group);
+    const userID = req.user.cmid;
+    const groupId = Number(req.params.group);
     let title = req.body.title;
-    let content = req.body.content;
+    const content = req.body.content;
 
-    if (title == "") title = "New Conversation";
+    if (title == '') title = 'New Conversation';
 
     Groups.addressMembers(userID, groupId, title, content)
     .then(() => {
-      req.flash("success", "Messaged group members.");
-      res.redirect(`/groups`);
+      req.flash('success', 'Messaged group members.');
+      res.redirect('/groups');
     }).catch(res.error500);
   },
   
-}
+};

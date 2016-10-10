@@ -1,38 +1,38 @@
 const mimelib = require('mimelib');
-const credentials = require('../../credentials')
+const credentials = require('../../credentials');
 const request = require('request');
 
-const Attachments = require('../models/attachments')
-const Communications = require('../models/communications')
-const Conversations = require('../models/conversations')
-const Clients = require('../models/clients')
-const Emails = require('../models/emails')
-const Messages = require('../models/messages')
-const Users = require('../models/users')
+const Attachments = require('../models/attachments');
+const Communications = require('../models/communications');
+const Conversations = require('../models/conversations');
+const Clients = require('../models/clients');
+const Emails = require('../models/emails');
+const Messages = require('../models/messages');
+const Users = require('../models/users');
 
-const sms = require('../lib/sms')
+const sms = require('../lib/sms');
 
-const Promise = require("bluebird");
+const Promise = require('bluebird');
 
 const _updateMessages = (messageId, status, res) => {
   return Messages.findManyByTwSid(messageId)
   .map((message) => {
-    return message.update({tw_status: status})
+    return message.update({tw_status: status,});
   }).then((messages) => {
-    res.send('ok')
-  }).catch(res.error500)
-}
+    res.send('ok');
+  }).catch(res.error500);
+};
 
 module.exports = {
   status(req, res) {
-    let event = req.body.event
-    if (event == "delivered") {
-      let messageId = req.body['Message-Id']
-      _updateMessages(messageId, "Delivered", res)
-    } else if (event == "opened") {
+    const event = req.body.event;
+    if (event == 'delivered') {
+      const messageId = req.body['Message-Id'];
+      _updateMessages(messageId, 'Delivered', res);
+    } else if (event == 'opened') {
       // why, just why
-      let messageId = `<${req.body['message-id']}>`
-      _updateMessages(messageId, "Opened", res)
+      const messageId = `<${req.body['message-id']}>`;
+      _updateMessages(messageId, 'Opened', res);
     } else {
       res.send('ok, thanks');
     }
@@ -46,29 +46,29 @@ module.exports = {
 
     // console.log(req.body)
 
-    var domain = req.body.domain;
-    var headers = req.body['message-headers'];
-    var messageId = req.body['Message-Id'];
+    const domain = req.body.domain;
+    const headers = req.body['message-headers'];
+    const messageId = req.body['Message-Id'];
     var recipient = req.body.recipient;
-    var event = req.body.event;
-    var timestamp = req.body.timestamp;
-    var token = req.body.token;
-    var signature = req.body.signature;
+    const event = req.body.event;
+    const timestamp = req.body.timestamp;
+    const token = req.body.token;
+    const signature = req.body.signature;
     var recipient = req.body.recipient; 
-    var bodyPlain = req.body['body-plain'];
+    const bodyPlain = req.body['body-plain'];
 
-    var cleanBody = req.body['stripped-text'] || req.body['body-plain']
+    const cleanBody = req.body['stripped-text'] || req.body['body-plain'];
 
-    var fromAddresses = mimelib.parseAddresses(req.body.From)
-    var fromAddress = fromAddresses[0]
-    var toAddresses = mimelib.parseAddresses(req.body.To)
+    const fromAddresses = mimelib.parseAddresses(req.body.From);
+    const fromAddress = fromAddresses[0];
+    const toAddresses = mimelib.parseAddresses(req.body.To);
 
-    let attachments = []
+    let attachments = [];
     if (req.body.attachments) {
-      attachments = JSON.parse(req.body.attachments)
+      attachments = JSON.parse(req.body.attachments);
     }
 
-    let clients, communication, users, email
+    let clients, communication, users, email;
     Emails.create({
       raw: JSON.stringify(req.body),
       from: fromAddress.address,
@@ -78,25 +78,25 @@ module.exports = {
     }).then((resp) => {
       email = resp;
       return new Promise((fulfill, reject) => {
-        fulfill(attachments)
-      })
+        fulfill(attachments);
+      });
     }).map((attachment) => {
-      return Attachments.createFromMailgunObject(attachment, email)
+      return Attachments.createFromMailgunObject(attachment, email);
     }).then((attachments) => {
       return Communications.getOrCreateFromValue(
         fromAddress.address, 
-        "email"
-      )
+        'email'
+      );
     }).then((resp) => {
       communication = resp;
       return Clients.findByCommId(communication.commid);
     }).then((resp) => {
       clients = resp;
       return new Promise((fulfill, reject) => {
-        fulfill(toAddresses)
+        fulfill(toAddresses);
       });
     }).map((address) => {
-      return Users.findByClientCommEmail(address.address)
+      return Users.findByClientCommEmail(address.address);
     }).then((resp) => {
       users = resp;
       
@@ -106,13 +106,13 @@ module.exports = {
         fulfill(users);
       });
     }).map((user) => {
-      let clientsForUser = clients.filter((client) => {
+      const clientsForUser = clients.filter((client) => {
         return client.cm === user.cmid;
       });
       return Conversations.retrieveByClientsAndCommunication(
         clientsForUser, 
         communication
-      )
+      );
       // TODO: I mean, like, maybe? 
       // ).then((conversations) => {
       //   return Conversations.closeAllWithClientExcept(client, conversationId);
@@ -121,24 +121,24 @@ module.exports = {
     }).then((listOfListOfConversations) => {
       let conversations = [];
       listOfListOfConversations.forEach((conversationList) => {
-        conversations = conversations.concat(conversationList)
-      })
-      let conversationIds = conversations.map((conversation) => {
+        conversations = conversations.concat(conversationList);
+      });
+      const conversationIds = conversations.map((conversation) => {
         return conversation.convid;
       });
 
-      sentTo = toAddresses.map( address => address.address ).join(", ")
+      sentTo = toAddresses.map( address => address.address ).join(', ');
 
       return Messages.insertIntoManyConversations(conversationIds,
                                                   communication.commid,
                                                   cleanBody,
                                                   messageId,
-                                                  "received",
+                                                  'received',
                                                   sentTo,
-                                                  {emailId: email.id});
+                                                  {emailId: email.id,});
     }).then((messages) => {
       res.send('ok, thanks');
     }).catch(res.error500);
-  }
+  },
 };
 

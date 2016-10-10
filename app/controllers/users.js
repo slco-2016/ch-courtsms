@@ -1,16 +1,16 @@
 const Departments = require('../models/departments');
 const Users = require('../models/users');
 
-const emailer = require("../lib/emailer")
+const emailer = require('../lib/emailer');
 
 module.exports = {
 
   index(req, res) {
-    let status = req.query.status === "inactive" ? false : true;
+    const status = req.query.status === 'inactive' ? false : true;
     let department = req.user.department || req.query.departmentId;
 
     // Controls against a case where the owner would accidentally have a department
-    if (  (req.user.class == "owner" || req.user.class == "support") && 
+    if (  (req.user.class == 'owner' || req.user.class == 'support') && 
           !req.query.department) {
       department = null;
     }
@@ -25,26 +25,26 @@ module.exports = {
         });        
       }
 
-      res.render("users/index", {
+      res.render('users/index', {
         hub: {
-          tab: "users",
-          sel: status ? "active" : "inactive"
+          tab: 'users',
+          sel: status ? 'active' : 'inactive',
         },
-        users: users
+        users: users,
       });
     }).catch(res.error500);
   },
 
   new(req, res) {
-    res.render("users/create");
+    res.render('users/create');
   },
 
   create(req, res) {
     Users.findByEmail(decodeURIComponent(req.body.email))
     .then((u) => {
       if (u) {
-        req.flash("warning", "That email already exists in the system.");
-        res.redirect("/org/users/create");
+        req.flash('warning', 'That email already exists in the system.');
+        res.redirect('/org/users/create');
       } else {
         Users.createOne(
           req.body.first, 
@@ -57,28 +57,28 @@ module.exports = {
           req.body.className
         ).then((generatedPass) => {
           emailer.activationAlert(req.body.email, generatedPass);
-          req.flash("success", "Created new user, sent invite email.");
-          res.redirect("/org/users");
+          req.flash('success', 'Created new user, sent invite email.');
+          res.redirect('/org/users');
         }).catch(res.error500);
       }
-      return null
+      return null;
     }).catch(res.error500);
   },
 
   check(req, res) {
     Users.findByEmail(decodeURIComponent(req.params.email))
     .then((u) => {
-      res.json({user: u});
+      res.json({user: u,});
     }).catch(res.error500);
   },
 
   alter(req, res) {
-    let status = req.params.case === "close" ? false : true;
+    const status = req.params.case === 'close' ? false : true;
 
     Users.changeActivityStatus(req.params.targetUser, status)
     .then(() => {
-      req.flash("success", "Updated user activity state.");
-      res.redirect("/org/users");
+      req.flash('success', 'Updated user activity state.');
+      res.redirect('/org/users');
     }).catch(res.error500);
   },
 
@@ -87,13 +87,13 @@ module.exports = {
     Departments.findByOrg(req.user.org)
     .then((depts) => {
       departments = depts;
-      return Users.findByID(req.params.targetUser)
+      return Users.findByID(req.params.targetUser);
     }).then((targetUser) => {
       if (targetUser) {
-        res.render("users/edit", {
+        res.render('users/edit', {
           targetUser: targetUser,
-          departments: departments
-        })
+          departments: departments,
+        });
       } else {
         notFound(res);
       }
@@ -102,7 +102,7 @@ module.exports = {
 
   update(req, res) {
     if (!req.body.department) {
-      req.flash("warning", "Missing a selected department.");
+      req.flash('warning', 'Missing a selected department.');
       res.redirect(req.url);
     } else {
       Users.updateOne(
@@ -115,8 +115,8 @@ module.exports = {
               req.body.position, 
               req.body.className
       ).then(() => {
-        req.flash("success", "Updated user.");
-        res.redirect("/org/users");
+        req.flash('success', 'Updated user.');
+        res.redirect('/org/users');
       }).catch(res.error500);
     }
   },
@@ -126,13 +126,13 @@ module.exports = {
     Departments.findByOrg(req.user.org)
     .then((d) => {
       departments = d;
-      return Users.findByID(req.params.targetUser)
+      return Users.findByID(req.params.targetUser);
     }).then((u) => {
       if (u) {
-        res.render("users/transfer", {
+        res.render('users/transfer', {
           targetUser: u,
-          departments: departments
-        })
+          departments: departments,
+        });
       } else {
         notFound(res);
       }
@@ -144,8 +144,8 @@ module.exports = {
       req.params.targetUser, 
       req.body.department
     ).then(() => {
-      req.flash("success", "Transfered user.");
-      res.redirect("/org/users");
+      req.flash('success', 'Transfered user.');
+      res.redirect('/org/users');
     }).catch(res.error500);
   },
 };

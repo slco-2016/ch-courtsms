@@ -1,38 +1,38 @@
 'use strict';
 
 // Libraries
-const db      = require("../../app/db");
-const Promise = require("bluebird");
-const moment  = require("moment");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
+const moment  = require('moment');
 
 
 // SECRET STUFF
-var credentials = require("../../credentials");
-var ACCOUNT_SID = credentials.accountSid;
-var AUTH_TOKEN = credentials.authToken;
-var TWILIO_NUM = credentials.twilioNum;
+const credentials = require('../../credentials');
+const ACCOUNT_SID = credentials.accountSid;
+const AUTH_TOKEN = credentials.authToken;
+const TWILIO_NUM = credentials.twilioNum;
 
 // Twilio tools
-var twilio = require("twilio");
-var twClient = require("twilio")(ACCOUNT_SID, AUTH_TOKEN);
+const twilio = require('twilio');
+const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 // Only send to junk number when in test mode
-var TESTENV = true;
-if (process.env.CCENV && process.env.CCENV == "production") {
+let TESTENV = true;
+if (process.env.CCENV && process.env.CCENV == 'production') {
   TESTENV = false;
 }
 
-const BaseModel = require("../lib/models").BaseModel
-const mailgun = require("../lib/mailgun")
+const BaseModel = require('../lib/models').BaseModel;
+const mailgun = require('../lib/mailgun');
 
-const Clients = require("./clients");
-const CommConns = require("./commConns");
-const Communications = require("./communications");
-const Conversations = require("./conversations");
-const Recordings = require("./recordings");
-const Departments = require("./departments");
-const Attachments = require("./attachments");
-const PhoneNumbers = require("./phoneNumbers");
-const Users = require("./users");
+const Clients = require('./clients');
+const CommConns = require('./commConns');
+const Communications = require('./communications');
+const Conversations = require('./conversations');
+const Recordings = require('./recordings');
+const Departments = require('./departments');
+const Attachments = require('./attachments');
+const PhoneNumbers = require('./phoneNumbers');
+const Users = require('./users');
 
 class Messages extends BaseModel {
 
@@ -40,40 +40,40 @@ class Messages extends BaseModel {
     super({
       data: data,
       columns: [
-        "msgid",
-        "convo",
-        "comm",
-        "content",
-        "inbound",
-        "read",
-        "sent_to",
-        "tw_sid",
-        "tw_status",
-        "email_id",
-        "created",
-        "status_cleared",
-        "recording_id",
-      ]
-    })
+        'msgid',
+        'convo',
+        'comm',
+        'content',
+        'inbound',
+        'read',
+        'sent_to',
+        'tw_sid',
+        'tw_status',
+        'email_id',
+        'created',
+        'status_cleared',
+        'recording_id',
+      ],
+    });
   }
 
   static countsByDepartment (departmentID, timeframe) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .select(db.raw("date_trunc('" + timeframe + "', created) AS time_period , count(*) AS message_count"))
+      db('msgs')
+        .select(db.raw('date_trunc(\'' + timeframe + '\', created) AS time_period , count(*) AS message_count'))
         .leftJoin(
-          db("convos")
-            .select("convos.convid", "cms.org", "cms.department")
-            .leftJoin("cms", "cms.cmid", "convos.cm")
-            .as("convos"),
-          "convos.convid", "msgs.convo")
-        .whereRaw("msgs.created > now() - INTERVAL '12 months'")
-        .andWhere("convos.department", departmentID)
-        .groupBy(db.raw("1"))
-        .orderBy(db.raw("1"))
+          db('convos')
+            .select('convos.convid', 'cms.org', 'cms.department')
+            .leftJoin('cms', 'cms.cmid', 'convos.cm')
+            .as('convos'),
+          'convos.convid', 'msgs.convo')
+        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .andWhere('convos.department', departmentID)
+        .groupBy(db.raw('1'))
+        .orderBy(db.raw('1'))
       .then((counts) => {
         counts = counts.map(function (count) {
-          count.time_period = moment(count.time_period).format("YYYY-MM-DD");
+          count.time_period = moment(count.time_period).format('YYYY-MM-DD');
           return count;
         });
         fulfill(counts);
@@ -83,21 +83,21 @@ class Messages extends BaseModel {
 
   static countsByOrg (orgID, timeframe) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .select(db.raw("date_trunc('" + timeframe + "', created) AS time_period , count(*) AS message_count"))
+      db('msgs')
+        .select(db.raw('date_trunc(\'' + timeframe + '\', created) AS time_period , count(*) AS message_count'))
         .leftJoin(
-          db("convos")
-            .select("convos.convid", "cms.org")
-            .leftJoin("cms", "cms.cmid", "convos.cm")
-            .as("convos"),
-          "convos.convid", "msgs.convo")
-        .whereRaw("msgs.created > now() - INTERVAL '12 months'")
-        .andWhere("convos.org", orgID)
-        .groupBy(db.raw("1"))
-        .orderBy(db.raw("1"))
+          db('convos')
+            .select('convos.convid', 'cms.org')
+            .leftJoin('cms', 'cms.cmid', 'convos.cm')
+            .as('convos'),
+          'convos.convid', 'msgs.convo')
+        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .andWhere('convos.org', orgID)
+        .groupBy(db.raw('1'))
+        .orderBy(db.raw('1'))
       .then((counts) => {
         counts = counts.map(function (count) {
-          count.time_period = moment(count.time_period).format("YYYY-MM-DD");
+          count.time_period = moment(count.time_period).format('YYYY-MM-DD');
           return count;
         });
         fulfill(counts);
@@ -107,21 +107,21 @@ class Messages extends BaseModel {
 
   static countsByUser (userID, timeframe) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .select(db.raw("date_trunc('" + timeframe + "', created) AS time_period , count(*) AS message_count"))
+      db('msgs')
+        .select(db.raw('date_trunc(\'' + timeframe + '\', created) AS time_period , count(*) AS message_count'))
         .leftJoin(
-          db("convos")
-            .select("convos.convid", "cms.org", "cms.cmid", "cms.department")
-            .leftJoin("cms", "cms.cmid", "convos.cm")
-            .as("convos"),
-          "convos.convid", "msgs.convo")
-        .whereRaw("msgs.created > now() - INTERVAL '12 months'")
-        .andWhere("convos.cmid", userID)
-        .groupBy(db.raw("1"))
-        .orderBy(db.raw("1"))
+          db('convos')
+            .select('convos.convid', 'cms.org', 'cms.cmid', 'cms.department')
+            .leftJoin('cms', 'cms.cmid', 'convos.cm')
+            .as('convos'),
+          'convos.convid', 'msgs.convo')
+        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .andWhere('convos.cmid', userID)
+        .groupBy(db.raw('1'))
+        .orderBy(db.raw('1'))
       .then((counts) => {
         counts = counts.map(function (count) {
-          count.time_period = moment(count.time_period).format("YYYY-MM-DD");
+          count.time_period = moment(count.time_period).format('YYYY-MM-DD');
           return count;
         });
         fulfill(counts);
@@ -131,7 +131,7 @@ class Messages extends BaseModel {
 
   static create (conversationId, commId, content, MessageSid, MessageStatus) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
+      db('msgs')
         .insert({
           convo: conversationId,
           comm: commId,
@@ -139,50 +139,50 @@ class Messages extends BaseModel {
           inbound: false,
           read: true,
           tw_sid: MessageSid,
-          tw_status: MessageStatus
+          tw_status: MessageStatus,
         })
-        .returning("*")
+        .returning('*')
       .then((messages) => {
         fulfill(messages);
-      }).catch(reject)
-    })
+      }).catch(reject);
+    });
   }
 
   static determineIfAutoResponseShouldBeSent(messages) {
     return new Promise((fulfill, reject) => {
       let content, commId, conversationId;
-      let baseMessage = messages[0];
+      const baseMessage = messages[0];
 
       if (baseMessage) {
         commId = baseMessage.comm;
         conversationId = baseMessage.convo;
 
-        let inboundMessages = messages.filter((message) => {
+        const inboundMessages = messages.filter((message) => {
           return message.inbound;
         });
-        let outboundMessages = messages.filter((message) => {
+        const outboundMessages = messages.filter((message) => {
           return !message.inbound;
         });
 
         // This is a new conversation that has been started from unknown number
         if (conversation.client == null) {
           if (inboundMessages.length == 1) {
-            content = `Sorry! This # is not registered; Help us find you. Reply with your name in the following format: FIRST M LAST.`;
+            content = 'Sorry! This # is not registered; Help us find you. Reply with your name in the following format: FIRST M LAST.';
           } else {
-            content = `Thanks for the message. A support member will place this number with the correct case manager as soon as possible.`;
+            content = 'Thanks for the message. A support member will place this number with the correct case manager as soon as possible.';
           }
 
         } else if (inboundMessages.length > 1) {
-          let lastInboundDate = inboundMessages[inboundMessages.length - 1].created;
-          let d1 = new Date(lastInboundDate).getTime();
-          let d2 = new Date().getTime();
-          let timeLapsed = Math.round((d2 - d1) / (3600*1000));
+          const lastInboundDate = inboundMessages[inboundMessages.length - 1].created;
+          const d1 = new Date(lastInboundDate).getTime();
+          const d2 = new Date().getTime();
+          const timeLapsed = Math.round((d2 - d1) / (3600*1000));
 
           // If it's been more than 1 hour let's communicate
           if (timeLapsed > 1) {
-            let dayOfWeek = d2.getDay();
+            const dayOfWeek = d2.getDay();
             if (dayOfWeek == 0 || dayOfWeek == 6) {
-              content = `Message received. Because it is the weekend, your case manager may not be able to response immediately. Thanks for your patience.`;
+              content = 'Message received. Because it is the weekend, your case manager may not be able to response immediately. Thanks for your patience.';
             } else {
               content = `Message received. As it has been over ${timeLapsed} hours and your case manager has not yet addressed your prior message, a reminder has been sent out. Thanks for your patience.`;
             }
@@ -195,13 +195,13 @@ class Messages extends BaseModel {
             communicationId: commId,
             conversationId: conversationId,
             content: sendValues,
-          }
+          },
         });
 
       } else {
         fulfill({
           sendResponse: false,
-          sendValues: null
+          sendValues: null,
         });
       }
     });
@@ -209,40 +209,40 @@ class Messages extends BaseModel {
 
   static findManyByTwSid(twSid) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .where("tw_sid", twSid)
+      db('msgs')
+        .where('tw_sid', twSid)
       .then((objects) => {
-        this._getMultiResponse(objects, fulfill)
+        this._getMultiResponse(objects, fulfill);
       }).catch(reject);
-    })
+    });
   }
 
   static findNotClearedMessages () {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .leftJoin("comms", "comms.commid", "msgs.comm")
-        .whereNot("msgs.status_cleared", true)
-        .and.whereNotNull("tw_sid")
+      db('msgs')
+        .leftJoin('comms', 'comms.commid', 'msgs.comm')
+        .whereNot('msgs.status_cleared', true)
+        .and.whereNotNull('tw_sid')
       .then((messages) => {
         messages = messages.filter((message) => {
-          let twSid = message.tw_sid;
-          return twSid.startsWith("MM") || twSid.startsWith("SM");
+          const twSid = message.tw_sid;
+          return twSid.startsWith('MM') || twSid.startsWith('SM');
         });
-        this._getMultiResponse(messages, fulfill)
+        this._getMultiResponse(messages, fulfill);
       }).catch(reject);
-    })
+    });
   }
 
   static findBetweenUserAndClient (userId, clientId) {
     return new Promise((fulfill, reject) => {
       Conversations.findByUser(userId)
       .then((conversations) => {
-        let conversationIds = conversations.filter((conversation) => {
+        const conversationIds = conversations.filter((conversation) => {
           return conversation.client == Number(clientId);
         }).map((conversation) => {
           return conversation.convid;
         });
-        return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds)
+        return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
       }).then((messages) => {
         fulfill(messages);
       }).catch(reject);
@@ -250,10 +250,10 @@ class Messages extends BaseModel {
   }
 
   static findByConversation (conversation) {
-    let conversationId = conversation.convid;
+    const conversationId = conversation.convid;
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .where("convo", conversationId)
+      db('msgs')
+        .where('convo', conversationId)
       .then((messages) => {
         this._getMultiResponse(messages, fulfill);
       }).catch(reject);
@@ -262,11 +262,11 @@ class Messages extends BaseModel {
 
   static findUnreadsByUser (user) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .leftJoin("convos", "msgs.convo", "convos.convid")
-        .leftJoin("clients", "clients.clid", "convos.client")
-        .where("msgs.read", false)
-        .andWhere("convos.cm", user)
+      db('msgs')
+        .leftJoin('convos', 'msgs.convo', 'convos.convid')
+        .leftJoin('clients', 'clients.clid', 'convos.client')
+        .where('msgs.read', false)
+        .andWhere('convos.cm', user)
       .then(function (clients) {
         
         // See if there are any new messages in any of the conversations
@@ -282,66 +282,65 @@ class Messages extends BaseModel {
 
         fulfill({
           active: totalNewMessages > 0,
-          inactive: totalNewMessagesInactive > 0
+          inactive: totalNewMessagesInactive > 0,
         });
       }).catch(reject);
     });
   }
 
   static findWithSentimentAnalysisAndCommConnMetaByConversationIds (conversationIds) {
-    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds];
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
     
     return new Promise((fulfill, reject) => {
-      let messages
-      db("msgs")
-        .select("msgs.*", 
-                "sentiment.sentiment",
-                "commconns.client",
-                "commconns.name as commconn_name", 
-                "comms.value as comm_value",
-                "comms.type as comm_type")
-        .leftJoin("comms", "comms.commid", "msgs.comm")
-        .leftJoin("convos", "convos.convid", "msgs.convo")
-        .leftJoin("commconns", function () {
-            this
-              .on("commconns.comm", "msgs.comm")
-              .andOn("commconns.client", "convos.client");
-          })
-        .leftJoin("ibm_sentiment_analysis as sentiment", "sentiment.tw_sid", "msgs.tw_sid")
-        .whereIn("convo", conversationIds)
-        .orderBy("created", "asc")
+      let messages;
+      db('msgs')
+        .select('msgs.*', 
+                'sentiment.sentiment',
+                'commconns.client',
+                'commconns.name as commconn_name', 
+                'comms.value as comm_value',
+                'comms.type as comm_type')
+        .leftJoin('comms', 'comms.commid', 'msgs.comm')
+        .leftJoin('convos', 'convos.convid', 'msgs.convo')
+        .leftJoin('commconns', function () {
+          this
+              .on('commconns.comm', 'msgs.comm')
+              .andOn('commconns.client', 'convos.client');
+        })
+        .leftJoin('ibm_sentiment_analysis as sentiment', 'sentiment.tw_sid', 'msgs.tw_sid')
+        .whereIn('convo', conversationIds)
+        .orderBy('created', 'asc')
       .then((resp) => {
-        messages = resp
-        let emailIds = messages.map(msg => msg.email_id)
+        messages = resp;
+        const emailIds = messages.map(msg => msg.email_id);
 
-        return db("emails")
-          .select("attachments.*")
-          .whereIn("emails.id", emailIds)
-          .leftJoin("attachments", "emails.id", "attachments.email_id")
+        return db('emails')
+          .select('attachments.*')
+          .whereIn('emails.id', emailIds)
+          .leftJoin('attachments', 'emails.id', 'attachments.email_id');
       }).then((attachments) => {
-        attachments = attachments.map(a => new Attachments(a))
+        attachments = attachments.map(a => new Attachments(a));
         messages = messages.map((message) => {
-          message.attachments = []
+          message.attachments = [];
           for(let i=0; i < attachments.length; i++ ){
             if (attachments[i].email_id == message.email_id) {
-              message.attachments.push(attachments[i])
+              message.attachments.push(attachments[i]);
             }
           }
-          return message
-        })
-        let recordingIds = messages.map(msg => msg.recording_id)
-        return Recordings.findByIds(recordingIds)
+          return message;
+        });
+        const recordingIds = messages.map(msg => msg.recording_id);
+        return Recordings.findByIds(recordingIds);
       }).then((recordings) => {
         messages = messages.map((message) => {
           for(let i=0; i < recordings.length; i++) {
             if (recordings[i].id == message.recording_id) {
-              message.recording = recordings[i]
+              message.recording = recordings[i];
             }
           }
-          return message
-        })
-        console.log(messages)
-        fulfill(messages)
+          return message;
+        });
+        fulfill(messages);
       }).catch(reject);
     });
   }
@@ -351,21 +350,21 @@ class Messages extends BaseModel {
     MessageSid, MessageStatus, sentTo,
     options) {
     if (!options) {
-      options = {}
+      options = {};
     }
     if (!options.emailId) {
-      options.emailId = null
+      options.emailId = null;
     }
     if (!options.recordingId) {
-      options.recordingId = null
+      options.recordingId = null;
     }
     conversationIds.forEach((conversationId) => {
       if (!conversationId) {
-        throw new Error("Need a valid conversation id")
+        throw new Error('Need a valid conversation id');
       }
-    })
+    });
     return new Promise((fulfill, reject) => {
-      let insertArray = conversationIds.map((conversationId) => {
+      const insertArray = conversationIds.map((conversationId) => {
         return {
           convo: conversationId,
           comm: commId,
@@ -377,14 +376,14 @@ class Messages extends BaseModel {
           tw_status: MessageStatus,
           email_id: options.emailId,
           recording_id: options.recordingId,
-        }
+        };
       });
-      db("msgs")
+      db('msgs')
         .insert(insertArray)
-        .returning("*")
+        .returning('*')
       .then((messages) => {
-        this._getMultiResponse(messages, fulfill)
-      }).catch(reject)
+        this._getMultiResponse(messages, fulfill);
+      }).catch(reject);
     });
   }
 
@@ -420,16 +419,16 @@ class Messages extends BaseModel {
 
   static markAsRead (messageIds) {
     if (messageIds && !Array.isArray(messageIds)) {
-      messageIds = [messageIds];
+      messageIds = [messageIds,];
     }
 
     return new Promise((fulfill, reject) => {
       if (messageIds.length) {
-        db("msgs")
-          .update({read: true})
-          .whereIn("msgid", messageIds)
+        db('msgs')
+          .update({read: true,})
+          .whereIn('msgid', messageIds)
         .then(() => {
-          fulfill()
+          fulfill();
         }).catch(reject);
       } else {
         fulfill();
@@ -439,10 +438,10 @@ class Messages extends BaseModel {
 
   static sendOne (commId, content, conversation) {
     return new Promise((fulfill, reject) => {
-      var contentArray = content.match(/.{1,1599}/g);
+      const contentArray = content.match(/.{1,1599}/g);
       Communications.findById(commId)
       .then((communication) => {
-        if (communication.type == "email") {
+        if (communication.type == 'email') {
 
           return Users.findById(conversation.cm)
           .then((user) => {
@@ -451,7 +450,7 @@ class Messages extends BaseModel {
               user.getClientCommEmail(),
               `New message from ${user.getFullName()}`,
               content
-            )
+            );
           }).then((response) => {
             return Messages.create(
               conversation.convid,
@@ -459,27 +458,27 @@ class Messages extends BaseModel {
               content,
               response.id,
               response.message
-            )
-          }).then(fulfill).catch(reject)
+            );
+          }).then(fulfill).catch(reject);
 
-        } else if (communication.type == "cell") {
+        } else if (communication.type == 'cell') {
 
           return Departments.findByConversationId(conversation.convid)
           .then((department) => {
-            let phoneNumberId = department.phone_number;
+            const phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
           }).then((departmentPhoneNumber) => {
-            let sentFromValue = departmentPhoneNumber.value;
+            const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
-              if (process.env.CCENV !== "testing") {
+              if (process.env.CCENV !== 'testing') {
                 twClient.sendMessage({
-                  to: TESTENV ? "+18589057365" : communication.value,
+                  to: TESTENV ? '+18589057365' : communication.value,
                   from: sentFromValue,
-                  body: content
+                  body: content,
                 }, (err, msg) => {
                   if (err) {
-                    reject(err)
+                    reject(err);
                   } else {
                     const MessageSid = msg.sid;
                     const MessageStatus = msg.status;
@@ -492,7 +491,7 @@ class Messages extends BaseModel {
                       if (contentIndex == contentArray.length - 1) fulfill();
                     }).catch(reject);
                   }
-                })
+                });
               }
             });
 
@@ -532,14 +531,14 @@ class Messages extends BaseModel {
 
   static startNewConversation (userID, clientID, subject, content, commID) {
     return new Promise((fulfill, reject) => {
-      var conversation;
+      let conversation;
 
       Conversations.closeAllWithClient(clientID)
       .then(() => {
-        return Conversations.create(userID, clientID, subject, true)
+        return Conversations.create(userID, clientID, subject, true);
       }).then((resp) => {
-        conversation = resp
-        return Communications.findById(commID)
+        conversation = resp;
+        return Communications.findById(commID);
       }).then((communication) => {
         Messages.sendOne(commID, content, conversation)
         .then(() => {
@@ -551,6 +550,6 @@ class Messages extends BaseModel {
 
 }
 
-Messages.primaryId = "msgid"
-Messages.tableName = "msgs"
-module.exports = Messages
+Messages.primaryId = 'msgid';
+Messages.tableName = 'msgs';
+module.exports = Messages;

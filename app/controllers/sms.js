@@ -1,7 +1,7 @@
-const Communications = require("../models/communications");
+const Communications = require('../models/communications');
 const Conversations = require('../models/conversations');
-const Departments = require("../models/departments");
-const Messages = require("../models/messages");
+const Departments = require('../models/departments');
+const Messages = require('../models/messages');
 const SentimentAnalysis = require('../models/sentiment');
 
 const sms = require('../lib/sms');
@@ -9,23 +9,23 @@ const sms = require('../lib/sms');
 module.exports = {
 
   webhook(req, res) {
-    let fromNumber = req.body.From.replace(/\D+/g, "");
+    let fromNumber = req.body.From.replace(/\D+/g, '');
     if (fromNumber.length == 10) { 
-      fromNumber = "1" + fromNumber; 
+      fromNumber = '1' + fromNumber; 
     }
-    let toNumber = req.body.To.replace(/\D+/g, "");
+    let toNumber = req.body.To.replace(/\D+/g, '');
     if (toNumber.length == 10) { 
-      toNumber = "1" + toNumber; 
+      toNumber = '1' + toNumber; 
     }
-    let text = req.body.Body.replace(/["']/g, "").trim();
-    let MessageStatus = req.body.SmsStatus;
-    let MessageSID = req.body.MessageSid;
+    const text = req.body.Body.replace(/["']/g, '').trim();
+    const MessageStatus = req.body.SmsStatus;
+    const MessageSID = req.body.MessageSid;
 
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
     let communication, conversations, clients;
-    Communications.getOrCreateFromValue(fromNumber, "cell")
+    Communications.getOrCreateFromValue(fromNumber, 'cell')
     .then((resp) => {
       communication = resp;
       return sms.retrieveClients(toNumber, communication);
@@ -33,10 +33,10 @@ module.exports = {
       clients = resp;
       return Conversations.retrieveByClientsAndCommunication(
         clients, communication
-      )
+      );
     }).then((resp) => {
       conversations = resp;
-      let conversationIds = conversations.map((conversation) => {
+      const conversationIds = conversations.map((conversation) => {
         return conversation.convid;
       });
       
@@ -51,31 +51,31 @@ module.exports = {
       conversations.forEach((conversation) => {
         Messages.findByConversation(conversation)
         .then((messages) => {
-          return Messages.determineIfAutoResponseShouldBeSent(conversation, messages)
+          return Messages.determineIfAutoResponseShouldBeSent(conversation, messages);
         }).then((resp) => {
-          let shouldSendResponse = resp.sendResponse;
+          const shouldSendResponse = resp.sendResponse;
           if (shouldSendResponse) {
-            let commId = resp.sendValues.communicationId;
-            let conversationId = resp.sendValues.conversationId;
-            let messageContent = resp.sendValues.content;
-            let clientId = conversation.client;
+            const commId = resp.sendValues.communicationId;
+            const conversationId = resp.sendValues.conversationId;
+            const messageContent = resp.sendValues.content;
+            const clientId = conversation.client;
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
-              return Messages.sendOne(commId, messageContent, conversation)
+              return Messages.sendOne(commId, messageContent, conversation);
             }).then(() => { }).catch((error) => {
               console.log(error);
             });
           }
         }).catch((err) => {
-          console.log("Error finding by conversation: ", err);
+          console.log('Error finding by conversation: ', err);
         });
 
-        req.logActivity.client(conversation.client)
+        req.logActivity.client(conversation.client);
         req.logActivity.conversation(conversation.convid);
       });
 
       // Send a blank response
-      res.send("<?xml version='1.0' encoding='UTF-8'?><Response></Response>");
+      res.send('<?xml version=\'1.0\' encoding=\'UTF-8\'?><Response></Response>');
     });
   },
 

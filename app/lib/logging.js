@@ -1,4 +1,4 @@
-const modelsImport   = require("../models/models");
+const modelsImport   = require('../models/models');
 const Client = modelsImport.Client;
 const Conversations = modelsImport.Conversations;
 
@@ -10,7 +10,7 @@ module.exports = {
 
   logConversationActivity: function (conversationID) {
     Conversations.logActivity(conversationID).then(() => { }).catch(() => { });
-  }
+  },
 
-}
+};
 

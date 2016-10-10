@@ -1,13 +1,13 @@
 'use strict';
 
 // Libraries
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
 
-const Users     = require("./users");
+const Users     = require('./users');
 
-const colors = require("colors")
+const colors = require('colors');
 
 
 // Class
@@ -24,8 +24,8 @@ class Settings {
 
   static updateOne (userId, first, middle, last, email, alertFrequency, isAway, awayMessage) {
     return new Promise((fulfill, reject) => {
-      db("cms")
-        .where("cmid", userId)
+      db('cms')
+        .where('cmid', userId)
         .update({
           first: first,
           middle: middle,
@@ -34,12 +34,12 @@ class Settings {
           email_alert_frequency: alertFrequency,
           is_away: isAway,
           away_message: awayMessage,
-          updated: db.fn.now()
+          updated: db.fn.now(),
         })
       .then(() => {
         fulfill();
       }).catch(reject);
-    })
+    });
   }
   
 }

@@ -1,10 +1,10 @@
 'use strict';
 
 // Libraries
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
-const BaseModel = require("../lib/models").BaseModel
+const BaseModel = require('../lib/models').BaseModel;
 
 class Communications extends BaseModel {
 
@@ -12,64 +12,64 @@ class Communications extends BaseModel {
     super({
       data: data,
       columns: [
-        "commid",
-        "type",
-        "value",
-        "description",
-        "updated",
-        "created",
-      ]
-    })
+        'commid',
+        'type',
+        'value',
+        'description',
+        'updated',
+        'created',
+      ],
+    });
   }
 
   static findById (commID) {
     return new Promise((fulfill, reject) => {
-      db("comms")
-        .where("commid", commID)
+      db('comms')
+        .where('commid', commID)
         .limit(1)
       .then(function (comms) {
-        fulfill(comms[0])
+        fulfill(comms[0]);
       })
       .catch(reject);
-    })
+    });
   }
 
   static getOrCreateFromValue(value, type) {
-    if (!type) { type = "cell"; }
+    if (!type) { type = 'cell'; }
 
     return new Promise((fulfill, reject) => {
       this.findByValue(value)
       .then((communication) => {
         if (communication) {
-          fulfill(communication)
+          fulfill(communication);
         } else {
-          let description = `Unknown device`
-          return this.create(type, description, value)
+          const description = 'Unknown device';
+          return this.create(type, description, value);
         }
       })
       .then(fulfill)
-      .catch(reject)
-    })
+      .catch(reject);
+    });
   }
 
   static findByValue (value) {
     return new Promise((fulfill, reject) => {
-      db("comms")
-        .whereRaw("LOWER(value) = LOWER('" + String(value) + "')")
+      db('comms')
+        .whereRaw('LOWER(value) = LOWER(\'' + String(value) + '\')')
         .limit(1)
       .then((comms) => {
-        this._getSingleResponse(comms, fulfill)
+        this._getSingleResponse(comms, fulfill);
       })
       .catch(reject);
-    })
+    });
   }
 
   static getUseCounts (clientID, communicationIDArray) {
     return new Promise((fulfill, reject) => {
-      db("msgs")
-        .select(db.raw("count(msgid), comm"))
-        .whereIn("comm", communicationIDArray)
-        .groupBy("comm")
+      db('msgs')
+        .select(db.raw('count(msgid), comm'))
+        .whereIn('comm', communicationIDArray)
+        .groupBy('comm')
       .then((counts) => {
         fulfill(counts);
       }).catch(reject);
@@ -78,9 +78,9 @@ class Communications extends BaseModel {
 
   static removeOne (commConnID) {
     return new Promise((fulfill, reject) => {
-      db("commconns")
-        .where("commconnid", commConnID)
-        .update({ retired: db.fn.now() })
+      db('commconns')
+        .where('commconnid', commConnID)
+        .update({ retired: db.fn.now(), })
       .then(() => {
         fulfill();
       }).catch(reject);
@@ -89,21 +89,21 @@ class Communications extends BaseModel {
 
   static create (type, description, value) {
     return new Promise((fulfill, reject) => {
-      db("comms")
+      db('comms')
       .insert({
         type: type,
         value: value,
-        description: description
+        description: description,
       })
-      .returning("*")
+      .returning('*')
       .then((comms) => {
-        this._getSingleResponse(comms, fulfill)
+        this._getSingleResponse(comms, fulfill);
       }).catch(reject);
     }); 
   }
 
 }
 
-Communications.primaryId = "commid";
-Communications.tableName = "comms";
+Communications.primaryId = 'commid';
+Communications.tableName = 'comms';
 module.exports = Communications;

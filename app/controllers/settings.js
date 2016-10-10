@@ -5,18 +5,18 @@ module.exports = {
   index(req, res) {
     Settings.findById(req.user.cmid)
     .then((user) => {
-      res.render("settings", {
-        user: user
+      res.render('settings', {
+        user: user,
       });
     }).catch(res.error500);
   },
 
   update(req, res) {
-    let awayMessage = req.body.awayMessage;
-    let isAway = req.body.isAway ? true : false;
+    const awayMessage = req.body.awayMessage;
+    const isAway = req.body.isAway ? true : false;
     
-    let alertFrequency = req.body.alertFrequency
-    if (alertFrequency == "null") {
+    let alertFrequency = req.body.alertFrequency;
+    if (alertFrequency == 'null') {
       alertFrequency = null;
     } else if (isNaN(alertFrequency)) {
       alertFrequency = 24;
@@ -32,9 +32,9 @@ module.exports = {
             isAway,
             awayMessage 
     ).then(() => {
-      req.flash("success", "Updated your settings.");
-      res.redirect("/org/users");
+      req.flash('success', 'Updated your settings.');
+      res.redirect('/org/users');
     }).catch(res.error500);
-  }
+  },
 
 };

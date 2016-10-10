@@ -8,37 +8,37 @@ const Templates = require('../models/templates');
 module.exports = {
 
   index(req, res) {
-    let client = req.params.client;
+    const client = req.params.client;
     CommConns.getClientCommunications(client)
     .then((comms) => {
       if (comms.length == 0) {
         res.redirect(`/clients/${client}/communications/create`);
       } else {
-        res.render("clients/communications", {
+        res.render('clients/communications', {
           hub: {
-            tab: "contactMethods",
-            sel: null
+            tab: 'contactMethods',
+            sel: null,
           },
-          communications: comms
+          communications: comms,
         });
       }
     }).catch(res.error500);
   },
 
   new(req, res) {
-    res.render("clients/commConn");
+    res.render('clients/commConn');
   },
 
   create(req, res) {
-    let client      = req.params.client;
-    let description = req.body.description;
-    let type        = req.body.type;
+    const client      = req.params.client;
+    const description = req.body.description;
+    const type        = req.body.type;
     let value       = req.body.value;
 
     // clean up numbers
-    if (type == "cell" || type == "landline") {
-      value = value.replace(/[^0-9.]/g, "");
-      if (value.length == 10) { value = "1" + value; }
+    if (type == 'cell' || type == 'landline') {
+      value = value.replace(/[^0-9.]/g, '');
+      if (value.length == 10) { value = '1' + value; }
     }
 
     // First check if this client already has this commConn
@@ -48,38 +48,38 @@ module.exports = {
         return String(value) === String(commConn.value);
       });
       if (commConns.length > 0) {
-        req.flash("warning", "Client already has that method.");
+        req.flash('warning', 'Client already has that method.');
         res.redirect(`/clients/${client}/communications`);
 
       } else {
         CommConns.create(client, type, description, value)
         .then(() => {
           req.logActivity.client(client);
-          req.flash("success", "Created new communication method.");
+          req.flash('success', 'Created new communication method.');
           res.redirect(`/clients/${client}/communications`);
-          return null
+          return null;
         }).catch(res.error500);
       }
-      return null
+      return null;
     }).catch(res.error500);
   },
 
   remove(req, res) {
-    let client = req.params.client;
-    let comm = req.params.communication;
+    const client = req.params.client;
+    const comm = req.params.communication;
     CommConns.findByClientIdWithCommMetaData(client)
     .then((commConns) => {
       if (commConns.length > 1) {
         Communications.removeOne(comm)
         .then(() => {
-          req.flash("success", "Removed communication method.");
+          req.flash('success', 'Removed communication method.');
           res.redirect(`/clients/${client}/communications`);
         }).catch(res.error500);
 
       } else {
-        req.flash("warning", "Can't remove the only remaining communication method.");
+        req.flash('warning', 'Can\'t remove the only remaining communication method.');
         res.redirect(`/clients/${client}/communications`);
       }
-    })
-  }
-}
+    });
+  },
+};

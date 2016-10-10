@@ -1,6 +1,6 @@
-var local = require("passport-local").Strategy;
-var bcrypt = require("bcrypt-nodejs");
-var db = require("./db");
+const local = require('passport-local').Strategy;
+const bcrypt = require('bcrypt-nodejs');
+const db = require('./db');
 
 // expose this function to our app using module.exports
 module.exports = function (passport) {
@@ -16,8 +16,8 @@ module.exports = function (passport) {
 
   // user deserialization
   passport.deserializeUser(function (id, done) {
-    db("cms")
-    .where("cmid", id)
+    db('cms')
+    .where('cmid', id)
     .limit(1)
     .then(function (cm) {
 
@@ -27,26 +27,26 @@ module.exports = function (passport) {
     }).catch(function (err) { done(err, null); });
   });
 
-  passport.use("local-login", new local({
-      usernameField: "email",
-      passwordField: "pass",
-      passReqToCallback: true
-    },
+  passport.use('local-login', new local({
+    usernameField: 'email',
+    passwordField: 'pass',
+    passReqToCallback: true,
+  },
 
     function (req, email, password, done) {
       process.nextTick(function () {
 
-        db("cms")
-        .whereRaw("LOWER(email) = LOWER('" + String(email) + "')")
-        .andWhere("active", true)
+        db('cms')
+        .whereRaw('LOWER(email) = LOWER(\'' + String(email) + '\')')
+        .andWhere('active', true)
         .limit(1)
         .then(function (acct) {
           if (acct.constructor === Array && acct.length == 1) {
             acct = acct[0];
             if (validPw(password, acct.pass)) {
 
-              db("cms").where("cmid", acct.cmid).limit(1)
-              .update({updated: db.fn.now()})
+              db('cms').where('cmid', acct.cmid).limit(1)
+              .update({updated: db.fn.now(),})
               .then(function (success) {
                 return done(null, acct);
               }).catch(function (err) { return done(err); });

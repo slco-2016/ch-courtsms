@@ -1,13 +1,13 @@
 'use strict';
 
 // Libraries
-const db      = require("../db");
-const Promise = require("bluebird");
+const db      = require('../db');
+const Promise = require('bluebird');
 
-const Clients = require("../models/clients");
-const Departments = require("../models/departments");
-const Messages = require("../models/messages");
-const Users = require("../models/users");
+const Clients = require('../models/clients');
+const Departments = require('../models/departments');
+const Messages = require('../models/messages');
+const Users = require('../models/users');
 
 module.exports = {
 
@@ -36,7 +36,7 @@ module.exports = {
         });
 
         // Get all the case managers that are related to those clients
-        let allUserIdsRelatedToClients = clients.map((client) => {
+        const allUserIdsRelatedToClients = clients.map((client) => {
           return client.cm;
         });
 
@@ -55,7 +55,7 @@ module.exports = {
 
         // Reduce clients list to only clients that are in
         // the list of in-department users
-        let userIds = users.map((user) => {
+        const userIds = users.map((user) => {
           return user.cmid;
         });
         clients = clients.filter((client) => {

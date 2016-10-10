@@ -1,11 +1,11 @@
 'use strict';
 
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
-const BaseModel = require("../lib/models").BaseModel
+const BaseModel = require('../lib/models').BaseModel;
 
-const s3 = require("../lib/s3")
+const s3 = require('../lib/s3');
 
 class Recordings extends BaseModel {
   constructor(data) {
@@ -22,14 +22,14 @@ class Recordings extends BaseModel {
         'transcription',
         'call_to',
       ],
-    })
+    });
   }
   getUrl() {
-    return s3.getTemporaryUrl(this.recording_key)
+    return s3.getTemporaryUrl(this.recording_key);
   }
 }
 
-Recordings.primaryId = "id"
-Recordings.tableName = "recordings"
+Recordings.primaryId = 'id';
+Recordings.tableName = 'recordings';
 
-module.exports = Recordings
+module.exports = Recordings;

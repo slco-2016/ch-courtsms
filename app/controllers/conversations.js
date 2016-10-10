@@ -5,24 +5,24 @@ const Messages = require('../models/messages');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
-let moment = require("moment");
-let moment_tz = require("moment-timezone");
+const moment = require('moment');
+const moment_tz = require('moment-timezone');
 
 module.exports = {
 
   claimOption(req, res) {
-    let conversationId = req.params.conversation;
-    let clientId = req.params.client;
+    const conversationId = req.params.conversation;
+    const clientId = req.params.client;
     Conversations.findByIdsIncludeMessages(conversationId)
     .then((conversations) => {
-      conversation = conversations[0]
+      conversation = conversations[0];
       if (conversation &&
           conversation.client == Number(clientId) &&
           conversation.cm == req.user.cmid &&
           !conversation.accepted && 
           conversation.open) {
         res.render('capture/conversationClaim', {
-          conversation: conversation
+          conversation: conversation,
         });
       } else {
         res.notFound();
@@ -31,15 +31,15 @@ module.exports = {
   },
 
   claim(req, res) {
-    let conversationId = req.params.conversation;
-    let userId = req.user.cmid;
-    let clientId = req.params.client;
-    let accepted = req.body.accept ? true : false;
+    const conversationId = req.params.conversation;
+    const userId = req.user.cmid;
+    const clientId = req.params.client;
+    const accepted = req.body.accept ? true : false;
 
     Conversations.makeClaimDecision(conversationId, userId, clientId, accepted)
     .then((conversations) => {
-      res.redirect(`/clients/${clientId}/messages`)
+      res.redirect(`/clients/${clientId}/messages`);
     }).catch(res.error_500);
-  }
+  },
 
 };

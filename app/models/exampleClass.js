@@ -1,8 +1,8 @@
 'use strict';
 
 // Libraries
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
 
 // TO DOS
@@ -17,25 +17,25 @@ class Example {
       // Color is optional
       if (!color) color = null;
 
-      const requiredVariables = [orgID, name, ownerID, creatorID, color];
+      const requiredVariables = [orgID, name, ownerID, creatorID, color,];
       const someValsMissing = undefinedValuesCheck(requiredVariables);
 
       // Reject if not all values are present
       if (someValsMissing) {
-        reject("Missing required variables.")
+        reject('Missing required variables.');
 
       // Run INSERT if someValsMissing clears
       } else {
-        db("Examples")
+        db('Examples')
         .insert({
           org:        orgID,
           name:       name,
           color:      color,
           owner:      ownerID,
-          created_by: creatorID
+          created_by: creatorID,
 
         })
-        .returning("Example_id")
+        .returning('Example_id')
         .then((ExampleIDs) => {
           fulfill(ExampleIDs[0]);
 
@@ -46,4 +46,4 @@ class Example {
 
 }
 
-module.exports = Example
+module.exports = Example;

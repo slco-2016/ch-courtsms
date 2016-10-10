@@ -1,12 +1,12 @@
 'use strict';
 
 // Libraries
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
-const BaseModel = require("../lib/models").BaseModel;
+const BaseModel = require('../lib/models').BaseModel;
 
-const DepartmentSupervisors = require("./departmentSupervisors");
+const DepartmentSupervisors = require('./departmentSupervisors');
 
 class Departments extends BaseModel {
 
@@ -14,25 +14,25 @@ class Departments extends BaseModel {
     super({
       data: data,
       columns: [
-        "department_id",
-        "organization",
-        "name",
-        "phone_number",
-        "created_by",
-        "active",
-        "created"
-      ]
-    })
+        'department_id',
+        'organization',
+        'name',
+        'phone_number',
+        'created_by',
+        'active',
+        'created',
+      ],
+    });
   }
 
   static alterCase (departmentID, active) {
-    if (typeof active == "undefined") active = true;
+    if (typeof active == 'undefined') active = true;
 
     return new Promise((fulfill, reject) => {
-      db("departments")
-        .where("department_id", departmentID)
-        .update({active: active})
-        .returning("*")
+      db('departments')
+        .where('department_id', departmentID)
+        .update({active: active,})
+        .returning('*')
       .then((departments) => {
         this._getMultiResponse(departments, fulfill);
       }).catch(reject);
@@ -41,15 +41,15 @@ class Departments extends BaseModel {
 
   static create (orgID, name, phoneNumber, userID) {
     return new Promise((fulfill, reject) => {
-      db("departments")
+      db('departments')
         .insert({
           organization: orgID,
           name: name,
           phone_number: phoneNumber,
           created_by: userID,
-          active: true
+          active: true,
         })
-        .returning("*")
+        .returning('*')
       .then((departments) => {
         this._getSingleResponse(departments, fulfill);
       }).catch(reject);
@@ -58,11 +58,11 @@ class Departments extends BaseModel {
 
   static editOne (departmentID, name, phoneNumber) {
     return new Promise((fulfill, reject) => {
-      db("departments")
-        .where("department_id", departmentID)
+      db('departments')
+        .where('department_id', departmentID)
         .update({
           name: name,
-          phone_number: phoneNumber
+          phone_number: phoneNumber,
         })
       .then(() => {
         fulfill();
@@ -71,17 +71,17 @@ class Departments extends BaseModel {
   }
 
   static findByConversationId (conversationId) {
-    let Conversations = require("./conversations");
-    let Users = require("./users");
+    const Conversations = require('./conversations');
+    const Users = require('./users');
 
     return new Promise((fulfill, reject) => {
       Conversations.findById(conversationId)
       .then((conversation) => {
-        let userId = conversation.cm;
+        const userId = conversation.cm;
         return Users.findById(userId);
       }).then((user) => {
-        let departmentId = user.department;
-        return Departments.findById(departmentId)
+        const departmentId = user.department;
+        return Departments.findById(departmentId);
       }).then((departments) => {
         fulfill(departments);
       }).catch(reject);
@@ -90,13 +90,13 @@ class Departments extends BaseModel {
 
   static findByMember (user) {
     return new Promise((fulfill, reject) => {
-      db("cms")
-        .where("cmid", user)
+      db('cms')
+        .where('cmid', user)
       .then((members) => {
-        let member = members[0];
+        const member = members[0];
 
         if (member) {
-          let departmentId = member.department;
+          const departmentId = member.department;
           Departments.findById(departmentId)
           .then((department) => {
             fulfill(department);
@@ -111,9 +111,9 @@ class Departments extends BaseModel {
 
   static findMembers (departmentID) {
     return new Promise((fulfill, reject) => {
-      db("cms")
-        .where("department", departmentID)
-        .andWhere("active", true)
+      db('cms')
+        .where('department', departmentID)
+        .andWhere('active', true)
       .then((members) => {
         fulfill(members);
       }).catch(reject);
@@ -121,38 +121,38 @@ class Departments extends BaseModel {
   }
 
   static findByOrg (orgID, activeStatus) {
-    if (typeof activeStatus == "undefined") activeStatus = true;
+    if (typeof activeStatus == 'undefined') activeStatus = true;
     return new Promise((fulfill, reject) => {
-      var departmentsAll;
-      db("departments")
-        .select("departments.*", 
-                "phone_numbers.value", 
-                "member_counts.members",
-                "cms.first as created_by_first",
-                "cms.middle as created_by_middle",
-                "cms.last as created_by_last")
+      let departmentsAll;
+      db('departments')
+        .select('departments.*', 
+                'phone_numbers.value', 
+                'member_counts.members',
+                'cms.first as created_by_first',
+                'cms.middle as created_by_middle',
+                'cms.last as created_by_last')
         .leftJoin(
-          db("cms")
-            .select(db.raw("COUNT(*) AS members"), "department")
-            .where("cms.active", true)
-            .groupBy("department")
-            .as("member_counts"),
-          "member_counts.department", "departments.department_id")
+          db('cms')
+            .select(db.raw('COUNT(*) AS members'), 'department')
+            .where('cms.active', true)
+            .groupBy('department')
+            .as('member_counts'),
+          'member_counts.department', 'departments.department_id')
         .leftJoin(
-          db("cms")
-            .where("cms.active", true)
-            .as("cms"), 
-          "cms.cmid", "departments.created_by")
-        .leftJoin("phone_numbers", "phone_numbers.phone_number_id", "departments.phone_number")
-        .where("departments.organization", orgID)
-        .andWhere("departments.active", activeStatus)
-        .orderBy("departments.name", "asc")
+          db('cms')
+            .where('cms.active', true)
+            .as('cms'), 
+          'cms.cmid', 'departments.created_by')
+        .leftJoin('phone_numbers', 'phone_numbers.phone_number_id', 'departments.phone_number')
+        .where('departments.organization', orgID)
+        .andWhere('departments.active', activeStatus)
+        .orderBy('departments.name', 'asc')
       .then((departments) => {
         departmentsAll = departments;
         const departmentIDs = departments.map(function (department) {
           return department.department_id;
         });
-        return DepartmentSupervisors.findByDepartmentIDs(departmentIDs, true)
+        return DepartmentSupervisors.findByDepartmentIDs(departmentIDs, true);
       }).then((supervisors) => {
         departmentsAll = departmentsAll.map(function (department) {
           department.supervisors = [];
@@ -163,17 +163,17 @@ class Departments extends BaseModel {
           });
           return department;
         });
-        fulfill(departmentsAll)
+        fulfill(departmentsAll);
       }).catch(reject);
-    })
+    });
   }
 
   static findByPhoneNumber (value) {
     return new Promise((fulfill, reject) => {
-      db("departments")
-        .leftJoin("phone_numbers", "phone_numbers.phone_number_id", "departments.phone_number")
-        .where("active", true)
-        .andWhere("phone_numbers.value", value)
+      db('departments')
+        .leftJoin('phone_numbers', 'phone_numbers.phone_number_id', 'departments.phone_number')
+        .where('active', true)
+        .andWhere('phone_numbers.value', value)
       .then((departments) => {
         return fulfill(departments);
       }).catch(reject);
@@ -182,6 +182,6 @@ class Departments extends BaseModel {
   
 }
 
-Departments.primaryId = "department_id";
-Departments.tableName = "departments";
+Departments.primaryId = 'department_id';
+Departments.tableName = 'departments';
 module.exports = Departments;

@@ -1,46 +1,46 @@
 const request = require('request');
-const credentials = require('../../credentials')
-const Promise = require("bluebird");
+const credentials = require('../../credentials');
+const Promise = require('bluebird');
 
-const aws = require('aws-sdk')
+const aws = require('aws-sdk');
 
-const mock = require('./mock')
+const mock = require('./mock');
 
 aws.config.credentials = new aws.Credentials(
   credentials.aws.accessKey,
   credentials.aws.secretAccessKey
-)
+);
 
-const s3 = new aws.S3({ apiVersion: '2006-03-01' })
+const s3 = new aws.S3({ apiVersion: '2006-03-01', });
 
-const bucketName = "clientcomm-attachments"
+const bucketName = 'clientcomm-attachments';
 
 module.exports = {
 
   getTemporaryUrl(key) {
-    let tenMinutes = 600;
-    let params = {Bucket: bucketName, Key: key, Expires: tenMinutes};
-    let url = s3.getSignedUrl('getObject', params)
-    return url
+    const tenMinutes = 600;
+    const params = {Bucket: bucketName, Key: key, Expires: tenMinutes,};
+    const url = s3.getSignedUrl('getObject', params);
+    return url;
   },
 
   uploadFile(requestParams, name) {
     return new Promise((fulfill, reject) => {
       if (mock.isEnabled()) {
-        return fulfill('fake-s3-key')
+        return fulfill('fake-s3-key');
       }
 
-      let token = Math.random().toString(36).substring(7);
-      let key = `${token}-${name}`
+      const token = Math.random().toString(36).substring(7);
+      const key = `${token}-${name}`;
 
-      requestParams.encoding = null
+      requestParams.encoding = null;
 
       request.get(requestParams, (err, res, body) => {
         if (err) {
-          reject(err)
+          reject(err);
         } else {
 
-          let params = {
+          const params = {
             Bucket: bucketName,
             Key: key,
             Body: body,
@@ -50,32 +50,32 @@ module.exports = {
 
           s3.putObject(params, function(err, data) {
             if (err) {
-              reject(err)
+              reject(err);
             } else {
-              fulfill(key)
+              fulfill(key);
             }
           });          
         }
-      })
-    })
+      });
+    });
   },
   uploadFromUrl(url, name) {
     if (!name) {
-      name = "unnamed"
+      name = 'unnamed';
     }
-    return this.uploadFile({url: url}, name)
+    return this.uploadFile({url: url,}, name);
   },
   uploadMailGunAttachment(details) {
-    let requestParams = {
+    const requestParams = {
       url: details.url,
       auth: {
         user: 'api',
         password: credentials.mailgun.apiKey,
-      }
-    }
-    let name = details.name
+      },
+    };
+    const name = details.name;
     // let contentType = details['content-type']
-    return this.uploadFile(requestParams, name)
+    return this.uploadFile(requestParams, name);
   },
   
-}
+};

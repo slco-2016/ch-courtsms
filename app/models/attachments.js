@@ -1,10 +1,10 @@
 'use strict';
 
-const db      = require("../../app/db");
-const Promise = require("bluebird");
+const db      = require('../../app/db');
+const Promise = require('bluebird');
 
-const BaseModel = require("../lib/models").BaseModel
-const s3 = require("../lib/s3")
+const BaseModel = require('../lib/models').BaseModel;
+const s3 = require('../lib/s3');
 
 class Attachments extends BaseModel {
 
@@ -18,20 +18,20 @@ class Attachments extends BaseModel {
         'created',
         'contentType',
         'email_id',
-      ]
-    })
+      ],
+    });
   }
 
   static create(attachmentObject) {
     return new Promise((fulfill, reject) => {
-      db("attachments")
+      db('attachments')
       .insert(
         this._cleanParams(attachmentObject)
-      ).returning("*")
+      ).returning('*')
       .then((attachments) => {
-        this._getSingleResponse(attachments, fulfill)
-      }).catch(reject)
-    })
+        this._getSingleResponse(attachments, fulfill);
+      }).catch(reject);
+    });
   }
 
   static createFromMailgunObject(mailgunObj, email) {
@@ -42,18 +42,18 @@ class Attachments extends BaseModel {
           key: key,
           contentType: mailgunObj['content-type'],
           email_id: email.id,
-        })
-      }).then(fulfill).catch(reject)
-    })
+        });
+      }).then(fulfill).catch(reject);
+    });
   }
 
   getUrl() {
-    return s3.getTemporaryUrl(this.key)
+    return s3.getTemporaryUrl(this.key);
   }
 
 }
 
-Attachments.primaryId = "id"
-Attachments.tableName = "attachments"
+Attachments.primaryId = 'id';
+Attachments.tableName = 'attachments';
 
-module.exports = Attachments
+module.exports = Attachments;

@@ -5,24 +5,24 @@ const Users = require('../models/users');
 module.exports = {
 
   index(req, res) {
-    let orgId = req.user.org;
+    const orgId = req.user.org;
     CaptureBoard.findByOrg(orgId)
     .then((conversations) => {
-      res.render("capture/index", {
+      res.render('capture/index', {
         hub: {
-          tab: "captured",
-          sel: null
+          tab: 'captured',
+          sel: null,
         },
-        conversations: conversations
+        conversations: conversations,
       });
     }).catch(res.error500);
   },
 
   attachUserIndex(req, res) {
-    let orgId = req.user.org;
-    let conversationId = req.params.conversation;
+    const orgId = req.user.org;
+    const conversationId = req.params.conversation;
     let departmentFilter = null;
-    if (req.user.class === "supervisor") { 
+    if (req.user.class === 'supervisor') { 
       departmentFilter = req.user.department; 
     }
 
@@ -33,12 +33,12 @@ module.exports = {
         Users.findByOrg(orgId)
         .then((users) => {
           if (departmentFilter) {
-            users = users.filter((u) => { return u.department == departmentFilter });
+            users = users.filter((u) => { return u.department == departmentFilter; });
           }
 
-          res.render("capture/attachUser", {
+          res.render('capture/attachUser', {
             conversation: conversation,
-            users: users
+            users: users,
           });
         }).catch(res.error500);
 
@@ -49,8 +49,8 @@ module.exports = {
   },
 
   attachUserSelect(req, res) {
-    let targetUser = req.body.user;
-    let conversationId = req.params.conversation;
+    const targetUser = req.body.user;
+    const conversationId = req.params.conversation;
     if (targetUser) {
       res.redirect(`/org/captured/attach/${conversationId}/user/${targetUser}`);
     } else {
@@ -59,23 +59,23 @@ module.exports = {
   },
 
   attachClientIndex(req, res) {
-    let orgId = req.user.org;
-    let targetUser = req.params.user;
-    let conversationId = req.params.conversation;
+    const orgId = req.user.org;
+    const targetUser = req.params.user;
+    const conversationId = req.params.conversation;
 
     CaptureBoard.findByConversationId(orgId, conversationId)
     .then((conversation) => {
       if (conversation) {
 
-        Clients.findByUsers([targetUser], true)
+        Clients.findByUsers([targetUser,], true)
         .then((clients) => {
           if (clients.length) {
-            res.render("capture/attachClient", {
+            res.render('capture/attachClient', {
               conversation: conversation,
-              clients: clients
+              clients: clients,
             });
           } else {
-            req.flash("warning", "That user has no active clients in their case load.");
+            req.flash('warning', 'That user has no active clients in their case load.');
             res.redirect(`/org/captured/attach/${conversationId}`);
           }
         }).catch(res.error500);
@@ -88,10 +88,10 @@ module.exports = {
   },
 
   attachUpdate(req, res) {
-    let orgId = req.user.org;
-    let client = req.body.client;
-    let targetUser = req.params.user;
-    let conversationId = req.params.conversation;
+    const orgId = req.user.org;
+    const client = req.body.client;
+    const targetUser = req.params.user;
+    const conversationId = req.params.conversation;
 
     if (targetUser && client) {
       CaptureBoard.findByConversationId(orgId, conversationId)
@@ -99,27 +99,27 @@ module.exports = {
         if (conversation) {
           CaptureBoard.associateConversation(targetUser, client, conversationId)
           .then(() => {
-            req.flash("success", "Captured conversation and added related communication method.");
-            res.redirect(`/org/captured`);
+            req.flash('success', 'Captured conversation and added related communication method.');
+            res.redirect('/org/captured');
           }).catch(res.error500);
         } else {
           res.notFound();
         }
       }).catch(res.error500);
     } else {
-      req.flash("warning", "Could not identify that user or client, please try again.");
+      req.flash('warning', 'Could not identify that user or client, please try again.');
       res.redirect(`/org/captured/attach/${conversationId}`);
     }
   },
 
   removeConfirm(req, res) {
-    let conversationId = req.params.conversation;
-    let orgId = req.user.org;
+    const conversationId = req.params.conversation;
+    const orgId = req.user.org;
     CaptureBoard.findByConversationId(orgId, conversationId)
     .then((conversation) => {
       if (conversation) {
-        res.render("capture/removeConfirm", {
-          conversation: conversation
+        res.render('capture/removeConfirm', {
+          conversation: conversation,
         });
       } else {
         res.notFound();
@@ -128,13 +128,13 @@ module.exports = {
   },
 
   remove(req, res) {
-    let conversationId = Number(req.params.conversation);
+    const conversationId = Number(req.params.conversation);
 
     CaptureBoard.removeOne(conversationId)
     .then(() => {
-      req.flash("success", "Removed a captured conversation.");
-      res.redirect(`/org/captured`);
+      req.flash('success', 'Removed a captured conversation.');
+      res.redirect('/org/captured');
     }).catch(res.error500);
-  }
+  },
 
-}
+};

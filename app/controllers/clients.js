@@ -5,25 +5,25 @@ const Messages = require('../models/messages');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
-let moment = require("moment");
-let moment_tz = require("moment-timezone");
+const moment = require('moment');
+const moment_tz = require('moment-timezone');
 
 const _average = (arr) => {
   let total = 0;
-  for (var i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     total += arr[i];
   }
   if (arr.length) {
     return total / arr.length;
   } else {
-    return null
+    return null;
   }
 };
 
 function _addNewMessageEvent (arr, date) {
   let added = false;
-  date = moment(date).format("YYYY-MM-DD");
-  for (var i = 0; i < arr.length; i++) {
+  date = moment(date).format('YYYY-MM-DD');
+  for (let i = 0; i < arr.length; i++) {
     if (arr[i].date == date) {
       arr[i].count += 1;
       added = true;
@@ -32,23 +32,23 @@ function _addNewMessageEvent (arr, date) {
   if (!added) {
     arr.push({
       date: date,
-      count: 1
+      count: 1,
     });
   }
   return arr;
 };
 
 function _getDailyVolumes (messages) {
-  let inbound = [];
-  let outbound = [];
+  const inbound = [];
+  const outbound = [];
 
   messages.forEach((msg) => {
-    let date = moment(msg.created).format("YYYY-MM-DD");
+    const date = moment(msg.created).format('YYYY-MM-DD');
     let alreadyExists = false;
-    let insert = {
+    const insert = {
       date: date,
       created: msg.created,
-      count: 1
+      count: 1,
     };
 
     if (msg.inbound) {
@@ -76,27 +76,27 @@ function _getDailyVolumes (messages) {
 
   return {
     inbound: inbound,
-    outbound: outbound
-  }
+    outbound: outbound,
+  };
 }
 
 module.exports = {
   
   index(req, res) {
-    let status      = req.query.status == "closed" ? false : true;
+    const status      = req.query.status == 'closed' ? false : true;
     let department  = req.user.department || req.query.department;
-    let user        = req.body.targetUser || req.user.cmid;
-    let limitByUser = req.query.user || null;
+    const user        = req.body.targetUser || req.user.cmid;
+    const limitByUser = req.query.user || null;
 
     // Controls against a case where the owner would accidentally have a department
-    if (  (req.user.class == "owner" || req.user.class == "support") && 
+    if (  (req.user.class == 'owner' || req.user.class == 'support') && 
           !req.query.department) {
       department = null;
     }
 
     let method;
-    if (res.locals.level == "user") {
-      method = Clients.findByUsers(user, status)
+    if (res.locals.level == 'user') {
+      method = Clients.findByUsers(user, status);
     } else if (department) {
       method = Clients.findByDepartment(department, status);
     } else {
@@ -110,43 +110,43 @@ module.exports = {
         });
       }
 
-      res.render("clients/index", {
+      res.render('clients/index', {
         hub: {
-          tab: "clients",
-          sel: status ? "open" : "closed"
+          tab: 'clients',
+          sel: status ? 'open' : 'closed',
         },
         clients: clients,
-        limitByUser: limitByUser || null
+        limitByUser: limitByUser || null,
       });
     }).catch(res.error500);
   },
 
   new(req, res) {
-    let userClass = req.user.class;
-    let level = res.locals.level;
-    let org = req.user.org;
-    if (level === "user") {
-      res.render("clients/create", { users: null });
+    const userClass = req.user.class;
+    const level = res.locals.level;
+    const org = req.user.org;
+    if (level === 'user') {
+      res.render('clients/create', { users: null, });
     } else {
       Users.findByOrg(org)
       .then((users) => {
-        let department = req.user.department;
-        if (department && userClass !== "owner") {
+        const department = req.user.department;
+        if (department && userClass !== 'owner') {
           users = users.filter((user) => { return user.department == department; });
         }
-        res.render("clients/create", { users: users });
+        res.render('clients/create', { users: users, });
       }).catch(res.error500);
     }
   },
 
   create(req, res) {
-    let userId = req.body.targetUser || req.user.cmid; // Will this work consistently?
-    let first  = req.body.first;    
-    let middle = req.body.middle ? req.body.middle : "";    
-    let last   = req.body.last;   
-    let dob    = req.body.dob;    
-    let so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
-    let otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
+    const userId = req.body.targetUser || req.user.cmid; // Will this work consistently?
+    const first  = req.body.first;    
+    const middle = req.body.middle ? req.body.middle : '';    
+    const last   = req.body.last;   
+    const dob    = req.body.dob;    
+    const so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
+    const otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
 
     Clients.create(
             userId, 
@@ -157,22 +157,22 @@ module.exports = {
             so,  // note these should be renamed
             otn  // this one as well
     ).then((client) => {
-      res.levelSensitiveRedirect(`/clients`);
+      res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
   },
 
   edit(req, res) {
-    res.render("clients/edit");
+    res.render('clients/edit');
   },
 
   update(req, res) { 
-    let client  = req.params.client;
-    let first     = req.body.first;
-    let middle    = req.body.middle;
-    let last      = req.body.last;
-    let dob       = req.body.dob;
-    let so        = req.body.uniqueID1;
-    let otn       = req.body.uniqueID2;
+    const client  = req.params.client;
+    const first     = req.body.first;
+    const middle    = req.body.middle;
+    const last      = req.body.last;
+    const dob       = req.body.dob;
+    const so        = req.body.uniqueID1;
+    const otn       = req.body.uniqueID2;
     Clients.editOne(
             client, 
             first, 
@@ -183,36 +183,36 @@ module.exports = {
             otn
     ).then(() => {
       req.logActivity.client(client);
-      req.flash("success", "Edited client.");
-      res.levelSensitiveRedirect(`/clients`);
+      req.flash('success', 'Edited client.');
+      res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
   },
 
   addressCraft(req, res) {
-    res.render("clients/address", {
-      template: req.query
+    res.render('clients/address', {
+      template: req.query,
     });
   },
 
   templates(req, res) {
-    let user = req.getUser();
+    const user = req.getUser();
 
     Templates.findByUser(user)
     .then((templates) => {
-      res.render("clients/templates", {
+      res.render('clients/templates', {
         templates: templates,
-        parameters: req.query
+        parameters: req.query,
       });
     }).catch(res.error500);
   },
 
   addressSubmit(req, res) {
-    let user = req.getUser();
+    const user = req.getUser();
 
-    let client = req.params.client;
-    let subject  = req.body.subject;
-    let content  = req.body.content;
-    let commID   = req.body.commID == "null" ? null : req.body.commID;
+    const client = req.params.client;
+    const subject  = req.body.subject;
+    const content  = req.body.content;
+    const commID   = req.body.commID == 'null' ? null : req.body.commID;
     let method;
 
     if (commID) {
@@ -223,24 +223,24 @@ module.exports = {
 
     method.then(() => {
       req.logActivity.client(client);
-      req.flash("success", "Message to client sent.");
-      res.levelSensitiveRedirect(`/clients`);
+      req.flash('success', 'Message to client sent.');
+      res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
   },
 
   mediaAttachment(req, res) {
-    req.flash("warning", "Media attachments are not yet supported.");
+    req.flash('warning', 'Media attachments are not yet supported.');
     res.levelSensitiveRedirect(`/clients/${req.params.client}/messages`);
   },
 
   messagesIndex(req, res) {
-    let client = req.params.client;
-    let method = req.query.method;
-    let user = req.getUser();
+    const client = req.params.client;
+    const method = req.query.method;
+    const user = req.getUser();
 
     // determine if we should filter by type
-    let methodFilter = "all";
-    if (req.query.method == "texts") methodFilter = "cell";
+    let methodFilter = 'all';
+    if (req.query.method == 'texts') methodFilter = 'cell';
 
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
@@ -250,7 +250,7 @@ module.exports = {
     .then((resp) => {
       conversations = resp;
 
-      let conversationIds = conversations.filter((conversation) => {
+      const conversationIds = conversations.filter((conversation) => {
         return conversation.client == Number(client);
       }).map((conversation) => {
         return conversation.convid;
@@ -260,7 +260,7 @@ module.exports = {
     }).then((resp) => {
 
       messages = resp.filter((msg) => {
-        if (msg.comm_type == methodFilter || methodFilter == "all") {
+        if (msg.comm_type == methodFilter || methodFilter == 'all') {
           return msg.convo == convoFilter || convoFilter == null;
         } else { 
           return false; 
@@ -272,57 +272,57 @@ module.exports = {
         return msg.read === false;
       }).map((msg) => {
         return msg.msgid;
-      })
+      });
 
       // control to keep other people from "marking as read" someones messages
       if (req.user.cmid !== client.cm) {
         messageIds = [];
       }
-      return Messages.markAsRead(messageIds)
+      return Messages.markAsRead(messageIds);
     }).then(() => {
       
-      return CommConns.findByClientIdWithCommMetaData(client)
+      return CommConns.findByClientIdWithCommMetaData(client);
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {
         return !conversation.accepted;
-      })
+      });
 
       // if there are unclaimed messages that need to be viewed and this the client's main cm
       if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
-        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`)
+        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`);
       } else {
-        res.render("clients/messages", {
+        res.render('clients/messages', {
           hub: {
-            tab: "messages",
-            sel: method ? method : "all"
+            tab: 'messages',
+            sel: method ? method : 'all',
           },
           conversations: conversations,
           messages: messages,
           communications: communications,
-          convoFilter: convoFilter
+          convoFilter: convoFilter,
         });
       }
     }).catch(res.error500);
   },
 
   messagesSubmit(req, res) {
-    let user = req.getUser();
-    let client = req.params.client;
-    let subject  = "New Conversation";
-    let content  = req.body.content;
-    let commID   = req.body.commID;
+    const user = req.getUser();
+    const client = req.params.client;
+    const subject  = 'New Conversation';
+    const content  = req.body.content;
+    const commID   = req.body.commID;
     let conversation;
 
     Conversations.getMostRecentConversation(user, client)
     .then((resp) => {
       conversation = resp;
-      let conversationId = conversation.convid;
+      const conversationId = conversation.convid;
       return Conversations.closeAllWithClientExcept(client, conversationId);
     }).then(() => {
       // Use existing conversation if exists and recent (lt 5 days)
-      var now, lastUpdated, recentOkay = false;
+      let now, lastUpdated, recentOkay = false;
       if (conversation) {
         now = new Date().getTime() - (5 * 24 * 60 * 60 * 1000); // 5 days in past
         lastUpdated = new Date(conversation.updated).getTime();
@@ -341,7 +341,7 @@ module.exports = {
       } else {
         Conversations.create(user, client, subject, true)
         .then((conversation) => {
-          return Messages.sendOne(commID, content, conversation)
+          return Messages.sendOne(commID, content, conversation);
         }).then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect(`/clients/${client}/messages`);
@@ -351,44 +351,44 @@ module.exports = {
   },
 
   alter(req, res) {
-    let userId = req.getUser();
-    let clientId = req.params.client;
-    let status = req.params.status == "open";
+    const userId = req.getUser();
+    const clientId = req.params.client;
+    const status = req.params.status == 'open';
 
     Conversations.closeAllWithClient(userId, clientId)
     .then(() => {
       return Clients.alterCase(clientId, status);
     }).then(() => {
       req.logActivity.client(clientId);
-      req.flash("success", "Client case status changed.")
-      res.levelSensitiveRedirect(`/clients`);
+      req.flash('success', 'Client case status changed.');
+      res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
   },
 
   transferSelect(req, res) {
-    let allDep = req.query.allDepartments == "true" ? true : false;
+    let allDep = req.query.allDepartments == 'true' ? true : false;
 
     // Handle situations where an owner has a department attached to her/him
-    if (req.user.class === "owner") { allDep = true; }
-    if (req.user.class === "support") { allDep = true; }
+    if (req.user.class === 'owner') { allDep = true; }
+    if (req.user.class === 'support') { allDep = true; }
 
     Users.findByOrg(req.user.org)
     .then((users) => {
       // Limit only to same department transfers
-      if (!allDep) users = users.filter((u) => { return u.department == req.user.department });
+      if (!allDep) users = users.filter((u) => { return u.department == req.user.department; });
 
-      res.render("clients/transfer", {
+      res.render('clients/transfer', {
         users: users,
-        allDepartments: allDep
+        allDepartments: allDep,
       });
     }).catch(res.error500);
   },
 
   transferSubmit(req, res) {
-    let fromUser = req.getUser();
-    let toUser = req.body.user;
-    let client = res.locals.client.clid;
-    let bundle = req.body.bundleConversations ? true : false;
+    const fromUser = req.getUser();
+    const toUser = req.body.user;
+    const client = res.locals.client.clid;
+    const bundle = req.body.bundleConversations ? true : false;
 
     Users.findByID(toUser)
     .then((u) => {
@@ -396,7 +396,7 @@ module.exports = {
         Clients.transfer(client, fromUser, u.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
-          res.levelSensitiveRedirect(`/clients`);
+          res.levelSensitiveRedirect('/clients');
         }).catch(res.error500);
 
       } else {
@@ -406,58 +406,58 @@ module.exports = {
   },
 
   transcript(req, res) {
-    let withUser = req.query.with || null;
+    const withUser = req.query.with || null;
     Messages.findBetweenUserAndClient(withUser, req.params.client)
     .then((messages) => {
       
       // Format into a text string
       messages = messages.map(function (m) {
-        let s = "";
+        let s = '';
         Object.keys(m).forEach(function (k) { s += `\n${k}: ${m[k]}`; });
         return s;
-      }).join("\n\n");
+      }).join('\n\n');
 
       // Note: this does not render a new page, just initiates a download
-      res.set({"Content-Disposition":"attachment; filename=transcript.txt"});
+      res.set({'Content-Disposition':'attachment; filename=transcript.txt',});
       res.send(messages);
     }).catch(res.error500);
   },
 
   clientCard(req, res) {
-    let client = req.params.client;
-    let user = req.getUser();
+    const client = req.params.client;
+    const user = req.getUser();
 
     let messages, otherPotentialManagers, lastCommuncationUsed;
 
     Clients.findBySameName(res.locals.client)
     .then((clients) => {
-      let userIds = clients.map((client) => {
+      const userIds = clients.map((client) => {
         return client.cm;
-      })
-      return Users.findByIds(userIds)
+      });
+      return Users.findByIds(userIds);
     }).then((users) => {
       otherPotentialManagers = users;
-      return Messages.findBetweenUserAndClient(user, client)
+      return Messages.findBetweenUserAndClient(user, client);
     }).then((msgs) => {
       messages = msgs;
-      return CommConns.findByClientIdWithCommMetaData(client)
+      return CommConns.findByClientIdWithCommMetaData(client);
     }).then((communications) => {
 
       let unreadCount = 0,
 
           // getting the last messages
-          lastOutbound = {}, 
-          lastInbound = {},
+        lastOutbound = {}, 
+        lastInbound = {},
 
           // for measuring avg response times
-          lastClientMsg = null,
-          clientResponseList = []
-          lastUserMsg = null,
+        lastClientMsg = null,
+        clientResponseList = [];
+      lastUserMsg = null,
           userResponseList = [],
           sentiment = {
             negative: 0,
             neutral: 0,
-            positive: 0
+            positive: 0,
           },
 
           // counting by day
@@ -486,9 +486,9 @@ module.exports = {
         if (msg.inbound) {
           if (lastUserMsg) {
             if (lastUserMsg.convo == msg.convo) {
-              let a = new Date(msg.created)
-              let b = new Date(lastUserMsg.created)
-              clientResponseList.push(a - b)
+              const a = new Date(msg.created);
+              const b = new Date(lastUserMsg.created);
+              clientResponseList.push(a - b);
               lastUserMsg = null;
               lastClientMsg = msg;
             } else {
@@ -502,9 +502,9 @@ module.exports = {
         } else {
           if (lastClientMsg) {
             if (lastClientMsg.convo == msg.convo) {
-              let a = new Date(msg.created)
-              let b = new Date(lastClientMsg.created)
-              userResponseList.push(a - b)
+              const a = new Date(msg.created);
+              const b = new Date(lastClientMsg.created);
+              userResponseList.push(a - b);
               lastClientMsg = null;
               lastUserMsg = msg;
             } else {
@@ -518,21 +518,21 @@ module.exports = {
         }
       });
 
-      let averageClientResponseTime = _average(clientResponseList);
-      let averageUserResponseTime = _average(userResponseList);
+      const averageClientResponseTime = _average(clientResponseList);
+      const averageUserResponseTime = _average(userResponseList);
 
-      let totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
+      const totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
       sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100) || 0;
       sentiment.neutral = Math.round((sentiment.neutral / totalSentimentCount) * 100) || 0;
       sentiment.positive = Math.round((sentiment.positive / totalSentimentCount) * 100) || 0;
 
-      let inboundCount = messages.filter((msg) => { return msg.inbound; }).length;
-      let outboundCount = messages.length - inboundCount;
+      const inboundCount = messages.filter((msg) => { return msg.inbound; }).length;
+      const outboundCount = messages.length - inboundCount;
 
       //Find last used contact
       if (messages.length) {
-        let lastMessage = messages[messages.length -1];
-        let lastMessageComm = lastMessage.comm;
+        const lastMessage = messages[messages.length -1];
+        const lastMessageComm = lastMessage.comm;
         communications.forEach((comm) => {
           if (comm.commid == lastMessageComm) {
             lastCommuncationUsed = comm;
@@ -541,12 +541,12 @@ module.exports = {
       }
 
       // Get counts
-      let dailyCounts = _getDailyVolumes(messages);
+      const dailyCounts = _getDailyVolumes(messages);
 
-      res.render("clients/profile", {
+      res.render('clients/profile', {
         hub: {
-          tab: "profile",
-          sel: null
+          tab: 'profile',
+          sel: null,
         },
         messages: {
           all: messages,
@@ -558,13 +558,13 @@ module.exports = {
           averageClientResponseTime: averageClientResponseTime || 0,
           averageUserResponseTime: averageUserResponseTime || 0,
           lastInbound: lastInbound,
-          lastOutbound: lastOutbound
+          lastOutbound: lastOutbound,
         },
         communications: communications,
         lastCommuncationUsed: lastCommuncationUsed,
         otherPotentialManagers: otherPotentialManagers,
       });
     }).catch(res.error500);
-  }
+  },
 
 };

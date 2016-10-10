@@ -5,18 +5,18 @@ module.exports = {
   index(req, res) {
     PhoneNumbers.findByOrgID(req.user.org)
     .then((numbers) => {
-      res.render("phoneNumbers/index", {
+      res.render('phoneNumbers/index', {
         hub: {
-          tab: "numbers",
-          sel: null
+          tab: 'numbers',
+          sel: null,
         },
-        numbers: numbers
+        numbers: numbers,
       });
     }).catch(res.error500);
   },
 
   new(req, res) {
-    res.render("phoneNumbers/create")
-  }
+    res.render('phoneNumbers/create');
+  },
 
-}
+};
