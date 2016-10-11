@@ -269,9 +269,6 @@ if (false) {
     .then().catch();
   }, 15 * minute);
 
-  
-  // out of office messages - 1 minute
-
   // sms status check - 30 seconds
   setInterval(() => {
     const Messages = require('./models/messages');

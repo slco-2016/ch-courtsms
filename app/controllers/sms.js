@@ -3,6 +3,7 @@ const Conversations = require('../models/conversations');
 const Departments = require('../models/departments');
 const Messages = require('../models/messages');
 const SentimentAnalysis = require('../models/sentiment');
+const Users = require('../models/users');
 
 const sms = require('../lib/sms');
 
@@ -24,7 +25,7 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    let communication, conversations, clients;
+    let communication, conversations, clients, messages;
     Communications.getOrCreateFromValue(fromNumber, 'cell')
     .then((resp) => {
       communication = resp;
@@ -46,8 +47,23 @@ module.exports = {
                                                   MessageSID,
                                                   MessageStatus,
                                                   toNumber);
-    }).then((messages) => {
+    }).then((resp) => {
+      messages = resp;
 
+      // out of office check
+      conversations.forEach((conversation) => {
+        Users.findById(conversation.cm)
+        .then((user) => {
+          if (user.is_away) {
+            Messages.getLatestNumber(user.cmid, conversation.client)
+            .then((commId) => {
+              return Messages.sendOne(commId, user.away_message, conversation);
+            }).then(() => { }).catch((error) => { console.log(error); });
+          }
+        });
+      });      
+
+      // determine if there is auto-response logic
       conversations.forEach((conversation) => {
         Messages.findByConversation(conversation)
         .then((messages) => {
@@ -62,7 +78,7 @@ module.exports = {
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
               return Messages.sendOne(commId, messageContent, conversation);
-            }).then(() => { }).catch(res.error500);
+            }).then(() => { }).catch((error) => { console.log(error); });
           }
         }).catch(res.error500);
 

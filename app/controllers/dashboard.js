@@ -3,7 +3,6 @@ const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
 
-const messagesLib = require('../lib/messages');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
