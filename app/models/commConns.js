@@ -64,7 +64,6 @@ class CommConns extends BaseModel {
   }
   
   static findByClientIdsWithCommMetaData (clientIds) {
-    console.log("here", clientIds)
     return new Promise((fulfill, reject) => {
       db('commconns')
         .leftJoin(

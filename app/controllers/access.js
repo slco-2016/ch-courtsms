@@ -2,6 +2,7 @@ const db = require('../db');
 const uuid = require('node-uuid');
 
 const pass = require('../lib/pass');
+const emUtil = require('../lib/em-notify');
 const hashPw = pass.hashPw;
 const isLoggedIn = pass.isLoggedIn;
 
@@ -66,26 +67,22 @@ module.exports = {
         .then(() => {
 
         // Create a new row with current pw request
-          db('pwresets')
-        .insert({
-          cmid: cm.cmid,
-          uid: uid,
-          email: cm.email,
-        })
-        .then(() => {
+          return db('pwresets')
+          .insert({
+            cmid: cm.cmid,
+            uid: uid,
+            email: cm.email,
+          });
+        }).then(() => {
 
-          console.log('EmUtil needs to be fixed...');
-          // emUtil.sendPassResetEmail(cm, uid, () => {
-          //   // Render direction to check email card
-          req.flash('success', 'Reset password email was sent to ' + cm.email );
-          res.render('access/loginresetsent', {cm: cm,});
-          // });
+          emUtil.sendPassResetEmail(cm, uid, () => {
+            // Render direction to check email card
+            req.flash('success', 'Reset password email was sent to ' + cm.email );
+            res.render('access/loginresetsent', {cm: cm,});
+          });
 
         }).catch(res.error500); // Query 3
-        }).catch(res.error500); // Query 2
-
       }
-
     }).catch(res.error500); // Query 1
   },
 

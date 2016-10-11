@@ -252,5 +252,38 @@ app.get('/*', (req, res) => {
   res.notFound();
 });
 
+// Scheduled operations
+if (false) {
+  let minute = 60 * 1000;
+  let hour = 60 * minute;
+
+  // email notifications - 24 hours
+  setInterval(() => {
+    require("../lib/em-notify").runEmailUpdates().then().catch();
+  }, 24 * hour);
+
+  // notifications - 15 minutes
+  setInterval(() => {
+    const Notifications = require('./models/notifications');
+    Notifications.checkAndSendNotifications()
+    .then().catch();
+  }, 15 * minute);
+
+  
+  // out of office messages - 1 minute
+
+  // sms status check - 30 seconds
+  setInterval(() => {
+    const Messages = require('./models/messages');
+    Messages.findNotClearedMessages()
+    .then((messages) => {
+      const smsStatusCheck = require('../lib/sms-status-check');
+      messages.forEach((message, i) => {
+        smsStatusCheck.checkMsgAgainstTwilio(message);
+      });
+    }).catch();
+  }, 15 * minute);
+  
+}
 
 module.exports = app;

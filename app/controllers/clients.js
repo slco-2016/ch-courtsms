@@ -254,7 +254,7 @@ module.exports = {
       conversations = resp;
 
       const conversationIds = conversations.filter((conversation) => {
-        return conversation.client == Number(client);
+        return conversation.client == client.clid;
       }).map((conversation) => {
         return conversation.convid;
       });
@@ -269,7 +269,7 @@ module.exports = {
           return false; 
         }
       });
-      
+
       // determine if any messages need to be marked as read
       let messageIds = messages.filter((msg) => {
         return msg.read === false;

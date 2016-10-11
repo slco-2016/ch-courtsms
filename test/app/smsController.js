@@ -16,7 +16,7 @@ const smsData = require('../data/testSMSData');
 
 describe('Sms inbound message endpoint', function() {
 
-  it('should accept a new email', function(done) {
+  it('should accept a new text', function(done) {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
       .expect(200)
