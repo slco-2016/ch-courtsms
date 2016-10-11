@@ -137,7 +137,7 @@ describe('Basic http req tests', function() {
           primary.get('/clients/2/address')
             .expect(200)
             .end(function(err, res) {
-              res.text.should.match(/Load a template/)
+              res.text.should.match(/Load template/)
               done(err);
             });
         }

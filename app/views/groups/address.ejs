@@ -6,10 +6,12 @@
     <% include ../partials/cardExit %>
   </a>
   <div class="cardTitle">
-    Write to Group Members
+    Message Group
   </div>
   <div class="cardSubtitle">
-    Write a message to all members of this group. The message will be sent to the most recently used cell device used by each respective client.
+    This will create a new conversation with each client in the group. 
+    <br>
+    Message will be sent to each client in this group using Smart Select, which determines the best contact method for each client.
   </div>
 </div>
 
@@ -17,27 +19,28 @@
 
   <form method="post"
         action="/groups/address/<%= parameters.groupID %>">
-    <div class="formRow subdued">
-      <div class="formLabel"> Subject <small>(optional, not visible to clients)</small></div>
+
+    <div class="formRow smallBottomPad">
+      <div class="formLabel"> Subject <small>(only visible to clients via email)</small></div>
       <div class="formInput">
         <input  type="text" 
                 name="title" 
                 value="" 
-                placeholder="Enter a subject for the notification here" 
+                placeholder="" 
                 maxlength="100">
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Message Body </div>
+      <div class="formLabel"> Message </div>
       <div class="formInput">
         <textarea name="content" rows="5" required></textarea>
       </div>
     </div>
 
     <input  type="submit" 
-            class="formSubmit" 
-            value="Send Group Message">
+            class="formSubmit padTop" 
+            value="Send">
   </form>
 
 </div>

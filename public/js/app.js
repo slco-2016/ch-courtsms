@@ -865,6 +865,11 @@ $(function() {
           $("#voiceLink").attr("href", "/clients/" + String(v) + "/voicemessage");
         });
 
+        $("#showTextParametersCompose").click(function () {
+          $("#initialOptionsButtons").hide();
+          $("#textParametersCompose").show();
+        });
+
         function updateClientsAndComms (v) {
           // Remove all existing children in options
           $("#commConn").empty();

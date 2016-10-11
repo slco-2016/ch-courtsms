@@ -81,6 +81,7 @@ const CommunicationsController  = require('./controllers/communications');
 const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
 const GroupsController          = require('./controllers/groups');
+const HelpController            = require('./controllers/help');
 const NotificationsController   = require('./controllers/notifications');
 const PhoneNumbers              = require('./controllers/phoneNumbers');
 const RootController            = require('./controllers/root');
@@ -120,6 +121,8 @@ app.use(auth.isLoggedIn);
 app.use(auth.checkIsAllowed);
 
 app.get('/logout', AccessController.logout);
+
+app.get('/help', HelpController.index);
 
 app.get('/alerts', AlertsController.checkForNewMessages);
 app.get('/alerts/:alert/close', AlertsController.close);

@@ -12,6 +12,7 @@ const resourceRequire = require('../lib/resourceRequire');
 const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Conversations = resourceRequire('models', 'Conversations');
 const Messages = resourceRequire('models', 'Messages');
+const Users = resourceRequire('models', 'Users');
 
 const voice = resourceRequire('lib', 'voice');
 
@@ -83,24 +84,28 @@ class Notifications extends BaseModel {
 
   static sendTextorEmailNotification (notification) {
     return new Promise((fulfill, reject) => {
-      const client = notification.client;
-      const userId = notification.cm;
-      const clientId = notification.client;
-      const subject = notification.subject || 'Sent Notification';
-      const content = notification.message;
-      const commId = notification.comm;
-      let sendMethod;
+      Users.findById(notification.cm)
+      .then((user) => {
+        const client = notification.client;
+        const userId = notification.cm;
+        const clientId = notification.client;
+        const subject = notification.subject || `New Message from ${user.first} ${user.last}`;
+        const content = notification.message;
+        const commId = notification.comm;
+        let sendMethod;
 
-      if (commId) {
-        sendMethod = Messages.startNewConversation(userId, clientId, subject, content, commId);
-      } else {
-        sendMethod = Messages.smartSend(userId, clientId, subject, content);
-      }
+        if (commId) {
+          sendMethod = Messages.startNewConversation(userId, clientId, subject, content, commId);
+        } else {
+          sendMethod = Messages.smartSend(userId, clientId, subject, content);
+        }
 
-      sendMethod.then(() => {
-        return this.markAsSent(notification.notificationid);
-      }).then(() => {
-        fulfill();
+        sendMethod.then(() => {
+          return this.markAsSent(notification.notificationid);
+        }).then(() => {
+          fulfill();
+        }).catch(reject);
+
       }).catch(reject);
     });
   }

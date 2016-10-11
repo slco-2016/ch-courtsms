@@ -7,7 +7,7 @@
     Voice Message
   </div>
   <div class="cardSubtitle">
-    This series of cards will guide you through the steps required to create a voice message to be sent.
+    
   </div>
 </div>
 
@@ -16,7 +16,7 @@
   <form method="post">
 
     <div class="formRow">
-      <div class="formLabel"> Which device to send to </div>
+      <div class="formLabel"> Select contact method </div>
       <select class="blueSelect" 
               id="commId" 
               name="commId" 
@@ -42,7 +42,7 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
+      <div class="formLabel"> Send at <small>(local timezone: <%= organization.tz %>)</small></div>
 
       <div class="formInput">
         <select class="blueSelect" id="sendHour" name="sendHour" required>
@@ -75,20 +75,19 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Why we need your number </div>
-      <div class="formInput">
-        The first step will be to tell ClientComm what number to call you at. When you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to the target client (<%=`${client.first} ${client.last}`%>). Your personal number will not be saved.
-      </div>
-    </div>
-
-    <div class="formRow">
-      <div class="formLabel"> Please enter the number to call below </div>
+      <div class="formLabel"> Select number to create audio message with </div>
       <div class="formInput">
         <input type="text" maxlength="100" name="phonenumber" value="" required>
       </div>
     </div>
 
-    <input type="submit" class="formSubmit" value="Submit">
+    <input type="submit" class="formSubmit padTop" value="Prompt phone call">
+
+    <div class="formRow">
+      <div class="formInput smallNote">
+        When you pick up the phone, you will be prompted to leave a message. This is the message that you will be sent to your client. Your personal number will not be saved.
+      </div>
+    </div>
 
   </form>
 

@@ -9,7 +9,7 @@
     Create Group
   </div>
   <div class="cardSubtitle">
-    Use groups to organize client populations.
+    Organize your client caseload.
   </div>
 </div>
 
@@ -20,15 +20,19 @@
         action = "/groups/create">
 
     <div class="formRow">
-      <div class="formLabel"> Name of group </div>
+      <div class="formLabel"> Title of group </div>
       <div class="formInput">
         <input  type="text" 
                 name="name" 
                 value=""
-                placeholder="Enter a name of the group" 
+                placeholder="" 
                 maxlength="160"
                 required="">
       </div>
+    </div>
+
+    <div class="formRow noBottomPad">
+      <div class="formLabel"> Select clients </div>
     </div>
 
     <div class="scrollListBox">
@@ -49,7 +53,7 @@
     </div>
 
     <input  type="submit" 
-            class="formSubmit" 
+            class="formSubmit padTop" 
             value="Save Group">
   </form>
 </div>

@@ -24,7 +24,7 @@
         action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications/create`%>">
 
     <div class="formRow">
-      <div class="formLabel"> Name (ex: "Aunt's Phone") </div>
+      <div class="formLabel"> Title </div>
       <div class="formInput">
         <input type="text" name="description" value="<%= commConn.name %>" maxlength="30" required>
       </div>
@@ -43,13 +43,13 @@
     <div class="formRow">
       <div class="formLabel"> Details (ex: phone number, email) </div>
       <div class="formInput">
-        <input type="text" name="value" value="<%= commConn.value %>" placeholder="1-308-123-4567 or joanna@example.com">
+        <input type="text" name="value" value="<%= commConn.value %>" placeholder="">
       </div>
     </div>
 
     <input type="hidden" name="override" value="<%= commConn.commconnid %>">
 
-    <input type="submit" class="formSubmit" value="Update">
+    <input type="submit" class="formSubmit padTop" value="Update">
 
   </form>
 </div>
