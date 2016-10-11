@@ -284,7 +284,7 @@ module.exports = {
       return Messages.markAsRead(messageIds);
     }).then(() => {
 
-      return CommConns.findByClientIdWithCommMetaData(client);
+      return CommConns.findByClientIdWithCommMetaData(clientId);
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {

@@ -24,15 +24,6 @@ class CommConns extends BaseModel {
       ],
     });
   }
-  
-  static findByClientIdWithCommMetaData (clientId) {
-    return new Promise((fulfill, reject) => {
-      CommConns.findByClientIdsWithCommMetaData([clientId,])
-      .then((commconns) => {
-        fulfill(commconns);
-      }).catch(reject);
-    });
-  }
 
   static findByCommId (communicationId) {
     return new Promise((fulfill, reject) => {
@@ -63,7 +54,17 @@ class CommConns extends BaseModel {
     });
   }
   
-  static findByClientIdsWithCommMetaData (clientIDs) {
+  static findByClientIdWithCommMetaData (clientId) {
+    return new Promise((fulfill, reject) => {
+      CommConns.findByClientIdsWithCommMetaData([clientId])
+      .then((commconns) => {
+        fulfill(commconns);
+      }).catch(reject);
+    });
+  }
+  
+  static findByClientIdsWithCommMetaData (clientIds) {
+    console.log("here", clientIds)
     return new Promise((fulfill, reject) => {
       db('commconns')
         .leftJoin(
@@ -71,7 +72,7 @@ class CommConns extends BaseModel {
             .select('comms.commid', 'comms.type', 'comms.value')
             .as('comms'),
           'comms.commid', 'commconns.comm')
-        .whereIn('client', clientIDs)
+        .whereIn('client', clientIds)
         .and.where('retired', null)
       .then((commconns) => {
         fulfill(commconns);
