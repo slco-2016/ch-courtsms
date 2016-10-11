@@ -26,19 +26,32 @@ module.exports = {
   },
 
   new(req, res) {
-    res.render('clients/commConn');
+    res.render('clients/commConn', {
+      commConn: {},
+    });
   },
 
   create(req, res) {
-    const client      = req.params.client;
+    const override = req.body.override;
+    const client = req.params.client;
     const description = req.body.description;
-    const type        = req.body.type;
-    let value       = req.body.value;
+    const type = req.body.type;
+    let value = req.body.value;
 
     // clean up numbers
     if (type == 'cell' || type == 'landline') {
       value = value.replace(/[^0-9.]/g, '');
       if (value.length == 10) { value = '1' + value; }
+    }
+
+    if (override) {
+      CommConns.findByClientIdWithCommMetaData(client)
+      .then((commConns) => {
+        if (commConns.length > 1) {
+          Communications.removeOne(override)
+          .then(() => {}).catch();
+        }
+      }).catch();
     }
 
     // First check if this client already has this commConn
@@ -61,6 +74,15 @@ module.exports = {
         }).catch(res.error500);
       }
       return null;
+    }).catch(res.error500);
+  },
+
+  edit(req, res) {
+    CommConns.findById(req.params.communication)
+    .then((commConn) => {
+      res.render('clients/commConn', {
+        commConn: commConn,
+      });
     }).catch(res.error500);
   },
 

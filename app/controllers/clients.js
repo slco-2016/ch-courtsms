@@ -83,7 +83,7 @@ function _getDailyVolumes (messages) {
 module.exports = {
   
   index(req, res) {
-    const status      = req.query.status == 'closed' ? false : true;
+    const status  = req.query.status == 'archived' || req.query.status == 'closed' ? false : true;
     let department  = req.user.department || req.query.department;
     const user        = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
@@ -113,7 +113,7 @@ module.exports = {
       res.render('clients/index', {
         hub: {
           tab: 'clients',
-          sel: status ? 'open' : 'closed',
+          sel: status ? 'current' : 'archived',
         },
         clients: clients,
         limitByUser: limitByUser || null,

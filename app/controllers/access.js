@@ -28,7 +28,7 @@ module.exports = {
 
   loginFail(req, res) {
     req.flash('warning', 'Email password combination did not work.');
-    res.render('access/login');
+    res.redirect('access/login-fail');
   },
   
   logout(req, res) {

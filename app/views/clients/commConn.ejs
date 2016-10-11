@@ -1,11 +1,16 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="<%=`/clients/${client.clid}/communications`%>">
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications`%>">
     <% include ../partials/cardExit %>
   </a>
   <div class="cardTitle">
-    Create Contact Method
+    <% if (commConn.commconnid) { %>
+      Edit
+    <% } else { %>
+      Create
+    <% } %>
+    Contact Method
   </div>
   <div class="cardSubtitle">
     Create new contact methods to update client communication options.
@@ -15,12 +20,13 @@
 
 
 <div class="cardBody">
-  <form method="post">
+  <form method="post"
+        action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications/create`%>">
 
     <div class="formRow">
       <div class="formLabel"> Name (ex: "Aunt's Phone") </div>
       <div class="formInput">
-        <input type="text" name="description" value="" maxlength="30" required>
+        <input type="text" name="description" value="<%= commConn.name %>" maxlength="30" required>
       </div>
     </div>
 
@@ -30,16 +36,18 @@
         <option value="" disabled> Comm Method</option>
         <option value="cell" selected>Cellphone</option>
         <option value="email">Email</option>
-        <option value="landline" disabled>Landline</option>
+        <option value="landline">Landline</option>
       </select>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Details (ex: phone number, email) </div>
       <div class="formInput">
-        <input type="text" name="value" value="" placeholder="1-308-123-4567 or joanna@example.com">
+        <input type="text" name="value" value="<%= commConn.value %>" placeholder="1-308-123-4567 or joanna@example.com">
       </div>
     </div>
+
+    <input type="hidden" name="override" value="<%= commConn.commconnid %>">
 
     <input type="submit" class="formSubmit" value="Update">
 

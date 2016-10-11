@@ -231,11 +231,11 @@ $(function() {
           var ok = true;
           if ($("select[name=commID]").val() == null) ok = false;
           if ($("textarea[name=content]").val().length == 0) ok = false;
-          if (ok) {
-            $(".submit").removeClass("disabled");
-          } else {
-            $(".submit").addClass("disabled");
-          }
+          // if (ok) {
+          //   $(".submit").removeClass("disabled");
+          // } else {
+          //   $(".submit").addClass("disabled");
+          // }
           return ok;
         }
 

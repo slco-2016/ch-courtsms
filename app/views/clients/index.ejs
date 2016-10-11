@@ -11,30 +11,44 @@
 <% } %>
 
 <div class="header">
-  <% if (hub.sel == "closed") { %>
-    <div class="column">-</div>
-  <% } else { %>
-    <div class="column">message</div>
-  <% } %>
   <div class="column">color</div>
   <div class="column">client name</div>
   <div class="column">unread</div>
   <div class="column">last activity</div>
-  <div class="column">case manager</div>
+  <% if (level == "org") { %>
+    <div class="column">case manager</div>
+  <% } else { %>
+    <div class="column">&nbsp;</div>
+  <% } %>  
+
+  <% if (hub.sel == "archived") { %>
+    <div class="column">&nbsp;</div>
+  <% } else { %>
+    <% if (user.class !== "primary") { %>
+      <div class="column">message</div>
+    <% } else { %>
+      <div class="column">&nbsp;</div>
+    <% } %>
+  <% } %>
+
+  <% if (hub.sel == "archived") { %>
+    <div class="column">&nbsp;</div>
+  <% } else { %>
+    <div class="column">edit</div>
+  <% } %>
 
   <% if (user.class !== "support"){ %>
     <div class="column">transcript</div>
   <% } else { %>
-    <div class="column">-</div>
+    <div class="column">&nbsp;</div>
   <% } %>
 
-  <div class="column">edit</div>
   <div class="column">transfer</div>
 
-  <% if (hub.sel == "closed") { %>
+  <% if (hub.sel == "archived") { %>
     <div class="column">restore</div>
   <% } else { %>
-    <div class="column">remove</div>
+    <div class="column">archive</div>
   <% } %>
 </div>
 
@@ -44,20 +58,6 @@
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
         data-client-color="<%= client.color_tag %>">
-
-    <div class="column">
-      <% if (client.active) { %>
-        <% if (client.communications.length) { %>
-          <a href="<%=`${clientBaseURL}/address`%>">
-            <i class="fa highlight fa-send" aria-hidden="true"></i>
-          </a>
-        <% } else { %>
-          <a href="<%=`${clientBaseURL}/communications/create`%>">
-            <i class="fa highlight fa-plus" aria-hidden="true"></i>
-          </a>
-        <% } %>
-      <% } else { %>-<% } %>
-    </div>
 
     <!-- color tag can only be edited if user level -->
     <div class="column" value="<%= client.color_name %>">
@@ -72,7 +72,11 @@
 
     <div class="column">
       <% if (user.class == "support" || user.class == "primary") { %>
-        <a href="<%=`/clients/${client.clid}/messages`%>">
+        <% if (client.communications.length) { %>
+          <a href="<%=`/clients/${client.clid}/messages`%>">
+        <% } else { %>
+          <a href="<%=`${clientBaseURL}/communications/create`%>">
+        <% } %>
       <% } else { %>
         <a href="<%=`/clients/${client.clid}`%>">
       <% } %>
@@ -87,7 +91,7 @@
         <a href="<%=`/clients/${client.clid}/messages`%>">
           <span class="bigNumber"><%= client.unread %></span>
         </a>
-      <% } else { %>-<% } %>
+      <% } else { %>&nbsp;<% } %>
     </div>
     
     <div class="column">
@@ -98,26 +102,34 @@
 
     <div class="column">
       <% if (level == "org") { %>
-        <a href="<%=`/org?user=${client.user_id}&department=${client.department}`%>"><span class="clientName">
-      <% } %>
-      <%=`${client.user_last}, ${client.user_first}`%>
-      <% if (level == "org") { %>
-        </span></a>
-      <% } %>
-    </div>
-
-    <div class="column">
-      <% if (user.class !== "support"){ %>
-        <!-- Both levels href to same endpoint since it just returns a text download log -->
-        <a href="<%= `/clients/${client.clid}/transcript?with=${client.cm}` %>">
-          <i class="fa highlight fa-download" aria-hidden="true"></i>
+        <a href="<%=`/org?user=${client.user_id}&department=${client.department}`%>">
+          <span class="clientName">
+            <%=`${client.user_last}, ${client.user_first}`%>
+          </span>
         </a>
-      <% } else { %>-<% } %>
+      <% } else { %>&nbsp;<% } %>
     </div>
 
     <div class="column">
-      <a href="<%= `${clientBaseURL}/edit` %>">
-        <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+      <% if (client.active && user.class !== "primary") { %>
+        <a href="<%=`${clientBaseURL}/address`%>">
+          <i class="fa highlight fa-send" aria-hidden="true"></i>
+        </a>
+      <% } else { %>&nbsp;<% } %>
+    </div>
+
+    <div class="column">
+      <% if (client.active) { %>
+        <a href="<%= `${clientBaseURL}/edit` %>">
+          <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+        </a>
+      <% } else { %>&nbsp;<% } %>
+    </div>
+
+    <div class="column">
+      <!-- Both levels href to same endpoint since it just returns a text download log -->
+      <a href="<%= `/clients/${client.clid}/transcript?with=${client.cm}` %>">
+        <i class="fa highlight fa-download" aria-hidden="true"></i>
       </a>
     </div>
 
@@ -132,9 +144,9 @@
     </div>
 
     <div class="column">
-      <% if (hub.sel === "open") { %>
+      <% if (hub.sel == "current") { %>
         <a href="<%= `${clientBaseURL}/alter/close` %>">
-          <i class="fa highlight fa-book" aria-hidden="true"></i>
+          <i class="fa highlight fa-trash" aria-hidden="true"></i>
         </a>
       <% } else { %>
         <a href="<%= `${clientBaseURL}/alter/open` %>">

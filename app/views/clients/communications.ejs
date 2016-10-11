@@ -16,17 +16,21 @@
 <% if (communications.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 
-<% communications.forEach(function (c) { %>
+<% communications.forEach(function (comm) { %>
   <div class="communicationRow">
     <div class="column">
-      <span class="name"><%= c.name %></span>
+      <span class="name"><%- comm.name || `&nbsp;` %></span>
     </div>
-    <div class="column"><%= c.value %></div>
-    <div class="column"><%= c.type %></div>
-    <div class="column"><span class="bigNumber"><%= c.useCount %></span></div>
-    <div class="column">-</div>
+    <div class="column"><%- comm.value || `&nbsp;` %></div>
+    <div class="column"><%- comm.type || `&nbsp;` %></div>
+    <div class="column"><span class="bigNumber"><%= comm.useCount %></span></div>
     <div class="column">
-      <a href="<%=`/clients/${client.clid}/communications/${c.commconnid}/remove`%>">
+      <a href="<%=`/clients/${client.clid}/communications/${comm.commconnid}/edit`%>">
+        <i class="fa highlight fa-pencil" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="column">
+      <a href="<%=`/clients/${client.clid}/communications/${comm.commconnid}/remove`%>">
         <i class="fa highlight fa-trash" aria-hidden="true"></i>
       </a>
     </div>

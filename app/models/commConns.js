@@ -25,6 +25,18 @@ class CommConns extends BaseModel {
     });
   }
 
+  // override standard find by id
+  static findById (id) {
+    return new Promise((fulfill, reject) => {
+      db('commconns')
+        .leftJoin('comms', 'comms.commid', 'commconns.comm')
+        .where('commconnid', id)
+      .then((commConns) => {
+        fulfill(commConns[0]);
+      }).catch(reject);
+    });
+  }
+
   static findByCommId (communicationId) {
     return new Promise((fulfill, reject) => {
       db('commconns')

@@ -186,6 +186,7 @@ app.post('/clients/:client/conversations/:conversation/claim', ConversationsCont
 app.get('/clients/:client/communications', CommunicationsController.index);
 app.get('/clients/:client/communications/create', CommunicationsController.new);
 app.post('/clients/:client/communications/create', CommunicationsController.create);
+app.get('/clients/:client/communications/:communication/edit', CommunicationsController.edit);
 app.get('/clients/:client/communications/:communication/remove', CommunicationsController.remove);
 
 app.get('/clients/:client/notifications', NotificationsController.index);

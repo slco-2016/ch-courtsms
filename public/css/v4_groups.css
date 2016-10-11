@@ -11,14 +11,15 @@
     text-align: left;
     cursor: pointer; }
     .header .column:nth-child(1) {
+      width: 20%;
+      text-indent: 15px; }
+    .header .column:nth-child(2) {
+      width: 15%; }
+    .header .column:nth-child(3) {
+      width: 50%; }
+    .header .column:nth-child(4) {
       width: 5%;
       text-align: center; }
-    .header .column:nth-child(2) {
-      width: 20%; }
-    .header .column:nth-child(3) {
-      width: 15%; }
-    .header .column:nth-child(4) {
-      width: 50%; }
     .header .column:nth-child(5) {
       width: 5%;
       text-align: center; }
@@ -45,7 +46,10 @@
       font-weight: 700;
       color: #4A90E2; }
     .groupRow .column .groupName {
-      padding-left: 15px; }
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px; }
+      .groupRow .column .groupName:hover {
+        background-color: rgba(255, 255, 255, 0.5); }
     .groupRow .column .time {
       font-size: 12px; }
     .groupRow .column .subject {
@@ -63,22 +67,23 @@
         color: #898989;
         background-color: #FFF; }
     .groupRow .column:nth-child(1) {
-      width: 5%;
-      text-align: center; }
-    .groupRow .column:nth-child(2) {
       width: 20%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: clip;
       text-overflow: ellipsis;
-      text-overflow: "…"; }
-    .groupRow .column:nth-child(3) {
+      text-overflow: "…";
+      text-indent: 15px; }
+    .groupRow .column:nth-child(2) {
       width: 15%; }
-    .groupRow .column:nth-child(4) {
+    .groupRow .column:nth-child(3) {
       width: 50%;
       padding-top: 5px;
       line-height: 20px;
       font-size: 12px; }
+    .groupRow .column:nth-child(4) {
+      width: 5%;
+      text-align: center; }
     .groupRow .column:nth-child(5) {
       width: 5%;
       text-align: center; }

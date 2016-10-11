@@ -67,22 +67,31 @@ $darkblue:    #344289;
     height: 28px;
     width: 96px;
     max-width: 100px;
+
+    &.pillShaped {
+      width: 15px;
+      border-radius: 10px;
+      border: 1px solid $white;
+      margin-left: 76px;
+      content: " ";
+
+    }
   }
   .colorName {
     float: left;
     line-height: 32px;
     width: 265px;
     margin-left: 15px;
-    border-bottom: 1px dashed $lightblue;
+    // border-bottom: 1px dashed $lightblue;
   }
   .colorTagRemove {
     float: right;
     font-size: 28px;
     cursor: pointer;
-    color: $lightblue;
+    color: $grey;
 
     &:hover {
-      color: $blue;
+      color: $black;
     }
   }
 
@@ -97,17 +106,23 @@ $darkblue:    #344289;
   margin-left: 35px;
   margin-right: 35px;
   z-index: 10;
-  text-align: center;
-  background-color: $white;
+  text-align: left;
+  // background-color: $white;
   color: $lightblue;
   padding: 5px 10px 5px 10px;
-  border-radius: 5px 5px 0px 0px;
   font-size: 12px;
   cursor: pointer;
+  line-height: 32px;
+  font-size: 14px;
+
+  .fa {
+    font-size: 22px;
+    vertical-align: sub;
+  }
 
   &:hover {
-    background-color: $lightblue;
-    color: $white;
+    // background-color: $lightblue;
+    // color: $white;
   }
 }
 
@@ -169,7 +184,7 @@ $darkblue:    #344289;
 }
 
 .formSubmit {
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 
