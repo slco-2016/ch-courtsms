@@ -44,16 +44,6 @@ module.exports = {
       if (value.length == 10) { value = '1' + value; }
     }
 
-    if (override) {
-      CommConns.findByClientIdWithCommMetaData(client)
-      .then((commConns) => {
-        if (commConns.length > 1) {
-          Communications.removeOne(override)
-          .then(() => {}).catch();
-        }
-      }).catch();
-    }
-
     // First check if this client already has this commConn
     CommConns.findByClientIdWithCommMetaData(client)
     .then((commConns) => {
@@ -67,6 +57,19 @@ module.exports = {
       } else {
         CommConns.create(client, type, description, value)
         .then(() => {
+
+          // Perform an "override" in that prior version of contact is removed
+          // only do this if being directed from the edit view, and it is marked
+          if (override) {
+            CommConns.findByClientIdWithCommMetaData(client)
+            .then((commConns) => {
+              if (commConns.length > 1) {
+                Communications.removeOne(override)
+                .then(() => {}).catch();
+              }
+            }).catch();
+          }
+
           req.logActivity.client(client);
           req.flash('success', 'Created new communication method.');
           res.redirect(`/clients/${client}/communications`);
