@@ -71,7 +71,7 @@
     </div>
 
     <div class="column">
-      <% if (user.class == "support") { %>
+      <% if (user.class == "support" || user.class == "primary") { %>
         <a href="<%=`/clients/${client.clid}/messages`%>">
       <% } else { %>
         <a href="<%=`/clients/${client.clid}`%>">

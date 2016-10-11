@@ -288,13 +288,13 @@ module.exports = {
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {
-        return !conversation.accepted;
+        return !conversation.accepted && conversation.open;
       });
 
       // if there are unclaimed messages that need to be viewed and this the client's main cm
       if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
-        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`);
+        res.redirect(`/clients/${client.clid}/conversations/${unclaimed.convid}/claim`);
       } else {
         res.render('clients/messages', {
           hub: {

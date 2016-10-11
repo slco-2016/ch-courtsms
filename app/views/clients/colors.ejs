@@ -5,20 +5,15 @@
 
 <div class="cardHead">
   <a href="/clients"><% include ../partials/cardExit %></a>
-  <div class="cardTitle">Apply Client Color Tag</div>
+  <div class="cardTitle">
+    Group Client by Color
+  </div>
   <div class="cardSubtitle">
-    Use color tags to help organize clients on the main clients view page.
+    
   </div>
 </div>
 
 <div class="cardBody">
-
-  <a href="/colors">
-    <div class="manageColorsLink">
-      <i class="fa fa-th-large" aria-hidden="true"></i>
-      Manage colors
-    </div>
-  </a>
 
   <div class="coloredClientFrame">
     <div  class="clientNameBox" 
@@ -29,6 +24,14 @@
       <%= client.color_name %>
     </div>
   </div>
+
+  <div class="manageColorsLink">
+    <a href="/colors">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        Add / Edit Colors
+    </a>
+  </div>
+
 
   <div class="colorList">
     <div  class="colorTag" 
@@ -53,7 +56,7 @@
   <% }) %>
 
   <center>
-    <form method="POST" 
+    <form method="post" 
           action="<%=`/clients/${client.clid}/edit/color`%>">
       <input  type="hidden" 
               id="chosenColorID"
@@ -61,7 +64,7 @@
               value="">
       <input  type="submit" 
               class="formSubmit" 
-              value="Update Client Color">
+              value="Save">
     </form>
   </center>
 
