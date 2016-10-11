@@ -97,7 +97,7 @@ class Notifications extends BaseModel {
         sendMethod = Messages.smartSend(userId, clientId, subject, content);
       }
 
-      sendMethod.then(() => {console.log('kook');
+      sendMethod.then(() => {
         return this.markAsSent(notification.notificationid);
       }).then(() => {
         fulfill();

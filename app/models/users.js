@@ -20,8 +20,10 @@ class Users extends BaseModel {
       columns: [
         'cmid','org', 'first',
         'last','email','position',
-        'admin','active','superuser',
-        'class','department', 'email_alert_frequency',
+        'admin','active',
+        'superuser',
+        'class','department', 
+        'is_away', 'email_alert_frequency',
       ],
     });
   }

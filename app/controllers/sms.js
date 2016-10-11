@@ -54,10 +54,11 @@ module.exports = {
       conversations.forEach((conversation) => {
         Users.findById(conversation.cm)
         .then((user) => {
-          if (user.is_away) {
+          if (user && user.is_away) {
             Messages.getLatestNumber(user.cmid, conversation.client)
             .then((commId) => {
-              return Messages.sendOne(commId, user.away_message, conversation);
+              const awayMessage = user.away_message || 'I am currently out of office. I will respond as soon as possible.';
+              return Messages.sendOne(commId, awayMessage, conversation);
             }).then(() => { }).catch((error) => { console.log(error); });
           }
         });
