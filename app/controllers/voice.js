@@ -155,12 +155,7 @@ module.exports = {
         const clientId = req.query.clientId;
         const deliveryDateEpoch = Number(req.query.deliveryDate);
         const deliveryDate = new Date(deliveryDateEpoch);
-console.log({
-            commid: commId,
-          delivery_date: deliveryDate,
-          RecordingSid: req.body.RecordingSid,
-          recording_key: key,
-})
+
         return OutboundVoiceMessages.create({
           commid: commId,
           delivery_date: deliveryDate,

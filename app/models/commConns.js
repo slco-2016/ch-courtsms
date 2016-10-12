@@ -131,6 +131,17 @@ class CommConns extends BaseModel {
     }); 
   }
 
+  static updateCommConnName(commConnId, newName) {
+    return new Promise((fulfill, reject) => {
+      db('commconns')
+        .update({
+          name: newName,
+        })
+        .where('commconnid', commConnId)
+      .then(fulfill).catch(reject);
+    });
+  }
+
   static create (clientId, type, name, value) {
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)

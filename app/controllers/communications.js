@@ -51,9 +51,17 @@ module.exports = {
         return String(value) === String(commConn.value);
       });
       if (commConns.length > 0) {
-        req.flash('warning', 'Client already has that method.');
-        res.redirect(`/clients/${client}/communications`);
-
+        const currentCommConn = commConns[0];
+        if (currentCommConn.name !== description) {
+          CommConns.updateCommConnName(currentCommConn.commconnid, description)
+          .then(() => {
+            req.flash('success', 'Updated the communication name.');
+            res.redirect(`/clients/${client}/communications`);
+          }).catch(res.error500);
+        } else {
+          req.flash('warning', 'Client already has that method.');
+          res.redirect(`/clients/${client}/communications`);
+        }
       } else {
         CommConns.create(client, type, description, value)
         .then(() => {
