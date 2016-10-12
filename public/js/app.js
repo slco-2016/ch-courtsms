@@ -839,13 +839,20 @@ $(function() {
           clients.forEach(function (client) {
             // Only add if client matches
             if (client.clid == v) {
-              client.communications.forEach(function (comm) {
-                var newOpt = '<option value="' + comm.commid + '">' + 
-                              comm.name + " (" + comm.value + ")" + '</option>';
-                $("#commConn").append(newOpt);
-              });
-              var smartSelect = '<option value="null" ' + '">Smart Select (Best Contact Method)</option>';
-              $("#commConn").append(smartSelect);
+            client.communications.forEach(function (comm) {
+              var newOpt = '<option value="' + comm.commid + '"';
+              if (comm.commid == contactMethod) {
+                newOpt += ' selected ';
+              }
+              newOpt += '>' + comm.name + " (" + comm.value + ")" + '</option>';
+              $("#commConn").append(newOpt);
+            });
+            var smartSelect = '<option value="null"';
+            if (!contactMethod) {
+              smartSelect += ' selected ';
+            }
+            smartSelect += '>Smart Select (Best Contact Method)</option>';
+            $("#commConn").append(smartSelect);
             }
           });
         };

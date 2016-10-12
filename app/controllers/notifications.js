@@ -151,7 +151,7 @@ module.exports = {
                     message
     ).then((notification) => {
       req.flash('success', 'Edited notification.');
-      res.redirect(`/clients/${notification.client}/notifications`);
+      res.redirect('/notifications');
     }).catch(res.error500);
   },
 

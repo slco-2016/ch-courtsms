@@ -97,8 +97,8 @@
 <script type="text/javascript" class="JSnotificationsEdit">
   // Set global variable of all clients information
   window.clients = <%- JSON.stringify(clients) %>;
-  window.organization.tz = "<%= organization.tz %>";
   window.clientNotification = <%= notification.client %>;
+  window.contactMethod = Number(<%- notification.comm || '' %>) || null;
 </script>
 
 <% include ../partials/cardFrameBottom %>
