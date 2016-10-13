@@ -56,7 +56,7 @@ var checkingForNewMessages = setInterval(function () {
     }).fail(function (error) { 
       console.log(error.status+": "+error.statusText); 
     });
-}, 2000);
+}, 4000);
 
 // Dynamically set coreContent if it exists to height of page
 function adjustCoreContentBoxSize () {

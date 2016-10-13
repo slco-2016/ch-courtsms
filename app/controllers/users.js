@@ -78,8 +78,8 @@ module.exports = {
 
   check(req, res) {
     Users.findByEmail(decodeURIComponent(req.params.email))
-    .then((u) => {
-      res.json({user: u,});
+    .then((user) => {
+      res.json({user: user,});
     }).catch(res.error500);
   },
 
