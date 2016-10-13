@@ -34,7 +34,7 @@
       </a>
     </div>
     <div class="column">
-      <%=`${targetUser.last}, ${targetUser.first} ${targetUser.middle}`%>
+      <%=`${targetUser.last}, ${targetUser.first} ${targetUser.middle || ''}`%>
     </div>
     <div class="column">
       <small><%= targetUser.email %></small>

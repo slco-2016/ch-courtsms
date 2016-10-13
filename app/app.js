@@ -166,6 +166,8 @@ app.get('/clients/:client', ClientsController.clientCard);
 app.get('/clients/:client/edit', ClientsController.edit);
 app.post('/clients/:client/edit', ClientsController.update);
 app.get('/clients/:client/alter/:status', ClientsController.alter);
+app.get('/clients/:client/closeoutsurvey', ClientsController.viewCloseoutSurvey);
+app.post('/clients/:client/closeoutsurvey', ClientsController.submitCloseoutSurvey);
 app.get('/clients/:client/transfer', ClientsController.transferSelect);
 app.post('/clients/:client/transfer', ClientsController.transferSubmit);
 
@@ -232,8 +234,12 @@ app.post('/org/clients/:client/voicemessage', VoiceController.create);
 app.get('/org/clients/:client/edit', ClientsController.edit);
 app.get('/org/clients/:client/edit', ClientsController.update);
 app.get('/org/clients/:client/alter/:status', ClientsController.alter);
+app.get('/org/clients/:client/closeoutsurvey', ClientsController.viewCloseoutSurvey);
+app.post('/org/clients/:client/closeoutsurvey', ClientsController.submitCloseoutSurvey);
+
 app.get('/org/clients/:client/transfer', ClientsController.transferSelect);
 app.post('/org/clients/:client/transfer', ClientsController.transferSubmit);
+
 app.get('/org/clients/:client/communications/create', CommunicationsController.new);
 app.post('/org/clients/:client/communications/create', CommunicationsController.create);
 

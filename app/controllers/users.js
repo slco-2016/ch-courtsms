@@ -36,13 +36,19 @@ module.exports = {
   },
 
   new(req, res) {
-    res.render('users/create');
+    const activeStatus = true;
+    Departments.findByOrg(req.user.org)
+    .then((departments, activeStatus) => {
+      res.render('users/create', {
+        departments: departments,
+      });
+    }).catch(res.error500);
   },
 
   create(req, res) {
     Users.findByEmail(decodeURIComponent(req.body.email))
-    .then((u) => {
-      if (u) {
+    .then((user) => {
+      if (user) {
         req.flash('warning', 'That email already exists in the system.');
         res.redirect('/org/users/create');
       } else {
@@ -52,7 +58,7 @@ module.exports = {
           req.body.last, 
           req.body.email, 
           req.user.org, 
-          req.user.department, 
+          req.body.department, 
           req.body.position, 
           req.body.className
         ).then((generatedPass) => {

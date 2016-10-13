@@ -65,6 +65,19 @@
     </div>
 
     <div class="formRow">
+      <div class="formLabel"> Department </div>
+      <select class="blueSelect" 
+              name="department" 
+              required>
+        <% departments.forEach(function (department) { %>
+            <option value="<%= department.department_id %>">
+              <%= department.name %>
+            </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="formRow">
       <div class="formLabel"> Assigned class </div>
       <select class="blueSelect" 
               name="className" 
