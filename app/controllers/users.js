@@ -39,6 +39,11 @@ module.exports = {
     const activeStatus = true;
     Departments.findByOrg(req.user.org)
     .then((departments, activeStatus) => {
+      if (req.user.class == 'supervisor') {
+        departments = departments.filter((department) => {
+          return department.department_id == req.user.department;
+        });
+      }
       res.render('users/create', {
         departments: departments,
       });
