@@ -274,13 +274,11 @@ if (process.env.RECEIVEMODE && process.env.RECEIVEMODE == 'on') {
 
   // email notifications - 24 hours
   setInterval(function () {
-    console.log('running dates().then().catch();');
     require('./lib/em-notify').runEmailUpdates().then().catch();
   }, 24 * hour);
 
   // notifications - 15 minutes
   setInterval(function () {
-    console.log('running s/notifications');
     const Notifications = require('./models/notifications');
     Notifications.checkAndSendNotifications()
     .then().catch();
@@ -288,7 +286,6 @@ if (process.env.RECEIVEMODE && process.env.RECEIVEMODE == 'on') {
 
   // sms status check - 30 seconds
   setInterval(function () {
-    console.log('running sages');
     const Messages = require('./models/messages');
     Messages.findNotClearedMessages()
     .then((messages) => {

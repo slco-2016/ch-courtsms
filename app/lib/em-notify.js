@@ -15,6 +15,7 @@ module.exports = {
       let userIds;
       let usersThatNeedToBeAlerted;
       const dayOfTheWeek = new Date().getDay();
+      const hourOfTheDay = new Date().getHours();
       let interval = 25; // hours
       if ([1, 3, 5, ].indexOf(dayOfTheWeek) > -1) {
         interval = 50;
