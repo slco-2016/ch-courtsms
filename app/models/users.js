@@ -60,6 +60,20 @@ class Users extends BaseModel {
     return `${this.getFullName()} <${rawEmail}>`;
   }
 
+  static findByClientId (clientId) {
+    return new Promise((fulfill, reject) => {
+      db('clients')
+        .where('clid', clientId)
+      .then((clients) => {
+        const client = clients[0];
+        return db('cms')
+          .where('cmid', client.cm);
+      }).then((users) => {
+        this._getSingleResponse(users, fulfill);
+      }).catch(reject);
+    });
+  }
+
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
       // joanne@slco.org => joanne.slco@clientcomm.org

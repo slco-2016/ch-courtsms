@@ -415,10 +415,10 @@ module.exports = {
   },
 
   transcript(req, res) {
-    const withUser = req.query.with || null;
-    Messages.findBetweenUserAndClient(withUser, req.params.client)
-    .then((messages) => {
-      
+    Users.findByClientId(req.params.client)
+    .then((user) => {
+      return Messages.findBetweenUserAndClient(user.cmid, req.params.client);
+    }).then((messages) => {
       // Format into a text string
       messages = messages.map(function (message) {
         let stringVersionOfMessageObject = '';
