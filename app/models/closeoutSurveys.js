@@ -50,6 +50,25 @@ class Surveys {
     });
   }
 
+  static create ( clientId, closeOutStatus, 
+                  mostCommonMethod, likelihoodSuccessWithoutCC, 
+                  helpfulnessCC, mostOftenDiscussed) {
+    return new Promise((fulfill, reject) => {
+      db('client_closeout_surveys')
+        .insert({
+          client: clientId,
+          closeout_status: closeOutStatus, 
+          most_common_method: mostCommonMethod,
+          likelihood_success_without_cc: likelihoodSuccessWithoutCC,
+          helpfulness_of_cc: helpfulnessCC,
+          most_often_discussed: mostOftenDiscussed,
+        })
+      .then(() => {
+        fulfill();
+      }).catch(reject);
+    });
+  }
+
 }
 
 module.exports = Surveys;

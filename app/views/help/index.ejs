@@ -1,0 +1,15 @@
+<% include ../partials/navBarTop %>
+
+  <div class="coreContent" style="overflow-y: scroll;">
+    <div style="margin-top: 41px; height: 100%">
+      <iframe src="https://slco-2016.github.io/clientcomm-faq/"
+              style="width: 100%; height: 95%; border: 0;"
+              ></iframe>  
+    </div>  
+  </div>
+
+<script type="text/javascript">
+  // temp hack to handle height issue
+  setTimeout(function () { $(".coreContent").height($(window).height()); }, 1);
+</script>
+<% include ../partials/hubFrameBottom %>

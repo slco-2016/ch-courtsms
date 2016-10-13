@@ -1,6 +1,6 @@
 const twilio = require('twilio');
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 const resourceRequire = require('../lib/resourceRequire');
 

@@ -21,7 +21,7 @@
           <%- leftTab('users', hub, level, ['active', 'inactive']) %>
         <% } %>
 
-        <%- leftTab('clients', hub, level, ['open', 'closed']) %>
+        <%- leftTab('clients', hub, level, ['current', 'archived']) %>
 
         <% if (level == "org") { %>
           <%- leftTab('captured', hub, level, null) %>

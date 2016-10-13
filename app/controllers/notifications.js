@@ -3,7 +3,7 @@ const Clients = require('../models/clients');
 const Templates = require('../models/templates');
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 module.exports = {
   index(req, res) {
@@ -151,7 +151,7 @@ module.exports = {
                     message
     ).then((notification) => {
       req.flash('success', 'Edited notification.');
-      res.redirect(`/clients/${notification.client}/notifications`);
+      res.redirect('/notifications');
     }).catch(res.error500);
   },
 

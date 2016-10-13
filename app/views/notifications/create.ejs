@@ -5,17 +5,20 @@
     <% include ../partials/cardExit %>
   </a>
   <div class="cardTitle">
-    Notification Parameters
+    Schedule Notification
   </div>
   <div class="cardSubtitle">
-    Use notifications to schedule messages to be sent in the future.
+    
   </div>
 </div>
 
 <div class="cardBody">
-  <form method="post" action="/notifications/create/compose">
-      <div class="formRow">
-      <div class="formLabel"> Which client to notify  </div>
+
+  <form method="post" 
+        action="/notifications/create/compose">
+
+    <div class="formRow">
+      <div class="formLabel"> Select client  </div>
       <select class="blueSelect" 
               id="clientID" 
               name="clientID" 
@@ -29,70 +32,79 @@
       </select>
     </div>
 
-    <div class="formRow">
-      <div class="formLabel"> Which device to send to </div>
-      <select class="blueSelect" 
-              id="commConn" 
-              name="commConn" 
-              required>
-        <option value="" disabled selected> Contact Options </option>
-      </select>
-    </div>
-
-    <div class="formRow">
-      <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
-      <div class="formInput">
-        <input  type="date" 
-                id="sendDate" 
-                name="sendDate" 
-                value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
+    <div id="textParametersCompose" style="display: none;">
+      <div class="formRow">
+        <div class="formLabel"> Select contact method </div>
+        <select class="blueSelect" 
+                id="commConn" 
+                name="commConn" 
                 required>
-        </div>
-    </div>
-
-    <div class="formRow">
-      <div class="formLabel"> Time to send <small>(Organization timezone: <%= organization.tz %>)</small></div>
-
-      <div class="formInput">
-        <select class="blueSelect" id="sendHour" name="sendHour" required>
-          <option value="00"> 12:00 AM (Midnight) </option>
-          <option value="01"> 01:00 AM </option>
-          <option value="02"> 02:00 AM </option>
-          <option value="03"> 03:00 AM </option>
-          <option value="04"> 04:00 AM </option>
-          <option value="05"> 05:00 AM </option>
-          <option value="06"> 06:00 AM </option>
-          <option value="07"> 07:00 AM </option>
-          <option value="08" selected> 08:00 AM </option>
-          <option value="09"> 09:00 AM </option>
-          <option value="10"> 10:00 AM </option>
-          <option value="11"> 11:00 AM </option>
-          <option value="12"> 12:00 PM (Noon) </option>
-          <option value="13"> 01:00 PM </option>
-          <option value="14"> 02:00 PM </option>
-          <option value="15"> 03:00 PM  </option>
-          <option value="16"> 04:00 PM  </option>
-          <option value="17"> 05:00 PM  </option>
-          <option value="18"> 06:00 PM  </option>
-          <option value="19"> 07:00 PM  </option>
-          <option value="20"> 08:00 PM  </option>
-          <option value="21"> 09:00 PM  </option>
-          <option value="22"> 10:00 PM  </option>
-          <option value="23"> 11:00 PM  </option>
+          <option value="" disabled selected> Contact Options </option>
         </select>
       </div>
-    </div>
 
-    <input  type="submit" 
-            class="formSubmit"
-            value="Craft Notification Message">
+      <div class="formRow">
+        <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
+        <div class="formInput">
+          <input  type="date" 
+                  id="sendDate" 
+                  name="sendDate" 
+                  value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
+                  required>
+          </div>
+      </div>
+
+      <div class="formRow">
+      <div class="formLabel"> Send at <small>(local timezone: <%= organization.tz %>)</small></div>
+
+        <div class="formInput">
+          <select class="blueSelect" id="sendHour" name="sendHour" required>
+            <option value="00"> 12:00 AM (Midnight) </option>
+            <option value="01"> 01:00 AM </option>
+            <option value="02"> 02:00 AM </option>
+            <option value="03"> 03:00 AM </option>
+            <option value="04"> 04:00 AM </option>
+            <option value="05"> 05:00 AM </option>
+            <option value="06"> 06:00 AM </option>
+            <option value="07"> 07:00 AM </option>
+            <option value="08" selected> 08:00 AM </option>
+            <option value="09"> 09:00 AM </option>
+            <option value="10"> 10:00 AM </option>
+            <option value="11"> 11:00 AM </option>
+            <option value="12"> 12:00 PM (Noon) </option>
+            <option value="13"> 01:00 PM </option>
+            <option value="14"> 02:00 PM </option>
+            <option value="15"> 03:00 PM  </option>
+            <option value="16"> 04:00 PM  </option>
+            <option value="17"> 05:00 PM  </option>
+            <option value="18"> 06:00 PM  </option>
+            <option value="19"> 07:00 PM  </option>
+            <option value="20"> 08:00 PM  </option>
+            <option value="21"> 09:00 PM  </option>
+            <option value="22"> 10:00 PM  </option>
+            <option value="23"> 11:00 PM  </option>
+          </select>
+        </div>
+      </div>
+
+      <input  type="submit" 
+              class="formSubmit padTop"
+              value="Set Message">
+    </div>
   </form>
 
-  <a id="voiceLink" href="<%=`/clients/${preSelect ? preSelect : clients[0].clid}/voicemessage`%>/">
-    <button class="formSubmit">
-      Set up a voice notification
+  <div id="initialOptionsButtons">
+    <a id="voiceLink" href="<%=`/clients/${preSelect ? preSelect : clients[0].clid}/voicemessage`%>/">
+      <button class="formSubmit padTop">
+        Create audio message
+      </button>
+    </a>
+
+    <button class="formSubmit padTop" id="showTextParametersCompose">
+      Create text message
     </button>
-  </a>
+  </div>
+
 </div>
 
 <script type="text/javascript" src="/modules/moment/min/moment.min.js"></script>

@@ -107,7 +107,7 @@ $width_row5:  5%;
 
   .subjectToggle {
     position: absolute;
-    left: 50%;
+    left: 66.5%;
     background-color: $lightbluegrey;
     color: $white;
     line-height: 30px;
@@ -164,7 +164,8 @@ $width_row5:  5%;
 
       .message {
         padding: 15px 20px 10px 20px;
-        margin-bottom: 10px;
+        // margin-bottom: 2px;
+        margin-top: 10px;
         border-radius: 5px;
         width: 695px;
 

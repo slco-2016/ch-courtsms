@@ -4,59 +4,72 @@
   <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
   <div class="cardTitle">Create Message</div>
   <div class="cardSubtitle">
-    Send a message to <%=`${client.first}`%>. Use "Send Voice Message" button to record and send a voice message instead.
-    <% if (level == "user") { %>
-      Load messages from templates to use pre-built phrases.
-    <% } %>
+    
   </div>
 </div>
 
 <div class="cardBody">
-  
 
   <div class="formRow">
-      <div class="formLabel"> Options </div>
       <div class="formInput">
       <center>
-        <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/voicemessage`%>/">
-          <button class="formSubmit inline">
-            Send a voice message
-          </button>
-        </a>
         <!-- load template option only on primary accounts view -->
         <% if (level == "user") { %>
           <a href="<%=`/clients/${client.clid}/address/templates`%>">
-            <button class="formSubmit inline">
-              Load a template
+            <button class="formSubmit inverse fullWidth">
+              Load template
             </button>
           </a>
         <% } %>
+
+        <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/voicemessage`%>/">
+          <button class="formSubmit inverse fullWidth">
+            Create audio message
+          </button>
+        </a>
       </center>
+
+      <div class="centerNotes">
+        - or create custom message below -
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="formRow smallBottomPad">
+    <div class="formLabel">
+    </div>
+    <div class="formInput" style="font-size:12px">
+      <a href="<%=`/notifications/create?client=${client.clid}&user=${user.cmid}`%>">
+          Want to send later?
+          <span style="text-decoration: underline;">Create notification.</span>
+      </a>
     </div>
   </div>
 
   <form method="post">
 
-    <div class="formRow <% if (!template.title) { %>subdued<% } %>">
-      <div class="formLabel"> Subject <small>(optional, not visible to clients)</small></div>
+    <div class="formRow smallBottomPad">
+      <div class="formLabel"> Subject <small>(only visible to client via emails)</small></div>
       <div class="formInput">
         <input  type="text" 
                 name="subject" 
-                value="<%= template.title %>" 
+                value="<%= template.title || `New Message from ${user.first} ${user.last}` %>" 
                 placeholder="Enter a subject for the notification here" 
                 maxlength="100">
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Message Body </div>
+      <div class="formLabel"> Message </div>
       <div class="formInput">
         <textarea name="content" rows="5" maxlength="320" required><%= template.content -%></textarea>
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel">Send to which of <%= client.first %>'s contact methods</div>
+      <div class="formLabel">Select contact method </div>
       <select class="blueSelect" name="commID" required>
 
         <!-- default to smart select always -->
@@ -69,8 +82,8 @@
     </div>
 
     <input  type="submit" 
-            class="formSubmit" 
-            value="Send Client Message">
+            class="formSubmit padTop" 
+            value="Submit">
   </form>
 
 </div>

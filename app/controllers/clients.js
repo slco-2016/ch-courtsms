@@ -1,4 +1,5 @@
 const Clients = require('../models/clients');
+const CloseoutSurveys = require('../models/closeoutSurveys');
 const CommConns = require('../models/commConns');
 const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
@@ -6,7 +7,7 @@ const Templates = require('../models/templates');
 const Users = require('../models/users');
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 const _average = (arr) => {
   let total = 0;
@@ -83,7 +84,7 @@ function _getDailyVolumes (messages) {
 module.exports = {
   
   index(req, res) {
-    const status      = req.query.status == 'closed' ? false : true;
+    const status  = req.query.status == 'archived' || req.query.status == 'closed' ? false : true;
     let department  = req.user.department || req.query.department;
     const user        = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
@@ -113,7 +114,7 @@ module.exports = {
       res.render('clients/index', {
         hub: {
           tab: 'clients',
-          sel: status ? 'open' : 'closed',
+          sel: status ? 'current' : 'archived',
         },
         clients: clients,
         limitByUser: limitByUser || null,
@@ -234,9 +235,9 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    const client = req.params.client;
-    const method = req.query.method;
-    const user = req.getUser();
+    let clientId = req.params.client;
+    let method = req.query.method;
+    let user = req.getUser();
 
     // determine if we should filter by type
     let methodFilter = 'all';
@@ -245,13 +246,16 @@ module.exports = {
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
 
-    let conversations, messages;
-    Conversations.findByUserAndClient(user, client)
+    let client, conversations, messages;
+    Clients.findById(clientId)
     .then((resp) => {
+      client = resp;
+      return Conversations.findByUserAndClient(user, clientId)
+    }).then((resp) => {
       conversations = resp;
 
       const conversationIds = conversations.filter((conversation) => {
-        return conversation.client == Number(client);
+        return conversation.client == client.clid;
       }).map((conversation) => {
         return conversation.convid;
       });
@@ -266,7 +270,7 @@ module.exports = {
           return false; 
         }
       });
-      
+
       // determine if any messages need to be marked as read
       let messageIds = messages.filter((msg) => {
         return msg.read === false;
@@ -280,18 +284,18 @@ module.exports = {
       }
       return Messages.markAsRead(messageIds);
     }).then(() => {
-      
-      return CommConns.findByClientIdWithCommMetaData(client);
+
+      return CommConns.findByClientIdWithCommMetaData(clientId);
     }).then((communications) => {
 
       let unclaimed = conversations.filter((conversation) => {
-        return !conversation.accepted;
+        return !conversation.accepted && conversation.open;
       });
 
       // if there are unclaimed messages that need to be viewed and this the client's main cm
       if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
-        res.redirect(`/clients/${client}/conversations/${unclaimed.convid}/claim`);
+        res.redirect(`/clients/${client.clid}/conversations/${unclaimed.convid}/claim`);
       } else {
         res.render('clients/messages', {
           hub: {
@@ -361,7 +365,12 @@ module.exports = {
     }).then(() => {
       req.logActivity.client(clientId);
       req.flash('success', 'Client case status changed.');
-      res.levelSensitiveRedirect('/clients');
+
+      if (status) {
+        res.levelSensitiveRedirect('/clients');
+      } else {
+        res.levelSensitiveRedirect(`/clients/${clientId}/closeoutsurvey`);
+      }
     }).catch(res.error500);
   },
 
@@ -391,9 +400,9 @@ module.exports = {
     const bundle = req.body.bundleConversations ? true : false;
 
     Users.findByID(toUser)
-    .then((u) => {
-      if (u && u.active) {
-        Clients.transfer(client, fromUser, u.cmid, bundle)
+    .then((user) => {
+      if (user && user.active) {
+        Clients.transfer(client, fromUser, user.cmid, bundle)
         .then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect('/clients');
@@ -411,15 +420,44 @@ module.exports = {
     .then((messages) => {
       
       // Format into a text string
-      messages = messages.map(function (m) {
-        let s = '';
-        Object.keys(m).forEach(function (k) { s += `\n${k}: ${m[k]}`; });
-        return s;
+      messages = messages.map(function (message) {
+        let stringVersionOfMessageObject = '';
+        Object.keys(message).forEach(function (key) {
+          stringVersionOfMessageObject += `\n${key}: ${message[key]}`;
+        });
+        return stringVersionOfMessageObject;
       }).join('\n\n');
 
       // Note: this does not render a new page, just initiates a download
       res.set({'Content-Disposition':'attachment; filename=transcript.txt',});
       res.send(messages);
+    }).catch(res.error500);
+  },
+
+  viewCloseoutSurvey(req, res) {
+    const clientId = req.params.client;
+
+    Clients.findById(clientId)
+    .then((client) => {
+      res.render('clients/closeoutSurvey', {
+        client: client,
+      });
+    }).catch(res.error500);
+  },
+
+  submitCloseoutSurvey(req, res) {
+    const clientId = req.params.client;
+    const closeOutStatus = req.body.closeOutStatus;
+    const mostCommonMethod = req.body.mostCommonMethod;
+    const likelihoodSuccessWithoutCC = req.body.likelihoodSuccessWithoutCC;
+    const helpfulnessCC = req.body.helpfulnessCC;
+    const mostOftenDiscussed = req.body.mostOftenDiscussed;
+    CloseoutSurveys.create( clientId, closeOutStatus, 
+                            mostCommonMethod, likelihoodSuccessWithoutCC, 
+                            helpfulnessCC, mostOftenDiscussed)
+    .then(() => {
+      req.flash('success', 'Thank you for submitting the survey.');
+      res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
   },
 
@@ -452,17 +490,17 @@ module.exports = {
           // for measuring avg response times
         lastClientMsg = null,
         clientResponseList = [];
-      lastUserMsg = null,
-          userResponseList = [],
-          sentiment = {
-            negative: 0,
-            neutral: 0,
-            positive: 0,
-          },
+        lastUserMsg = null,
+        userResponseList = [],
+        sentiment = {
+          negative: 0,
+          neutral: 0,
+          positive: 0,
+        },
 
-          // counting by day
-          countsOutbound = [],
-          countsInbound = [];
+        // counting by day
+        countsOutbound = [],
+        countsInbound = [];
 
       messages.forEach((msg, i) => {
         if (!msg.read) {

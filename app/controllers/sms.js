@@ -3,6 +3,7 @@ const Conversations = require('../models/conversations');
 const Departments = require('../models/departments');
 const Messages = require('../models/messages');
 const SentimentAnalysis = require('../models/sentiment');
+const Users = require('../models/users');
 
 const sms = require('../lib/sms');
 
@@ -24,7 +25,7 @@ module.exports = {
     // Log IBM Sensitivity measures
     SentimentAnalysis.logIBMSentimentAnalysis(req.body);
     
-    let communication, conversations, clients;
+    let communication, conversations, clients, messages;
     Communications.getOrCreateFromValue(fromNumber, 'cell')
     .then((resp) => {
       communication = resp;
@@ -46,8 +47,24 @@ module.exports = {
                                                   MessageSID,
                                                   MessageStatus,
                                                   toNumber);
-    }).then((messages) => {
+    }).then((resp) => {
+      messages = resp;
 
+      // out of office check
+      conversations.forEach((conversation) => {
+        Users.findById(conversation.cm)
+        .then((user) => {
+          if (user && user.is_away) {
+            Messages.getLatestNumber(user.cmid, conversation.client)
+            .then((commId) => {
+              const awayMessage = user.away_message || 'I am currently out of office. I will respond as soon as possible.';
+              return Messages.sendOne(commId, awayMessage, conversation);
+            }).then(() => { }).catch((error) => { console.log(error); });
+          }
+        });
+      });      
+
+      // determine if there is auto-response logic
       conversations.forEach((conversation) => {
         Messages.findByConversation(conversation)
         .then((messages) => {
@@ -62,13 +79,9 @@ module.exports = {
             Conversations.closeAllWithClientExcept(clientId, conversationId)
             .then(() => {
               return Messages.sendOne(commId, messageContent, conversation);
-            }).then(() => { }).catch((error) => {
-              console.log(error);
-            });
+            }).then(() => { }).catch((error) => { console.log(error); });
           }
-        }).catch((err) => {
-          console.log('Error finding by conversation: ', err);
-        });
+        }).catch(res.error500);
 
         req.logActivity.client(conversation.client);
         req.logActivity.conversation(conversation.convid);

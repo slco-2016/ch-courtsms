@@ -67,13 +67,4 @@ module.exports = {
     });
   },
 
-  statusCheck () {
-    return new Promise ((fulfill, reject) => {
-      Messages.findNotClearedMessages()
-      .then((messages) => {
-        fulfill(messages);
-      }).catch(reject);
-    });
-  },
-
 };

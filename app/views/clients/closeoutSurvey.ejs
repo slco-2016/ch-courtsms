@@ -1,0 +1,149 @@
+<% include ../partials/cardFrameTop %>
+
+<div class="cardHead">
+  <!-- exit button -->
+  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>"><% include ../partials/cardExit %></a>
+  </a>
+  <div class="cardTitle">
+    Closeout Survey
+  </div>
+  <div class="cardSubtitle">
+    Help us understand how you used ClientComm and whether it helped. Participation is completely optional; you are free to skip ahead.
+  </div>
+</div>
+
+<div class="cardBody">
+
+    <div class="formRow">
+      <div class="formInput"> 
+        <center>
+          <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}`%>">
+            (Skip and return to <span style="text-decoration: underline">clients view</span>)
+          </a>
+        </center>
+      </div>
+    </div>
+
+  <form method="post">
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        Is <%= client.first %> a successful or unsuccessful close out? 
+      </div>
+      <div class="formInput">
+        <div class="input-option">
+          <input type="radio" name="closeOutStatus" value="success" required> 
+          Successful
+        </div>
+        <div class="input-option">
+          <input type="radio" name="closeOutStatus" value="failure" required> 
+          Unsuccessful
+        </div>
+        <div class="input-option">
+          <input type="radio" name="closeOutStatus" value="stillOpen" required> 
+          Case still open
+        </div>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        How did you most often communicate with <%= client.first %>? 
+      </div>
+      <div class="formInput">
+        <div class="input-option">
+          <input type="radio" name="mostCommonMethod" value="inPerson" required> 
+          In-person
+        </div>
+        <div class="input-option">
+          <input type="radio" name="mostCommonMethod" value="phone" required> 
+          Phone
+        </div>
+        <div class="input-option">
+          <input type="radio" name="mostCommonMethod" value="text" required> 
+          ClientComm
+        </div>
+        <div class="input-option">
+          <input type="radio" name="mostCommonMethod" value="email" required> 
+          Email
+        </div>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        How likely would <%= client.first %> have been to succeed without ClientComm?
+        <small>
+          Scale: 1 = very unlikely, 3 = neutral, 5 = very likey
+        </small>
+      </div>
+      <div class="formInput">
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="1" required> 
+          1
+        </div>
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="2" required> 
+          2
+        </div>
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="3" required> 
+          3
+        </div>
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="4" required> 
+          4
+        </div>
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="5" required> 
+          5
+        </div>
+        <div class="input-option">
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="NA" required> 
+          N/A
+        </div>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        How helpful was ClientComm for <%= client.first %>?
+      </div>
+      <div class="formInput">
+        <div class="input-option">
+          <input type="radio" name="helpfulnessCC" value="unhelpful" required> 
+          Unhelpful
+        </div>
+        <div class="input-option">
+          <input type="radio" name="helpfulnessCC" value="neutral" required> 
+          Neutral
+        </div>
+        <div class="input-option">
+          <input type="radio" name="helpfulnessCC" value="helpful" required> 
+          Helpful
+        </div>
+        <div class="input-option">
+          <input type="radio" name="helpfulnessCC" value="critical" required> 
+          Critical
+        </div>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        What did you most often discuss via ClientComm?
+      </div>
+      <div class="formInput">
+        <textarea name="mostOftenDiscussed"
+                  rows="5"></textarea>
+      </div>
+    </div>
+
+    <input type="submit" class="formSubmit padTop" value="Submit">
+
+  </form>
+
+</div>
+
+
+<% include ../partials/cardFrameBottom %>

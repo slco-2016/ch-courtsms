@@ -6,10 +6,15 @@ const Promise = require('bluebird');
 const BaseModel = require('../lib/models').BaseModel;
 
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
-// TO DOS
-// Check if arrays are indeed arrays and that they have length > 0
+const resourceRequire = require('../lib/resourceRequire');
+const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
+const Conversations = resourceRequire('models', 'Conversations');
+const Messages = resourceRequire('models', 'Messages');
+const Users = resourceRequire('models', 'Users');
+
+const voice = resourceRequire('lib', 'voice');
 
 
 // Class
@@ -35,6 +40,85 @@ class Notifications extends BaseModel {
         'repeat_terminus',
         'ovm_id',
       ],
+    });
+  }
+
+  static checkAndSendNotifications () {
+    return new Promise((fulfill, reject) => {
+      db('notifications')
+        // .select("notifications.*", "comms.type", "comms.value")
+        // .leftJoin("comms", "notifications.comm", "comms.commid")
+        .where('send', '<', db.fn.now())
+        .andWhere('notifications.sent', false)
+        .andWhere('notifications.closed', false)
+      .then((notifications) => {
+        return new Promise((fulfill, reject) => {
+          fulfill(notifications);
+        });
+      }).map((notification) => {
+
+        // Voice
+        if (notification.ovm_id) {
+          return this.sendOVMNotification(notification);
+
+        // Email or Text
+        } else {
+          return this.sendTextorEmailNotification(notification);
+        }
+      }).then((resp) => {
+        fulfill();
+      }).catch(reject);
+    });
+  }
+
+  static sendOVMNotification (notification) {
+    return new Promise((fulfill, reject) => {
+      OutboundVoiceMessages.findById(notification.ovm_id)
+      .then((ovm) => {
+        return voice.processPendingOutboundVoiceMessages(ovm);
+      }).then(() => {
+        fulfill();
+      }).catch(reject);
+    });
+  };
+
+  static sendTextorEmailNotification (notification) {
+    return new Promise((fulfill, reject) => {
+      Users.findById(notification.cm)
+      .then((user) => {
+        const client = notification.client;
+        const userId = notification.cm;
+        const clientId = notification.client;
+        const subject = notification.subject || `New Message from ${user.first} ${user.last}`;
+        const content = notification.message;
+        const commId = notification.comm;
+        let sendMethod;
+
+        if (commId) {
+          sendMethod = Messages.startNewConversation(userId, clientId, subject, content, commId);
+        } else {
+          sendMethod = Messages.smartSend(userId, clientId, subject, content);
+        }
+
+        sendMethod.then(() => {
+          return this.markAsSent(notification.notificationid);
+        }).then(() => {
+          fulfill();
+        }).catch(reject);
+
+      }).catch(reject);
+    });
+  }
+
+  static markAsSent (notificationId) {
+    return new Promise((fulfill, reject) => {
+      db('notifications')
+      .where('notificationid', notificationId)
+      .update({
+        sent: true,
+      }).then(() => {
+        fulfill();
+      }).catch(reject);
     });
   }
 

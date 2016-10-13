@@ -231,11 +231,11 @@ $(function() {
           var ok = true;
           if ($("select[name=commID]").val() == null) ok = false;
           if ($("textarea[name=content]").val().length == 0) ok = false;
-          if (ok) {
-            $(".submit").removeClass("disabled");
-          } else {
-            $(".submit").addClass("disabled");
-          }
+          // if (ok) {
+          //   $(".submit").removeClass("disabled");
+          // } else {
+          //   $(".submit").addClass("disabled");
+          // }
           return ok;
         }
 
@@ -716,7 +716,7 @@ $(function() {
               }
             },
             legend: { hide: false, position: 'inset', inset: {
-                anchor: 'top-right',
+                anchor: 'top-left',
                 x: 0,
                 y: 0,
                 step: undefined
@@ -839,13 +839,20 @@ $(function() {
           clients.forEach(function (client) {
             // Only add if client matches
             if (client.clid == v) {
-              client.communications.forEach(function (comm) {
-                var newOpt = '<option value="' + comm.commid + '">' + 
-                              comm.name + " (" + comm.value + ")" + '</option>';
-                $("#commConn").append(newOpt);
-              });
-              var smartSelect = '<option value="null" ' + '">Smart Select (Best Contact Method)</option>';
-              $("#commConn").append(smartSelect);
+            client.communications.forEach(function (comm) {
+              var newOpt = '<option value="' + comm.commid + '"';
+              if (comm.commid == contactMethod) {
+                newOpt += ' selected ';
+              }
+              newOpt += '>' + comm.name + " (" + comm.value + ")" + '</option>';
+              $("#commConn").append(newOpt);
+            });
+            var smartSelect = '<option value="null"';
+            if (!contactMethod) {
+              smartSelect += ' selected ';
+            }
+            smartSelect += '>Smart Select (Best Contact Method)</option>';
+            $("#commConn").append(smartSelect);
             }
           });
         };
@@ -863,6 +870,11 @@ $(function() {
           var v = $(this).val();
           updateClientsAndComms(v);
           $("#voiceLink").attr("href", "/clients/" + String(v) + "/voicemessage");
+        });
+
+        $("#showTextParametersCompose").click(function () {
+          $("#initialOptionsButtons").hide();
+          $("#textParametersCompose").show();
         });
 
         function updateClientsAndComms (v) {

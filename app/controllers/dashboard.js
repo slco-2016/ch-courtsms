@@ -3,9 +3,8 @@ const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
 
-const messagesLib = require('../lib/messages');
 const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const momentTz = require('moment-timezone');
 
 module.exports = {
 
@@ -36,19 +35,22 @@ module.exports = {
 
       if (departmentFilter) {
         if (req.user.department) {
-          departments = departments.filter((d) => { 
-            return d.department_id === departmentFilter;
+          departments = departments.filter((department) => { 
+            return department.department_id === departmentFilter;
           });
         }
         return Users.findByDepartment(departmentFilter, true);
       } else {
         return Users.findByOrg(req.user.org, true);
       }
-    }).then((u) => {
-      users = u;
+    }).then((resp) => {
+      users = resp;
 
-      if (departmentFilter) {
-        users = users.filter((departmentUser) => { return departmentUser.department == departmentFilter;});
+      if (userFilter) {
+        users = users.filter((eachUser) => { return eachUser.cmid == userFilter;});
+        return Messages.countsByUser(userFilter, 'day');
+      } else if (departmentFilter) {
+        users = users.filter((eachUser) => { return eachUser.department == departmentFilter;});
         return Messages.countsByDepartment(departmentFilter, 'day');
       } else {
         return Messages.countsByOrg(req.user.org, 'day');
@@ -56,7 +58,9 @@ module.exports = {
     }).then((counts) => {
       countsByDay = counts;
 
-      if (departmentFilter) {
+      if (userFilter) {
+        return Messages.countsByUser(userFilter, 'week');
+      } else if (departmentFilter) {
         return Messages.countsByDepartment(departmentFilter, 'week');
       } else {
         return Messages.countsByOrg(req.user.org, 'week');

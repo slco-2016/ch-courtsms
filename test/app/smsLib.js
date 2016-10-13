@@ -4,6 +4,7 @@ require('colors');
 const should = require('should');
 
 const Communications = require('../../app/models/communications');
+const Messages = require('../../app/models/messages');
 
 const sms = require('../../app/lib/sms');
 
@@ -62,7 +63,7 @@ describe('Sms library checks', function() {
       .expect(200)
       .end(function(err, res) {
 
-        sms.statusCheck()
+        Messages.findNotClearedMessages()
         .then((messages) => {
           // we should have at least one message in there from the seed data base
           messages.length.should.be.greaterThan(0);

@@ -26,14 +26,17 @@ module.exports = {
   },
 
   new(req, res) {
-    res.render('clients/commConn');
+    res.render('clients/commConn', {
+      commConn: {},
+    });
   },
 
   create(req, res) {
-    const client      = req.params.client;
+    const override = req.body.override;
+    const client = req.params.client;
     const description = req.body.description;
-    const type        = req.body.type;
-    let value       = req.body.value;
+    const type = req.body.type;
+    let value = req.body.value;
 
     // clean up numbers
     if (type == 'cell' || type == 'landline') {
@@ -48,12 +51,33 @@ module.exports = {
         return String(value) === String(commConn.value);
       });
       if (commConns.length > 0) {
-        req.flash('warning', 'Client already has that method.');
-        res.redirect(`/clients/${client}/communications`);
-
+        const currentCommConn = commConns[0];
+        if (currentCommConn.name !== description) {
+          CommConns.updateCommConnName(currentCommConn.commconnid, description)
+          .then(() => {
+            req.flash('success', 'Updated the communication name.');
+            res.redirect(`/clients/${client}/communications`);
+          }).catch(res.error500);
+        } else {
+          req.flash('warning', 'Client already has that method.');
+          res.redirect(`/clients/${client}/communications`);
+        }
       } else {
         CommConns.create(client, type, description, value)
         .then(() => {
+
+          // Perform an "override" in that prior version of contact is removed
+          // only do this if being directed from the edit view, and it is marked
+          if (override) {
+            CommConns.findByClientIdWithCommMetaData(client)
+            .then((commConns) => {
+              if (commConns.length > 1) {
+                Communications.removeOne(override)
+                .then(() => {}).catch();
+              }
+            }).catch();
+          }
+
           req.logActivity.client(client);
           req.flash('success', 'Created new communication method.');
           res.redirect(`/clients/${client}/communications`);
@@ -61,6 +85,15 @@ module.exports = {
         }).catch(res.error500);
       }
       return null;
+    }).catch(res.error500);
+  },
+
+  edit(req, res) {
+    CommConns.findById(req.params.communication)
+    .then((commConn) => {
+      res.render('clients/commConn', {
+        commConn: commConn,
+      });
     }).catch(res.error500);
   },
 

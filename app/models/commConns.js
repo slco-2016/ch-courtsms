@@ -24,12 +24,15 @@ class CommConns extends BaseModel {
       ],
     });
   }
-  
-  static findByClientIdWithCommMetaData (clientId) {
+
+  // override standard find by id
+  static findById (id) {
     return new Promise((fulfill, reject) => {
-      CommConns.findByClientIdsWithCommMetaData([clientId,])
-      .then((commconns) => {
-        fulfill(commconns);
+      db('commconns')
+        .leftJoin('comms', 'comms.commid', 'commconns.comm')
+        .where('commconnid', id)
+      .then((commConns) => {
+        fulfill(commConns[0]);
       }).catch(reject);
     });
   }
@@ -63,7 +66,16 @@ class CommConns extends BaseModel {
     });
   }
   
-  static findByClientIdsWithCommMetaData (clientIDs) {
+  static findByClientIdWithCommMetaData (clientId) {
+    return new Promise((fulfill, reject) => {
+      CommConns.findByClientIdsWithCommMetaData([clientId])
+      .then((commconns) => {
+        fulfill(commconns);
+      }).catch(reject);
+    });
+  }
+  
+  static findByClientIdsWithCommMetaData (clientIds) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .leftJoin(
@@ -71,7 +83,7 @@ class CommConns extends BaseModel {
             .select('comms.commid', 'comms.type', 'comms.value')
             .as('comms'),
           'comms.commid', 'commconns.comm')
-        .whereIn('client', clientIDs)
+        .whereIn('client', clientIds)
         .and.where('retired', null)
       .then((commconns) => {
         fulfill(commconns);
@@ -117,6 +129,17 @@ class CommConns extends BaseModel {
         fulfill(counts);
       }).catch(reject);
     }); 
+  }
+
+  static updateCommConnName(commConnId, newName) {
+    return new Promise((fulfill, reject) => {
+      db('commconns')
+        .update({
+          name: newName,
+        })
+        .where('commconnid', commConnId)
+      .then(fulfill).catch(reject);
+    });
   }
 
   static create (clientId, type, name, value) {

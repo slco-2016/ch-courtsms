@@ -81,6 +81,7 @@ const CommunicationsController  = require('./controllers/communications');
 const DashboardController       = require('./controllers/dashboard');
 const DepartmentsController     = require('./controllers/departments');
 const GroupsController          = require('./controllers/groups');
+const HelpController            = require('./controllers/help');
 const NotificationsController   = require('./controllers/notifications');
 const PhoneNumbers              = require('./controllers/phoneNumbers');
 const RootController            = require('./controllers/root');
@@ -120,6 +121,8 @@ app.use(auth.isLoggedIn);
 app.use(auth.checkIsAllowed);
 
 app.get('/logout', AccessController.logout);
+
+app.get('/help', HelpController.index);
 
 app.get('/alerts', AlertsController.checkForNewMessages);
 app.get('/alerts/:alert/close', AlertsController.close);
@@ -163,6 +166,8 @@ app.get('/clients/:client', ClientsController.clientCard);
 app.get('/clients/:client/edit', ClientsController.edit);
 app.post('/clients/:client/edit', ClientsController.update);
 app.get('/clients/:client/alter/:status', ClientsController.alter);
+app.get('/clients/:client/closeoutsurvey', ClientsController.viewCloseoutSurvey);
+app.post('/clients/:client/closeoutsurvey', ClientsController.submitCloseoutSurvey);
 app.get('/clients/:client/transfer', ClientsController.transferSelect);
 app.post('/clients/:client/transfer', ClientsController.transferSubmit);
 
@@ -186,6 +191,7 @@ app.post('/clients/:client/conversations/:conversation/claim', ConversationsCont
 app.get('/clients/:client/communications', CommunicationsController.index);
 app.get('/clients/:client/communications/create', CommunicationsController.new);
 app.post('/clients/:client/communications/create', CommunicationsController.create);
+app.get('/clients/:client/communications/:communication/edit', CommunicationsController.edit);
 app.get('/clients/:client/communications/:communication/remove', CommunicationsController.remove);
 
 app.get('/clients/:client/notifications', NotificationsController.index);
@@ -228,8 +234,12 @@ app.post('/org/clients/:client/voicemessage', VoiceController.create);
 app.get('/org/clients/:client/edit', ClientsController.edit);
 app.get('/org/clients/:client/edit', ClientsController.update);
 app.get('/org/clients/:client/alter/:status', ClientsController.alter);
+app.get('/org/clients/:client/closeoutsurvey', ClientsController.viewCloseoutSurvey);
+app.post('/org/clients/:client/closeoutsurvey', ClientsController.submitCloseoutSurvey);
+
 app.get('/org/clients/:client/transfer', ClientsController.transferSelect);
 app.post('/org/clients/:client/transfer', ClientsController.transferSubmit);
+
 app.get('/org/clients/:client/communications/create', CommunicationsController.new);
 app.post('/org/clients/:client/communications/create', CommunicationsController.create);
 
@@ -252,5 +262,35 @@ app.get('/*', (req, res) => {
   res.notFound();
 });
 
+// Scheduled operations
+if (false) {
+  let minute = 60 * 1000;
+  let hour = 60 * minute;
+
+  // email notifications - 24 hours
+  setInterval(() => {
+    require("../lib/em-notify").runEmailUpdates().then().catch();
+  }, 24 * hour);
+
+  // notifications - 15 minutes
+  setInterval(() => {
+    const Notifications = require('./models/notifications');
+    Notifications.checkAndSendNotifications()
+    .then().catch();
+  }, 15 * minute);
+
+  // sms status check - 30 seconds
+  setInterval(() => {
+    const Messages = require('./models/messages');
+    Messages.findNotClearedMessages()
+    .then((messages) => {
+      const smsStatusCheck = require('../lib/sms-status-check');
+      messages.forEach((message, i) => {
+        smsStatusCheck.checkMsgAgainstTwilio(message);
+      });
+    }).catch();
+  }, 15 * minute);
+  
+}
 
 module.exports = app;

@@ -50,7 +50,7 @@
   box-shadow: inset 1px 10px 20px -10px; }
   .rightContent .subjectToggle {
     position: absolute;
-    left: 50%;
+    left: 66.5%;
     background-color: #6783a1;
     color: #FFF;
     line-height: 30px;
@@ -89,7 +89,7 @@
     margin-bottom: 60px; }
     .rightContent .messageStream .messageDiv .message {
       padding: 15px 20px 10px 20px;
-      margin-bottom: 10px;
+      margin-top: 10px;
       border-radius: 5px;
       width: 695px; }
       .rightContent .messageStream .messageDiv .message.outbound {

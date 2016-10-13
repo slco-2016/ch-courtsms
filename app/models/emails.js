@@ -34,7 +34,7 @@ class Emails extends BaseModel{
   }
 }
 
-Emails.primaryId = 'cmid';
+Emails.primaryId = 'id';
 Emails.tableName = 'emails';
 
 module.exports = Emails;

@@ -34,21 +34,26 @@
   height: 28px;
   width: 96px;
   max-width: 100px; }
+  .listedColor .colorBox.pillShaped {
+    width: 15px;
+    border-radius: 10px;
+    border: 1px solid #FFF;
+    margin-left: 76px;
+    content: " "; }
 
 .listedColor .colorName {
   float: left;
   line-height: 32px;
   width: 265px;
-  margin-left: 15px;
-  border-bottom: 1px dashed #4A90E2; }
+  margin-left: 15px; }
 
 .listedColor .colorTagRemove {
   float: right;
   font-size: 28px;
   cursor: pointer;
-  color: #4A90E2; }
+  color: #898989; }
   .listedColor .colorTagRemove:hover {
-    color: #3F69B6; }
+    color: #000; }
 
 .listedColor::after {
   content: "";
@@ -59,16 +64,16 @@
   margin-left: 35px;
   margin-right: 35px;
   z-index: 10;
-  text-align: center;
-  background-color: #FFF;
+  text-align: left;
   color: #4A90E2;
   padding: 5px 10px 5px 10px;
-  border-radius: 5px 5px 0px 0px;
   font-size: 12px;
-  cursor: pointer; }
-  .manageColorsLink:hover {
-    background-color: #4A90E2;
-    color: #FFF; }
+  cursor: pointer;
+  line-height: 32px;
+  font-size: 14px; }
+  .manageColorsLink .fa {
+    font-size: 22px;
+    vertical-align: sub; }
 
 .coloredClientFrame .clientNameBox {
   margin-left: 35px;
@@ -115,4 +120,4 @@
     clear: both; }
 
 .formSubmit {
-  margin-top: 20px; }
+  margin-top: 40px; }

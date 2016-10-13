@@ -14,7 +14,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   margin-top: 70px;
-  margin-bottom: 0px;
+  margin-bottom: 70px;
   border-radius: 10px;
   box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5); }
   .card .cardHead .exitButton {
@@ -56,269 +56,289 @@ body {
     padding: 10px 20px 5px 20px;
     text-align: center;
     margin-bottom: 15px; }
-  .card .cardBody .formRow {
-    padding: 5px 30px 25px 30px; }
-    .card .cardBody .formRow .formLabel {
-      font-size: 16px;
-      font-weight: 700;
-      padding-bottom: 3px;
-      color: #344289; }
-      .card .cardBody .formRow .formLabel small {
-        font-weight: 300;
-        font-size: 12px; }
-    .card .cardBody .formRow.subdued {
-      opacity: 0.5;
-      cursor: pointer; }
-      .card .cardBody .formRow.subdued .formLabel {
-        color: #898989; }
-      .card .cardBody .formRow.subdued .formInput input[type=text] {
-        border: 2px solid #898989;
-        background-color: #D3D3D3;
+  .card .cardBody {
+    padding-bottom: 30px; }
+    .card .cardBody .formRow {
+      padding: 5px 30px 25px 30px; }
+      .card .cardBody .formRow.smallBottomPad {
+        padding-bottom: 10px; }
+      .card .cardBody .formRow.noBottomPad {
+        padding-bottom: 0px; }
+      .card .cardBody .formRow .formLabel {
+        font-size: 16px;
+        font-weight: 700;
+        padding-bottom: 3px;
+        color: #344289; }
+        .card .cardBody .formRow .formLabel small {
+          font-weight: 300;
+          font-size: 12px; }
+      .card .cardBody .formRow .centerNotes {
+        text-align: center;
+        color: #4A90E2;
+        font-size: 14px; }
+      .card .cardBody .formRow.subdued {
+        opacity: 0.5;
         cursor: pointer; }
-      .card .cardBody .formRow.subdued:hover .formLabel {
-        color: #3F69B6; }
-      .card .cardBody .formRow.subdued:hover .formInput input[type=text] {
-        border: 2px solid #3F69B6;
-        background-color: #FFF; }
-    .card .cardBody .formRow .formInput {
-      color: #344289;
-      font-size: 12; }
-      .card .cardBody .formRow .formInput .inputOption {
-        float: left;
-        margin-right: 20px; }
-      .card .cardBody .formRow .formInput input[type=text], .card .cardBody .formRow .formInput input[type=email], .card .cardBody .formRow .formInput input[list=suggestionList], .card .cardBody .formRow .formInput input[type=password] {
-        background: #FFF;
-        width: 420px;
-        font-size: 12px;
-        line-height: 18px;
-        height: 18px;
-        max-width: 420px;
-        border: 2px solid #4A90E2;
-        border-radius: 4px;
-        outline: none;
-        resize: none;
-        overflow: auto;
-        padding: 5px 10px 5px 10px; }
-      .card .cardBody .formRow .formInput input[type=date] {
-        background: #FFF;
-        width: 420px;
-        font-size: 12px;
-        line-height: 18px;
-        height: 18px;
-        max-width: 420px;
-        border: 2px solid #4A90E2;
-        border-radius: 4px;
-        outline: none;
-        resize: none;
-        overflow: auto;
-        padding: 5px 10px 5px 10px; }
-      .card .cardBody .formRow .formInput textarea {
-        background: #FFF;
-        width: 420px;
-        height: 50px;
-        max-width: 420px;
-        max-height: 50px;
-        border: 2px solid #4A90E2;
-        border-radius: 4px;
-        outline: none;
-        resize: none;
-        overflow: auto;
-        padding: 5px 10px 5px 10px; }
-      .card .cardBody .formRow .formInput .tt-dataset {
-        background-color: #FFF;
-        width: 440px;
-        max-width: 440px;
-        border: 2px solid #4A90E2;
-        border-radius: 4px;
-        margin-top: 5px; }
-        .card .cardBody .formRow .formInput .tt-dataset .tt-suggestion, .card .cardBody .formRow .formInput .tt-dataset .tt-selectable {
-          max-width: 420px;
-          padding: 5px 10px 5px 10px;
+        .card .cardBody .formRow.subdued .formLabel {
+          color: #898989; }
+        .card .cardBody .formRow.subdued .formInput input[type=text] {
+          border: 2px solid #898989;
+          background-color: #D3D3D3;
           cursor: pointer; }
-          .card .cardBody .formRow .formInput .tt-dataset .tt-suggestion:hover, .card .cardBody .formRow .formInput .tt-dataset .tt-selectable:hover {
-            color: #FFF;
-            background-color: #4A90E2; }
-      .card .cardBody .formRow .formInput::after {
-        content: "";
-        display: block;
-        clear: both; }
-    .card .cardBody .formRow .formSelect {
-      width: 440px;
-      height: 35px;
-      border: 2px solid #898989;
-      border-radius: 7px;
-      background-color: #D3D3D3;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 700;
-      color: #344289; }
-    .card .cardBody .formRow .blueSelect {
-      width: 440px;
-      height: 35px;
-      border: 2px solid #2F8CE8;
-      border-radius: 7px;
-      background-color: #92C9FF;
-      text-align: center;
-      font-size: 16px;
-      font-weight: 700;
-      color: #344289; }
-    .card .cardBody .formRow .opt {
-      font-size: small;
-      float: right;
-      font-weight: 300;
-      font-style: italic; }
-  .card .cardBody .scrollListBox {
-    width: 450px;
-    max-height: 400px;
-    border: 2px solid #898989;
-    border-radius: 7px;
-    background-color: #FFF;
-    color: #344289;
-    overflow-y: scroll;
-    margin-right: auto;
-    margin-left: auto;
-    margin-bottom: 20px; }
-    .card .cardBody .scrollListBox::-webkit-scrollbar {
-      display: none; }
-    .card .cardBody .scrollListBox .scrollListRow {
-      max-height: 100px;
-      overflow: hidden;
-      cursor: pointer;
-      border-bottom: 1px solid #D3D3D3; }
-      .card .cardBody .scrollListBox .scrollListRow:nth-last-child(1) {
-        border-bottom: 0px; }
-      .card .cardBody .scrollListBox .scrollListRow .useCount {
-        float: right;
-        width: 45px;
-        text-align: center;
-        line-height: 70px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #4A90E2; }
-      .card .cardBody .scrollListBox .scrollListRow .colorTag {
-        float: left;
-        width: 45px;
-        text-align: center;
-        line-height: 70px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #4A90E2; }
-        .card .cardBody .scrollListBox .scrollListRow .colorTag .tag {
-          width: 15px;
-          height: 28px;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-left: auto;
-          margin-right: auto;
-          border: 1px solid #FFF;
-          border-radius: 75px; }
-      .card .cardBody .scrollListBox .scrollListRow .scrollListContent {
-        float: right;
-        padding: 10px;
-        width: 365px; }
-        .card .cardBody .scrollListBox .scrollListRow .scrollListContent .clientName {
-          font-size: 18px;
-          line-height: 30px;
-          word-wrap: break-word;
-          overflow: hidden;
-          color: #4A90E2; }
-        .card .cardBody .scrollListBox .scrollListRow .scrollListContent .titleText {
-          font-size: 14px;
-          line-height: 14px;
-          font-weight: bold;
-          word-wrap: break-word;
-          height: 14px;
-          margin-bottom: 5px;
-          overflow: hidden;
-          color: #4A90E2;
-          text-decoration: underline; }
-        .card .cardBody .scrollListBox .scrollListRow .scrollListContent .bodyText {
-          word-wrap: break-word;
-          overflow: hidden;
-          font-size: 14px;
-          line-height: 14px;
-          max-height: 42px;
-          color: #898989;
-          margin-top: 5px;
-          margin-bottom: 5px; }
-        .card .cardBody .scrollListBox .scrollListRow .scrollListContent .tags {
-          color: #D3D3D3;
+        .card .cardBody .formRow.subdued:hover .formLabel {
+          color: #3F69B6; }
+        .card .cardBody .formRow.subdued:hover .formInput input[type=text] {
+          border: 2px solid #3F69B6;
+          background-color: #FFF; }
+      .card .cardBody .formRow .formInput {
+        color: #344289;
+        font-size: 12; }
+        .card .cardBody .formRow .formInput.smallNote {
+          color: #898989; }
+        .card .cardBody .formRow .formInput .inputOption {
+          float: left;
+          margin-right: 20px; }
+        .card .cardBody .formRow .formInput input[type=text], .card .cardBody .formRow .formInput input[type=email], .card .cardBody .formRow .formInput input[list=suggestionList], .card .cardBody .formRow .formInput input[type=password] {
+          background: #FFF;
+          width: 420px;
           font-size: 12px;
-          font-weight: bold;
-          line-height: 14px;
+          line-height: 18px;
+          height: 18px;
+          max-width: 420px;
+          border: 2px solid #4A90E2;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px; }
+        .card .cardBody .formRow .formInput input[type=date] {
+          background: #FFF;
+          width: 420px;
+          font-size: 12px;
+          line-height: 18px;
+          height: 18px;
+          max-width: 420px;
+          border: 2px solid #4A90E2;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px; }
+        .card .cardBody .formRow .formInput textarea {
+          background: #FFF;
+          width: 420px;
+          height: 50px;
+          max-width: 420px;
+          max-height: 50px;
+          border: 2px solid #4A90E2;
+          border-radius: 4px;
+          outline: none;
+          resize: none;
+          overflow: auto;
+          padding: 5px 10px 5px 10px; }
+        .card .cardBody .formRow .formInput .tt-dataset {
+          background-color: #FFF;
+          width: 440px;
+          max-width: 440px;
+          border: 2px solid #4A90E2;
+          border-radius: 4px;
           margin-top: 5px; }
-        .card .cardBody .scrollListBox .scrollListRow .scrollListContent::after {
+          .card .cardBody .formRow .formInput .tt-dataset .tt-suggestion, .card .cardBody .formRow .formInput .tt-dataset .tt-selectable {
+            max-width: 420px;
+            padding: 5px 10px 5px 10px;
+            cursor: pointer; }
+            .card .cardBody .formRow .formInput .tt-dataset .tt-suggestion:hover, .card .cardBody .formRow .formInput .tt-dataset .tt-selectable:hover {
+              color: #FFF;
+              background-color: #4A90E2; }
+        .card .cardBody .formRow .formInput::after {
           content: "";
           display: block;
           clear: both; }
-      .card .cardBody .scrollListBox .scrollListRow:hover, .card .cardBody .scrollListBox .scrollListRow.selected {
+      .card .cardBody .formRow .formSelect {
+        width: 440px;
+        height: 35px;
+        border: 2px solid #898989;
+        border-radius: 7px;
+        background-color: #D3D3D3;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #344289; }
+      .card .cardBody .formRow .blueSelect {
+        width: 440px;
+        height: 35px;
+        border: 2px solid #2F8CE8;
+        border-radius: 7px;
+        background-color: #92C9FF;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #344289; }
+      .card .cardBody .formRow .opt {
+        font-size: small;
+        float: right;
+        font-weight: 300;
+        font-style: italic; }
+    .card .cardBody .scrollListBox {
+      width: 440px;
+      max-height: 400px;
+      border: 2px solid #898989;
+      border-radius: 7px;
+      background-color: #FFF;
+      color: #344289;
+      overflow-y: scroll;
+      margin-left: 30px;
+      margin-bottom: 40px; }
+      .card .cardBody .scrollListBox::-webkit-scrollbar {
+        display: none; }
+      .card .cardBody .scrollListBox .scrollListRow {
+        max-height: 100px;
+        overflow: hidden;
+        cursor: pointer;
+        border-bottom: 1px solid #D3D3D3; }
+        .card .cardBody .scrollListBox .scrollListRow:nth-last-child(1) {
+          border-bottom: 0px; }
+        .card .cardBody .scrollListBox .scrollListRow .useCount {
+          float: right;
+          width: 45px;
+          text-align: center;
+          line-height: 70px;
+          font-size: 18px;
+          font-weight: 700;
+          color: #4A90E2; }
+        .card .cardBody .scrollListBox .scrollListRow .colorTag {
+          float: left;
+          width: 45px;
+          text-align: center;
+          line-height: 70px;
+          font-size: 18px;
+          font-weight: 700;
+          color: #4A90E2; }
+          .card .cardBody .scrollListBox .scrollListRow .colorTag .tag {
+            width: 15px;
+            height: 28px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #FFF;
+            border-radius: 75px; }
+        .card .cardBody .scrollListBox .scrollListRow .scrollListContent {
+          float: right;
+          padding: 10px;
+          width: 365px; }
+          .card .cardBody .scrollListBox .scrollListRow .scrollListContent .clientName {
+            font-size: 18px;
+            line-height: 30px;
+            word-wrap: break-word;
+            overflow: hidden;
+            color: #4A90E2; }
+          .card .cardBody .scrollListBox .scrollListRow .scrollListContent .titleText {
+            font-size: 14px;
+            line-height: 14px;
+            font-weight: bold;
+            word-wrap: break-word;
+            height: 14px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            color: #4A90E2;
+            text-decoration: underline; }
+          .card .cardBody .scrollListBox .scrollListRow .scrollListContent .bodyText {
+            word-wrap: break-word;
+            overflow: hidden;
+            font-size: 14px;
+            line-height: 14px;
+            max-height: 42px;
+            color: #898989;
+            margin-top: 5px;
+            margin-bottom: 5px; }
+          .card .cardBody .scrollListBox .scrollListRow .scrollListContent .tags {
+            color: #D3D3D3;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 14px;
+            margin-top: 5px; }
+          .card .cardBody .scrollListBox .scrollListRow .scrollListContent::after {
+            content: "";
+            display: block;
+            clear: both; }
+        .card .cardBody .scrollListBox .scrollListRow:hover, .card .cardBody .scrollListBox .scrollListRow.selected {
+          background-color: #4A90E2;
+          color: #FFF; }
+          .card .cardBody .scrollListBox .scrollListRow:hover .clientName, .card .cardBody .scrollListBox .scrollListRow:hover .titleText, .card .cardBody .scrollListBox .scrollListRow:hover .useCount, .card .cardBody .scrollListBox .scrollListRow:hover .bodyText, .card .cardBody .scrollListBox .scrollListRow:hover .tags, .card .cardBody .scrollListBox .scrollListRow.selected .clientName, .card .cardBody .scrollListBox .scrollListRow.selected .titleText, .card .cardBody .scrollListBox .scrollListRow.selected .useCount, .card .cardBody .scrollListBox .scrollListRow.selected .bodyText, .card .cardBody .scrollListBox .scrollListRow.selected .tags {
+            color: #FFF; }
+        .card .cardBody .scrollListBox .scrollListRow::after {
+          content: "";
+          display: block;
+          clear: both; }
+    .card .cardBody .formSubmit {
+      display: block;
+      border: 0px;
+      border-radius: 20px;
+      height: 35px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 27px;
+      cursor: pointer;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      margin-bottom: 20px;
+      margin-right: auto;
+      margin-left: auto;
+      border: 2px solid #4A90E2;
+      background-color: #FFF;
+      color: #4A90E2; }
+      .card .cardBody .formSubmit:hover {
         background-color: #4A90E2;
         color: #FFF; }
-        .card .cardBody .scrollListBox .scrollListRow:hover .clientName, .card .cardBody .scrollListBox .scrollListRow:hover .titleText, .card .cardBody .scrollListBox .scrollListRow:hover .useCount, .card .cardBody .scrollListBox .scrollListRow:hover .bodyText, .card .cardBody .scrollListBox .scrollListRow:hover .tags, .card .cardBody .scrollListBox .scrollListRow.selected .clientName, .card .cardBody .scrollListBox .scrollListRow.selected .titleText, .card .cardBody .scrollListBox .scrollListRow.selected .useCount, .card .cardBody .scrollListBox .scrollListRow.selected .bodyText, .card .cardBody .scrollListBox .scrollListRow.selected .tags {
+      .card .cardBody .formSubmit.inverse {
+        background-color: #4A90E2;
+        color: #FFF; }
+        .card .cardBody .formSubmit.inverse:hover {
+          background-color: #FFF;
+          color: #4A90E2; }
+      .card .cardBody .formSubmit.fullWidth {
+        width: 100%; }
+      .card .cardBody .formSubmit.padTop {
+        margin-top: 20px;
+        border: 2px solid #344289;
+        color: #344289; }
+        .card .cardBody .formSubmit.padTop:hover {
+          background-color: #344289;
           color: #FFF; }
-      .card .cardBody .scrollListBox .scrollListRow::after {
-        content: "";
-        display: block;
-        clear: both; }
-  .card .cardBody .formSubmit {
-    display: block;
-    border: 0px;
-    border-radius: 20px;
-    height: 35px;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 27px;
-    cursor: pointer;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    margin-bottom: 20px;
-    margin-right: auto;
-    margin-left: auto;
-    border: 2px solid #4A90E2;
-    background-color: #FFF;
-    color: #4A90E2; }
-    .card .cardBody .formSubmit:hover {
-      background-color: #4A90E2;
-      color: #FFF; }
-    .card .cardBody .formSubmit.inverse {
-      background-color: #4A90E2;
-      color: #FFF; }
-      .card .cardBody .formSubmit.inverse:hover {
-        background-color: #FFF;
-        color: #4A90E2; }
-    .card .cardBody .formSubmit.inline {
-      display: inline; }
-    .card .cardBody .formSubmit.red {
-      border: 2px solid #E50000;
-      color: #E50000;
-      background-color: #FFF; }
-      .card .cardBody .formSubmit.red:hover {
-        background-color: #E50000;
-        color: #FFF; }
-    .card .cardBody .formSubmit.green {
-      border: 2px solid #00e500;
-      color: #00e500;
-      background-color: #FFF; }
-      .card .cardBody .formSubmit.green:hover {
-        background-color: #00e500;
-        color: #FFF; }
-  .card .cardBody .orBreak {
-    margin-right: auto;
-    margin-left: auto;
-    margin-bottom: 20px; }
-    .card .cardBody .orBreak .dash {
-      padding-left: 10px;
-      padding-right: 10px;
-      display: inline-block;
-      -webkit-transform: scale(5, 1);
-      /* Safari and Chrome */
-      -moz-transform: scale(5, 1);
-      /* Firefox */
-      -ms-transform: scale(5, 1);
-      /* IE 9 */
-      -o-transform: scale(5, 1);
-      /* Opera */
-      transform: scale(5, 1);
-      /* W3C */ }
+      .card .cardBody .formSubmit.inline {
+        display: inline; }
+      .card .cardBody .formSubmit.red {
+        border: 2px solid #E50000;
+        color: #E50000;
+        background-color: #FFF; }
+        .card .cardBody .formSubmit.red:hover {
+          background-color: #E50000;
+          color: #FFF; }
+      .card .cardBody .formSubmit.green {
+        border: 2px solid #00e500;
+        color: #00e500;
+        background-color: #FFF; }
+        .card .cardBody .formSubmit.green:hover {
+          background-color: #00e500;
+          color: #FFF; }
+    .card .cardBody .orBreak {
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 20px; }
+      .card .cardBody .orBreak .dash {
+        padding-left: 10px;
+        padding-right: 10px;
+        display: inline-block;
+        -webkit-transform: scale(5, 1);
+        /* Safari and Chrome */
+        -moz-transform: scale(5, 1);
+        /* Firefox */
+        -ms-transform: scale(5, 1);
+        /* IE 9 */
+        -o-transform: scale(5, 1);
+        /* Opera */
+        transform: scale(5, 1);
+        /* W3C */ }
