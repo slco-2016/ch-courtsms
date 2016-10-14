@@ -603,8 +603,8 @@ $(function() {
         };
 
         // Get the highest performing weeek
-        drawGaugeChart(countsByWeek);
-        console.log('receiving', countsByWeek);
+        drawGaugeChart(weeks);
+        console.log('receiving', weeks);
 
         function drawGaugeChart (weeks) {
           var highestCount = Math.max.apply(Math,weeks.map(function(o){return Number(o.message_count);}))
