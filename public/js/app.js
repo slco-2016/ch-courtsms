@@ -498,7 +498,7 @@ $(function() {
                   ["Weekly Activity"].concat(valsWeek),
                   ["Daily Activity"].concat(newValsDay)
               ],
-              types: {"Weekly Activity": "area-spline", "Daily Activity": "area-spline"},
+              types: {"Weekly Activity": "area", "Daily Activity": "area"},
               colors: {
                   "Weekly Activity": "#6783a1",
                   "Daily Activity": "#3c5065"
