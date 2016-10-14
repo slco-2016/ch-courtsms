@@ -132,7 +132,7 @@ module.exports = {
       Users.findByOrg(org)
       .then((users) => {
         const department = req.user.department;
-        if (department && userClass !== 'owner') {
+        if (department && userClass == 'primary') {
           users = users.filter((user) => { return user.department == department; });
         }
         res.render('clients/create', { users: users, });
