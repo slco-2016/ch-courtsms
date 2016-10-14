@@ -604,6 +604,8 @@ $(function() {
 
         // Get the highest performing weeek
         drawGaugeChart(countsByWeek);
+        console.log('receiving', countsByWeek);
+
         function drawGaugeChart (weeks) {
           var highestCount = Math.max.apply(Math,weeks.map(function(o){return Number(o.message_count);}))
           var thisWeeksVal = 0;
@@ -616,6 +618,8 @@ $(function() {
               thisWeeksVal = Number(latest.message_count);
             }
           }
+
+          console.log(thisWeeksVal, highestCount)
           var prctgeOfPeak = Math.floor(((thisWeeksVal/highestCount)*1000))/10
 
           c3.generate({
