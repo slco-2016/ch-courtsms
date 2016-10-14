@@ -23,13 +23,13 @@ module.exports = {
         departmentIds = resp.map((department) => {
           return department.department_id;
         });
+        console.log("\n\nfound these depts", departmentIds, resp);
 
         // From that resulting comm, see all clients attached by
         // active communication connections
         return Clients.findByCommId(communication.commid);
       }).then((resp) => {
         clients = resp;
-        console.log("\n\nfound these clients", clients);
 
         // Filter out inactive clients
         clients = clients.filter((client) => {
@@ -44,7 +44,6 @@ module.exports = {
         // Query for the rows associated with those users (case managers)
         return Users.findByIds(allUserIdsRelatedToClients);
       }).then((resp) => {
-        console.log("\n\nfound these users", resp);
 
         // Only keep the users that are in the departments that
         // are related with that toNumber
@@ -62,7 +61,7 @@ module.exports = {
         const userIds = users.map((user) => {
           return user.cmid;
         });
-        console.log("\n\nclients before filter", clients);
+
         clients = clients.filter((client) => {
           return userIds.indexOf(client.cm) > -1;
         });
