@@ -606,20 +606,18 @@ $(function() {
         drawGaugeChart(countsByWeek);
 
         function drawGaugeChart (weeks) {
-          console.log('receiving', weeks);
           var highestCount = Math.max.apply(Math,weeks.map(function(o){return Number(o.message_count);}))
           var thisWeeksVal = 0;
           if (weeks.length) {
             var latest = weeks[weeks.length - 1];
-            var latestDate = new Date(latest.time_period).getWeek() + 1;
+            var latestDate = new Date(latest.time_period).getWeek();
             var todaysDate = new Date().getWeek();
 
-            if (latestDate == todaysDate) {
+            if (latestDate == todaysDate || latestDate == todaysDate - 1) {
               thisWeeksVal = Number(latest.message_count);
             }
           }
 
-          console.log(thisWeeksVal, highestCount)
           var prctgeOfPeak = Math.floor(((thisWeeksVal/highestCount)*1000))/10
 
           c3.generate({
