@@ -118,7 +118,7 @@ module.exports = {
     const text = '  Hello, ' + cm.first + ' ' + cm.last + '. You are recieving this email because your account (' + cm.email + ') has requested a password reset. ' +
                 ' \n If this was not you, you don\'t need to do anything. If it was you and you did intend to reset your password, please go to the ' + 
                 ' following address by either clicking on or cutting and pasting the following address: ' + 
-                ' \n https://clientcomm.org/login/reset/' + String(uid) + 
+                ' \n https://secure.clientcomm.org/login/reset/' + String(uid) + 
                 ' \n The above link will expire within 24 hours. After that time, please request a new key to update your password. ';
 
     const html = '<p>' + text.split('\n').join('</p><p>') + '</p>';
