@@ -85,9 +85,10 @@ module.exports = {
     const subject  = !req.body.subject ? '' : req.body.subject;
     const message  = req.body.message;
     const send     = moment(req.body.sendDate)
-                    // .tz(res.locals.organization.tz)
                     .startOf('day')
                     .add(Number(req.body.sendHour), 'hours')
+                    .add(6, 'hours') // temp hack to ensure MST (TODO: Fix this!!)
+                    // .tz(res.locals.organization.tz)
                     .format('YYYY-MM-DD HH:mm:ss');
 
     Notifications.create(
