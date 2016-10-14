@@ -322,8 +322,14 @@ module.exports = {
     Conversations.getMostRecentConversation(user, client)
     .then((resp) => {
       conversation = resp;
-      const conversationId = conversation.convid;
-      return Conversations.closeAllWithClientExcept(client, conversationId);
+      if (conversation) {
+        const conversationId = conversation.convid;
+        return Conversations.closeAllWithClientExcept(client, conversationId);
+      } else {
+        return new Promise((fulfill, reject) => {
+          fulfill();
+        });
+      }
     }).then(() => {
       // Use existing conversation if exists and recent (lt 5 days)
       let now, lastUpdated, recentOkay = false;
