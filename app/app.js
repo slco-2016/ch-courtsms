@@ -264,7 +264,7 @@ app.get('/', RootController.index);
 
 // Redundant catch all
 app.get('/*', (req, res) => {
-  res.redirect("/");
+  res.redirect('/');
 });
 
 // Scheduled operations
