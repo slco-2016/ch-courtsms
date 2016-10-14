@@ -85,7 +85,7 @@ module.exports = {
     const subject  = !req.body.subject ? '' : req.body.subject;
     const message  = req.body.message;
     const send     = moment(req.body.sendDate)
-                    .tz(res.locals.organization.tz)
+                    // .tz(res.locals.organization.tz)
                     .startOf('day')
                     .add(Number(req.body.sendHour), 'hours')
                     .format('YYYY-MM-DD HH:mm:ss');
