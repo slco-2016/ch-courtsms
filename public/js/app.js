@@ -542,7 +542,8 @@ $(function() {
               if (userFilter) {
                 return userFilter === Number(ea["user.cmid"]);
               } else {
-                return departmentFilter == Number(ea["user.department"]);
+                // return departmentFilter == Number(ea["user.department"]);
+                return true;
               }
             } else if (userFilter) {
               return userFilter === Number(ea["user.cmid"]);
@@ -558,9 +559,18 @@ $(function() {
             return b["activity"] - a["activity"];
           });
 
+          var userIds = users.map(function (u) {
+            return u.cmid;
+          });
+
+          keenUsers = keenUsers.filter(function (u) {
+            return userIds.indexOf(u.cmid) > -1;
+          });
+
           keenUserIds = keenUsers.map(function(u) {
             return u.cmid;
           });
+
           users = users.filter(function (u) {
             return keenUserIds.indexOf(u.cmid) < 0;
           }).map(function (u) {
@@ -570,6 +580,7 @@ $(function() {
               cmid: u.cmid
             }
           });
+
           return keenUsers.concat(users);
         }
 

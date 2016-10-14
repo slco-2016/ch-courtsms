@@ -9,6 +9,7 @@ const momentTz = require('moment-timezone');
 module.exports = {
 
   org(req, res) {
+    const tempHoldDepartment = req.user.department;
     if (req.user.class == 'owner' || req.user.class == 'support') {
       req.user.department = null;
     }
@@ -98,6 +99,8 @@ module.exports = {
 
       return CloseoutSurveys.getSuccessDistributionByOrg(req.user.org);
     }).then((surveySynopsis) => {
+      // reset the department id
+      req.user.department = tempHoldDepartment;
 
       res.render('dashboard/index', {
         hub: {
