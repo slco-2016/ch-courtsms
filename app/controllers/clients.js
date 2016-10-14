@@ -235,9 +235,9 @@ module.exports = {
   },
 
   messagesIndex(req, res) {
-    let clientId = req.params.client;
-    let method = req.query.method;
-    let user = req.getUser();
+    const clientId = req.params.client;
+    const method = req.query.method;
+    const user = req.getUser();
 
     // determine if we should filter by type
     let methodFilter = 'all';
@@ -250,7 +250,7 @@ module.exports = {
     Clients.findById(clientId)
     .then((resp) => {
       client = resp;
-      return Conversations.findByUserAndClient(user, clientId)
+      return Conversations.findByUserAndClient(user, clientId);
     }).then((resp) => {
       conversations = resp;
 

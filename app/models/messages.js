@@ -317,9 +317,11 @@ class Messages extends BaseModel {
         return db('emails')
           .select('attachments.*')
           .whereIn('emails.id', emailIds)
-          .leftJoin('attachments', 'emails.id', 'attachments.email_id');
+          .join('attachments', 'emails.id', 'attachments.email_id');
       }).then((attachments) => {
-        attachments = attachments.map(a => new Attachments(a));
+        attachments = attachments.map((a) => {
+          new Attachments(a);
+        });
         messages = messages.map((message) => {
           message.attachments = [];
           for(let i=0; i < attachments.length; i++ ){
