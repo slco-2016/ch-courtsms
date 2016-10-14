@@ -29,8 +29,10 @@ module.exports = {
     Communications.getOrCreateFromValue(fromNumber, 'cell')
     .then((resp) => {
       communication = resp;
+      console.log('retrieve clients from ', toNumber, 'against', communication);
       return sms.retrieveClients(toNumber, communication);
     }).then((resp) => {
+      console.log('clients found', resp);
       clients = resp;
       return Conversations.retrieveByClientsAndCommunication(
         clients, communication
