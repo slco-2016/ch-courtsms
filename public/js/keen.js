@@ -14,12 +14,12 @@ var keenRef = {
   startTime: new Date().getTime(),
   clientPageVisitEvent: {
     user: {
-      first:      SESSION_USER ? null : SESSION_USER.first,
-      middle:     SESSION_USER ? null : SESSION_USER.middle,
-      last:       SESSION_USER ? null : SESSION_USER.last,
-      email:      SESSION_USER ? null : SESSION_USER.email,
-      cmid:       SESSION_USER ? null : SESSION_USER.cmid,
-      department: SESSION_USER ? null : SESSION_USER.department,
+      first:      SESSION_USER ? SESSION_USER.first : null,
+      middle:     SESSION_USER ? SESSION_USER.middle : null,
+      last:       SESSION_USER ? SESSION_USER.last : null,
+      email:      SESSION_USER ? SESSION_USER.email : null,
+      cmid:       SESSION_USER ? SESSION_USER.cmid : null,
+      department: SESSION_USER ? SESSION_USER.department : null,
     },
     referrer: document.referrer,
     URL:      document.URL,
