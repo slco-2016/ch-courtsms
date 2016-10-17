@@ -18,7 +18,7 @@
 <div class="cardBody">
 
   <form method="post"
-        action="/groups/address/<%= parameters.group %>">
+        action="/groups/address/<%= parameters.groupID || parameters.group %>">
 
     <div class="formRow smallBottomPad">
       <div class="formLabel"> Subject <small>(only visible to clients via email)</small></div>

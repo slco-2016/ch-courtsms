@@ -411,7 +411,7 @@ class Messages extends BaseModel {
               }).catch(reject);
 
             } else {
-              fulfill();
+              fulfill(comms[0].comm);
             }
           }).catch(reject);
         }
@@ -511,6 +511,7 @@ class Messages extends BaseModel {
       clientIDs.forEach(function (clientID) {
         Messages.smartSend(userID, clientID, title, content)
         .then(() => {
+          console.log("Smart Send failed...");
           // do nothing
         }).catch(function (err) {});
       });

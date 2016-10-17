@@ -386,7 +386,7 @@ class Conversations extends BaseModel {
         .where('convo', conversationID)
         .orderBy('created', 'asc')
       .then((messages) => {
-        this._getMultiResponse(messages, fulfill);
+        fulfill(messages);
       }).catch(reject);
     });
   }
