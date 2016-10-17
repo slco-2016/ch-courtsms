@@ -232,7 +232,7 @@
             slco@codeforamerica.org
           </a>
         </span>
-        <a href="https://secure.clientcomm.org/login">
+        <a href="/login">
           <span class="right">Login</span>
         </a>
       </div>
@@ -381,16 +381,16 @@
       </div>
 
       <div class="chart1"><div id="chart-overall"></div></div>
-      <center style="margin-top: -25px; color: #898989; font-size: 18px">Overall Daily Usage Growth</center>
+      <center style="margin-top: -25px; color: #898989; font-size: 18px">Cumulative Usage Growth</center>
 
-      <!-- <center class="statsLinkBtnTop">
+      <center class="statsLinkBtnTop">
         <br>
         <a href="http://clientcomm.org/stats">
           <div class="statsLinkBtn">
             more live stats
           </div>
         </a>
-      </center> -->
+      </center>
 
       </div>
     </div>
@@ -518,6 +518,10 @@
     var keys = Object.keys(dates).sort(function (a,b) { return new Date(a) - new Date(b); });
     var vals = keys.map(function (k) { return dates[k]; })
 
+    for (var i=1; i < vals.length; i++) {
+      vals[i] += vals[i-1];
+    }
+
     c3.generate({
       data: { 
         x: "x", 
@@ -528,7 +532,7 @@
       legend: { hide: true },
       axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
       padding: { right: 20, top: 20 },
-      size: { width: 830, height: 230 },
+      size: { width: 830, height: 730 },
       grid: { y: { show: false }, x: { show: false } },
       bindto: "#chart-overall"
     });
