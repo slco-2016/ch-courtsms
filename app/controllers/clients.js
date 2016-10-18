@@ -145,7 +145,7 @@ module.exports = {
     const first  = req.body.first;    
     const middle = req.body.middle ? req.body.middle : '';    
     const last   = req.body.last;   
-    const dob    = req.body.dob;    
+    const dob    = req.body.dob || '01/01/1900';
     const so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
     const otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
 
