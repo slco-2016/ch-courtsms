@@ -455,9 +455,12 @@ module.exports = {
     const clientId = req.params.client;
     const closeOutStatus = req.body.closeOutStatus;
     const mostCommonMethod = req.body.mostCommonMethod;
-    const likelihoodSuccessWithoutCC = req.body.likelihoodSuccessWithoutCC;
+    let likelihoodSuccessWithoutCC = req.body.likelihoodSuccessWithoutCC;
     const helpfulnessCC = req.body.helpfulnessCC;
     const mostOftenDiscussed = req.body.mostOftenDiscussed;
+
+    // clean some of the inputs
+    if (isNaN(likelihoodSuccessWithoutCC)) likelihoodSuccessWithoutCC = null;
     CloseoutSurveys.create( clientId, closeOutStatus, 
                             mostCommonMethod, likelihoodSuccessWithoutCC, 
                             helpfulnessCC, mostOftenDiscussed)
