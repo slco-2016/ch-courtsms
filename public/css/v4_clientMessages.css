@@ -98,6 +98,21 @@
       .rightContent .messageStream .messageDiv .message.inbound {
         background-color: #FFF;
         color: #2A2A2A; }
+      .rightContent .messageStream .messageDiv .message .content .viewAttachment {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        text-align: center; }
+        .rightContent .messageStream .messageDiv .message .content .viewAttachment a {
+          border: 1px solid #D3D3D3;
+          font-size: 12px;
+          color: #898989;
+          padding: 5px;
+          border-radius: 5px; }
+          .rightContent .messageStream .messageDiv .message .content .viewAttachment a:hover {
+            border: 1px solid #4A90E2;
+            background-color: #4A90E2;
+            color: #FFF; }
       .rightContent .messageStream .messageDiv .message .bottomRow {
         margin-top: 15px;
         font-size: 12px;

@@ -172,14 +172,34 @@ $width_row5:  5%;
         &.outbound {
           border: 1px solid $white;
           color: $darkgrey;
-          .content {
-            // text-align: right;
-          }
         } 
         
         &.inbound {
           background-color: $white;
           color: $darkgrey;
+        }
+
+        .content {
+          .viewAttachment {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            text-align: center;
+
+            a {
+              border: 1px solid $lightgrey;
+              font-size: 12px;
+              color: $grey;
+              padding: 5px;
+              border-radius: 5px;
+
+              &:hover {
+                border: 1px solid $lightblue;
+                background-color: $lightblue;
+                color: $white;
+              }
+            }
+          }
         }
 
         .bottomRow {
