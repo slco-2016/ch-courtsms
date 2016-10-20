@@ -108,7 +108,7 @@ module.exports = {
       }
 
       // Produce a response to the client
-      // res.set({'content-type':'text/plain',}).status(500).send(err.stack);
+      res.set({'content-type':'text/plain',}).status(500).send(err.stack);
       
     };
 
