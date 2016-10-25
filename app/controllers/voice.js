@@ -140,6 +140,7 @@ module.exports = {
   },
 
   save(req, res) {
+    console.log('Recording save req body from Twilio\n', req.body);
     const type = req.query.type;
     if (!type) {
       return res.error500(new Error('save-recording needs a recording type'));
