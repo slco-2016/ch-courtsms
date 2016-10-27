@@ -38,7 +38,7 @@ var baseProductionReadyCredentials = {
   },
 
   mailgun: {
-    key: "fake-key"
+    apiKey: "fake-key"
   },
 
   // AWS interface/access secrets
