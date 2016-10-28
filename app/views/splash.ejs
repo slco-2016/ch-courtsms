@@ -137,15 +137,24 @@
       border: 0px solid #999;
     }
 
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 560px) {
       .topEmailOption {
         display: none;
       }
       .signup {
         width: 320px;
+        height: 60px;
+        text-align: center;
+        padding-top: 5px;
       }
       .signup input {
-        width: 200px;
+        width: 315px;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        margin: 0px;
+        display: block;
+        clear: both;
       }
     }
 
@@ -175,7 +184,16 @@
       line-height: 18px;
     }
 
-    @media only screen and (max-width: 920px) {
+    @media only screen and (max-width: 900px) {
+      .bottom {
+        width: 100%;
+      }
+      .bottomBlock {
+        width: 30%;
+      }
+    }
+
+    @media only screen and (max-width: 600px) {
       .bottom {
         width: 100%;
         min-height: 225px;
@@ -217,7 +235,7 @@
       padding-bottom: 50px
     }
 
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 560px) {
       .featureBox {
         min-height: 1050px; 
       }
@@ -236,13 +254,13 @@
       padding: 2px 15px 2px 15px;
     }
 
-    @media only screen and (max-width: 775px) {
+    @media only screen and (max-width: 845px) and (min-width: 560px) {
       .featureSubTitle {
-        /*display: none;*/
+        display: none;
       }
     }
 
-    @media only screen and (max-width: 510px) {
+    @media only screen and (max-width: 560px) {
       .feature {
         clear:both;
         margin-left: auto;
@@ -342,16 +360,16 @@
         <div class="icon">
           <div class="logo"><% include ../../public/icons/logo.svg %></div>
           <br>
-          <% include ../../public/icons/logotext.svg %>
+          <div style="padding-left: 10px; padding-right: 10px">
+            <% include ../../public/icons/logotext.svg %>
+          </div>
         </div>
 
         <br>
         
-        <div style="font-size: 20px">
-          <b>ClientComm</b>  makes it quick and easy to communicate with clients and document client supervision. 
-        </div>
-        <div style="font-size: 16px">
-          Use ClientComm to help clients navigate their requirements and graduate from pretrial or probation <b>successfully</b>.
+        <div style="font-size: 20px; padding-right: 10%; padding-left: 10%">
+          Help clients navigate their requirements and graduate from pretrial or probation successfully.
+          ClientComm makes it quick and easy to communicate with clients and document client supervision. 
         </div>
 
         <div class="signup">
@@ -452,9 +470,11 @@
       <center style="font-size: 28px; padding: 20px; padding-bottom: 5px; font-weight: 700">
         ClientComm pilot usage data
       </center>
-      <center style="font-size: 14px; padding: 0px; margin-bottom: 25px;">
+      <center style="font-size: 14px; line-height: 14px; padding: 0px; margin-bottom: 25px;">
         Salt Lake County Criminal Justice Services 
       </center>
+
+      <br>
 
       <div class="pilotStatsBlock">
         <div class="pilotStat">
@@ -518,7 +538,7 @@
       </div>
 
       <div style="padding-top: 25px">
-      <center style="color: #888; font-size: 12px; line-height: 14px">
+      <center style="color: #888; font-size: 12px; line-height: 18px">
         A 2016 Fellowship project by <a href="http://archive.codeforamerica.org/governments/2016-announcement/">Code for America Fellows</a> Kuan Butts, Ben Peterson. <a href="http://codeforamerica.org">Code for America</a> Labs, Inc. is a non-partisan, non-political 501(c)(3) charitable organization.
       </center>
       </div>
