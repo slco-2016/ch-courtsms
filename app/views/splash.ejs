@@ -336,6 +336,17 @@
       background-color: #00a10b;
     }
 
+    .bottomEmail {
+      display: none;
+    }
+
+    @media only screen and (max-width: 560px) {
+      .bottomEmail {
+        margin-top: 45px;
+        display: block;
+      }
+    }
+
   </style>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.css">
 
@@ -506,6 +517,14 @@
     </div>
 
     <div class="block grey">
+
+      <div class="bottomEmail">
+        Email the team at 
+        <a href="mailto:slco@codeforamerica.org?Subject=NAPSA%20Interest">
+          slco@codeforamerica.org
+        </a>
+      </div>
+
       <div class="bottom">
 
         <div class="bottomBlock">
@@ -538,9 +557,10 @@
       </div>
 
       <div style="padding-top: 25px">
-      <center style="color: #888; font-size: 12px; line-height: 18px">
-        A 2016 Fellowship project by <a href="http://archive.codeforamerica.org/governments/2016-announcement/">Code for America Fellows</a> Kuan Butts, Ben Peterson. <a href="http://codeforamerica.org">Code for America</a> Labs, Inc. is a non-partisan, non-political 501(c)(3) charitable organization.
-      </center>
+
+        <center style="color: #888; font-size: 12px; line-height: 18px">
+          A 2016 Fellowship project by <a href="http://archive.codeforamerica.org/governments/2016-announcement/">Code for America Fellows</a> Kuan Butts, Ben Peterson. <a href="http://codeforamerica.org">Code for America</a> Labs, Inc. is a non-partisan, non-political 501(c)(3) charitable organization.
+        </center>
       </div>
     </div>
 
