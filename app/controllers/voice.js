@@ -42,14 +42,17 @@ module.exports = {
           transcribeCallback: '/webhook/voice/transcribe',
         });
         res.send(resp.toString());
-      } else {        
+      } else {
+        resp.dial({callerId: '13854683500', });
+
+        // TODO: Make this component modular by organization(s)
         resp.say(
-          {voice: 'woman',}, 
-          'Welcome to Client Comm. We were unable to find '+
-          'your number in our system. Please hold while we '+
-          'forward you to the front desk');
-        // resp.dial({callerId: "13854683500"})
-        resp.dial({callerId: '12033133609',});
+          {
+            voice: 'woman',
+          }, 
+          'Sorry, we were unable to connect you with ' +
+          'Criminal Justice Services. ' +
+          'Please call the front desk at 1 385 468 3500.');
         res.send(resp.toString());
       }
     });

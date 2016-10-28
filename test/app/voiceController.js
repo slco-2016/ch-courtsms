@@ -138,9 +138,12 @@ describe('Voice reqs', function() {
       .send(twilioInboundCall)
       .expect(200)
       .end((err, resp) => {
-        if (err) {return done(err)}
-        resp.text.should.match(/We were unable to find your number/)
-        done()
+        if (err) {
+          return done(err)
+        } else {
+          resp.text.should.match(/we were unable to connect you with Criminal Justice Services/)
+          done();
+        }
       })
   })
 

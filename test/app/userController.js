@@ -458,7 +458,7 @@ describe('Basic http req tests', function() {
   });
 
   it('submitting a bad number for voice message should error correctly', function(done) {
-    Clients.findManyByAttribute("cm", 2)
+    Clients.findManyByAttribute('cm', 2)
     .then((clients) => {
       // assume here that there is at least one client from seeds
       let client = clients[0];      
@@ -468,7 +468,7 @@ describe('Basic http req tests', function() {
           commId: '1',
           sendDate: '2016-10-20',
           sendHour: 10,
-          value: '123'
+          value: '123',
         })
         .expect(302)
         .expect('Location', `/clients/${client.clid}/voicemessage`)
