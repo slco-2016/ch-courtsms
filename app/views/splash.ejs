@@ -110,7 +110,7 @@
     }
 
     .inside {
-      width: 1050px;
+      max-width: 1050px;
       margin-left: auto;
       margin-right: auto;
     }
@@ -135,6 +135,15 @@
       padding: 5px;
       margin: 0px 0px 0px 0px;
       border: 0px solid #999;
+    }
+
+    @media only screen and (max-width: 510px) {
+      .signup {
+        width: 320px;
+      }
+      .signup input {
+        width: 200px;
+      }
     }
 
     .signup .button {
@@ -163,6 +172,17 @@
       line-height: 18px;
     }
 
+    @media only screen and (max-width: 920px) {
+      .bottom {
+        width: 100%;
+        min-height: 225px;
+      }
+      .bottomBlock {
+        clear: both;
+        width: 100%;
+      }
+    }
+
     .bottomBlock .name {
       font-weight: 600;
       margin-top: 20px;
@@ -185,6 +205,53 @@
       color: #FFF;
     }
 
+    .featureBox {
+      display: block; 
+      clear: both; 
+      position: relative; 
+      min-height: 150px; 
+      color: #34438A; 
+      padding-bottom: 50px
+    }
+
+    @media only screen and (max-width: 510px) {
+      .featureBox {
+        min-height: 650px; 
+      }
+    }
+
+    .feature {
+      width: 20%; 
+      float: left; 
+      text-align: center;
+    }
+
+    .featureSubTitle {
+      line-height: 18px; 
+      font-size: 14px; 
+      color: #32A2DB; 
+      padding: 2px 15px 2px 15px;
+    }
+
+    @media only screen and (max-width: 510px) {
+      .feature {
+        clear:both;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        display: block;
+      }
+      .featureSubTitle {
+        display: none;
+      }
+    }
+
+    @media only screen and (max-width: 920px) {
+      .featureSubTitle {
+        display: none;
+      }
+    }
+
     .circleImg {
       background-color: #FFF;
       border-radius: 100%;
@@ -201,6 +268,30 @@
       margin-left: auto;
       padding-bottom: 7%;
     }
+
+    .pilotStatsBlock {
+      display: block; 
+      clear: both; 
+      position: relative; 
+      height: 150px; 
+      color: #898989
+    }
+
+    .pilotStat {
+      width: 33%; 
+      float: left; 
+      text-align: center;
+    }
+
+    @media only screen and (max-width: 920px) {
+      .pilotStatsBlock {
+        height: 450px;
+      }
+      .pilotStat {
+        clear: both;
+        width: 100%;
+      }
+    }    
 
     .statsLinkBtnTop a:hover, .statsLinkBtnTop a:visited, .statsLinkBtnTop a:link, .statsLinkBtnTop a:active {
       text-decoration: none;
@@ -280,64 +371,64 @@
         ClientComm Features
       </center>
 
-      <div style="display: block; clear: both; position: relative; height: 150px; color: #34438A; padding-bottom: 50px">
+      <div class="featureBox">
 
-        <div style="width: 20%; float: left; text-align: center;">
+        <div class="feature">
           <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <div class="circleImg">
               <img src="/static/icons/png/telephone.png"></img>
             </div>
           </span>
           <center><b>End Phone Tag</b></center>
-          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+          <center class="featureSubTitle">
             Communicate at your convenience and produce detailed conversation logs automatically.
           </center>
         </div>
 
-        <div style="width: 20%; float: left; text-align: center;">
+        <div class="feature">
           <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <div class="circleImg">
               <img src="/static/icons/png/padlock-1.png"></img>
             </div>
           </span>
           <center><b>Security</b></center>
-          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+          <center class="featureSubTitle">
             ClientComm’s data is designed to comply with Salt Lake County's digital communications policies.
           </center>
         </div>
 
-        <div style="width: 20%; float: left; text-align: center;">
+        <div class="feature">
           <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <div class="circleImg">
               <img src="/static/icons/png/alarm-clock.png"></img>
             </div>
           </span>
           <center><b>Notifications</b></center>
-          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+          <center class="featureSubTitle">
             Schedule messages for appointments, court dates, and personal goals in advance.
           </center>
         </div>
 
-        <div style="width: 20%; float: left; text-align: center;">
+        <div class="feature">
           <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <div class="circleImg">
               <img src="/static/icons/png/user-list.png"></img>
             </div>
           </span>
           <center><b>Smart Send</b></center>
-          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+          <center class="featureSubTitle">
             Communication methods are monitored to infer the best contact method for each client.
           </center>
         </div>
 
-        <div style="width: 20%; float: left; text-align: center;">
+        <div class="feature">
           <span style="font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <div class="circleImg">
               <img src="/static/icons/png/interface.png"></img>
             </div>
           </span>
           <center><b>Templates</b></center>
-          <center style="line-height: 18px; font-size: 14px; color: #32A2DB; padding: 2px 15px 2px 15px">
+          <center class="featureSubTitle">
             Common messages and phrases are stored for quick acess and communication.
           </center>
         </div>
@@ -357,22 +448,22 @@
         Salt Lake County Criminal Justice Services 
       </center>
 
-      <div style="display: block; clear: both; position: relative; height: 150px; color: #898989">
-        <div style="width: 33%; float: left; text-align: center;">
+      <div class="pilotStatsBlock">
+        <div class="pilotStat">
           <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <%= overall.msgs %>
           </span>
           <center>Sent Messages</center>
         </div>
 
-        <div style="width: 33%; float: left; text-align: center;">
+        <div class="pilotStat">
           <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <%= overall.convos %>
           </span>
           <center>Live Conversations</center>
         </div>
 
-        <div style="width: 33%; float: left; text-align: center;">
+        <div class="pilotStat">
           <span style="font-family: Arial, Sans-Serif; font-size: 100px; font-weight: 700; color: #344289; line-height: 95px;">
             <%= overall.clients %>
           </span>
@@ -382,15 +473,6 @@
 
       <div class="chart1"><div id="chart-overall"></div></div>
       <center style="margin-top: -25px; color: #898989; font-size: 18px">Cumulative Usage Growth</center>
-
-      <center class="statsLinkBtnTop">
-        <br>
-        <a href="http://clientcomm.org/stats">
-          <div class="statsLinkBtn">
-            more live stats
-          </div>
-        </a>
-      </center>
 
       </div>
     </div>
@@ -427,9 +509,11 @@
 
       </div>
 
-      <center style="color: #888; font-size: 12px;">
+      <div style="padding-top: 25px">
+      <center style="color: #888; font-size: 12px; line-height: 14px">
         A 2016 Fellowship project by <a href="http://archive.codeforamerica.org/governments/2016-announcement/">Code for America Fellows</a> Kuan Butts, Ben Peterson. <a href="http://codeforamerica.org">Code for America</a> Labs, Inc. is a non-partisan, non-political 501(c)(3) charitable organization.
       </center>
+      </div>
     </div>
 
 
@@ -441,7 +525,7 @@
   <script type="text/javascript">
    
 
-     window.msgs = "<%= JSON.stringify(msgs) %>";
+  window.msgs = "<%= JSON.stringify(msgs) %>";
   window.msgsReduced = null;
 
 
@@ -522,6 +606,9 @@
       vals[i] += vals[i-1];
     }
 
+    var tempW = Math.min(830, $(window).width()*0.85);
+    var tempH = Math.floor(730/830*tempW);
+
     c3.generate({
       data: { 
         x: "x", 
@@ -532,7 +619,7 @@
       legend: { hide: true },
       axis: { x: { type: "timeseries", tick: { format: "%m/%d" } } },
       padding: { right: 20, top: 20 },
-      size: { width: 830, height: 730 },
+      size: { width: tempW, height: tempH },
       grid: { y: { show: false }, x: { show: false } },
       bindto: "#chart-overall"
     });
