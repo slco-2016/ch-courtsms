@@ -81,6 +81,7 @@
   .applicationFrame .navHeader {
     height: 40px;
     width: 1024px;
+    z-index: 90;
     color: #FFF;
     background-color: #344289;
     border-bottom: 1px solid #E8ECEF;
@@ -122,6 +123,63 @@
           margin: 0px;
           padding-left: 4px;
           margin-left: 8px; }
+    .applicationFrame .navHeader .performance {
+      float: right;
+      margin-right: 14px;
+      width: 125px; }
+      .applicationFrame .navHeader .performance .performanceBar {
+        height: 3px;
+        position: relative;
+        background-color: #000;
+        float: right;
+        margin-top: 18px;
+        width: 75px; }
+        .applicationFrame .navHeader .performance .performanceBar span {
+          display: block;
+          height: 100%;
+          background-color: #FFF;
+          position: relative;
+          overflow: hidden; }
+      .applicationFrame .navHeader .performance .performanceBarValue {
+        float: right;
+        margin-right: 8px;
+        font-size: 12px;
+        line-height: 40px; }
+      .applicationFrame .navHeader .performance .performanceBarAlert {
+        position: fixed;
+        z-index: 100;
+        top: 33px;
+        display: none; }
+        .applicationFrame .navHeader .performance .performanceBarAlert .arrowTop {
+          margin-left: 25px;
+          width: 0;
+          height: 0;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-bottom: 5px solid #FFF; }
+        .applicationFrame .navHeader .performance .performanceBarAlert .alertsBody {
+          margin-left: -110px;
+          position: absolute;
+          background-color: #3F69B6;
+          width: 300px;
+          border: 0px solid #344289;
+          border-radius: 3px;
+          box-shadow: 0px 0px 5px #000;
+          overflow: hidden; }
+        .applicationFrame .navHeader .performance .performanceBarAlert .alertRow {
+          padding: 5px 10px 5px 10px;
+          border-bottom: 1px solid #4A90E2;
+          overflow: hidden;
+          cursor: default; }
+          .applicationFrame .navHeader .performance .performanceBarAlert .alertRow .message {
+            font-weight: 300;
+            float: left;
+            width: 260px;
+            white-space: break;
+            font-size: 14px;
+            line-height: 18px; }
+      .applicationFrame .navHeader .performance:hover .performanceBarAlert {
+        display: block; }
     .applicationFrame .navHeader .rightLogout {
       color: #FFF;
       line-height: 40px;

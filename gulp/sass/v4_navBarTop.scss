@@ -135,6 +135,7 @@ $darkblue:    #344289;
   .navHeader {
     height: 40px;
     width: 1024px;
+    z-index: 90;
 
     color: $white;
     background-color: $darkblue;
@@ -196,6 +197,86 @@ $darkblue:    #344289;
 
         &:hover {
           // background-color: $blue;
+        }
+      }
+    }
+
+    .performance {
+      float: right;
+      margin-right: 14px;
+      width: 125px;
+
+      .performanceBar {
+        height: 3px;
+        position: relative;
+        background-color: $black;
+        float: right;
+        margin-top: 18px;
+
+        width: 75px;
+
+        span {
+          display: block;
+          height: 100%;
+          background-color: $white;
+          position: relative;
+          overflow: hidden;
+        }
+      }
+
+      .performanceBarValue {
+        float: right;
+        margin-right: 8px;
+        font-size: 12px;
+        line-height: 40px;
+      }
+
+      .performanceBarAlert {
+        position: fixed;
+        z-index: 100;
+        top: 33px;
+        display: none;
+
+        .arrowTop {
+          margin-left: 25px;
+          width: 0; 
+          height: 0; 
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-bottom: 5px solid $white;
+        }
+
+        .alertsBody {
+          margin-left: -110px;
+          position: absolute;
+          background-color: $blue;
+          width: 300px;
+          border: 0px solid $darkblue;
+          border-radius: 3px;
+          box-shadow: 0px 0px 5px $black;
+          overflow: hidden;
+        }
+
+        .alertRow {
+          padding: 5px 10px 5px 10px;
+          border-bottom: 1px solid $lightblue;
+          overflow: hidden;
+          cursor: default;
+
+          .message {
+            font-weight: 300;
+            float: left;
+            width: 260px;
+            white-space: break;
+            font-size: 14px;
+            line-height: 18px;
+          }
+        }
+      }
+
+      &:hover {
+        .performanceBarAlert {
+          display: block;
         }
       }
     }
