@@ -71,6 +71,11 @@ class Users extends BaseModel {
         let topThisWeek = 0;
         let usersCount = 0;
         results.forEach((ea) => {
+          ea.count = Number(ea.count);
+          if (isNaN(ea.count)) {
+            ea.count = 0;
+          }
+
           if (ea.count > topThisWeek) {
             topThisWeek = ea.count;
           }
@@ -83,7 +88,7 @@ class Users extends BaseModel {
         } else if (usersCount == 0) {
           fulfill(0);
         } else {
-          fulfill(Math.round(usersCount * 100 / topThisWeek) / 100);
+          fulfill(Math.round(usersCount * 100 / topThisWeek));
         }
       });
     });
