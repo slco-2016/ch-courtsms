@@ -88,7 +88,8 @@ class Users extends BaseModel {
         } else if (usersCount == 0) {
           fulfill(0);
         } else {
-          fulfill(Math.round(usersCount * 100 / topThisWeek));
+          let percent = Math.round(usersCount * 100 / topThisWeek);
+          fulfill(Math.min(100, percent));
         }
       });
     });
