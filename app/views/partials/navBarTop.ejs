@@ -1,5 +1,10 @@
 <% include ./headerBase %>
 
+<% let levelSelectOptions = false; %>
+<% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
+  <% levelSelectOptions = true; %>
+<% } %>
+
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_navBarTop.css">
 
@@ -27,7 +32,7 @@
 
     <div class="rightLogout">
 
-      <% if (typeof user !== "undefined" && ["owner", "supervisor", "support"].indexOf(user.class) > -1) { %>
+      <% if (levelSelectOptions) { %>
         <a href="/">
           <span class="button levels <%if (level=="org") {%>selected<%}%>">
             Organization
@@ -62,8 +67,8 @@
       </a>
     </div>
 
-    <% const performancePercentage = String(25); %>
-    <div class="performance">
+    <% const performancePercentage = String(user.performanceThisWeek); %>
+    <div class="performance <% if (levelSelectOptions) { %>adminVersion<% } %>">
       <div class="performanceBar">
         <span style="width: <%=performancePercentage%>%"></span>
       </div>

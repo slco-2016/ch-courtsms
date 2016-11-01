@@ -2,7 +2,9 @@ const Alerts = require('./models/alerts');
 const Clients = require('./models/clients');
 const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
+const Messages = require('./models/messages');
 const Organizations = require('./models/organizations');
+const Users = require('./models/users');
 
 function _capitalize (word) {
   return word.split(' ').map(function (name) {
@@ -306,6 +308,22 @@ module.exports = {
 
     res.locals.user = req.user;
     next();
+  },
+
+  getUserPerformance(req, res, next) {
+    if (req.user) {
+      Users.getPerformanceComparedToTopInOrganizationThisWeek(req.user.cmid)
+      .then((performance) => {
+        if (res.locals.user) {
+          res.locals.user.performanceThisWeek = performance;
+          next();
+        } else {
+          next();
+        }
+      }).catch(res.error500);
+    } else {
+      next();
+    }
   },
 
 };

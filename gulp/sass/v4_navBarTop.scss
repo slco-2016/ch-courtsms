@@ -24,7 +24,7 @@ $darkblue:    #344289;
   position: fixed;
   z-index: 100;
   top: 7px;
-  left: 47%;
+  left: 48%;
   line-height: 24px;
   font-size: 12px;
   cursor: pointer;
@@ -205,6 +205,10 @@ $darkblue:    #344289;
       float: right;
       margin-right: 14px;
       width: 125px;
+
+      &.adminVersion {
+        display: none;
+      }
 
       .performanceBar {
         height: 3px;

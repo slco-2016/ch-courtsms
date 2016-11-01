@@ -64,6 +64,7 @@ app.use('/org/clients/:client', middleware.fetchClient);
 app.use(middleware.logging);
 app.use(middleware.setApplicationDetails);
 app.use(middleware.setUserAndLevel);
+app.use(middleware.getUserPerformance);
 
 app.use(middleware.attachErrorHandlers);
 app.use(middleware.attachLoggingTools);

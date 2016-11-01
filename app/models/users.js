@@ -40,13 +40,51 @@ class Users extends BaseModel {
     return `${emailName}.${emailOrg}@clientcomm.org`;
   }
 
-  getClients() {
+  static getClients() {
     return new Promise((fulfill, reject) => {
       db('clients')
         .where('cm', this.cmid)
       .then((users) => {
         const Clients = require('../models/clients');
         this.constructor._getMultiResponse(users, fulfill, Clients);
+      });
+    });
+  }
+
+  static getPerformanceComparedToTopInOrganizationThisWeek (userId) {
+    return new Promise((fulfill, reject) => {
+      let user;
+      Users.findById(userId)
+      .then((res) => {
+        user = res;
+
+        return db('msgs')
+          .select(db.raw('COUNT(msgid) AS count, cms.cmid'))
+          .leftJoin('convos', 'convos.convid', 'msgs.convo')
+          .leftJoin('cms', 'cms.cmid', 'convos.cm')
+          .whereRaw('msgs.created > date_trunc(\'week\', CURRENT_DATE)')
+          .and.where('org', user.org)
+          .groupBy('cms.cmid')
+          .orderBy('count', 'desc');
+      }).then((results) => {
+        const cmid = user.cmid;
+        let topThisWeek = 0;
+        let usersCount = 0;
+        results.forEach((ea) => {
+          if (ea.count > topThisWeek) {
+            topThisWeek = ea.count;
+          }
+          if (cmid == ea.cmid) {
+            usersCount = ea.count;
+          }
+        });
+        if (topThisWeek == 0) {
+          fulfill(0);
+        } else if (usersCount == 0) {
+          fulfill(0);
+        } else {
+          fulfill(Math.round(usersCount * 100 / topThisWeek) / 100);
+        }
       });
     });
   }
