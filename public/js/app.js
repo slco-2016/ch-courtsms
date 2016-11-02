@@ -486,6 +486,8 @@ $(function() {
             else newValsDay.push(0);
           });
 
+          valsWeek.pop();
+
           c3.generate({
             data: {
               xs:{
