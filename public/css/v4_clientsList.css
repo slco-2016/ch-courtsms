@@ -53,7 +53,8 @@
   border-bottom: 1px solid #E8ECEF; }
   .clientRow:hover {
     color: #FFF;
-    font-weight: 700; }
+    font-weight: 700;
+    background-color: #898989 !important; }
   .clientRow .column {
     float: left;
     text-align: left; }

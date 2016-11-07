@@ -268,16 +268,16 @@ $(function() {
       cssClass: 'JSclientIndex',
       execute: function() {
         var originalBackgroundColor = null;
-        $(".clientRow")
-          .hover(
-            function () {
-              var color = $(this).attr("data-client-color");
-              originalBackgroundColor = $(this).css("background-color");
-              $(this).css("background-color", color);
-            }, function () {
-              $(this).css("background-color", originalBackgroundColor);
-            }
-          );
+        // $(".clientRow")
+        //   .hover(
+        //     function () {
+        //       var color = $(this).attr("data-client-color");
+        //       originalBackgroundColor = $(this).css("background-color");
+        //       $(this).css("background-color", color);
+        //     }, function () {
+        //       $(this).css("background-color", originalBackgroundColor);
+        //     }
+        //   );
       }
     },
 

@@ -42,7 +42,7 @@
   background-color: #FFF; }
   .notificationRow:hover {
     color: #FFF;
-    background-color: #4A90E2 !important; }
+    background-color: #898989 !important; }
     .notificationRow:hover .bigNumber {
       color: #FFF !important; }
   .notificationRow .column {
