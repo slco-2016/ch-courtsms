@@ -24,6 +24,10 @@ $width_right:  50%;
   margin-right: auto;
 }
 
+body {
+  color: $darkgrey;
+}
+
 #messagingActivity {
   overflow: hidden;
 }
@@ -32,7 +36,7 @@ $width_right:  50%;
   height: 100%;
 
   .smallLeft {
-    padding-top: 10px;
+    padding-top: 35px;
     float: left;
     width: 20%;
 
@@ -57,7 +61,7 @@ $width_right:  50%;
 
         .caseManager {
           border: 1px solid $lightgrey;
-          color: $grey;
+          color: $darkgrey;
           padding: 5px;
           border-radius: 5px;
           margin-top: 5px;
@@ -89,10 +93,52 @@ $width_right:  50%;
       }
     }
   }
+
   .bigRight {
     float: left;
     padding-top: 10px;
     width: 80%;
+
+    .buttonRow {
+      height: 45px;
+      margin: 0px;
+      padding-right: 15px;
+      margin-top: 5px;
+
+      button {
+        float: right;
+
+        height: 25px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 12px;
+        cursor: pointer;
+
+        border: 1px solid $lightblue;
+        border-radius: 20px;
+        background-color: $offwhite;
+        color: $lightblue;
+
+        padding-right: 10px;
+        padding-left: 10px;
+
+        margin-left: 5px;
+
+        &:hover {
+          background-color: $lightblue;
+          color: $white;
+        }
+
+        &.inverse {
+          background-color: $lightblue;
+          color: $white;
+          &:hover {
+            background-color: $white;
+            color: $lightblue;
+          }
+        }
+      }
+    }
   }
 
   .container {
@@ -190,8 +236,7 @@ $width_right:  50%;
       color: $lightblue;
       &.under {
         text-align: center;
-        font-weight: 300;
-        color: $grey;
+        color: $darkgrey;
         font-size: 12px;
         line-height: 50px;
         font-weight: bold;
@@ -202,8 +247,7 @@ $width_right:  50%;
       color: $darkblue;
       &.under {
         text-align: center;
-        font-weight: 300;
-        color: $grey;
+        color: $darkgrey;
         font-size: 12px;
         line-height: 50px;
         font-weight: bold;

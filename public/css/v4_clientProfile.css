@@ -1,10 +1,13 @@
+body {
+  color: #2A2A2A; }
+
 #messagingActivity {
   overflow: hidden; }
 
 .profileRow {
   height: 100%; }
   .profileRow .smallLeft {
-    padding-top: 10px;
+    padding-top: 35px;
     float: left;
     width: 20%; }
     .profileRow .smallLeft .container {
@@ -21,7 +24,7 @@
         line-height: 20px; }
         .profileRow .smallLeft .clientInfoContainer .clientInfoRow .caseManager {
           border: 1px solid #D3D3D3;
-          color: #898989;
+          color: #2A2A2A;
           padding: 5px;
           border-radius: 5px;
           margin-top: 5px;
@@ -44,6 +47,34 @@
     float: left;
     padding-top: 10px;
     width: 80%; }
+    .profileRow .bigRight .buttonRow {
+      height: 45px;
+      margin: 0px;
+      padding-right: 15px;
+      margin-top: 5px; }
+      .profileRow .bigRight .buttonRow button {
+        float: right;
+        height: 25px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 12px;
+        cursor: pointer;
+        border: 1px solid #4A90E2;
+        border-radius: 20px;
+        background-color: #E8ECEF;
+        color: #4A90E2;
+        padding-right: 10px;
+        padding-left: 10px;
+        margin-left: 5px; }
+        .profileRow .bigRight .buttonRow button:hover {
+          background-color: #4A90E2;
+          color: #FFF; }
+        .profileRow .bigRight .buttonRow button.inverse {
+          background-color: #4A90E2;
+          color: #FFF; }
+          .profileRow .bigRight .buttonRow button.inverse:hover {
+            background-color: #FFF;
+            color: #4A90E2; }
   .profileRow .container {
     padding: 30px; }
     .profileRow .container .left {
@@ -112,8 +143,7 @@
       color: #4A90E2; }
       .cssResponseTimeBarGraph .headings .leftAttr.under {
         text-align: center;
-        font-weight: 300;
-        color: #898989;
+        color: #2A2A2A;
         font-size: 12px;
         line-height: 50px;
         font-weight: bold; }
@@ -122,8 +152,7 @@
       color: #344289; }
       .cssResponseTimeBarGraph .headings .rightAttr.under {
         text-align: center;
-        font-weight: 300;
-        color: #898989;
+        color: #2A2A2A;
         font-size: 12px;
         line-height: 50px;
         font-weight: bold; }

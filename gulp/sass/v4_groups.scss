@@ -5,6 +5,7 @@ $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$darkgrey:    #2A2A2A;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -32,7 +33,7 @@ $width_row6:  5%;
 .header {
   height: 20px;
   overflow: hidden;
-  color: $grey;
+  color: $darkgrey;
   background-color: $lightgrey;
   line-height: 20px;
   font-size: 0.65em;

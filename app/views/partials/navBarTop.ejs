@@ -5,6 +5,8 @@
   <% levelSelectOptions = true; %>
 <% } %>
 
+<% const performancePercentage = String(user.performanceThisWeek); %>
+
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_navBarTop.css">
 
@@ -44,6 +46,13 @@
             Caseload
           </span>
         </a>
+
+        <a href="#">
+          <span class="button adminPerformance" style="font-size: 12px">
+            <%= performancePercentage %>% 
+            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+          </span>
+        </a>
       <% } %>
 
       <a href="/settings">
@@ -67,7 +76,6 @@
       </a>
     </div>
 
-    <% const performancePercentage = String(user.performanceThisWeek); %>
     <div class="performance <% if (levelSelectOptions) { %>adminVersion<% } %>">
       <div class="performanceBar">
         <span style="width: <%=performancePercentage%>%"></span>

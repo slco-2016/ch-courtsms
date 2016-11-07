@@ -62,7 +62,7 @@
           </div>
       </div>
 
-      <div class="clientInfoContainer">
+      <div class="clientInfoContainer" style="display: none;">
         <div class="clientInfoRow">
           <b>Other Options</b>
         </div>
@@ -90,7 +90,23 @@
   </div>
 
   <div class="bigRight">
-    <div class="container" style="padding-bottom: 0">
+
+    <div class="buttonRow">
+      <a href="<%=`/clients/${client.clid}/transcript`%>/">
+        <button>
+          <i class="ss ss-download"></i>
+          Transcript
+        </button>
+      </a>
+      <a href="<%=`${clientBaseURL}`%>/edit">
+        <button>
+          <i class="ss ss-write"></i>
+          Edit
+        </button>
+      </a>
+    </div>
+
+    <div class="container" style="padding-bottom: 0; padding-top: 10px">
       <div class="graphic" id="messagingActivity"></div>
     </div>
 

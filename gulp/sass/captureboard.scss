@@ -2,6 +2,7 @@ $white:       #FFF;
 $offwhite:    #E8ECEF;
 $lightgrey:   #D3D3D3;
 $grey:        #898989;
+$darkgrey:    #2A2A2A;
 $black:       #000;
 $lightorange: #FFA500;
 $orange:      #E96100;
@@ -124,7 +125,7 @@ $darkblue:    #344289;
 
         .header {
           font-size: 10px;
-          color: $grey;
+          color: $darkgrey;
           text-decoration: underline;
         }
 
