@@ -23,7 +23,7 @@ class Users extends BaseModel {
         'admin','active',
         'superuser',
         'class','department', 
-        'is_away', 'email_alert_frequency',
+        'is_away', 'away_message', 'email_alert_frequency',
       ],
     });
   }
