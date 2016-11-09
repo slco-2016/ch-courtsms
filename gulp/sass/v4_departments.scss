@@ -102,8 +102,13 @@ $width_row8:  5%;
       color: $lightblue;
     }
 
-    .clientName {
-      padding-left: 15px;
+    .departmentName {
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
     }
 
     .time {

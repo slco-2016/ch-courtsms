@@ -19,16 +19,18 @@
     <% } -%>
     
     <% departments.forEach(function (department) { %>
-      <a href="/org?department=<%= department.department_id %>">
-        <div class="department <% if (departmentFilter == Number(department.department_id)) { %>selected<% } %>">
-          <div class="subject">
-            <%= department.name %>
+      <% if (departmentFilter == Number(department.department_id) || !departmentFilter) { %>
+        <a href="/org?department=<%= department.department_id %>">
+          <div class="department <% if (departmentFilter == Number(department.department_id)) { %>selected<% } %>">
+            <div class="subject">
+              <%= department.name %>
+            </div>
+            <div class="date">
+              <div class="day">Created <%= moment.tz(department.updated, organization.tz).format("MM/DD/YY") %></div>
+            </div>
           </div>
-          <div class="date">
-            <div class="day">Created <%= moment.tz(department.updated, organization.tz).format("MM/DD/YY") %></div>
-          </div>
-        </div>
-      </a>
+        </a>
+      <% } %>
     <% }) %>
 
     <div class="subHeader" id="seeUsers">

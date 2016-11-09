@@ -48,8 +48,11 @@
       font-size: 1.5em;
       font-weight: 700;
       color: #4A90E2; }
-    .notificationRow .column .clientName {
-      padding-left: 15px; }
+    .notificationRow .column .departmentName {
+      padding: 5px 10px 5px 10px;
+      border-radius: 5px; }
+      .notificationRow .column .departmentName:hover {
+        background-color: rgba(255, 255, 255, 0.5); }
     .notificationRow .column .time {
       font-size: 12px; }
     .notificationRow .column .subject {

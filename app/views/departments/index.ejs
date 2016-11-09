@@ -25,7 +25,11 @@
     </div>
     
     <div class="column">
-      <%= d.name %>
+      <a href="/org?department=<%=d.department_id%>">
+        <span class="departmentName">
+          <%= d.name %>
+        </span>
+      </a>
     </div>
 
     <div class="column">
