@@ -1,31 +1,30 @@
-.createNewColor .jscolor {
-  float: left;
-  border: 2px solid #4A90E2;
-  border-radius: 4px;
-  cursor: pointer;
-  height: 32px;
-  width: 100px;
-  max-width: 100px;
-  padding: 5px 10px 5px 10px;
-  color: #898989; }
-
-.createNewColor .colorTagName {
-  float: left;
-  width: 265px !important;
-  margin-left: 15px; }
-
-.createNewColor .colorTagAdd {
-  float: right;
-  font-size: 28px;
-  cursor: pointer;
-  color: #4A90E2; }
-  .createNewColor .colorTagAdd:hover {
-    color: #3F69B6; }
-
-.createNewColor::after {
-  content: "";
-  display: block;
-  clear: both; }
+.createNewColor {
+  margin-top: 30px;
+  margin-bottom: 40px; }
+  .createNewColor .jscolor {
+    border: 2px solid #4A90E2;
+    border-radius: 50px;
+    cursor: pointer;
+    height: 100px;
+    width: 100px;
+    max-width: 100px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #4A90E2 !important; }
+  .createNewColor .colorTagName {
+    width: 265px !important;
+    margin-top: 10px; }
+  .createNewColor .colorTagAdd {
+    margin-top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #4A90E2; }
+    .createNewColor .colorTagAdd:hover {
+      color: #3F69B6; }
+  .createNewColor::after {
+    content: "";
+    display: block;
+    clear: both; }
 
 .listedColor .colorBox {
   float: left;
@@ -38,7 +37,7 @@
     width: 15px;
     border-radius: 10px;
     border: 1px solid #FFF;
-    margin-left: 76px;
+    margin-left: 30px;
     content: " "; }
 
 .listedColor .colorName {
@@ -50,6 +49,7 @@
 .listedColor .colorTagRemove {
   float: right;
   font-size: 28px;
+  margin-right: 30px;
   cursor: pointer;
   color: #898989; }
   .listedColor .colorTagRemove:hover {

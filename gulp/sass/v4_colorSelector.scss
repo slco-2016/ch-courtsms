@@ -23,26 +23,33 @@ $darkblue:    #344289;
 
 
 .createNewColor {
+  margin-top: 30px;
+  margin-bottom: 40px;
+
   .jscolor {
-    float: left;
     border: 2px solid $lightblue;
-    border-radius: 4px;
+    border-radius: 50px;
     cursor: pointer;
-    height: 32px;
+    height: 100px;
     width: 100px;
     max-width: 100px;
-    padding: 5px 10px 5px 10px;
-    color: $grey;
+
+    font-size: 26px;
+    font-weight: bold;
+    color: $lightblue !important;
+
+    &:hover {
+      // border-radius: 10px
+    }
   }
 
   .colorTagName {
-    float: left;
     width: 265px !important;
-    margin-left: 15px;
+    margin-top: 10px;
   }
 
   .colorTagAdd {
-    float: right;
+    margin-top: 10px;
     font-size: 28px;
     cursor: pointer;
     color: $lightblue;
@@ -72,7 +79,7 @@ $darkblue:    #344289;
       width: 15px;
       border-radius: 10px;
       border: 1px solid $white;
-      margin-left: 76px;
+      margin-left: 30px;
       content: " ";
 
     }
@@ -87,6 +94,7 @@ $darkblue:    #344289;
   .colorTagRemove {
     float: right;
     font-size: 28px;
+    margin-right: 30px;
     cursor: pointer;
     color: $grey;
 

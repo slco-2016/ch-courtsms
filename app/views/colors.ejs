@@ -8,7 +8,7 @@
   </a>
 
   <div class="cardTitle">
-    Add / Edit Colors
+    Add / Remove Colors
   </div>
   <div class="cardSubtitle">
     
@@ -16,6 +16,36 @@
 </div>
 
 <div class="cardBody">
+
+  <div class="formRow createNewColor">
+    <form id="addNewColorTagForm"
+          method="post" 
+          action="/colors">
+
+      <center>
+
+        <button class="jscolor {valueElement:'chosen-value'}">
+          +
+        </button>
+
+        <div class="formInput">
+          <input  type="text" 
+                  class="colorTagName" 
+                  name="name" 
+                  value=""
+                  placeholder="Color tag name"
+                  required>
+          </input>
+        </div>
+        
+        <div class="colorTagAdd">
+          <input type="submit" class="formSubmit padTop" value="Save Color">
+        </div>
+
+      </center>
+
+    </form>
+  </div>
 
   <% colors.forEach(function (tag) { %>
     <div class="formRow listedColor">
@@ -29,33 +59,9 @@
     </div>
   <% }) %>
 
-  <div class="formRow createNewColor">
-    <form id="addNewColorTagForm"
-          method="post" 
-          action="/colors">
-      <div class="colorTagAdd">
-        <i class="fa fa-plus-circle" aria-hidden="true"></i>
-      </div>
-
-      <button class="jscolor {valueElement:'chosen-value'}">
-        Pick Color
-      </button>
-
-      <div class="formInput">
-        <input  type="text" 
-                class="colorTagName" 
-                name="name" 
-                value=""
-                placeholder="Color tag name"
-                required>
-        </input>
-      </div>
-    </form>
-
-    <a href="/clients">
-      <input type="submit" class="formSubmit padTop" value="Save &amp; Continue">
-    </a>
-  </div>
+  <a href="/clients">
+    <input type="submit" class="formSubmit padTop" value="Continue">
+  </a>
 
 </div>
 
