@@ -432,7 +432,7 @@ module.exports = {
           stringVersionOfMessageObject += `\n${key}: ${message[key]}`;
         });
         return stringVersionOfMessageObject;
-      }).join('\n\n');
+      }).join('\r\n');
 
       // Note: this does not render a new page, just initiates a download
       res.set({'Content-Disposition':'attachment; filename=transcript.txt',});
