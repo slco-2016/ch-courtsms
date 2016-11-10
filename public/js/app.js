@@ -398,7 +398,7 @@ $(function() {
               eventCollection: "pagedurations",
               groupBy: [ "user.first", "user.last", "user.department", "user.cmid" ],
               targetProperty: "duration",
-              timeframe: "this_2_days",
+              timeframe: "this_31_days",
               timezone: "UTC"
             });
             keenQueryClient.run(keenQuery, function (err, res){
@@ -539,6 +539,9 @@ $(function() {
         };
 
         function getRelevantKeenUsers (users, keenUsers) {
+          var cmids = [];
+          var toKeep = [];
+
           keenUsers = keenUsers.filter(function (ea) {
             if (departmentFilter) {
               if (userFilter) {
@@ -561,6 +564,19 @@ $(function() {
             return b["activity"] - a["activity"];
           });
 
+          keenUsers.forEach(function (u) {
+            cmids.push(u.cmid);
+          });
+
+          keenUsers.forEach(function (u, index) {
+            var i = cmids.indexOf(u.cmid);
+            if (i == index) {
+              toKeep.push(u);
+            }
+          });
+
+          keenUsers = toKeep;
+
           var userIds = users.map(function (u) {
             return u.cmid;
           });
@@ -582,11 +598,13 @@ $(function() {
               cmid: u.cmid
             }
           });
-
+          
           return keenUsers.concat(users);
         }
 
-        function buildUserActivityChart(users) {          
+        function buildUserActivityChart(users) {
+          console.log(users);
+
           // Set height based off of remaining users post filter operation
           var height = Math.max(users.length * 30, 100);
           c3.generate({
@@ -602,12 +620,6 @@ $(function() {
             axis: {
               rotated: true,
               x: { type: "category" },
-              y: {
-                font: { size: '33px', },
-                label: {
-                  size: '33px',
-                }
-              },
             },
             legend: { show: false },
             size: { width: 720, height: height },
