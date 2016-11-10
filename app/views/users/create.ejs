@@ -82,7 +82,7 @@
       <select class="blueSelect" 
               name="className" 
               required>
-        <% ["supervisor", "supervisor", "primary", "support", "developer"].forEach(function (className) { %>
+        <% ["supervisor", "primary", "support", "developer"].forEach(function (className) { %>
             <option value="<%= className %>" <% if (className == "primary") { %>selected<% } %>>
               <%= className.charAt(0).toUpperCase() + className.slice(1) %> User
             </option>
