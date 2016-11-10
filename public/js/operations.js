@@ -40,7 +40,7 @@ var checkingForNewMessages = setInterval(function () {
         var hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=closed">';
         $(".numberRemaining").text(number)
         $(".alerts").fadeIn();
-        $(".alertsBody").prepend('<div class="alertRow">' +
+        $(".receivesNewAlertsHere").prepend('<div class="alertRow">' +
                                   '<div class="message">' + hrefLink +
                                       'You have new unread messages. ' +
                                       'Click to view.' +

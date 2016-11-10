@@ -197,7 +197,7 @@ module.exports = {
               <i class="fa fa-circle fa-stack-2x"></i>
               <i class="fa fa-${fa} fa-stack-1x fa-inverse"></i>
             </span>
-            <span class="text">New ${capitalizedSingular}</span>
+            <span class="text"><b>+</b> ${capitalizedSingular}</span>
           </a>
         </div>
       `;
