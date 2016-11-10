@@ -22,7 +22,7 @@ describe("Array", function() {
 
 // Load up Supertest package
 var request = require("supertest");
-setTimeout(runTests, 000);
+setTimeout(runTests, 4000);
 
 // Work through the routes
 // TO DO: Resolve issue of delay in superuser being created
