@@ -3,7 +3,7 @@ var credentialsDB = require("./credentials")["db"];
 var USER = credentialsDB.user;
 var PASS = credentialsDB.password;
 var HOST = credentialsDB.host;
-var localDbUser = credentialsDB.localDbUser;
+var localDbUser = require("./credentials").localDbUser;
 console.log('USING localDbUser', localDbUser)
 
 module.exports = {
