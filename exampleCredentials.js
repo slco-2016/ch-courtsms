@@ -18,7 +18,7 @@ let baseProductionReadyCredentials = {
 
   // For test use
   // TO DO: roll this in as a modification when in test env
-  localDbUser: 'janedoe',
+  localDbUser: 'postgres',
 
   // Connection to production database
   db: {
