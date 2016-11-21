@@ -84,7 +84,6 @@ module.exports = {
     res.locals.momentTz = require('moment-timezone');
     
     if (process.env.CCENV && process.env.CCENV == 'production') {
-      console.log('Production env. New Relic running.');
       res.locals.newrelic = require('newrelic');
     } else {
       res.locals.newrelic = null;
