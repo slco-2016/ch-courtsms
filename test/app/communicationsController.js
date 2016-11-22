@@ -5,7 +5,7 @@ const should = require('should');
 const APP = require('../../app/app');
 
 const Communications = require('../../app/models/communications');
-const CommConns = require('../../app/models/CommConns');
+const CommConns = require('../../app/models/commConns');
 
 const primary = supertest.agent(APP);
 const twilioRecordingRequest = require('../data/twilioVoiceRecording.js');
