@@ -312,6 +312,28 @@ class Messages extends BaseModel {
         .orderBy('created', 'asc')
       .then((resp) => {
         messages = resp;
+
+        // delete all duplicates from the array
+        let cleanedMessages = [];
+        for (let i = 0; i < messages.length - 2; i++) {
+          const sameMsgId = messages[i].msgid == messages[i + 1].msgid;
+          const sameConvo = messages[i].convo == messages[i + 1].convo;
+          const sameComm = messages[i].comm == messages[i + 1].comm;
+          const sameVal = messages[i].comm_value == messages[i + 1].comm_value;
+
+          if (sameMsgId && sameConvo && sameComm && sameVal) {
+            // do nothing
+          } else {
+            cleanedMessages.push(messages[i]);
+          }
+        }
+
+        // add the very last message from the messages array
+        cleanedMessages.push(messages[messages.length - 1]);
+
+        // reset the messages array to the cleaned result
+        messages = cleanedMessages;
+
         const emailIds = messages.map(msg => msg.email_id);
 
         return db('emails')
