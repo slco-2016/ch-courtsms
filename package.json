@@ -11,7 +11,7 @@
     "node": ">=0.10.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.6.6",
+    "aws-sdk": "^2.7.6",
     "bcrypt-nodejs": "~0.0.3",
     "bluebird": "~3.3.3",
     "body-parser": "~1.15.0",
@@ -26,8 +26,8 @@
     "jquery": "~1.12.3",
     "keen-js": "~3.4.1",
     "knex": "~0.10.0",
-    "mailgun-js": "^0.7.12",
-    "mimelib": "^0.2.19",
+    "mailgun-js": "^0.7.13",
+    "mimelib": "^0.3.0",
     "moment": "~2.13.0",
     "moment-timezone": "~0.5.4",
     "newrelic": "~1.28.0",

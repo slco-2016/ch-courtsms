@@ -40,6 +40,9 @@ module.exports = {
 
     // clean up numbers
     if (type == 'cell' || type == 'landline') {
+      // make sure that value is a string (might have been submitted as integer)
+      if (typeof value !== 'string') value = String(value);
+
       value = value.replace(/[^0-9.]/g, '');
       if (value.length == 10) { value = '1' + value; }
     }
