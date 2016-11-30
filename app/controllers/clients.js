@@ -421,10 +421,30 @@ module.exports = {
   },
 
   transcript(req, res) {
+    let user, client, 
+        viewAll = false;
+
     Users.findByClientId(req.params.client)
-    .then((user) => {
-      return Messages.findBetweenUserAndClient(user.cmid, req.params.client);
+    .then((resp) => {
+      user = resp;
+
+      return Clients.findById(req.params.client);
+    }).then((resp) => {
+      client = resp;
+
+      // check if user has right to just view their conversations with client or all
+      // TODO: revisit the permissions logic here
+      if (user.class !== 'primary') {
+        viewAll = true;
+      }
+
+      if (viewAll) {
+        return Messages.findAllFromClient(user.cmid, req.params.client);
+      } else {
+        return Messages.findBetweenUserAndClient(user.cmid, req.params.client);
+      }
     }).then((messages) => {
+
       // Format into a text string
       messages = messages.map(function (message) {
         let stringVersionOfMessageObject = '';
@@ -432,10 +452,27 @@ module.exports = {
           stringVersionOfMessageObject += `\n${key}: ${message[key]}`;
         });
         return stringVersionOfMessageObject;
-      }).join('\r\n');
+      }).join('\n');
+
+      let firstPart = '';
+      if (viewAll) {
+        firstPart = `Viewing all messages to/from client ${client.first} ${client.middle} ${client.last}`;
+      } else {
+        firstPart = `Viewing messages between client ${client.first} ${client.middle} ${client.last} and ${user.first} ${user.middle} ${user.last}`;
+      }
+      firstPart = `${firstPart} \nRetrieved at: ${moment().format('YYYY-MM-DD HH:mm:ss')} GMT \n--------------------------\n`;
+      messages = firstPart + messages;
+
+      // convert from plain text to rtf
+      // source: http://stackoverflow.com/questions/29922771/convert-rtf-to-and-from-plain-text
+      function convertToRtf(plain) {
+        plain = plain.replace(/\n/g, '\\par\n');
+        return '{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang2057{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\n\\viewkind4\\uc1\\pard\\f0\\fs17 ' + plain + '\\par\n}';
+      };
+      messages = convertToRtf(messages);
 
       // Note: this does not render a new page, just initiates a download
-      res.set({'Content-Disposition':'attachment; filename=transcript.txt',});
+      res.set({'Content-Disposition':'attachment; filename=transcript.rtf',});
       res.send(messages);
     }).catch(res.error500);
   },

@@ -31,12 +31,14 @@ var checkingForNewMessages = setInterval(function () {
     .then(function (res) {
       if (res.newMessages.active || res.newMessages.inactive) {
 
+        // increment the number of alerts
         var number = Number($(".numberRemaining").text());
         if (isNaN(number)) {
           number = 0;
         }
         number = number + 1;
 
+        // append the new alert to the alerts list
         var hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=closed">';
         $(".numberRemaining").text(number)
         $(".alerts").fadeIn();
@@ -51,8 +53,20 @@ var checkingForNewMessages = setInterval(function () {
                                   '</div>' +
                                 '</div>');
         $(".hiddenAlerts .alertRow .close").click(removeAlert); // need to bind action
+
+        // stop checking for new alerts
         clearInterval(checkingForNewMessages);
+
+        // make a dinging noise
+        if (typeof SESSION_USER !== 'undefined' && SESSION_USER.alert_beep) {
+          try {
+            new Audio('/static/sounds/alert.mp3').play()
+          } catch (e) {
+            console.log(error); 
+          }
+        }
       }
+
     }).fail(function (error) { 
       console.log(error.status+": "+error.statusText); 
     });

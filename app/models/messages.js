@@ -34,6 +34,34 @@ const Attachments = require('./attachments');
 const PhoneNumbers = require('./phoneNumbers');
 const Users = require('./users');
 
+// utility function
+function clearDuplicateMessages (messages) {
+  if (messages.length > 1) {
+    // delete all duplicates from the array
+    let cleanedMessages = [];
+    for (let i = 0; i < messages.length - 1; i++) {
+      const sameMsgId = messages[i].msgid == messages[i + 1].msgid;
+      const sameConvo = messages[i].convo == messages[i + 1].convo;
+      const sameComm = messages[i].comm == messages[i + 1].comm;
+      const sameVal = messages[i].comm_value == messages[i + 1].comm_value;
+      const sameDir = messages[i].inbound == messages[i + 1].inbound;
+
+      if (sameMsgId && sameConvo && sameComm && sameVal && sameDir) {
+        // do nothing
+      } else {
+        cleanedMessages.push(messages[i]);
+      }
+    }
+
+    // add the very last message from the messages array
+    cleanedMessages.push(messages[messages.length - 1]);
+
+    // reset the messages array to the cleaned result
+    messages = cleanedMessages;
+  }
+  return messages;
+}
+
 class Messages extends BaseModel {
 
   constructor(data) {
@@ -233,6 +261,19 @@ class Messages extends BaseModel {
     });
   }
 
+  static findAllFromClient (clientId) {
+    Conversations.findOneByAttribute('client', clientId)
+    .then((conversations) => {
+      const conversationIds = conversations.map((conversation) => {
+        return conversation.convid;
+      });
+
+      return Messages.transcriptionDetails(conversationIds);
+    }).then((messages) => {
+      fulfill(messages);
+    }).catch(reject);
+  }
+
   static findBetweenUserAndClient (userId, clientId) {
     return new Promise((fulfill, reject) => {
       Conversations.findByUser(userId)
@@ -242,7 +283,7 @@ class Messages extends BaseModel {
         }).map((conversation) => {
           return conversation.convid;
         });
-        return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
+        return Messages.transcriptionDetails(conversationIds);
       }).then((messages) => {
         fulfill(messages);
       }).catch(reject);
@@ -288,9 +329,23 @@ class Messages extends BaseModel {
     });
   }
 
+  static transcriptionDetails (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
+
+    return new Promise((fulfill, reject) => {
+
+      db('msgs')
+        .select('')
+        .whereIn('convo', conversationIds)
+      .then((resp) => {
+        fulfill(resp);
+      }).catch(reject);
+    });
+  }
+
   static findWithSentimentAnalysisAndCommConnMetaByConversationIds (conversationIds) {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
-    
+
     return new Promise((fulfill, reject) => {
       let messages;
       db('msgs')
@@ -311,29 +366,7 @@ class Messages extends BaseModel {
         .whereIn('convo', conversationIds)
         .orderBy('created', 'asc')
       .then((resp) => {
-        messages = resp;
-
-        // delete all duplicates from the array
-        let cleanedMessages = [];
-        for (let i = 0; i < messages.length - 1; i++) {
-          const sameMsgId = messages[i].msgid == messages[i + 1].msgid;
-          const sameConvo = messages[i].convo == messages[i + 1].convo;
-          const sameComm = messages[i].comm == messages[i + 1].comm;
-          const sameVal = messages[i].comm_value == messages[i + 1].comm_value;
-          const sameDir = messages[i].inbound == messages[i + 1].inbound;
-
-          if (sameMsgId && sameConvo && sameComm && sameVal && sameDir) {
-            // do nothing
-          } else {
-            cleanedMessages.push(messages[i]);
-          }
-        }
-
-        // add the very last message from the messages array
-        cleanedMessages.push(messages[messages.length - 1]);
-
-        // reset the messages array to the cleaned result
-        messages = cleanedMessages;
+        messages = clearDuplicateMessages(resp);
 
         const emailIds = messages.map(msg => msg.email_id);
 
