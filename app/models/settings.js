@@ -22,7 +22,7 @@ class Settings {
     });
   }
 
-  static updateOne (userId, first, middle, last, email, alertFrequency, isAway, awayMessage) {
+  static updateOne (userId, first, middle, last, email, alertFrequency, isAway, awayMessage, alertBeep) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .where('cmid', userId)
@@ -34,6 +34,7 @@ class Settings {
           email_alert_frequency: alertFrequency,
           is_away: isAway,
           away_message: awayMessage,
+          alert_beep: alertBeep,
           updated: db.fn.now(),
         })
       .then(() => {

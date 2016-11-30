@@ -13,6 +13,7 @@ module.exports = {
 
   update(req, res) {
     const awayMessage = req.body.awayMessage;
+    const alertBeep = req.body.alertBeep ? true : false;
     const isAway = req.body.isAway ? true : false;
     
     let alertFrequency = req.body.alertFrequency;
@@ -30,7 +31,8 @@ module.exports = {
             req.body.email,
             alertFrequency,
             isAway,
-            awayMessage 
+            awayMessage,
+            alertBeep
     ).then(() => {
       req.flash('success', 'Updated your settings.');
       res.redirect('/org/users');

@@ -24,6 +24,7 @@ class Users extends BaseModel {
         'superuser',
         'class','department', 
         'is_away', 'away_message', 'email_alert_frequency',
+        'alert_beep',
       ],
     });
   }
