@@ -262,16 +262,18 @@ class Messages extends BaseModel {
   }
 
   static findAllFromClient (clientId) {
-    Conversations.findOneByAttribute('client', clientId)
-    .then((conversations) => {
-      const conversationIds = conversations.map((conversation) => {
-        return conversation.convid;
-      });
+    return new Promise((fulfill, reject) => {
+      Conversations.findManyByAttribute('client', clientId)
+      .then((conversations) => {
+        const conversationIds = conversations.map((conversation) => {
+          return conversation.convid;
+        });
 
-      return Messages.transcriptionDetails(conversationIds);
-    }).then((messages) => {
-      fulfill(messages);
-    }).catch(reject);
+        return Messages.transcriptionDetails(conversationIds);
+      }).then((messages) => {
+        fulfill(messages);
+      }).catch(reject);
+    });
   }
 
   static findBetweenUserAndClient (userId, clientId) {
@@ -333,12 +335,23 @@ class Messages extends BaseModel {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
 
     return new Promise((fulfill, reject) => {
-
-      db('msgs')
-        .select('')
-        .whereIn('convo', conversationIds)
+      let messages = [];
+      Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds)
       .then((resp) => {
-        fulfill(resp);
+        messages = resp.map((message) => {
+          return {
+            id: `${message.msgid} (from conversation #${message.convo})`,
+            content: message.content,
+            communication: `${message.commconn_name}, ${message.comm_value} (device type: ${message.comm_type})`,
+            read_by_user: message.read,
+            sent_by_client: message.inbound ? 'TRUE' : 'FALSE - Sent by user.',
+            communication_with: `${message.user_first} ${message.user_middle} ${message.user_last}`,
+            status: `${message.tw_status}`,
+            date_time: message.created,
+          };
+        });
+
+        fulfill(messages);
       }).catch(reject);
     });
   }
@@ -354,9 +367,13 @@ class Messages extends BaseModel {
                 'commconns.client',
                 'commconns.name as commconn_name', 
                 'comms.value as comm_value',
-                'comms.type as comm_type')
+                'comms.type as comm_type',
+                'cms.first as user_first',
+                'cms.middle as user_middle',
+                'cms.last as user_last')
         .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .leftJoin('convos', 'convos.convid', 'msgs.convo')
+        .leftJoin('cms', 'convos.cm', 'cms.cmid')
         .leftJoin('commconns', function () {
           this
               .on('commconns.comm', 'msgs.comm')
