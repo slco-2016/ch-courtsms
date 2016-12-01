@@ -24,13 +24,14 @@ if (process.env.CCENV && process.env.CCENV == 'production') {
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
 
+const Attachments = require('./attachments');
 const Clients = require('./clients');
 const CommConns = require('./commConns');
 const Communications = require('./communications');
 const Conversations = require('./conversations');
 const Recordings = require('./recordings');
 const Departments = require('./departments');
-const Attachments = require('./attachments');
+const Organizations = require('./organizations');
 const PhoneNumbers = require('./phoneNumbers');
 const Users = require('./users');
 

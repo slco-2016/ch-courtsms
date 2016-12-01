@@ -1,27 +1,32 @@
 'use strict';
 
-// Libraries
 const db      = require('../../app/db');
 const Promise = require('bluebird');
+const BaseModel = require('../lib/models').BaseModel;
 
-// Models
 const Messages = require('./messages');
 
+class Organizations extends BaseModel {
 
-// Class
-class Organizations {
-  
-  static findByID (orgID) {
-    return new Promise((fulfill, reject) => {
-      db('orgs')
-        .where('orgid', orgID)
-        .limit(1)
-      .then((orgs) => {
-        return fulfill(orgs[0]);
-      }).catch(reject);
+  constructor(data) {
+    super({
+      data: data,
+      columns: [
+        'orgid',
+        'name',
+        'phone',
+        'email',
+        'expiration',
+        'allotment',
+        'created',
+        'tz',
+      ],
     });
-  }
-
+  };
+  
 }
+
+Organizations.primaryId = 'orgid';
+Organizations.tableName = 'orgs';
 
 module.exports = Organizations;

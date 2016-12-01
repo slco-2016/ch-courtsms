@@ -3,6 +3,7 @@ const CloseoutSurveys = require('../models/closeoutSurveys');
 const CommConns = require('../models/commConns');
 const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
+const Organizations = require('../models/organizations');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
@@ -421,7 +422,9 @@ module.exports = {
   },
 
   transcript(req, res) {
-    let user, client, 
+    let user, 
+        client, 
+        messages,
         viewAll = false;
 
     Users.findByClientId(req.params.client)
@@ -435,7 +438,7 @@ module.exports = {
       // check if user has right to just view their conversations with client or all
       // TODO: revisit the permissions logic here
       if (user.class !== 'primary') {
-        viewAll = true;
+        viewAll = false;
       }
 
       if (viewAll) {
@@ -443,10 +446,23 @@ module.exports = {
       } else {
         return Messages.findBetweenUserAndClient(user.cmid, req.params.client);
       }
-    }).then((messages) => {
+    }).then((resp) => {
+      messages = resp;
+
+      // get org time zone
+      return Organizations.findById(req.user.org);
+    }).then((organization) => {
+
+      // update to org local timezone
+      messages = messages.map((message) => {
+        let tz = organization.tz || 'America/Denver';
+        message.local_date_time = moment(message.date_time).tz(tz).format('MMMM Do YYYY, h:mm:ss a');
+        message.local_timezone_used = tz;
+        return message;
+      });
 
       // Format into a text string
-      messages = messages.map(function (message) {
+      messages = messages.map((message) => {
         let stringVersionOfMessageObject = '';
         Object.keys(message).forEach(function (key) {
           stringVersionOfMessageObject += `\n${key}: ${message[key]}`;
