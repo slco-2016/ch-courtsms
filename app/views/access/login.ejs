@@ -9,15 +9,23 @@
 <div class="cardBody">
 
   <div style="width: 100%; 
-              background-color: #D3D3D3; 
-              color: #333; 
+              display: none;
+              background-color: #4A90E2; 
+              color: #FFF; 
               text-align: center;
               line-height: 36px;
               padding-top: 10px;
               padding-bottom: 10px;
               font-size: 18px;
               margin-bottom: 46px;
-              font-weight: bold">
+              -moz-box-shadow:    inset  0  15px 15px -15px rgba(0,0,0,0.5), 
+                                  inset  0 -15px 15px -15px rgba(0,0,0,0.5);
+              -webkit-box-shadow: inset  0  15px 15px -15px rgba(0,0,0,0.5), 
+                                  inset  0 -15px 15px -15px rgba(0,0,0,0.5);
+               box-shadow:        inset  0  15px 15px -15px rgba(0,0,0,0.5), 
+                                  inset  0 -15px 15px -15px rgba(0,0,0,0.5);
+              font-weight: bold"
+      id="useChromeAlert">
     App is currently only compatible with Chrome.
     <br>
     <small>
@@ -28,6 +36,10 @@
       </a>
     </small>
   </div>
+
+  <script type="text/javascript">
+    $('#useChromeAlert').slideDown('slow');
+  </script>
 
   <form method="post" action="/login">
 

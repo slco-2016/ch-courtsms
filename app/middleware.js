@@ -227,7 +227,7 @@ module.exports = {
 
   fetchUserOrganization(req, res, next) {
     if (req.user) {
-      Organizations.findByID(req.user.org)
+      Organizations.findById(req.user.org)
       .then((org) => {
         res.locals.organization = org;
         next();
