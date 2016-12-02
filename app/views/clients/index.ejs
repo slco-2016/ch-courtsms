@@ -13,12 +13,17 @@
 <div class="header">
 
   <% if (level == "user") { %>
-    <div class="column" onclick="sortBy('client-color')">color</div>
+    <div class="column" onclick="sortBy('client-color')">
+      <i class="fa fa-sort" aria-hidden="true"></i> color
+    </div>
   <% } else { %>
     <div class="column">&nbsp;</div>
   <% } %>
 
-  <div class="column">client name</div>
+  <div class="column" onclick="sortBy('client-name')">
+    <i class="fa fa-sort" aria-hidden="true"></i> 
+    client name
+  </div>
   <div class="column">unread</div>
   <div class="column">last activity</div>
 
@@ -64,7 +69,8 @@
 <% clients.forEach( function (client) { %>
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
-        data-client-color="<%= client.color_tag %>">
+        data-client-color="<%= client.color_tag %>"
+        data-client-name="<%= `${client.last} ${client.middle} ${client.first}` %>">
 
     <!-- color tag can only be edited if user level -->
     <div class="column" value="<%= client.color_name %>">

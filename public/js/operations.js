@@ -26,16 +26,28 @@ function submitAlertClosure (alertId) {
   });
 };
 
+// this allows pages that have lists of information to be sorted
 function sortBy (dataLabel) {
   var tagName = 'data-' + dataLabel;
   var $wrapper = $('.coreContent');
 
-  // adapted from http://stackoverflow.com/questions/14160498/sort-element-by-numerical-value-of-data-attribute
-  $wrapper.find('[' + tagName + ']').sort(function(a, b) {
-    var contentA = a.getAttribute(tagName);
-    var contentB = b.getAttribute(tagName);
-    return (contentA < contentB) ? -1 : (contentA > contentB) ? 1 : 0;
-  }).appendTo($wrapper);
+  var all = $wrapper.find('[' + tagName + ']');
+  if (all.length > 1) {
+    var first = all[0];
+    var last  = all[all.length - 1]
+    var direction = first.getAttribute(tagName) > last.getAttribute(tagName);
+
+    // adapted from http://stackoverflow.com/questions/14160498/sort-element-by-numerical-value-of-data-attribute
+    all.sort(function(a, b) {
+      var contentA = a.getAttribute(tagName);
+      var contentB = b.getAttribute(tagName);
+      if (direction) {
+        return (contentA < contentB) ? -1 : (contentA > contentB) ? 1 : 0;
+      } else {
+        return (contentB < contentA) ? -1 : (contentB > contentA) ? 1 : 0;
+      }
+    }).appendTo($wrapper);
+  }
 };
 
 var checkingForNewMessages = setInterval(function () {
