@@ -13,7 +13,7 @@
 <div class="header">
 
   <% if (level == "user") { %>
-    <div class="column">color</div>
+    <div class="column" onclick="sortBy('client-color')">color</div>
   <% } else { %>
     <div class="column">&nbsp;</div>
   <% } %>
@@ -64,7 +64,7 @@
 <% clients.forEach( function (client) { %>
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
-        data-client-color="<%=  %>">
+        data-client-color="<%= client.color_tag %>">
 
     <!-- color tag can only be edited if user level -->
     <div class="column" value="<%= client.color_name %>">
