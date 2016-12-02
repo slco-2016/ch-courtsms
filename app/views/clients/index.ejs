@@ -14,7 +14,8 @@
 
   <% if (level == "user") { %>
     <div class="column" onclick="sortBy('client-color')">
-      <i class="fa fa-sort" aria-hidden="true"></i> color
+      <i class="fa fa-sort" aria-hidden="true"></i> 
+      color
     </div>
   <% } else { %>
     <div class="column">&nbsp;</div>
@@ -24,11 +25,20 @@
     <i class="fa fa-sort" aria-hidden="true"></i> 
     client name
   </div>
-  <div class="column">unread</div>
-  <div class="column">last activity</div>
+  <div class="column" onclick="sortBy('unread')">
+    <i class="fa fa-sort" aria-hidden="true"></i> 
+    unread
+  </div>
+  <div class="column" onclick="sortBy('last-activity')">
+    <i class="fa fa-sort" aria-hidden="true"></i> 
+    last activity
+  </div>
 
   <% if (level == "org") { %>
-    <div class="column">case manager</div>
+    <div class="column" onclick="sortBy('case-manager')">
+      <i class="fa fa-sort" aria-hidden="true"></i> 
+      case manager
+    </div>
   <% } else { %>
     <div class="column">&nbsp;</div>
   <% } %>  
@@ -68,8 +78,12 @@
 
 <% clients.forEach( function (client) { %>
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
+  <% let lastActivity = moment.tz(client.updated, organization.tz).fromNow(); %>
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
         data-client-color="<%= client.color_tag %>"
+        data-case-manager="<%= `${client.user_last} ${client.user_first}` %>"
+        data-last-activity="<%= lastActivity %>"
+        data-unread="<%= client.unread %>"
         data-client-name="<%= `${client.last} ${client.middle} ${client.first}` %>">
 
     <!-- color tag can only be edited if user level -->
@@ -109,7 +123,7 @@
     
     <div class="column">
       <small>
-        <%= moment.tz(client.updated, organization.tz).fromNow() %>
+        <%= lastActivity %>
       </small>
     </div>
 
