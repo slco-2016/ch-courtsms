@@ -61,6 +61,7 @@ module.exports = {
           twilioResponse.dial({callerId: organizationNumber, });
         }
 
+        // this will make the text-to-voice in twilio read the phone number more clearly
         try {
           organizationNumber = organizationNumber.replace(/\D+/g, '');
           organizationNumber = organizationNumber.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4');
