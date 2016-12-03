@@ -9,7 +9,7 @@ exports.up = function(knex, Promise) {
       table.integer("phone");
       table.string("email");
 
-      table.dateTime("expiration").defaultTo("2017-01-01");
+      table.dateTime("expiration").defaultTo("2100-01-01");
       table.integer("allotment").defaultTo(10);
       
       table.timestamp("created").defaultTo(knex.fn.now());

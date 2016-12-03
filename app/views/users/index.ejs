@@ -13,12 +13,30 @@
 
 <div class="header">
   <div class="column">clients</div>
-  <div class="column">name</div>
-  <div class="column">email</div>
-  <div class="column">class</div>
-  <div class="column">position</div>
-  <div class="column">department</div>
-  <div class="column">added</div>
+  <div class="column" onclick="sortBy('user-name')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    name
+  </div>
+  <div class="column" onclick="sortBy('email')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    email
+  </div>
+  <div class="column" onclick="sortBy('class')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    class
+  </div>
+  <div class="column" onclick="sortBy('position')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    position
+  </div>
+  <div class="column" onclick="sortBy('department')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    department
+  </div>
+  <div class="column" onclick="sortBy('date-added')">
+    <i class="fa fa-sort" aria-hidden="true"></i>
+    added
+  </div>
   <div class="column">edit</div>
   <div class="column">transfer</div>
   <div class="column"><%= hub.sel == 'active' ? 'deactivate' : 'activate' %></div>
@@ -27,7 +45,14 @@
 <% if (users.length == 0) { %><% include ../partials/emptyResultsGreeting %><% } %>
 
 <% users.forEach(function (targetUser) { %>
-  <div class="notificationRow">
+  <% let dateAdded = moment.tz(targetUser.created, organization.tz).format('MMM. Do, YYYY hh:mmA'); %>
+  <div  class="notificationRow"
+        data-email="<%= `${targetUser.email}` %>" 
+        data-class="<%= `${targetUser.class}` %>" 
+        data-position="<%= `${targetUser.position}` %>" 
+        data-department="<%= `${targetUser.department_name}` %>" 
+        data-date-added="<%= dateAdded %>" 
+        data-user-name="<%= `${targetUser.last} ${targetUser.middle} ${targetUser.first}` %>">
     <div class="column">
       <a href="<%=`/org/clients?user=${targetUser.cmid}`%>">
         <i class="fa highlight fa-users" aria-hidden="true"></i>
@@ -50,7 +75,7 @@
     </div>
     <div class="column">
       <span class="time">
-        <%= moment.tz(targetUser.created, organization.tz).format('MMM. Do, YYYY hh:mmA') %>
+        <%= dateAdded %>
       </span>
     </div>
     <div class="column">

@@ -78,13 +78,19 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Assigned class </div>
+      <div class="formLabel"> User type </div>
       <select class="blueSelect" 
               name="className" 
               required>
-        <% ["supervisor", "primary", "support", "developer"].forEach(function (className) { %>
+        <% let listOfClassOptions = ["supervisor", "primary", "support"]; %>
+        <% if (user.class == 'owner') { listOfClassOptions.push('owner'); } %>
+
+        <% listOfClassOptions.forEach(function (className) { %>
             <option value="<%= className %>" <% if (className == "primary") { %>selected<% } %>>
-              <%= className.charAt(0).toUpperCase() + className.slice(1) %> User
+              <%= className.charAt(0).toUpperCase() + className.slice(1) %> 
+              User 
+              <%= className == 'primary' ? '(e.g. case manager, therapist)' : '' %>
+              <%= className == 'support' ? '(e.g. front office staff)' : '' %>
             </option>
         <% }) %>
       </select>
@@ -94,6 +100,15 @@
             class="formSubmit padTop" 
             value="Submit New User">
   </form>
+
+  <div class="formRow"> 
+    <div class="formLabel">
+      <small>
+        New user will get an email in their inbox in 2-5 minutes with a temporary password.
+      </small>
+    </div>
+  </div>
+  
 </div>
 
 <script type="text/javascript" class="JSusersCreate"></script>
