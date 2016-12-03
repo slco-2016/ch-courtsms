@@ -11,6 +11,7 @@ const Communications = resourceRequire('models', 'Communications');
 const Conversations = resourceRequire('models', 'Conversations');
 const Messages = resourceRequire('models', 'Messages');
 const Notifications = resourceRequire('models', 'Notifications');
+const Organizations = resourceRequire('models', 'Organizations');
 const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Recordings = resourceRequire('models', 'Recordings');
 
@@ -22,38 +23,53 @@ module.exports = {
   
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, '');
+    let toNumber = req.body.To.replace(/\D+/g, '');
     if (fromNumber.length == 10) { 
       fromNumber = '1' + fromNumber; 
     }
-    const resp = new twilio.TwimlResponse();
-    Communications.findByValue(fromNumber)
-    .then((communication) => {
+    const twilioResponse = new twilio.TwimlResponse();
+    let communication, organizationNumber;
+
+    Organizations.findOneByPhone(toNumber)
+    .then((resp) => {
+      organizationNumber = resp && resp.phone ? resp.phone : '';
+      console.log('\n\n');console.log('\n\n');
+      console.log('got call');console.log('got call');
+      console.log('got call', resp);
+      console.log('got call - organizationNumber', organizationNumber);
+
+      return Communications.findByValue(fromNumber);
+    }).then((resp) => {
+      communication = resp;
+
       if (communication) {
-        resp.say(
+        twilioResponse.say(
           {voice: 'woman',},
           'Hello. We\'ve found your number in our system. ' +
           'Please leave a message for your case manager after '+
           'the beep.');
         const params = `?type=message&commId=${communication.commid}`;
         const url = `/webhook/voice/save-recording/${params}`;
-        resp.record({
+        twilioResponse.record({
           action: url, 
           transcribe: true, 
           transcribeCallback: '/webhook/voice/transcribe',
         });
-        res.send(resp.toString());
+        res.send(twilioResponse.toString());
       } else {
-        resp.dial({callerId: '13854683500', });
+        if (organizationNumber) {
+          twilioResponse.dial({callerId: organizationNumber, });
+        }
+
+        try {
+          organizationNumber = organizationNumber.replace(/\D+/g, '');
+          organizationNumber = organizationNumber.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4');
+        } catch (e) {};
 
         // TODO: Make this component modular by organization(s)
-        resp.say(
-          {
-            voice: 'woman',
-          }, 
-          'Sorry, we were unable to connect you with ' +
-          'Criminal Justice Services. ' +
-          'Please call the front desk at 1 385 468 3500.');
-        res.send(resp.toString());
+        twilioResponse.say({ voice: 'woman', }, 
+          `Sorry, we were unable to connect you with Criminal Justice Services. Please call the front or support desk ${organizationNumber}.`);
+        res.send(twilioResponse.toString());
       }
     });
   },
