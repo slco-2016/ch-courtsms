@@ -33,10 +33,6 @@ module.exports = {
     Organizations.findOneByPhone(toNumber)
     .then((resp) => {
       organizationNumber = resp && resp.phone ? resp.phone : '';
-      console.log('\n\n');console.log('\n\n');
-      console.log('got call');console.log('got call');
-      console.log('got call', resp);
-      console.log('got call - organizationNumber', organizationNumber);
 
       return Communications.findByValue(fromNumber);
     }).then((resp) => {
@@ -61,6 +57,7 @@ module.exports = {
           twilioResponse.dial({callerId: organizationNumber, });
         }
 
+        // this will make the text-to-voice in twilio read the phone number more clearly
         try {
           organizationNumber = organizationNumber.replace(/\D+/g, '');
           organizationNumber = organizationNumber.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4');
@@ -86,8 +83,10 @@ module.exports = {
           return message.update({content: req.body.TranscriptionText,});
         });
       }
-    }).then(() => res.send('ok'))
-    .catch(res.error500);
+    }).then(() => {
+      const emptyResponse = twilio.TwimlResponse().toString();
+      res.send(emptyResponse);
+    }).catch(res.error500);
   },
 
   status(req, res) {
@@ -110,7 +109,8 @@ module.exports = {
           return null;
         }
       }).then((notification) => {
-        res.send('ok');
+        const emptyResponse = twilio.TwimlResponse().toString();
+        res.send(emptyResponse);
       }).catch(res.error500);
     }
   },
@@ -239,8 +239,10 @@ module.exports = {
           }
         });
       }
-    }).then(() => res.send('ok'))
-    .catch(res.error500);
+    }).then(() => {
+      const emptyResponse = twilio.TwimlResponse().toString();
+      res.send(emptyResponse);
+    }).catch(res.error500);
   },
 
   new(req, res) {
