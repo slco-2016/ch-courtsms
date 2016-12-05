@@ -603,8 +603,6 @@ $(function() {
         }
 
         function buildUserActivityChart(users) {
-          console.log(users);
-
           // Set height based off of remaining users post filter operation
           var height = Math.max(users.length * 30, 100);
           c3.generate({
