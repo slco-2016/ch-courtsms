@@ -68,7 +68,7 @@ class CommConns extends BaseModel {
   
   static findByClientIdWithCommMetaData (clientId) {
     return new Promise((fulfill, reject) => {
-      CommConns.findByClientIdsWithCommMetaData([clientId])
+      CommConns.findByClientIdsWithCommMetaData([clientId, ])
       .then((commconns) => {
         fulfill(commconns);
       }).catch(reject);

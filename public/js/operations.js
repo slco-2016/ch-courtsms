@@ -53,42 +53,47 @@ function sortBy (dataLabel) {
 var checkingForNewMessages = setInterval(function () {
   $.get("/alerts")
     .then(function (res) {
-      if (res.newMessages.active || res.newMessages.inactive) {
+      if (res && res.newMessages) {
+        if (res.newMessages.active || res.newMessages.inactive) {
 
-        // increment the number of alerts
-        var number = Number($(".numberRemaining").text());
-        if (isNaN(number)) {
-          number = 0;
-        }
-        number = number + 1;
+          // increment the number of alerts
+          var number = Number($(".numberRemaining").text());
+          if (isNaN(number)) {
+            number = 0;
+          }
+          number = number + 1;
 
-        // append the new alert to the alerts list
-        var hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=closed">';
-        $(".numberRemaining").text(number)
-        $(".alerts").fadeIn();
-        $(".receivesNewAlertsHere").prepend('<div class="alertRow">' +
-                                  '<div class="message">' + hrefLink +
-                                      'You have new unread messages. ' +
-                                      'Click to view.' +
-                                    '</a>' +
-                                  '</div>' +
-                                  '<div class="close">' +
-                                    '<i class="fa fa-check-circle" aria-hidden="true"></i>' +
-                                  '</div>' +
-                                '</div>');
-        $(".hiddenAlerts .alertRow .close").click(removeAlert); // need to bind action
+          // append the new alert to the alerts list
+          var hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=closed">';
+          $(".numberRemaining").text(number)
+          $(".alerts").fadeIn();
+          $(".receivesNewAlertsHere").prepend('<div class="alertRow">' +
+                                    '<div class="message">' + hrefLink +
+                                        'You have new unread messages. ' +
+                                        'Click to view.' +
+                                      '</a>' +
+                                    '</div>' +
+                                    '<div class="close">' +
+                                      '<i class="fa fa-check-circle" aria-hidden="true"></i>' +
+                                    '</div>' +
+                                  '</div>');
+          $(".hiddenAlerts .alertRow .close").click(removeAlert); // need to bind action
 
-        // stop checking for new alerts
-        clearInterval(checkingForNewMessages);
+          // stop checking for new alerts
+          clearInterval(checkingForNewMessages);
 
-        // make a dinging noise
-        if (typeof SESSION_USER !== 'undefined' && SESSION_USER.alert_beep) {
-          try {
-            new Audio('/static/sounds/alert.mp3').play()
-          } catch (e) {
-            console.log(error); 
+          // make a dinging noise
+          if (typeof SESSION_USER !== 'undefined' && SESSION_USER.alert_beep) {
+            try {
+              new Audio('/static/sounds/alert.mp3').play()
+            } catch (e) {
+              console.log(error); 
+            }
           }
         }
+      } else {
+        console.log('No associated logged in account.');
+        clearInterval(checkingForNewMessages);
       }
 
     }).fail(function (error) { 
