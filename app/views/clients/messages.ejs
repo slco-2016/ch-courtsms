@@ -165,13 +165,15 @@
               </div>
             </a>
 
+            <% let lastInboundComm = null; %>
+            <% try { lastInboundComm = messages.filter((m) => { return m.inbound; }).slice(-1).pop().comm } catch (err) { } %>
+
             <div class="contactSelect">
               <select name="commID" required>
                 <option value="" selected disabled>Comm Method</option>
 
-                
                 <% communications.forEach(function (communication) { %>
-                  <option value="<%= communication.commid %>"><%= communication.name + ' (' + communication.value + ')' %></option>
+                  <option value="<%= communication.commid %>" <%= communication.commid == lastInboundComm ? 'selected' : '' %>><%= communication.name + ' (' + communication.value + ')' %></option>
                 <% }) %>
               </select>
             </div>
