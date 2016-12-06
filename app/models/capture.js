@@ -13,6 +13,15 @@ class CaptureBoard {
   static findByOrg (orgId) {
     return new Promise((fulfill, reject) => {
       db('msgs')
+        .select('msgs.msgid',
+                'msgs.convo',
+                'msgs.content',
+                'msgs.inbound',
+                'msgs.created',
+                'convos.subject',
+                'comms.type',
+                'comms.value',
+                'commconns.name')
         .leftJoin('convos', 'msgs.convo', 'convos.convid')
         .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .leftJoin('commconns', 'commconns.commconnid', 'comms.commid')

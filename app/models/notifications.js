@@ -9,9 +9,11 @@ const moment = require('moment');
 const momentTz = require('moment-timezone');
 
 const resourceRequire = require('../lib/resourceRequire');
-const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
+
+const Alerts = resourceRequire('models', 'Alerts');
 const Conversations = resourceRequire('models', 'Conversations');
 const Messages = resourceRequire('models', 'Messages');
+const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Users = resourceRequire('models', 'Users');
 
 const voice = resourceRequire('lib', 'voice');
@@ -46,8 +48,6 @@ class Notifications extends BaseModel {
   static checkAndSendNotifications () {
     return new Promise((fulfill, reject) => {
       db('notifications')
-        // .select("notifications.*", "comms.type", "comms.value")
-        // .leftJoin("comms", "notifications.comm", "comms.commid")
         .where('send', '<', db.fn.now())
         .andWhere('notifications.sent', false)
         .andWhere('notifications.closed', false)
@@ -65,7 +65,17 @@ class Notifications extends BaseModel {
         } else {
           return this.sendTextorEmailNotification(notification);
         }
-      }).then((resp) => {
+      }).then((notifications) => {
+        return new Promise((fulfill, reject) => {
+          fulfill(notifications);
+        });
+      }).map((notification) => {
+        let targetUserId = notification.cm;
+        let createdByUserId = notification.cm;
+        let subject = 'Notification Sent';
+        let message = `Message subject \"${notification.subject}\" was sent and will appear as a sent message in the conversation stream.`;
+        return Alerts.createForUser(targetUserId, createdByUserId, subject, message);
+      }).then(() => {
         fulfill();
       }).catch(reject);
     });
@@ -77,7 +87,7 @@ class Notifications extends BaseModel {
       .then((ovm) => {
         return voice.processPendingOutboundVoiceMessages(ovm);
       }).then(() => {
-        fulfill();
+        fulfill(notification);
       }).catch(reject);
     });
   };
@@ -103,7 +113,7 @@ class Notifications extends BaseModel {
         sendMethod.then(() => {
           return this.markAsSent(notification.notificationid);
         }).then(() => {
-          fulfill();
+          fulfill(notification);
         }).catch(reject);
 
       }).catch(reject);

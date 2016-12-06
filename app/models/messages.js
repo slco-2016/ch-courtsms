@@ -24,15 +24,44 @@ if (process.env.CCENV && process.env.CCENV == 'production') {
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
 
+const Attachments = require('./attachments');
 const Clients = require('./clients');
 const CommConns = require('./commConns');
 const Communications = require('./communications');
 const Conversations = require('./conversations');
 const Recordings = require('./recordings');
 const Departments = require('./departments');
-const Attachments = require('./attachments');
+const Organizations = require('./organizations');
 const PhoneNumbers = require('./phoneNumbers');
 const Users = require('./users');
+
+// utility function
+function clearDuplicateMessages (messages) {
+  if (messages.length > 1) {
+    // delete all duplicates from the array
+    let cleanedMessages = [];
+    for (let i = 0; i < messages.length - 1; i++) {
+      const sameMsgId = messages[i].msgid == messages[i + 1].msgid;
+      const sameConvo = messages[i].convo == messages[i + 1].convo;
+      const sameComm = messages[i].comm == messages[i + 1].comm;
+      const sameVal = messages[i].comm_value == messages[i + 1].comm_value;
+      const sameDir = messages[i].inbound == messages[i + 1].inbound;
+
+      if (sameMsgId && sameConvo && sameComm && sameVal && sameDir) {
+        // do nothing
+      } else {
+        cleanedMessages.push(messages[i]);
+      }
+    }
+
+    // add the very last message from the messages array
+    cleanedMessages.push(messages[messages.length - 1]);
+
+    // reset the messages array to the cleaned result
+    messages = cleanedMessages;
+  }
+  return messages;
+}
 
 class Messages extends BaseModel {
 
@@ -233,6 +262,21 @@ class Messages extends BaseModel {
     });
   }
 
+  static findAllFromClient (clientId) {
+    return new Promise((fulfill, reject) => {
+      Conversations.findManyByAttribute('client', clientId)
+      .then((conversations) => {
+        const conversationIds = conversations.map((conversation) => {
+          return conversation.convid;
+        });
+
+        return Messages.transcriptionDetails(conversationIds);
+      }).then((messages) => {
+        fulfill(messages);
+      }).catch(reject);
+    });
+  }
+
   static findBetweenUserAndClient (userId, clientId) {
     return new Promise((fulfill, reject) => {
       Conversations.findByUser(userId)
@@ -242,7 +286,7 @@ class Messages extends BaseModel {
         }).map((conversation) => {
           return conversation.convid;
         });
-        return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
+        return Messages.transcriptionDetails(conversationIds);
       }).then((messages) => {
         fulfill(messages);
       }).catch(reject);
@@ -288,9 +332,34 @@ class Messages extends BaseModel {
     });
   }
 
+  static transcriptionDetails (conversationIds) {
+    if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
+
+    return new Promise((fulfill, reject) => {
+      let messages = [];
+      Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds)
+      .then((resp) => {
+        messages = resp.map((message) => {
+          return {
+            id: `${message.msgid} (from conversation #${message.convo})`,
+            content: message.content,
+            communication: `${message.commconn_name}, ${message.comm_value} (device type: ${message.comm_type})`,
+            read_by_user: message.read,
+            sent_by_client: message.inbound ? 'TRUE' : 'FALSE - Sent by user.',
+            communication_with: `${message.user_first} ${message.user_middle} ${message.user_last}`,
+            status: `${message.tw_status}`,
+            date_time: message.created,
+          };
+        });
+
+        fulfill(messages);
+      }).catch(reject);
+    });
+  }
+
   static findWithSentimentAnalysisAndCommConnMetaByConversationIds (conversationIds) {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
-    
+
     return new Promise((fulfill, reject) => {
       let messages;
       db('msgs')
@@ -299,9 +368,13 @@ class Messages extends BaseModel {
                 'commconns.client',
                 'commconns.name as commconn_name', 
                 'comms.value as comm_value',
-                'comms.type as comm_type')
+                'comms.type as comm_type',
+                'cms.first as user_first',
+                'cms.middle as user_middle',
+                'cms.last as user_last')
         .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .leftJoin('convos', 'convos.convid', 'msgs.convo')
+        .leftJoin('cms', 'convos.cm', 'cms.cmid')
         .leftJoin('commconns', function () {
           this
               .on('commconns.comm', 'msgs.comm')
@@ -311,7 +384,8 @@ class Messages extends BaseModel {
         .whereIn('convo', conversationIds)
         .orderBy('created', 'asc')
       .then((resp) => {
-        messages = resp;
+        messages = clearDuplicateMessages(resp);
+
         const emailIds = messages.map(msg => msg.email_id);
 
         return db('emails')

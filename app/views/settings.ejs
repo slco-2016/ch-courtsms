@@ -69,6 +69,16 @@
 
     <div class="formRow">
       <div class="formLabel">
+        Beep Noise on New Alerts
+      </div>
+
+      <div class="formInput">
+        <input type="checkbox" name="alertBeep" value="true" <%if (user.alert_beep) {%>checked<%}%>> Check to toggle beep on/off
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel">
         Away message status
       </div>
 
