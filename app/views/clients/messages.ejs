@@ -47,7 +47,8 @@
 
             <% message.attachments.forEach((attachment) => { %>
               <div class="viewAttachment">
-                <a href="<%= attachment.getUrl() %>">View/open attachment</a>
+                <img src="<%= attachment.getUrl() %>" />
+                <p><a href="<%= attachment.getUrl() %>">View/open attachment</a></p>
               </div>
             <% }) %>
 

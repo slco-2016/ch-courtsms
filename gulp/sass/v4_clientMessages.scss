@@ -186,6 +186,10 @@ $width_row5:  5%;
             margin-bottom: 5px;
             text-align: center;
 
+            img {
+              max-width: 100%;
+            }
+
             a {
               border: 1px solid $lightgrey;
               font-size: 12px;
