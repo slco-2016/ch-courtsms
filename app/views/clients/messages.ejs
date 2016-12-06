@@ -168,6 +168,8 @@
             <div class="contactSelect">
               <select name="commID" required>
                 <option value="" selected disabled>Comm Method</option>
+
+                
                 <% communications.forEach(function (communication) { %>
                   <option value="<%= communication.commid %>"><%= communication.name + ' (' + communication.value + ')' %></option>
                 <% }) %>

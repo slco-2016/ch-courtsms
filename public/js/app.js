@@ -195,6 +195,8 @@ $(function() {
           toggleSubjectView("off");
         })
 
+        // currently the function just works one way (you can only open it)
+        // you need to refresh the page to have it back down
         function toggleTypeBox (hide) {
           if (hide == "close") {
             // $(".full").hide();
@@ -209,11 +211,10 @@ $(function() {
             $(".name").show();
             $(".actionButton").css("margin-top", "20px");
             $("#placeHolderTypeBox").hide();
-            $(".messageStream").css("margin-bottom", 150);
+            $(".messageStream").css("margin-bottom", "200px");
             scrollLast()
           }
         };
-        // toggleTypeBox()
 
         function adjustDivs () {
           $(".leftBar").height($(window).height() - 97);
