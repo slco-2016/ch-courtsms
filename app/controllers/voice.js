@@ -40,10 +40,7 @@ module.exports = {
 
       if (communication) {
         twilioResponse.say(
-          {voice: 'woman',},
-          'Hello. We\'ve found your number in our system. ' +
-          'Please leave a message for your case manager after '+
-          'the beep.');
+          {voice: 'woman',}, 'Hello. Please leave a message for your case manager after the beep.');
         const params = `?type=message&commId=${communication.commid}`;
         const url = `/webhook/voice/save-recording/${params}`;
         twilioResponse.record({
