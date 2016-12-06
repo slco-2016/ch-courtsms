@@ -243,6 +243,7 @@ module.exports = {
     // determine if we should filter by type
     let methodFilter = 'all';
     if (req.query.method == 'texts') methodFilter = 'cell';
+    if (req.query.method == 'emails') methodFilter = 'email';
 
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
