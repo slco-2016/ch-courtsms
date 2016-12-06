@@ -53,7 +53,7 @@ function sortBy (dataLabel) {
 var checkingForNewMessages = setInterval(function () {
   $.get("/alerts")
     .then(function (res) {
-      if (res.newMessages.active || res.newMessages.inactive) {
+      if (res && res.newMessages && (res.newMessages.active || res.newMessages.inactive)) {
 
         // increment the number of alerts
         var number = Number($(".numberRemaining").text());
@@ -89,6 +89,9 @@ var checkingForNewMessages = setInterval(function () {
             console.log(error); 
           }
         }
+      } else {
+        console.log('No associated logged in account.');
+        clearInterval(checkingForNewMessages);
       }
 
     }).fail(function (error) { 

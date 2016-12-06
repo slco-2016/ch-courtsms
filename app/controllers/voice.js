@@ -169,7 +169,6 @@ module.exports = {
       req.body.RecordingSid
     ).then((key) => {
       if (type === 'ovm') {
-
         const userId = req.query.userId;
         const commId = req.query.commId;
         const clientId = req.query.clientId;
