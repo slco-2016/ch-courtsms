@@ -24,6 +24,7 @@
         <div class="title"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">Messages</a></div>
         <div class="option <%= hub.sel == 'all' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">All</a></div>
         <div class="option <%= hub.sel == 'texts' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=texts`%>">Texts</a></div>
+        <div class="option <%= hub.sel == 'emails' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=emails`%>">Emails</a></div>
       </div>
     <% } %>
 
