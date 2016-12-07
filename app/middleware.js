@@ -247,6 +247,7 @@ module.exports = {
       return Departments.findById(departmentId)
       .then((resp) => {
         department = resp;
+
         // if no department, provide some dummy attributes
         if (!department) {
           department = {
@@ -256,16 +257,19 @@ module.exports = {
             department_id: null,
           };
         }
-        res.locals.department = department;
 
         if (department.phone_number) {
           return PhoneNumbers.findById(department.phone_number);
         } else {
-          next();
-          return null;
+          return new Promise((fulfill, reject) => {
+            fulfill(null);
+          });
         }
       }).then((phoneNumber) => {
-        department.phone_number_value = phoneNumber.value;
+        if (phoneNumber) {
+          department.phone_number_value = phoneNumber.value;
+        }
+        res.locals.department = department;
         next();
         return null;
       }).catch(res.error500);
