@@ -4,6 +4,7 @@ const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Messages = require('./models/messages');
 const Organizations = require('./models/organizations');
+const PhoneNumbers = require('./models/phoneNumbers');
 const Users = require('./models/users');
 
 function _capitalize (word) {
@@ -239,10 +240,13 @@ module.exports = {
   },
 
   fetchUserDepartment(req, res, next) {
+    let department;
+
     if (req.user) {
       const departmentId = req.user.department;
       return Departments.findById(departmentId)
-      .then((department) => {
+      .then((resp) => {
+        department = resp;
         // if no department, provide some dummy attributes
         if (!department) {
           department = {
@@ -253,6 +257,15 @@ module.exports = {
           };
         }
         res.locals.department = department;
+
+        if (department.phone_number) {
+          return PhoneNumbers.findById(department.phone_number);
+        } else {
+          next();
+          return null;
+        }
+      }).then((phoneNumber) => {
+        department.phone_number_value = phoneNumber.value;
         next();
         return null;
       }).catch(res.error500);
