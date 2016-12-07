@@ -103,6 +103,8 @@
         margin-top: 15px;
         margin-bottom: 5px;
         text-align: center; }
+        .rightContent .messageStream .messageDiv .message .content .viewAttachment img {
+          max-width: 100%; }
         .rightContent .messageStream .messageDiv .message .content .viewAttachment a {
           border: 1px solid #D3D3D3;
           font-size: 12px;

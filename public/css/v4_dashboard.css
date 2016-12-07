@@ -150,3 +150,5 @@
     font-size: 18px;
     line-height: 24px;
     padding: 15px; }
+  .chart .buttonOptions {
+    float: right; }

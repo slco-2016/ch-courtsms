@@ -195,6 +195,8 @@ $(function() {
           toggleSubjectView("off");
         })
 
+        // currently the function just works one way (you can only open it)
+        // you need to refresh the page to have it back down
         function toggleTypeBox (hide) {
           if (hide == "close") {
             // $(".full").hide();
@@ -209,11 +211,10 @@ $(function() {
             $(".name").show();
             $(".actionButton").css("margin-top", "20px");
             $("#placeHolderTypeBox").hide();
-            $(".messageStream").css("margin-bottom", 150);
+            $(".messageStream").css("margin-bottom", "200px");
             scrollLast()
           }
         };
-        // toggleTypeBox()
 
         function adjustDivs () {
           $(".leftBar").height($(window).height() - 97);
@@ -386,24 +387,45 @@ $(function() {
     {
       cssClass: 'JSdashboard',
       execute: function () {
+        // global initiates as empty array
+        window.keenUsers = [];
+        window.keenQueryClient;
+
         try { adjustDivs(); } catch (e) { console.log(e); }
         $(window).resize(adjustDivs);
         $(document).ready(function () {
-          var keenQueryClient = new Keen({
+          keenQueryClient = new Keen({
             projectId: "5750a91433e4063ccd5b6c7e",
             readKey: "a70db21e3f6527c10ee23f2697714bf883783b6018b8f3fd27d94bf0b0d9eb9cb26a22d69709dff266866c526ad0e9e845c82dd5393b417d99c2ef7712d979a960e9247806dc09231e9ff7880ab2772cfa1b41d9900de385db8d5942d4d337bd"
           });
+          getAndRenderUserActivity();
+        });
+
+        function getAndRenderUserActivity (alternateTimeFrame) {
+          if (!alternateTimeFrame) {
+            alternateTimeFrame = 'this_31_days';
+          }
+
+          try {
+            var numberOfDays = Number(alternateTimeFrame.replace(/[^0-9.]/g, ""));
+            numberOfDays = numberOfDays - 1;
+            $("#userActivity_numberOfDays").text(numberOfDays);
+          } catch (e) {
+            console.log(e);
+          }
+
           Keen.ready(function () {
             var keenQuery = new Keen.Query("sum", {
               eventCollection: "pagedurations",
               groupBy: [ "user.first", "user.last", "user.department", "user.cmid" ],
               targetProperty: "duration",
-              timeframe: "this_31_days",
+              timeframe: alternateTimeFrame,
               timezone: "UTC"
             });
             keenQueryClient.run(keenQuery, function (err, res){
               if (!err) {
-                var keenUsers = getRelevantKeenUsers(users, res.result);
+                // make keenUsers global
+                keenUsers = getRelevantKeenUsers(users, res.result);
                 buildUserActivityChart(keenUsers); 
                 $("#userActivity").parent().find(".loading").hide();
 
@@ -422,7 +444,10 @@ $(function() {
               }
             });
           });
-        });
+        };
+
+        // bind above function to global scope
+        window.getAndRenderUserActivity = getAndRenderUserActivity;
 
         function adjustDivs () {
           $(".leftBar").height($(window).height() - 97);

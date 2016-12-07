@@ -191,7 +191,17 @@
 
 
   <div class="chart">
-    <div class="title">Previous 30 Days' User Activity</div>
+    <div class="title">
+      Previous <span id="userActivity_numberOfDays">30</span> Days' User Activity
+      <div class="buttonOptions">
+        <button onclick="getAndRenderUserActivity('this_1_days');">Today</button>
+        <button onclick="getAndRenderUserActivity('this_2_days');">Past day</button>
+        <button onclick="getAndRenderUserActivity('this_8_days');">Past 7 days</button>
+        <button onclick="getAndRenderUserActivity('this_2_days');">Past 30 days</button>
+      </div>
+    </div>
+    
+
     <div class="loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw" aria-hidden="true"></i></div>
     <div class="graphic" id="userActivity"></div>
   </div>
