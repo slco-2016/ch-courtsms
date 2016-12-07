@@ -1,7 +1,14 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="<%= `/clients/${client.clid}/messages` %>"><% include ../partials/cardExit %></a>
+
+  <% if (typeof client !== 'undefined') { %>
+    <a href="<%= `/clients/${client.clid}/messages` %>">
+  <% } else { %>
+    <a href="<%= `/clients` %>">
+  <% } %>
+  <% include ../partials/cardExit %></a>
+
   <div class="cardTitle">Select template</div>
   <div class="cardSubtitle">
     Use templates to make sending messages quicker and easier.
