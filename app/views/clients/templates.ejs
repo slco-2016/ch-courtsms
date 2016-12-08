@@ -67,7 +67,7 @@
     <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
       <input type="hidden" name="title"   id="templateTitle">    
       <input type="hidden" name="content" id="templateContent">
-      <input type="hidden" name="content" id="templateContent">
+      <input type="hidden" name="content" id="templateId">
 
       <div class="formRow">
         <input type="submit" class="formSubmit padTop" value="Select template">
@@ -78,6 +78,6 @@
 
 </div>
 
-<script type="text/javascript" class="JSselectTemplateWhenAddressingClient"></script>
+<script type="text/javascript" class="JSnotificationsTemplates"></script>
 
 <% include ../partials/cardFrameBottom %>
