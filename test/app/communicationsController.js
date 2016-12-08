@@ -37,6 +37,7 @@ describe('Voice requirements', function() {
               should.equal(communication.type, 'cell');
               should.equal(communication.description, uniquePhoneNumberName);
               done();
+
             }).catch(done);
           });
       });

@@ -168,6 +168,7 @@
 
             <% let lastInboundComm = null; %>
             <% try { lastInboundComm = messages.filter((m) => { return m.inbound; }).slice(-1).pop().comm } catch (err) { } %>
+            <% try { if (communications.length == 1) { lastInboundComm = communications[0].comm } } catch (err) { } %>
 
             <div class="contactSelect">
               <select name="commID" required>

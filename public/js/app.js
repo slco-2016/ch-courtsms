@@ -222,10 +222,12 @@ $(function() {
         }
 
         function scrollLast () {
-          $("#lastMessage")[0].scrollIntoView({ 
-            block: "end", 
-            behavior: "smooth"
-          });
+          if ($("#lastMessage").length) {
+            $("#lastMessage")[0].scrollIntoView({ 
+              block: "end", 
+              behavior: "smooth"
+            });
+          }
         }
 
         function checkSubmitValid () {
