@@ -624,7 +624,7 @@ $(function() {
             },
             axis: {
               rotated: true,
-              x: { type: "category" },
+              x: { type: "category" }
             },
             legend: { show: false },
             size: { width: 720, height: height },
