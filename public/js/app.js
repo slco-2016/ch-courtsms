@@ -377,6 +377,12 @@ $(function() {
           getAndRenderUserActivity();
         });
 
+          // update button colors
+        $('.buttonOptions button').click(function () {
+          $('.buttonOptions button').removeClass('selected');
+          $(this).addClass('selected');
+        });
+
         function getAndRenderUserActivity (alternateTimeFrame) {
           if (!alternateTimeFrame) {
             alternateTimeFrame = 'this_31_days';
