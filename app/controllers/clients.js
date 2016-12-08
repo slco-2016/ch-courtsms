@@ -159,7 +159,11 @@ module.exports = {
             so,  // note these should be renamed
             otn  // this one as well
     ).then((client) => {
-      res.levelSensitiveRedirect('/clients');
+      if (req.user.cmid == client.cm) {
+        res.redirect(`/clients/${client.clid}/messages`);
+      } else {
+        res.levelSensitiveRedirect('/clients');
+      }
     }).catch(res.error500);
   },
 
@@ -294,10 +298,15 @@ module.exports = {
         return !conversation.accepted && conversation.open;
       });
 
+      // prompt to create a comm method if none exists
+      if (communications.length == 0) {
+        res.redirect(`/clients/${client.clid}/communications/create`);
+
       // if there are unclaimed messages that need to be viewed and this the client's main cm
-      if (unclaimed.length && req.user.cmid == client.cm) {
+      } else if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
         res.redirect(`/clients/${client.clid}/conversations/${unclaimed.convid}/claim`);
+
       } else {
         res.render('clients/messages', {
           hub: {
