@@ -36,7 +36,7 @@
 
     <% for (var i=0; i < templates.length; i++) { %>
       <div class="scrollListRow"
-        templateID="<%= templates[i].template_id %>"
+        data-template-id="<%= templates[i].template_id %>"
         data-title="<%= templates[i].title %>"
         data-content="<%= templates[i].content %>">
         
@@ -66,6 +66,7 @@
   <% if (templates.length > 0) { %>
     <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
       <input type="hidden" name="title"   id="templateTitle">    
+      <input type="hidden" name="content" id="templateContent">
       <input type="hidden" name="content" id="templateContent">
 
       <div class="formRow">
