@@ -85,13 +85,13 @@ class Templates {
     });
   }
 
-  static logUse (templateID, userID, clientID) {
+  static logUse (templateId, userId, clientId) {
     return new Promise((fulfill, reject) => {
       db('template_use')
         .insert({
-          template: templateID,
-          used_by: userID,
-          sent_to: clientID,
+          template: templateId,
+          used_by: userId,
+          sent_to: clientId,
         })
       .then(() => {
         fulfill();

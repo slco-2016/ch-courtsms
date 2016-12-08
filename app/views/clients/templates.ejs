@@ -65,9 +65,9 @@
 
   <% if (templates.length > 0) { %>
     <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
-      <input type="hidden" name="title"   id="templateTitle">    
-      <input type="hidden" name="content" id="templateContent">
-      <input type="hidden" name="content" id="templateId">
+      <input type="hidden" name="title"      id="templateTitle">    
+      <input type="hidden" name="content"    id="templateContent">
+      <input type="hidden" name="templateid" id="templateId">
 
       <div class="formRow">
         <input type="submit" class="formSubmit padTop" value="Select template">

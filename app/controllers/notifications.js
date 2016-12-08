@@ -99,6 +99,12 @@ module.exports = {
                     message, 
                     send
     ).then(() => {
+      // log the use of a template if it exists
+      let templateId = req.body.templateid;
+      if (templateid) {
+        Templates.logUse(templateId, user, client).then().catch();
+      }
+
       req.flash('success', 'Created new notification.');
       res.redirect('/notifications');
     }).catch(res.error500);
