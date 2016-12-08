@@ -150,6 +150,15 @@ module.exports = {
     const so     = req.body.uniqueID1 ? req.body.uniqueID1 : null;    
     const otn    = req.body.uniqueID2 ? req.body.uniqueID2 : null;
 
+console.log('creating a user fuck ucskjclkdsfj', [
+            userId, 
+            first, 
+            middle, 
+            last, 
+            dob, 
+            so,  // note these should be renamed
+            otn])
+
     Clients.create(
             userId, 
             first, 

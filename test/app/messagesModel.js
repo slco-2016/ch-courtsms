@@ -20,6 +20,7 @@ describe('Messages checks', function() {
   //     done();
   //   }).catch(done);
   // });
+
   it('should be able to Messages.sendOne email', function(done) {
   	mock.enable()
   	let communication, conversation
