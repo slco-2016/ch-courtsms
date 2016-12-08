@@ -94,6 +94,7 @@ class Templates {
           sent_to: clientId,
         })
       .then(() => {
+        console.log('logged use');
         fulfill();
       }).catch(reject);
     });

@@ -230,7 +230,7 @@ module.exports = {
     method.then(() => {
       // log the use of a template if it exists
       let templateId = req.body.templateid;
-      if (templateid) {
+      if (templateId) {
         Templates.logUse(templateId, user, client).then().catch();
       }
 

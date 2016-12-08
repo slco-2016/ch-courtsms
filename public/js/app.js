@@ -840,14 +840,14 @@ $(function() {
           $(".scrollListRow").removeClass("selected");
           $(this).addClass("selected");
           $('#templateTitle').val(
-            $(this).data('title');
-          )
+            $(this).data('title')
+          );
           $('#templateContent').val(
-            $(this).data('content');
-          )
+            $(this).data('content')
+          );
           $('#templateId').val(
-            $(this).data('template-id');
-          )
+            $(this).data('template-id')
+          );
         });
       }
     },
