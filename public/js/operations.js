@@ -101,10 +101,22 @@ var checkingForNewMessages = setInterval(function () {
     });
 }, 4000);
 
+(function(){
+  var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+  if (isChrome) {
+    var notice = $('.miniChromeBrowserDownloadPrompt');
+    notice.show();
+    setTimeout(function () { 
+      notice.fadeOut();
+    }, 5000);
+  }
+})();
+
 // Dynamically set coreContent if it exists to height of page
 function adjustCoreContentBoxSize () {
   $(".coreContent").height($(window).height() - 97);
 }
+
 $(window).resize(adjustCoreContentBoxSize);
 adjustCoreContentBoxSize();
 
