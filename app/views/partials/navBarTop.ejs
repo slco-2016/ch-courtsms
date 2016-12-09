@@ -17,30 +17,32 @@
 
   <div class="navHeader <%if (level=="org") {%>orgLevel<%}%>">
     <div class="leftLogo">
+      
       <% include ../../../public/icons/logo.svg %>
+      
       <a href="/">
         <div class="button">
           <div class="name">
             <b><%= user.first %> <%= user.last %></b>
-            
           </div>
+
           <div class="organization">
-
-          <div>
-            <div>sheep</div>
-            <div>bnear</div>
-          </div>
-
-            <%= department.name %> 
-            •
-            <% if (department.phone_number_value) { %>
-              <%= department.phone_number_value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
-              •
-            <% } %>
-            <%= organization.name %>
+            <div class="subsection">
+              <div class="top">
+                <%= department.name %> 
+                •
+                <% if (department.phone_number_value) { %>
+                  <%= department.phone_number_value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
+                <% } %>
+              </div>
+              <div class="bottom">
+                <%= organization.name %>
+              </div>
+            </div>
           </div>
         </div>
       </a>
+
     </div>
 
     <div class="rightLogout">

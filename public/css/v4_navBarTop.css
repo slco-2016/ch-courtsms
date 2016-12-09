@@ -110,19 +110,23 @@
         cursor: pointer;
         margin: 4px; }
         .applicationFrame .navHeader .leftLogo .button .name {
-          display: inline;
+          float: left;
           font-size: 15px;
           line-height: 22px;
           padding: 0px;
           margin: 0px; }
         .applicationFrame .navHeader .leftLogo .button .organization {
-          display: inline;
-          font-size: 12px;
-          line-height: 22px;
+          float: left;
           padding: 0px;
           margin: 0px;
           padding-left: 4px;
           margin-left: 8px; }
+          .applicationFrame .navHeader .leftLogo .button .organization .subsection {
+            border-left: 1px solid #647180;
+            padding-left: 10px; }
+            .applicationFrame .navHeader .leftLogo .button .organization .subsection .top, .applicationFrame .navHeader .leftLogo .button .organization .subsection .bottom {
+              font-size: 11px;
+              line-height: 11px; }
     .applicationFrame .navHeader .performance {
       float: right;
       margin-right: 14px;
