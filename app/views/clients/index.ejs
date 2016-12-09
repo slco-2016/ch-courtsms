@@ -105,7 +105,11 @@
           <a href="<%=`${clientBaseURL}/communications/create`%>">
         <% } %>
       <% } else { %>
-        <a href="<%=`/clients/${client.clid}`%>">
+        <% if (client.cm == user.cmid) { %>
+          <a href="<%=`/clients/${client.clid}/messages`%>">
+        <% } else { %>
+          <a href="<%=`/clients/${client.clid}`%>">
+        <% } %>
       <% } %>
         <span class="clientName">
           <%=`${client.last}, ${client.first} ${client.middle}`%>

@@ -1,7 +1,14 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="/clients"><% include ../partials/cardExit %></a>
+
+  <% if (typeof client !== 'undefined') { %>
+    <a href="<%= `/clients/${client.clid}/messages` %>">
+  <% } else { %>
+    <a href="<%= `/clients` %>">
+  <% } %>
+  <% include ../partials/cardExit %></a>
+
   <div class="cardTitle">Select template</div>
   <div class="cardSubtitle">
     Use templates to make sending messages quicker and easier.
@@ -11,9 +18,25 @@
 <div class="cardBody">
   
   <div class="scrollListBox">
+
+    <% if (templates.length == 0) { %>
+      <div class="noTemplates">
+        
+        <div class="formRow" style="text-align:center">
+          <h2>No templates available.</h2>
+        </div>
+        
+        <div class="formRow">
+          <a href="/templates/create">
+            <input type="submit" class="formSubmit padTop" value="Create new">
+          </a>
+        </div>
+      </div>
+    <% } %>
+
     <% for (var i=0; i < templates.length; i++) { %>
       <div class="scrollListRow"
-        templateID="<%= templates[i].template_id %>"
+        data-template-id="<%= templates[i].template_id %>"
         data-title="<%= templates[i].title %>"
         data-content="<%= templates[i].content %>">
         
@@ -40,18 +63,21 @@
     <% } %>
   </div>
 
-  <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
-    <input type="hidden" name="title"   id="templateTitle">    
-    <input type="hidden" name="content" id="templateContent">
+  <% if (templates.length > 0) { %>
+    <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
+      <input type="hidden" name="title"      id="templateTitle">    
+      <input type="hidden" name="content"    id="templateContent">
+      <input type="hidden" name="templateid" id="templateId">
 
-    <div class="formRow">
-      <input type="submit" class="formSubmit padTop" value="Select template">
-    </div>
+      <div class="formRow">
+        <input type="submit" class="formSubmit padTop" value="Select template">
+      </div>
 
-  </form>
+    </form>
+  <% } %>
 
 </div>
 
-<script type="text/javascript" class="JSselectTemplateWhenAddressingClient"></script>
+<script type="text/javascript" class="JSnotificationsTemplates"></script>
 
 <% include ../partials/cardFrameBottom %>

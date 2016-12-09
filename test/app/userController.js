@@ -122,10 +122,10 @@ describe('Basic http req tests', function() {
     owner.post('/org/clients/create')
       .send({
         targetUser: 2,
-        first: "Jim",
-        middle: "K",
-        last: "Halpert",
-        dob: "1990-02-03",
+        first: 'Jim',
+        middle: 'K',
+        last: 'Halpert',
+        dob: '1990-02-03',
         uniqueID1: 324,
         uniqueID2: 23234,
       })
@@ -153,13 +153,14 @@ describe('Basic http req tests', function() {
   });
 
   it('client without contact methods should reroute to create comm method', function(done) {
-    primary.post('/org/clients/create')
+    lastNameUnique = 'Orin';
+    owner.post('/org/clients/create')
       .send({
         targetUser: 2,
-        first: "Sandro",
-        middle: "N",
-        last: "Orin",
-        dob: "1990-02-03",
+        first: 'Sandro',
+        middle: 'N',
+        last: lastNameUnique,
+        dob: '1990-02-03',
         uniqueID1: 32334,
         uniqueID2: 2327534,
       })
@@ -168,12 +169,19 @@ describe('Basic http req tests', function() {
         if (err) {
           done(err);
         } else {
-          primary.get('/clients/3/communications')
-            .expect(302)
-            .expect('Location', '/clients/3/communications/create')
-            .end(function(err, res) {
-              done(err);
-            });
+          Clients.findOneByAttribute('last', lastNameUnique)
+          .then(function (client) {
+            if (client) {
+              primary.get(`/clients/${client.clid}/communications`)
+                .expect(302)
+                .expect('Location', `/clients/${client.clid}/communications/create`)
+                .end(function(err, res) {
+                  done(err);
+                });
+            } else {
+              done(new Error('Could not find client just created'));
+            }
+          }).catch(done);
         }
       });
   });
@@ -219,14 +227,15 @@ describe('Basic http req tests', function() {
 
   it('primary can add their own client', function(done) {
     primary.post('/clients/create')
-      .field('first', 'Harry')
-      .field('middle', 'E')
-      .field('last', 'Kroner')
-      .field('dob', '1927-10-12')
-      .field('so', 3333)
-      .field('otn', 9238)
+      .send({
+        first: 'Harroldnewss',
+        middle: 'E',
+        last: 'Kroner',
+        dob: '1927-10-12',
+        uniqueID1: 3333,
+        uniqueID2: 9238,
+      })
     .expect(302)
-    .expect('Location', '/clients')
       .end(function(err, res) {
         done(err);
       });

@@ -70,7 +70,10 @@
 <div class="rightContent">
 
   <div class="chart">
-    <div class="title">Yearly Activity Log</div>
+    <div class="title">
+      <i class="fa fa-area-chart" aria-hidden="true"></i>
+      Yearly Activity Log
+    </div>
     <div class="graphic" id="overallGraph"></div>
   </div>
 
@@ -191,7 +194,19 @@
 
 
   <div class="chart">
-    <div class="title">Previous 30 Days' User Activity</div>
+    <div class="title">
+      <i class="fa fa-clock-o" aria-hidden="true"></i>
+      Previous <span id="userActivity_numberOfDays">30</span> Days' User Activity 
+      <small>(in hours)</small>
+      <div class="buttonOptions">
+        <button onclick="getAndRenderUserActivity('this_1_days');">Today</button>
+        <button onclick="getAndRenderUserActivity('this_2_days');">Past day</button>
+        <button onclick="getAndRenderUserActivity('this_8_days');">Past 7 days</button>
+        <button onclick="getAndRenderUserActivity('this_31_days');">Past 30 days</button>
+      </div>
+    </div>
+    
+
     <div class="loading"><i class="fa fa-spinner fa-pulse fa-3x fa-fw" aria-hidden="true"></i></div>
     <div class="graphic" id="userActivity"></div>
   </div>

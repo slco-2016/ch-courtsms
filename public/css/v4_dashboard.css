@@ -150,3 +150,16 @@
     font-size: 18px;
     line-height: 24px;
     padding: 15px; }
+  .chart .buttonOptions {
+    float: right; }
+    .chart .buttonOptions button {
+      border: 1px solid #4A90E2;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 2px 10px 2px 10px;
+      background-color: #FFF;
+      color: #4A90E2; }
+      .chart .buttonOptions button:hover, .chart .buttonOptions button.selected {
+        color: #FFF;
+        background-color: #4A90E2; }

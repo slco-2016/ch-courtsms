@@ -159,7 +159,11 @@ module.exports = {
             so,  // note these should be renamed
             otn  // this one as well
     ).then((client) => {
-      res.levelSensitiveRedirect('/clients');
+      if (req.user.cmid == client.cm) {
+        res.redirect(`/clients/${client.clid}/messages`);
+      } else {
+        res.levelSensitiveRedirect('/clients');
+      }
     }).catch(res.error500);
   },
 
@@ -211,7 +215,7 @@ module.exports = {
   addressSubmit(req, res) {
     const user = req.getUser();
 
-    const client = req.params.client;
+    const client   = req.params.client;
     const subject  = req.body.subject;
     const content  = req.body.content;
     const commID   = req.body.commID == 'null' ? null : req.body.commID;
@@ -224,6 +228,12 @@ module.exports = {
     }
 
     method.then(() => {
+      // log the use of a template if it exists
+      let templateId = req.body.templateid;
+      if (templateId) {
+        Templates.logUse(templateId, user, client).then().catch();
+      }
+
       req.logActivity.client(client);
       req.flash('success', 'Message to client sent.');
       res.levelSensitiveRedirect('/clients');
@@ -243,6 +253,7 @@ module.exports = {
     // determine if we should filter by type
     let methodFilter = 'all';
     if (req.query.method == 'texts') methodFilter = 'cell';
+    if (req.query.method == 'emails') methodFilter = 'email';
 
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
@@ -293,10 +304,15 @@ module.exports = {
         return !conversation.accepted && conversation.open;
       });
 
+      // prompt to create a comm method if none exists
+      if (communications.length == 0) {
+        res.redirect(`/clients/${client.clid}/communications/create`);
+
       // if there are unclaimed messages that need to be viewed and this the client's main cm
-      if (unclaimed.length && req.user.cmid == client.cm) {
+      } else if (unclaimed.length && req.user.cmid == client.cm) {
         unclaimed = unclaimed[0];
         res.redirect(`/clients/${client.clid}/conversations/${unclaimed.convid}/claim`);
+
       } else {
         res.render('clients/messages', {
           hub: {

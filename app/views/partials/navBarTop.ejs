@@ -25,7 +25,12 @@
             
           </div>
           <div class="organization">
-            <%= department.name %>, 
+            <%= department.name %> 
+            •
+            <% if (department.phone_number_value) { %>
+              <%= department.phone_number_value.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') %>
+              •
+            <% } %>
             <%= organization.name %>
           </div>
         </div>

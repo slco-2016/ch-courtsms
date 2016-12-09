@@ -14,7 +14,7 @@
       <% for (var i=0; i < templates.length; i++) { %>
         <div 
           class="scrollListRow" 
-          templateID="<%= templates[i].template_id %>"
+          data-template-id="<%= templates[i].template_id %>"
           data-title="<%= templates[i].title %>"
           data-content="<%= templates[i].content %>"
           >
@@ -47,8 +47,10 @@
       <input type="hidden" name="commID" value="<%= parameters.commID %>" > 
       <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
       <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" >     
-      <input type="hidden" name="title"   id="templateTitle">    
-      <input type="hidden" name="content" id="templateContent">
+      
+      <input type="hidden" name="title"      id="templateTitle">    
+      <input type="hidden" name="content"    id="templateContent">
+      <input type="hidden" name="templateid" id="templateId">
 
       <div class="formRow">
         <input type="submit" class="formSubmit padTop" value="Select template">

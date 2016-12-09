@@ -4,6 +4,7 @@ const Conversations = require('./models/conversations');
 const Departments = require('./models/departments');
 const Messages = require('./models/messages');
 const Organizations = require('./models/organizations');
+const PhoneNumbers = require('./models/phoneNumbers');
 const Users = require('./models/users');
 
 function _capitalize (word) {
@@ -133,12 +134,16 @@ module.exports = {
         const contentLength = res.header()._headers['content-length'] || 0;
         const userAgent = req.headers['user-agent'];
 
-        console.log(
-          `${ip} -- [${timestamp}] ` +
-          `${method} ${path} ${statusCode} `.magenta +
-          `${contentLength} ${milliseconds}ms `.cyan +
-          `"${userAgent}"`
-        );
+        if (path !== '/alerts') {
+          console.log(
+            `${ip} -- [${timestamp}] ` +
+            `${method} ${path} ${statusCode} `.magenta +
+            `${contentLength} ${milliseconds}ms `.cyan +
+            `"${userAgent}"`
+          );
+        } else {
+          console.log(`${ip} -- [${timestamp}] ` + `${method} ${path} ${statusCode} `.magenta);
+        }
       });
     }
     return next();
@@ -238,10 +243,14 @@ module.exports = {
   },
 
   fetchUserDepartment(req, res, next) {
+    let department;
+
     if (req.user) {
       const departmentId = req.user.department;
       return Departments.findById(departmentId)
-      .then((department) => {
+      .then((resp) => {
+        department = resp;
+
         // if no department, provide some dummy attributes
         if (!department) {
           department = {
@@ -250,6 +259,18 @@ module.exports = {
             phone_number:  null,
             department_id: null,
           };
+        }
+
+        if (department.phone_number) {
+          return PhoneNumbers.findById(department.phone_number);
+        } else {
+          return new Promise((fulfill, reject) => {
+            fulfill(null);
+          });
+        }
+      }).then((phoneNumber) => {
+        if (phoneNumber) {
+          department.phone_number_value = phoneNumber.value;
         }
         res.locals.department = department;
         next();

@@ -35,6 +35,7 @@
   <br>
 
   <form method="post" action="/notifications/create">
+    <input type="hidden" name="templateid" value="<%= parameters.templateid -%>">
     <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
     <input type="hidden" name="commID"   value="<%= parameters.commID %>" > 
     <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
