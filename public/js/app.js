@@ -147,22 +147,6 @@ $(function() {
     },
 
     {
-      cssClass: 'JSselectTemplateWhenAddressingClient',
-      execute: function() {
-        $(".scrollListRow").click(function () {
-          $(".scrollListRow").removeClass("selected");
-          $(this).addClass("selected");
-          $('#templateTitle').val(
-            $(this).data('title')
-          )
-          $('#templateContent').val(
-            $(this).data('content')
-          )
-        });
-      }
-    },
-
-    {
       cssClass: 'JSmessagesStream',
       execute: function(directive) {
         function toggleSubjectView (directive) {
@@ -391,6 +375,12 @@ $(function() {
             readKey: "a70db21e3f6527c10ee23f2697714bf883783b6018b8f3fd27d94bf0b0d9eb9cb26a22d69709dff266866c526ad0e9e845c82dd5393b417d99c2ef7712d979a960e9247806dc09231e9ff7880ab2772cfa1b41d9900de385db8d5942d4d337bd"
           });
           getAndRenderUserActivity();
+        });
+
+          // update button colors
+        $('.buttonOptions button').click(function () {
+          $('.buttonOptions button').removeClass('selected');
+          $(this).addClass('selected');
         });
 
         function getAndRenderUserActivity (alternateTimeFrame) {
@@ -634,7 +624,7 @@ $(function() {
             },
             axis: {
               rotated: true,
-              x: { type: "category" },
+              x: { type: "category" }
             },
             legend: { show: false },
             size: { width: 720, height: height },
@@ -857,10 +847,13 @@ $(function() {
           $(this).addClass("selected");
           $('#templateTitle').val(
             $(this).data('title')
-          )
+          );
           $('#templateContent').val(
             $(this).data('content')
-          )
+          );
+          $('#templateId').val(
+            $(this).data('template-id')
+          );
         });
       }
     },

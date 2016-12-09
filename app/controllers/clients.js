@@ -215,7 +215,7 @@ module.exports = {
   addressSubmit(req, res) {
     const user = req.getUser();
 
-    const client = req.params.client;
+    const client   = req.params.client;
     const subject  = req.body.subject;
     const content  = req.body.content;
     const commID   = req.body.commID == 'null' ? null : req.body.commID;
@@ -228,6 +228,12 @@ module.exports = {
     }
 
     method.then(() => {
+      // log the use of a template if it exists
+      let templateId = req.body.templateid;
+      if (templateId) {
+        Templates.logUse(templateId, user, client).then().catch();
+      }
+
       req.logActivity.client(client);
       req.flash('success', 'Message to client sent.');
       res.levelSensitiveRedirect('/clients');

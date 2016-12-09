@@ -85,7 +85,6 @@ module.exports = {
     res.locals.momentTz = require('moment-timezone');
     
     if (process.env.CCENV && process.env.CCENV == 'production') {
-      console.log('Production env. New Relic running.');
       res.locals.newrelic = require('newrelic');
     } else {
       res.locals.newrelic = null;
@@ -135,12 +134,16 @@ module.exports = {
         const contentLength = res.header()._headers['content-length'] || 0;
         const userAgent = req.headers['user-agent'];
 
-        console.log(
-          `${ip} -- [${timestamp}] ` +
-          `${method} ${path} ${statusCode} `.magenta +
-          `${contentLength} ${milliseconds}ms `.cyan +
-          `"${userAgent}"`
-        );
+        if (path !== '/alerts') {
+          console.log(
+            `${ip} -- [${timestamp}] ` +
+            `${method} ${path} ${statusCode} `.magenta +
+            `${contentLength} ${milliseconds}ms `.cyan +
+            `"${userAgent}"`
+          );
+        } else {
+          console.log(`${ip} -- [${timestamp}] ` + `${method} ${path} ${statusCode} `.magenta);
+        }
       });
     }
     return next();
