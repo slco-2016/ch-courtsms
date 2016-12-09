@@ -103,7 +103,7 @@ var checkingForNewMessages = setInterval(function () {
 
 (function(){
   var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-  if (isChrome) {
+  if (!isChrome) {
     var notice = $('.miniChromeBrowserDownloadPrompt');
     notice.show();
     setTimeout(function () { 
