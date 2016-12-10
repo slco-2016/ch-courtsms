@@ -78,6 +78,26 @@ $darkblue:    #344289;
         clear:both;
       }
     }
+
+    .respondIcon {
+      position: absolute;
+      background-color: $lightblue;
+      color: $white;
+      padding: 8px;
+      height: 16px;
+      width: 16px;
+      font-size: 16px;
+      border-radius: 50%;
+      margin-left: 670px;
+      margin-top: 150px;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: rgba(0,0,0,0.5) 0 0 10px;
+        color: $lightblue;
+        background-color: $white;
+      }
+    }
   }
 
   .actionBox {

@@ -48,6 +48,22 @@
       content: "";
       display: block;
       clear: both; }
+    .convoBlock .convoStream .respondIcon {
+      position: absolute;
+      background-color: #4A90E2;
+      color: #FFF;
+      padding: 8px;
+      height: 16px;
+      width: 16px;
+      font-size: 16px;
+      border-radius: 50%;
+      margin-left: 670px;
+      margin-top: 150px;
+      cursor: pointer; }
+      .convoBlock .convoStream .respondIcon:hover {
+        box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px;
+        color: #4A90E2;
+        background-color: #FFF; }
   .convoBlock .actionBox {
     height: 200px;
     width: 300px;

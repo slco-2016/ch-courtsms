@@ -18,6 +18,38 @@ module.exports = {
     }).catch(res.error500);
   },
 
+  compose(req, res) {
+    const orgId = req.user.org;
+    const conversationId = req.params.conversation;
+
+    CaptureBoard.findByConversationId(orgId, conversationId)
+    .then((conversation) => {
+      if (conversation) {
+        res.render('capture/respond', {
+          conversation: conversation,
+        });
+      } else {
+        res.notFound();
+      }
+    }).catch(res.error500);
+  },
+
+  submit(req, res) {
+    const orgId = req.user.org;
+    const conversationId = req.params.conversation;
+    const userResponse = req.body.content;
+    if (!userResponse) {
+      CaptureBoard.findByConversationId(orgId, conversationId)
+      .then((conversation) => {
+        res.send(conversation)
+      }).catch(res.error500);
+    } else {
+      req.flash('warning', 'No content in the submitted message.');
+      res.redirect(`/org/captured/respond/${conversationId}`);
+    }
+    res.send(req.body.content)
+  },
+
   attachUserIndex(req, res) {
     const orgId = req.user.org;
     const conversationId = req.params.conversation;

@@ -249,6 +249,8 @@ app.get( '/org/clients/:client/communications/create', CommunicationsController.
 app.post('/org/clients/:client/communications/create', CommunicationsController.create);
 
 app.get( '/org/captured', CaptureBoardController.index);
+app.get( '/org/captured/respond/:conversation', CaptureBoardController.compose);
+app.post('/org/captured/respond/:conversation', CaptureBoardController.submit);
 app.get( '/org/captured/attach/:conversation', CaptureBoardController.attachUserIndex);
 app.post('/org/captured/attach/:conversation', CaptureBoardController.attachUserSelect);
 app.get( '/org/captured/attach/:conversation/user/:user', CaptureBoardController.attachClientIndex);
