@@ -593,8 +593,14 @@ class Messages extends BaseModel {
       }).then((resp) => {
         communication = resp;
 
+        // we only want inbound messages
+        messages = messages.filter((ea) => {
+          return ea.inbound;
+        });
         if (messages.length) {
+
           let sentFromValue = messages[0].sent_to;
+
           contentArray.forEach((contentPortion, contentIndex) => {
             if (process.env.CCENV !== 'testing') {
               twClient.sendMessage({
@@ -614,7 +620,9 @@ class Messages extends BaseModel {
                                   MessageStatus)
                   .then(() => {
                     if (contentIndex == contentArray.length - 1) fulfill();
-                  }).catch(reject);
+                  }).catch(function (e) {
+                    reject(e);
+                  });
                 }
               });
             } else {
