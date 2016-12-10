@@ -19,6 +19,7 @@ class CaptureBoard {
                 'msgs.inbound',
                 'msgs.created',
                 'convos.subject',
+                'comms.commid',
                 'comms.type',
                 'comms.value',
                 'commconns.name')

@@ -581,6 +581,39 @@ class Messages extends BaseModel {
     });
   }
 
+  static sendTextForUnclaimedConversation (commId, content, conversationId, sentFromValue) {
+    const contentArray = content.match(/.{1,1599}/g);
+    return new Promise((fulfill, reject) => {
+      Messages.findById()
+      contentArray.forEach((contentPortion, contentIndex) => {
+        if (process.env.CCENV !== 'testing') {
+          twClient.sendMessage({
+            to: TESTENV ? '+18589057365' : communication.value,
+            from: sentFromValue,
+            body: content,
+          }, (err, msg) => {
+            if (err) {
+              reject(err);
+            } else {
+              const MessageSid = msg.sid;
+              const MessageStatus = msg.status;
+              Messages.create(conversationId,
+                              commId,
+                              contentPortion,
+                              MessageSid,
+                              MessageStatus)
+              .then(() => {
+                if (contentIndex == contentArray.length - 1) fulfill();
+              }).catch(reject);
+            }
+          });
+        } else {
+          fulfill();
+        }
+      });
+    });
+  }
+
   static sendMultiple (userID, clientIDs, title, content) {
     return new Promise((fulfill, reject) => {
       clientIDs.forEach(function (clientID) {
