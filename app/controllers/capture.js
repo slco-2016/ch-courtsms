@@ -1,5 +1,6 @@
 const CaptureBoard = require('../models/capture');
 const Clients = require('../models/clients');
+const Messages = require('../models/messages');
 const Users = require('../models/users');
 
 module.exports = {
@@ -16,6 +17,49 @@ module.exports = {
         conversations: conversations,
       });
     }).catch(res.error500);
+  },
+
+  compose(req, res) {
+    const orgId = req.user.org;
+    const conversationId = req.params.conversation;
+
+    CaptureBoard.findByConversationId(orgId, conversationId)
+    .then((conversation) => {
+      if (conversation) {
+        res.render('capture/respond', {
+          conversation: conversation,
+        });
+      } else {
+        res.notFound();
+      }
+    }).catch(res.error500);
+  },
+
+  submit(req, res) {
+    const orgId = req.user.org;
+    const conversationId = req.params.conversation;
+    const userResponse = req.body.content;
+    if (userResponse) {
+      CaptureBoard.findByConversationId(orgId, conversationId)
+      .then((conversation) => {
+        let firstMessage = conversation.msgs[0];
+        if (firstMessage && firstMessage.type == 'cell') {
+          let conversation = firstMessage.convo;
+          let commId = firstMessage.commid;
+          Messages.sendTextForUnclaimedConversation(commId, userResponse, conversation)
+          .then(() => {
+            req.flash('success', 'Message sent successfully.');
+            res.redirect(`/org/captured`);
+          }).catch(res.error500);          
+        } else {
+          req.flash('warning', 'Cannot send a message to that device.');
+          res.redirect(`/org/captured`);
+        }
+      }).catch(res.error500);
+    } else {
+      req.flash('warning', 'No content in the submitted message.');
+      res.redirect(`/org/captured/respond/${conversationId}`);
+    }
   },
 
   attachUserIndex(req, res) {

@@ -40,6 +40,24 @@ a, a:hover, a:active {
       color: #000;
       border-radius: 3px; }
 
+.miniChromeBrowserDownloadPrompt {
+  display: none;
+  z-index: 200;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+  background-color: #4A90E2;
+  border: 1px solid #FFF;
+  color: #FFF;
+  border-radius: 5px;
+  font-size: 12px; }
+  .miniChromeBrowserDownloadPrompt a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    line-height: 22px; }
+
 .headerBaseBarOne {
   position: fixed;
   height: 45px;

@@ -581,6 +581,61 @@ class Messages extends BaseModel {
     });
   }
 
+  static sendTextForUnclaimedConversation (commId, content, conversationId) {
+    let messages, communication;
+    const contentArray = content.match(/.{1,1599}/g);
+    
+    return new Promise((fulfill, reject) => {
+      db('msgs').where('convo', conversationId)
+      .then((resp) => {
+        messages = resp;
+        return Communications.findById(commId)
+      }).then((resp) => {
+        communication = resp;
+
+        // we only want inbound messages
+        messages = messages.filter((ea) => {
+          return ea.inbound;
+        });
+        if (messages.length) {
+
+          let sentFromValue = messages[0].sent_to;
+
+          contentArray.forEach((contentPortion, contentIndex) => {
+            if (process.env.CCENV !== 'testing') {
+              twClient.sendMessage({
+                to: TESTENV ? '+18589057365' : communication.value,
+                from: sentFromValue,
+                body: content,
+              }, (err, msg) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  const MessageSid = msg.sid;
+                  const MessageStatus = msg.status;
+                  Messages.create(conversationId,
+                                  commId,
+                                  contentPortion,
+                                  MessageSid,
+                                  MessageStatus)
+                  .then(() => {
+                    if (contentIndex == contentArray.length - 1) fulfill();
+                  }).catch(function (e) {
+                    reject(e);
+                  });
+                }
+              });
+            } else {
+              fulfill();
+            }
+          });
+        } else {
+          reject(new Error(`No messages found for that conversation id (${conversationId}). Messages: ${JSON.stringify(messages)}`));
+        }
+      }).catch(reject);
+    });
+  }
+
   static sendMultiple (userID, clientIDs, title, content) {
     return new Promise((fulfill, reject) => {
       clientIDs.forEach(function (clientID) {

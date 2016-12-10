@@ -177,7 +177,7 @@ $darkblue:    #344289;
         margin: 4px;
 
         .name {
-          display: inline;
+          float: left;
           font-size: 15px;
           line-height: 22px;
           padding: 0px;
@@ -185,14 +185,21 @@ $darkblue:    #344289;
         }
 
         .organization {
-          display: inline;
-          font-size: 12px;
-          line-height: 22px;
+          float: left;
           padding: 0px;
           margin: 0px;
-          // border-left: 1px solid $white;
           padding-left: 4px;
           margin-left: 8px;
+
+          .subsection {
+            border-left: 1px solid #647180;
+            padding-left: 10px;
+
+            .top, .bottom {
+              font-size: 11px;
+              line-height: 11px;
+            }
+          }
         }
 
         &:hover {

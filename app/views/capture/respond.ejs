@@ -1,0 +1,55 @@
+<% include ../partials/cardFrameTop %>
+
+<style type="text/css">
+  .inbound, .outbound {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+  }
+  .inbound {
+    background-color: #eee;
+  }
+  .outbound {
+    text-align: right;
+  }
+</style>
+
+<div class="cardHead">
+  <a href="/org/captured"><% include ../partials/cardExit %></a>
+  <div class="cardTitle">Respond to Inbound</div>
+  <div class="cardSubtitle">
+    Write back to this inbound message to ask the user for more information.
+  </div>
+</div>
+
+<div class="cardBody">
+  <form method = "post">
+
+    <div class="formRow">
+      <div class="formLabel">
+        Write your message below
+      </div>
+      <div class="formInput">
+        <textarea name="content" rows="5" maxlength="320" required></textarea>
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel"> 
+        Conversation stream reference
+      </div>
+      <div class="formInput">
+        <% conversation.msgs.forEach((msg) => { %>
+          <div class="<% if (msg.inbound) { %>inbound<% } else { %>outbound<% } %>">
+            <%= msg.content %>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    
+    <input type="submit" class="formSubmit padTop" value="Send message">
+
+  </form>
+</div>
+
+<% include ../partials/cardFrameBottom %>

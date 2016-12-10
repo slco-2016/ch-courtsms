@@ -75,6 +75,27 @@ a, a:hover, a:active {
   }
 }
 
+.miniChromeBrowserDownloadPrompt {
+  display: none;
+  z-index: 200;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px;
+  background-color: $lightblue;
+  border: 1px solid $white;
+  color: $white;
+  border-radius: 5px;
+  font-size: 12px;
+
+  a {
+    display: block;
+    text-align: center;
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
+
 .headerBaseBarOne {
   position: fixed;
   height: 45px;
