@@ -581,36 +581,50 @@ class Messages extends BaseModel {
     });
   }
 
-  static sendTextForUnclaimedConversation (commId, content, conversationId, sentFromValue) {
+  static sendTextForUnclaimedConversation (commId, content, conversationId) {
+    let messages, communication;
     const contentArray = content.match(/.{1,1599}/g);
+    
     return new Promise((fulfill, reject) => {
-      Messages.findById()
-      contentArray.forEach((contentPortion, contentIndex) => {
-        if (process.env.CCENV !== 'testing') {
-          twClient.sendMessage({
-            to: TESTENV ? '+18589057365' : communication.value,
-            from: sentFromValue,
-            body: content,
-          }, (err, msg) => {
-            if (err) {
-              reject(err);
+      db('msgs').where('convo', conversationId)
+      .then((resp) => {
+        messages = resp;
+        return Communications.findById(commId)
+      }).then((resp) => {
+        communication = resp;
+
+        if (messages.length) {
+          let sentFromValue = messages[0].sent_to;
+          contentArray.forEach((contentPortion, contentIndex) => {
+            if (process.env.CCENV !== 'testing') {
+              twClient.sendMessage({
+                to: TESTENV ? '+18589057365' : communication.value,
+                from: sentFromValue,
+                body: content,
+              }, (err, msg) => {
+                if (err) {
+                  reject(err);
+                } else {
+                  const MessageSid = msg.sid;
+                  const MessageStatus = msg.status;
+                  Messages.create(conversationId,
+                                  commId,
+                                  contentPortion,
+                                  MessageSid,
+                                  MessageStatus)
+                  .then(() => {
+                    if (contentIndex == contentArray.length - 1) fulfill();
+                  }).catch(reject);
+                }
+              });
             } else {
-              const MessageSid = msg.sid;
-              const MessageStatus = msg.status;
-              Messages.create(conversationId,
-                              commId,
-                              contentPortion,
-                              MessageSid,
-                              MessageStatus)
-              .then(() => {
-                if (contentIndex == contentArray.length - 1) fulfill();
-              }).catch(reject);
+              fulfill();
             }
           });
         } else {
-          fulfill();
+          reject(new Error(`No messages found for that conversation id (${conversationId}). Messages: ${JSON.stringify(messages)}`));
         }
-      });
+      }).catch(reject);
     });
   }
 
