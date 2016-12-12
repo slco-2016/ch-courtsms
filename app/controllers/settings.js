@@ -15,6 +15,7 @@ module.exports = {
     const awayMessage = req.body.awayMessage;
     const alertBeep = req.body.alertBeep ? true : false;
     const isAway = req.body.isAway ? true : false;
+    const automatedNotificationsAllowed = req.body.automatedNotificationsAllowed ? true : false;
     
     let alertFrequency = req.body.alertFrequency;
     if (alertFrequency == 'null') {
@@ -32,7 +33,8 @@ module.exports = {
             alertFrequency,
             isAway,
             awayMessage,
-            alertBeep
+            alertBeep,
+            automatedNotificationsAllowed
     ).then(() => {
       req.flash('success', 'Updated your settings.');
       res.redirect('/org/users');
