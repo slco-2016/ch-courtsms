@@ -81,18 +81,30 @@
 
     <div class="formRow">
       <div class="formLabel"> Account type </div>
+      <% if (targetUser.class == 'owner') { %>
+        <div class="formInput">
+            <i class="fa fa-lock"></i>
+            <small>
+              In order to change your status, you need to create another user that is an owner. Once created, they can log in and change your account status.
+            </small>
+        </div>
+      <% } %>
       <select class="blueSelect" 
               name="className" 
               required>
-        <% ["supervisor", "primary", "support"].forEach(function (className) { %>
+        <% let listOfClassOptions = ["supervisor", "primary", "support"]; %>
+        <% if (user.class == 'owner') { listOfClassOptions =['owner'].concat(listOfClassOptions); } %>
+
+        <% listOfClassOptions.forEach(function (className) { %>
             <option value="<%= className %>"
-                    <% if (targetUser.class == className) { %>selected<% } %>>
+                    <% if (targetUser.class == className) { %>selected<% } %>
+                    <% if (targetUser.class == 'owner') { %>disabled<% } %>>
               <%= className %>
-              <% if (className == "primary") { %>
-                (e.g. case manager, therapist)
-              <% } %>
+              <%= className == 'primary' ? '(e.g. case manager, therapist)' : '' %>
+              <%= className == 'support' ? '(e.g. front office staff)' : '' %>
             </option>
         <% }) %>
+
       </select>
     </div>
 
