@@ -27,10 +27,10 @@ module.exports = {
 
     console.log(req.headers['x-twilio-signature'])
     console.log(credentials.authToken)
-    console.log(twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', POST))
+    console.log(twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', req.body))
 
     // validateRequest returns true if the request originated from Twilio
-    if (twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', POST)) {
+    if (twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', req.body)) {
       // Log IBM Sensitivity measures
       SentimentAnalysis.logIBMSentimentAnalysis(req.body);
       
