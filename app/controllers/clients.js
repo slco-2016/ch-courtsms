@@ -401,13 +401,18 @@ module.exports = {
     let allDep = req.query.allDepartments == 'true' ? true : false;
 
     // Handle situations where an owner has a department attached to her/him
-    if (req.user.class === 'owner') { allDep = true; }
-    if (req.user.class === 'support') { allDep = true; }
+    if (['owner', 'supervisor', 'support', ].indexOf(req.user.class) > -1) {
+      allDep = true;
+    }
 
     Users.findByOrg(req.user.org)
     .then((users) => {
       // Limit only to same department transfers
-      if (!allDep) users = users.filter((u) => { return u.department == req.user.department; });
+      if (!allDep) {
+        users = users.filter((ea) => {
+          return ea.department == req.user.department;
+        });
+      }
 
       res.render('clients/transfer', {
         users: users,
@@ -422,11 +427,27 @@ module.exports = {
     const client = res.locals.client.clid;
     const bundle = req.body.bundleConversations ? true : false;
 
-    Users.findByID(toUser)
-    .then((user) => {
+    // globals
+    let user;
+    let org;
+
+    Organizations.findById(req.user.org)
+    .then((resp) => {
+      org = resp;
+
+      return Users.findByID(toUser);
+    }).then((resp) => {
+      user = resp;
       if (user && user.active) {
         Clients.transfer(client, fromUser, user.cmid, bundle)
         .then(() => {
+          const client   = req.params.client;
+          const subject  = 'Automated notification: You have been transferred.';
+          const content  = `Your account for communications with ${org.name} has been transferred to the following individual: ${toUser.first} ${toUser.last}. You can start messaging now with ${toUser.first} ${toUser.last} if you have any questions.`;
+          const commID   = req.body.commID == 'null' ? null : req.body.commID;
+          
+          return Messages.smartSend(toUser, client, subject, content);
+        }).then(() => {
           req.logActivity.client(client);
           res.levelSensitiveRedirect('/clients');
         }).catch(res.error500);
