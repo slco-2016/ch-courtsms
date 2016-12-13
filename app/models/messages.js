@@ -262,7 +262,7 @@ class Messages extends BaseModel {
     });
   }
 
-  static findAllFromClient (clientId) {
+  static findTranscriptAllFromClient (clientId) {
     return new Promise((fulfill, reject) => {
       Conversations.findManyByAttribute('client', clientId)
       .then((conversations) => {
@@ -270,6 +270,22 @@ class Messages extends BaseModel {
           return conversation.convid;
         });
 
+        return Messages.transcriptionDetails(conversationIds);
+      }).then((messages) => {
+        fulfill(messages);
+      }).catch(reject);
+    });
+  }
+
+  static findTranscriptBetweenUserAndClient (userId, clientId) {
+    return new Promise((fulfill, reject) => {
+      Conversations.findByUser(userId)
+      .then((conversations) => {
+        const conversationIds = conversations.filter((conversation) => {
+          return conversation.client == Number(clientId);
+        }).map((conversation) => {
+          return conversation.convid;
+        });
         return Messages.transcriptionDetails(conversationIds);
       }).then((messages) => {
         fulfill(messages);
@@ -286,7 +302,7 @@ class Messages extends BaseModel {
         }).map((conversation) => {
           return conversation.convid;
         });
-        return Messages.transcriptionDetails(conversationIds);
+        return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
       }).then((messages) => {
         fulfill(messages);
       }).catch(reject);
@@ -348,7 +364,7 @@ class Messages extends BaseModel {
             sent_by_client: message.inbound ? 'TRUE' : 'FALSE - Sent by user.',
             communication_with: `${message.user_first} ${message.user_middle} ${message.user_last}`,
             status: `${message.tw_status}`,
-            date_time: message.created,
+            created: message.created,
           };
         });
 

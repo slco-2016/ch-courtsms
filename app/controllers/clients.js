@@ -458,9 +458,9 @@ module.exports = {
       }
 
       if (viewAll) {
-        return Messages.findAllFromClient(user.cmid, req.params.client);
+        return Messages.findTranscriptAllFromClient(user.cmid, req.params.client);
       } else {
-        return Messages.findBetweenUserAndClient(user.cmid, req.params.client);
+        return Messages.findTranscriptBetweenUserAndClient(user.cmid, req.params.client);
       }
     }).then((resp) => {
       messages = resp;
@@ -554,8 +554,8 @@ module.exports = {
     }).then((users) => {
       otherPotentialManagers = users;
       return Messages.findBetweenUserAndClient(user, client);
-    }).then((msgs) => {
-      messages = msgs;
+    }).then((resp) => {
+      messages = resp;
       return CommConns.findByClientIdWithCommMetaData(client);
     }).then((communications) => {
 
@@ -615,6 +615,7 @@ module.exports = {
               lastClientMsg = msg;
             }
           }
+
         } else {
           if (lastClientMsg) {
             if (lastClientMsg.convo == msg.convo) {
