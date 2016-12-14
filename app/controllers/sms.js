@@ -27,7 +27,14 @@ module.exports = {
 
     // validateRequest returns true if the request originated from Twilio
     // TODO: is there a better way than explicitly setting the protocol to https?
-    if (twilio.validateExpressRequest(req, credentials.authToken, {'protocol': 'https'})) {
+    let opts = {'protocol': 'https'};
+    // NOTE: We're adding our own host because a port number gets added to the host during tests,
+    //       which causes tests to fail because the twilio signature we've baked into the tests
+    //       doesn't match.
+    if (process.env.CCENV == 'testing') {
+      opts['host'] = '127.0.0.1';
+    }
+    if (twilio.validateExpressRequest(req, credentials.authToken, opts)) {
       // Log IBM Sensitivity measures
       SentimentAnalysis.logIBMSentimentAnalysis(req.body);
       
