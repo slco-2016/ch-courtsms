@@ -25,12 +25,12 @@ module.exports = {
     const MessageStatus = req.body.SmsStatus;
     const MessageSID = req.body.MessageSid;
 
-    console.log(req.headers['x-twilio-signature'])
-    console.log(credentials.authToken)
-    console.log(twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', req.body))
+    console.log(req.headers);
+    console.log(credentials.authToken);
+    console.log(twilio.validateExpressRequest(req, credentials.authToken, {'protocol': 'https'}));
 
     // validateRequest returns true if the request originated from Twilio
-    if (twilio.validateRequest(credentials.authToken, req.headers['x-twilio-signature'], 'https://request.clientcomm.org/webhook/sms', req.body)) {
+    if (twilio.validateExpressRequest(req, credentials.authToken, {'protocol': 'https'})) {
       // Log IBM Sensitivity measures
       SentimentAnalysis.logIBMSentimentAnalysis(req.body);
       
