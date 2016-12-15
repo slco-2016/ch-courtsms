@@ -37,6 +37,7 @@ module.exports = {
       validationPasses = true;
       console.log(`Letting tests pass even though validation has failed!`.red);
     }
+    
     if (validationPasses) {
       // Log IBM Sensitivity measures
       SentimentAnalysis.logIBMSentimentAnalysis(req.body);

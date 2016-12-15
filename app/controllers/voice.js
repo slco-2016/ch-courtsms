@@ -87,6 +87,8 @@ module.exports = {
   },
 
   status(req, res) {
+    let notification, client, communication, conversations;
+
     if (req.body.CallStatus === 'completed') {
       const sid = req.body.CallSid;
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
@@ -97,15 +99,52 @@ module.exports = {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
             if (notification) {
-              return notification.update({sent: true,});  
+              return notification.update({sent: true,});
             } else {
+              // TODO: This should throw an error, no reason for hanging OVM
               return null;
             }
           });
         } else {
+          // TODO: Make sure that this terminates the promise(s)
           return null;
         }
-      }).then((notification) => {
+      }).then((resp) => {
+        notification = resp;
+
+        return Clients.findOneByAttribute('clid', notification.client);
+      }).then((resp) => {
+        client = resp;
+
+        return Communications.findOneByAttribute('commid', notification.comm);
+      }).then((resp) => {
+        communication = resp;
+
+        if (client && communication) {
+          // get the most recent conversation
+          const clients = [client, ];
+          return Conversations.retrieveByClientsAndCommunication(clients, communication);
+        } else {
+          return null;
+        }
+
+      }).then((resp) => {
+        conversations = resp;
+
+        const conversationIds = conversations.map((ea) => {
+          return ea.convid;
+        });
+        const commId = notification.comm;
+        const content = 'Outbound voice message.';
+
+        const communicationObj = communication;
+        const recordingKey = ovm.recording_key;
+        const recordingSid = ovm.recordingSid;
+        const toNumber = null;
+
+        return voice.addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
+
+      }).then(() => {        
         const emptyResponse = twilio.TwimlResponse().toString();
         res.send(emptyResponse);
       }).catch(res.error500);
@@ -201,37 +240,16 @@ module.exports = {
               'S3 key is ' + key
             );
           } else {
-            let recording, conversations, clients;
-            return Recordings.create({
-              comm_id: communication.commid,
-              recording_key: key,
-              RecordingSid: req.body.RecordingSid,
-              call_to: toNumber,
-            }).then((resp) => {
-              recording = resp;
-              return sms.retrieveClients(recording.call_to, communication);
-            }).then((resp) =>{
-              clients = resp;
-              return Conversations.retrieveByClientsAndCommunication(
-                clients, communication
-              );
-            }).then((resp) => {
-              conversations = resp;
-              const conversationIds = conversations.map((conversation) => {
-                return conversation.convid;
-              });
+            const recordingSid = req.body.RecordingSid;
+            const recordingKey = key;
+            const communicationObj = communication;
 
-              return Messages.insertIntoManyConversations(
-                conversationIds,
-                communication.commid,
-                'Untranscribed voice message',
-                req.body.RecordingSid,
-                'recieved',
-                toNumber, {
-                  recordingId: recording.id,
-                }
-              );
-            });
+            // Needed to proceed
+            // communication obj
+            // key (recording_key)
+            // RecordingSid 
+            // toNumber (10 digit)
+            return voice.addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
           }
         });
       }

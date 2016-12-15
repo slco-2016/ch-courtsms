@@ -285,7 +285,7 @@ if (process.env.RECEIVEMODE && process.env.RECEIVEMODE == 'on') {
     const Notifications = require('./models/notifications');
     Notifications.checkAndSendNotifications()
     .then().catch();
-  }, 15 * minute);
+  }, 1 * minute);
 
   // sms status check - 30 seconds
   setInterval(function () {

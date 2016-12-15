@@ -471,6 +471,9 @@ class Messages extends BaseModel {
           recording_id: options.recordingId,
         };
       });
+
+      // TODO: For the love of all that is good
+      //       use the BaseModel create function from now on
       db('msgs')
         .insert(insertArray)
         .returning('*')

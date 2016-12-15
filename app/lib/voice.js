@@ -40,6 +40,44 @@ module.exports = {
     });
   },
 
+  addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber) {
+    return new Promise((fulfill, reject) => {
+      let recording, conversations, clients;
+
+      return Recordings.create({
+        comm_id: communication.commid,
+        recording_key: key,
+        RecordingSid: recordingSid,
+        call_to: toNumber,
+      }).then((resp) => {
+        recording = resp;
+
+        return sms.retrieveClients(recording.call_to, communication);
+      }).then((resp) =>{
+        clients = resp;
+
+        return Conversations.retrieveByClientsAndCommunication(clients, communication);
+      }).then((resp) => {
+        conversations = resp;
+
+        const conversationIds = conversations.map((conversation) => {
+          return conversation.convid;
+        });
+
+        return Messages.insertIntoManyConversations(
+          conversationIds,
+          communication.commid,
+          'Untranscribed voice message',
+          recordingSid,
+          'recieved',
+          toNumber, {
+            recordingId: recording.id,
+          }
+        );
+      });
+    });
+  },
+
   processPendingOutboundVoiceMessages(ovm, domain) {
     domain = domain || credentials.rootUrl;  
 
