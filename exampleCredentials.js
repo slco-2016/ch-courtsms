@@ -63,14 +63,12 @@ if (CCENV !== 'production') {
 
 // Changes made when we are developing (e.g. staging server, different rootURL, etc.)
 if (CCENV == 'development') {
-
-  baseProductionReadyCredentials.db = {
-    user:     'foobar',
-    password: '**************************',
-    host:     'unique-staging.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
-  };
-
   console.log('Development environment: Credentials have been modified.'.yellow);
+  baseProductionReadyCredentials.db = {
+    user:     'kuan',
+    password: '1922Park',
+    host:     'clientcomm-staging.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
+  };
 }
 
 const hostName = baseProductionReadyCredentials.db.host.split('.')[0];
