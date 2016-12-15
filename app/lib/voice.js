@@ -14,26 +14,44 @@ const Communications = require('../models/communications');
 
 module.exports = {
   
+  // Makes the call from Twilio to get user (case manager)
+  // to record a voice message for a client to be sent
+  // at a later date (as a notification)
   recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
+
+    // Concat parameters so that callback goes to recording
+    // endpoint with all data needed to know where to save
+    // that recording at
     let params = `?userId=${user.cmid}&commId=`;
     params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
     params += `&clientId=${clientId}`;
     params += '&type=ovm';
 
+    // TODO: The callback URL is set in credentials
+    // Problem: This requires the credentials.js file to be
+    // custom set for every deployment with regards to the Twilio
+    // address. Is there a way to programmatically grab the domain?
     if (!domain) {
-      domain = credentials.rootUrl;  
+      domain = credentials.twilio.outboundCallbackUrl;  
     }
 
-    const url = `${domain}/webhook/voice/record/${params}`;
+    const url  = `${domain}/webhook/voice/record/${params}`;
+    const opts = {
+      url:  url,
+      to:   phoneNumber,
+      from: credentials.twilioNum,
+    };
+
+    // Execute the call with Twilio Node lib
     return new Promise((fulfill, reject) => {
-      twClient.calls.create({
-        url: url,
-        to: phoneNumber,
-        from: credentials.twilioNum,
-      }, (err, call) => {
+      twClient.calls
+      .create(opts, (err, call) => {
         if (err) {
           reject(err);
         } else {
+
+          // Response is (so far) not used, we leave it to the user to 
+          // click "Go to notifications" to proceed
           fulfill(call);  
         }
       });
@@ -79,7 +97,7 @@ module.exports = {
   },
 
   processPendingOutboundVoiceMessages(ovm, domain) {
-    domain = domain || credentials.rootUrl;  
+    domain = domain || credentials.twilio.outboundCallbackUrl;  
 
     return new Promise((fulfill, reject) =>{
       ovmId = ovm.id;
@@ -108,7 +126,7 @@ module.exports = {
   },
 
   sendPendingOutboundVoiceMessages(domain) {
-    domain = domain || credentials.rootUrl;  
+    domain = domain || credentials.twilio.outboundCallbackUrl;  
 
     let ovmId;
     return new Promise((fulfill, reject) => {

@@ -264,7 +264,8 @@ module.exports = {
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
 
-      // filter out communications that are not type cell or landli
+      // Filter out communications that are not type cell or landline
+      // Why? We can't send voice messages to email
       communications = communications.filter((communication) => {
         let ok = false;
         if (communication.type == 'landline') ok = true;
@@ -272,10 +273,14 @@ module.exports = {
         return ok;
       });
 
+      // Make sure that there is at least one communication method for voice
+      // left after filtering through all communications
       if (communications.length) {
         res.render('voice/create', {
           communications: communications,
         });
+
+      // If no cell or landline options exist, then do not allow record
       } else {
         res.render('voice/noGoodNumbers');
       }
@@ -283,13 +288,20 @@ module.exports = {
   },
 
   create(req, res) {
+    // A phone number (cell of landline) needs to be selected
+    // This is unlike texts which we allow for "Smart Select"
+    // (which would mean commId being null in that notification row)
     const commId = req.body.commId;
 
+    // Get the components of the scheduled date
+    // and convert them to a date object (with toDate function)
     const deliveryDate = moment(req.body.sendDate)
                     .tz(res.locals.organization.tz)
                     .startOf('day')
                     .add(Number(req.body.sendHour), 'hours');
 
+    // Get the phone number the user provided
+    // Twilio will call this number to prompt recording
     let phoneNumber = req.body.phonenumber || '';
     phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
     if (phoneNumber.length == 10) { 
@@ -301,6 +313,7 @@ module.exports = {
         userProvidedNumber: phoneNumber,
       });
       
+      // User the voice library to prompt the call
       voice.recordVoiceMessage(
         req.user,
         commId,
@@ -309,13 +322,18 @@ module.exports = {
         phoneNumber
       );
 
+    // If no good number is provided, prompt to re-enter
     } else {
       req.flash('warning', 'Phone number is not long enough.');
+
+      // Context-sensitive redirect (org or caseload level)
       let redirectAddress = '/clients/';
       if (res.locals.level == 'org') {
         redirectAddress = '/org' + redirectAddress;
       }
       redirectAddress = redirectAddress + res.locals.client.clid + '/voicemessage';
+
+      // Submit redirect response
       res.redirect(redirectAddress);
     }
   },
