@@ -11,13 +11,15 @@ const baseProductionReadyCredentials = {
   // TODO: Update all references to CCENV to be from here
   CCENV: CCENV,
 
-  // Root url
-  rootUrl: 'http://unique.us-west-1.compute.amazonaws.com',
-
   // Twilio-related
   accountSid: '**************************',
   authToken:  '**************************',
   twilioNum:  '+12344564563',
+
+  // TODO: Move all twilio components into a single key
+  twilio: {
+    outboundCallbackUrl: 'http://ec2-52-9-131-150.us-west-1.compute.amazonaws.com',
+  },
 
   // Session
   sessionSecret: 'abcdefg',
@@ -59,6 +61,10 @@ const baseProductionReadyCredentials = {
 // Update the phone number for all non-production environments
 if (CCENV !== 'production') {
   baseProductionReadyCredentials.twilioNum = '+18987327373';
+
+  // Update the outbound URL to whatever you are using in tests/development
+  // (e.g. could be a Ngrok set up, another EC2 instance, etc.)
+  baseProductionReadyCredentials.twilio.outboundCallbackUrl = 'https://123abc.ngrok.io';
 }
 
 // Changes made when we are developing (e.g. staging server, different rootURL, etc.)
