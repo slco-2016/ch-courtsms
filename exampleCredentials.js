@@ -26,7 +26,7 @@ const baseProductionReadyCredentials = {
 
   // For testing purposes
   // TODO: Make this something that is set when running the tests
-  localDbUser: 'username',
+  localDbUser: 'postgres',
 
   // Connection details for the production database
   db: {
