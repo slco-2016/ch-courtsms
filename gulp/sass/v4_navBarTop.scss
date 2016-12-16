@@ -77,6 +77,25 @@ $darkblue:    #344289;
       box-shadow: 0px 0px 5px $black;
       overflow: hidden;
 
+      .clearAllOption {
+        text-align: left;
+        font-size: 10px;
+        line-height: 10px;
+        font-weight: 300;
+        background-color: $lightblue;
+        padding: 5px 5px 0px 5px;
+
+        button {
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          background-color: $blue;
+          border-radius: 5px 5px 0px 0px;
+          color: $white;
+          border: 0;
+          cursor: pointer;
+        }
+      }
+
       .alertRow {
         padding: 5px 10px 5px 10px;
         border-bottom: 1px solid $lightblue;
