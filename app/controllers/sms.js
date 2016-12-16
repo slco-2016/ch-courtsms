@@ -27,15 +27,18 @@ module.exports = {
     const MessageSID = req.body.MessageSid;
 
     // validateRequest returns true if the request originated from Twilio
-    // TODO: is there a better way than explicitly setting the protocol to https?
+    // TODO: Is there a better way than explicitly setting the protocol to https?
     let opts = {'protocol': 'https'};
     // NOTE: We may need to add our own host because a port number gets added to the host during
     //       tests, which causes tests to fail because the twilio signature we've baked into the
     //       tests doesn't match.
     let validationPasses = twilio.validateExpressRequest(req, credentials.authToken, opts);
-    if (!validationPasses && process.env.CCENV == 'testing') {
+
+    // TODO: This should be removed once we are sure that
+    //       receive.clientcomm.org is working as expected
+    if (!validationPasses && (credentials.RECEIVEBACKUPMODE || credentials.CCENV == 'testing')) {
       validationPasses = true;
-      console.log(`Letting tests pass even though validation has failed!`.red);
+      console.log('Letting tests pass even though validation has failed!'.red);
     }
     
     if (validationPasses) {

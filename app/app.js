@@ -271,7 +271,7 @@ app.get( '/*', (req, res) => {
 });
 
 // Scheduled operations
-if (process.env.RECEIVEMODE && process.env.RECEIVEMODE == 'on') {
+if (credentials.RUNSCHEDULED) {
   const minute = 60 * 1000;
   const hour = 60 * minute;
 

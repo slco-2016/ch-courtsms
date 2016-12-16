@@ -4,12 +4,14 @@ const colors = require('colors');
 // This can be set in the command line before commands 
 // (e.g. CCENV=development npm start)
 const CCENV = process.env.CCENV || 'development';
+const RECEIVEBACKUPMODE = process.env.RECEIVEBACKUPMODE == 'on' ? true : false;
 
 const baseProductionReadyCredentials = {
 
   // Allow access to CCENV be consistent from credentials.js
   // TODO: Update all references to CCENV to be from here
   CCENV: CCENV,
+  RECEIVEBACKUPMODE: RECEIVEBACKUPMODE,
 
   // Twilio-related
   accountSid: '**************************',
@@ -18,7 +20,8 @@ const baseProductionReadyCredentials = {
 
   // TODO: Move all twilio components into a single key
   twilio: {
-    outboundCallbackUrl: 'http://ec2-52-9-131-150.us-west-1.compute.amazonaws.com',
+    outboundCallbackUrl: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
+    outboundCallbackUrlBackup: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
   },
 
   // Session
@@ -57,6 +60,14 @@ const baseProductionReadyCredentials = {
   },
 
 };
+
+if (CCENV == 'production') {
+  baseProductionReadyCredentials.db = {
+    user:     'kuan',
+    password: '1922Park',
+    host:     'clientcomm-v40.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
+  };
+}
 
 // Update the phone number for all non-production environments
 if (CCENV !== 'production') {
