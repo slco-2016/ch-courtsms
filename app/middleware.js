@@ -150,12 +150,18 @@ module.exports = {
   },
 
   templateHelpers(req, res, next) {
-    res.locals.leftTab = (name, hub, level, optionsList) => {
-      let capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+    res.locals.leftTab = (name, hub, level, optionsList, path, paramName='status', action, clientID) => {
+      let capitalized = _capitalize(name);
 
-      let url = `/${name}`;
-      if (level == 'org') {
+      let url = `/${path||name}`;
+      if (level == 'org' && !clientID) {
         url = `/org${url}`;
+      } else if (clientID) {
+        url = `/clients/${clientID}${url}`;
+      }
+
+      if (action) {
+        url = `${url}${action}`;
       }
 
       let options = '';
@@ -163,7 +169,7 @@ module.exports = {
         optionsList.forEach((opt) => {
           const capitalizedOption = opt.charAt(0).toUpperCase() + opt.slice(1);
           options += `
-            <a href="${url}?status=${opt}">
+            <a href="${url}?${paramName}=${opt}">
               <div class="option ${hub.sel === opt ? 'selected' : ''}">${capitalizedOption}</div>
             </a>
           `;
@@ -186,22 +192,26 @@ module.exports = {
       `;
     };
 
-    res.locals.rightTab = (name, fa, level) => {
-      const capitalizedSingular = (name.charAt(0).toUpperCase() + name.slice(1)).slice(0, -1);
+    res.locals.rightTab = (name, fa, level, action='create', label) => {
       
       let url = `/${name}`;
       if (level == 'org') {
         url = `/org${url}`;
       }
 
+      if (!label) {
+        label = name;
+      }
+      label = _capitalize(label);
+
       return `
         <div class="rightActions">
-          <a href="${url}/create">
+          <a href="${url}/${action}">
             <span class="fa-stack fa-lg">
               <i class="fa fa-circle fa-stack-2x"></i>
               <i class="fa fa-${fa} fa-stack-1x fa-inverse"></i>
             </span>
-            <span class="text"><b>+</b> ${capitalizedSingular}</span>
+            <span class="text"><b>+</b> ${label}</span>
           </a>
         </div>
       `;
