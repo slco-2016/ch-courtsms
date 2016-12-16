@@ -58,6 +58,8 @@
           color: #FFF;
           border: 0;
           cursor: pointer; }
+          .alerts .hiddenAlerts .alertsBody .clearAllOption button:hover {
+            background-color: #344289; }
       .alerts .hiddenAlerts .alertsBody .alertRow {
         padding: 5px 10px 5px 10px;
         border-bottom: 1px solid #4A90E2;

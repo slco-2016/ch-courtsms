@@ -93,6 +93,10 @@ $darkblue:    #344289;
           color: $white;
           border: 0;
           cursor: pointer;
+
+          &:hover {
+            background-color: $darkblue;
+          }
         }
       }
 
