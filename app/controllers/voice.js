@@ -71,8 +71,8 @@ module.exports = {
 
   transcribe(req, res) {
     const RecordingSid = req.body.RecordingSid;
-    Recordings.findOneByAttribute('RecordingSid', RecordingSid)
-    .then((recording) => {
+    Recordings.findManyByAttribute('RecordingSid', RecordingSid)
+    .map((recording) => {
       if (recording) {
         return recording.update({transcription: req.body.TranscriptionText,})
         .then((recording) => {
@@ -81,7 +81,7 @@ module.exports = {
           return message.update({content: req.body.TranscriptionText,});
         });
       }
-    }).then(() => {
+    }).then((messages) => {
       const emptyResponse = twilio.TwimlResponse().toString();
       res.send(emptyResponse);
     }).catch(res.error500);
@@ -97,7 +97,6 @@ module.exports = {
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
       .then((resp) => {
         ovm = resp;
-        console.log('ovm result', ovm)
 
         // If we have an OVM, then we should get its notification and 
         // set it's status to sent as well as create a recording object
@@ -107,7 +106,6 @@ module.exports = {
           .then((ovm) => {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
-            console.log('notification received', notification);
             return notification.update({sent: true,});
           }).then((notification) => {
             const commId = notification.comm;
@@ -122,7 +120,7 @@ module.exports = {
         } else {
           return null;
         }
-      }).then(() => {        
+      }).then(() => {
         const emptyResponse = twilio.TwimlResponse().toString();
         res.send(emptyResponse);
       }).catch(res.error500);
@@ -173,12 +171,13 @@ module.exports = {
   },
 
   save(req, res) {
-    console.log('Recording save req.body from Twilio\n', req.body);
+    // console.log('Recording save req.body from Twilio\n', req.body);
 
     const type = req.query.type;
     if (!type) {
       return res.error500(new Error('save-recording needs a recording type'));
     }
+
     s3.uploadFromUrl(
       req.body.RecordingUrl,
       req.body.RecordingSid
@@ -195,12 +194,15 @@ module.exports = {
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
+          call_sid: req.body.CallSid,
         }).then((ovm) => {
           return Notifications.create(
             userId, clientId, 
             commId, 'Outbound Voice Message', '', 
             deliveryDate, ovm.id
           );
+        }).then((notification) => {
+          return notification;
         });
 
       } else if (type === 'message') {

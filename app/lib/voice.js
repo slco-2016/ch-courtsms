@@ -98,6 +98,8 @@ module.exports = {
             recordingId: recording.id,
           }
         );
+      }).then((resp) => {
+        fulfill();
       }).catch(reject);
     });
   },
@@ -131,6 +133,8 @@ module.exports = {
           null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
           { recordingId: recording.id, } // Fkey pointing Recordings table
         );
+      }).then(() => {
+        fulfill();
       }).catch(reject);
 
     });
