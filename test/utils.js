@@ -9,13 +9,6 @@ var creds = require("../credentials");
 
 
 module.exports = {
-  
-  superuserLogin: function (req, cb) {
-    req.post("/login")
-      .field("email", creds.db.user)
-      .field("pass", creds.db.password)
-      .expect(302, cb);
-  },
 
   createOrganization: function (req, cb) {
     req.post("/orgs")

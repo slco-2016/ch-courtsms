@@ -54,11 +54,11 @@ const middleware = require('./middleware');
 // These need specific routes to run correctly
 // TODO: Why are there 4 db queries every time?
 app.use(middleware.attachErrorHandlers);
-// app.use(middleware.fetchUserAlertsFeed);
-// app.use(middleware.fetchUserOrganization);
-// app.use(middleware.fetchUserDepartment);
-// app.use('/clients/:client', middleware.fetchClient);
-// app.use('/org/clients/:client', middleware.fetchClient);
+app.use(middleware.fetchUserAlertsFeed);
+app.use(middleware.fetchUserOrganization);
+app.use(middleware.fetchUserDepartment);
+app.use('/clients/:client', middleware.fetchClient);
+app.use('/org/clients/:client', middleware.fetchClient);
 
 // These need to go after the client, dept, user, etc. have been acquired
 app.use(middleware.logging);
@@ -300,5 +300,4 @@ if (process.env.RECEIVEMODE && process.env.RECEIVEMODE == 'on') {
   }, 15 * minute);
 }
 
-require('./models/notifications').checkAndSendNotifications();
 module.exports = app;
