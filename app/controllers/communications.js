@@ -16,7 +16,7 @@ module.exports = {
       } else {
         res.render('clients/communications', {
           hub: {
-            tab: 'contactMethods',
+            tab: 'contact methods',
             sel: null,
           },
           communications: comms,

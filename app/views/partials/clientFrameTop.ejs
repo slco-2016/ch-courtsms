@@ -5,22 +5,34 @@
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
-
   <div class="navSub">
     <div class="allLeftParent">
-      <div class="allLeft">
-          <%- leftTab('notifications', hub, level, ['pending', 'sent'], 'notifications', 'status', null, client.clid) %>
-          <%- leftTab('contact methods', hub, level, ['open', 'closed'], 'communications', 'status', null, client.clid) %>
 
+      <div class="allLeft">
+
+        <div class="clientTab <%= hub.tab == 'profile' ? 'open' : 'closed' %>">
+          <div class="icon">
+            <a href="<%=`${clientBaseURL}`%>/edit">
+              <i class="fa fa-cog" aria-hidden="true"></i>
+            </a>
+          </div>
+          <div class="title">
+            <a href="<%=`${clientBaseURL}`%>"><%= client.first + ' ' + client.last %></a>
+          </div>
+        </div>
+
+        <%- leftTab('messages', hub, level, ['all', 'texts', 'emails'], 'messages', 'method', null, client.clid) %>
+        <%- leftTab('notifications', hub, level, ['pending', 'sent'], 'notifications', 'status', null, client.clid) %>
+        <%- leftTab('contact methods', hub, level, null, 'communications', 'status', null, client.clid) %>
       </div>
     </div>
 
 
     <div class="allRightParent">
       <div class="allRight">
-          <%- rightTab('clients', 'mobile', level, `${client.clid}/communications/create`, 'message') %>
-          <%- rightTab('notifications', 'bell', level, `create?client=${client.clid}&user=${client.cm}`) %> 
-          <%- rightTab('clients', 'comments', level, `${client.clid}/address`, 'contact method') %>
+        <%- rightTab('clients', 'mobile', level, `${client.clid}/communications/create`, 'contact method') %>
+        <%- rightTab('notifications', 'bell', level, `create?client=${client.clid}&user=${client.cm}`, 'notification') %> 
+        <%- rightTab('clients', 'comments', level, `${client.clid}/address`, 'message') %>
       </div>
     </div>
 
