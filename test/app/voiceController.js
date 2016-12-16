@@ -19,14 +19,14 @@ const twilioTranscription = require('../data/twilioTranscription')
 const twilioStatusUpdate = require('../data/twilioStatusUpdate')
 
 
-const RecordingSid = 'REde2dd4be0e7a521f8296a7390a9ab21b'
+const RecordingSid = 'REde2dd4be0e7a521f8296a7390a9ab21b';
 
-describe('Voice reqs', function() {
+describe('Voice requests with voice controller', function() {
 
   it.skip('should accept a new voice recording', function(done) {
-    this.timeout(6000)
-    let params = "?userId=2&clientId=1"
-    params += `&deliveryDate=${new Date().getTime()}`
+    this.timeout(6000);
+    let params = '?userId=2&clientId=1';
+    params += `&deliveryDate=${new Date().getTime()}`;
     twilioAgent.post('/webhook/voice/save-recording/' + params)
       .send(twilioRecordingRequest)
       .expect(200)
@@ -36,52 +36,58 @@ describe('Voice reqs', function() {
           'RecordingSid', 
           RecordingSid
         ).then((ovm) => {
-          should.exist(ovm)
-          done()
-        }).catch(done)
+          should.exist(ovm);
+          done();
+        }).catch(done);
       });
   });
 
-  it('should accept a new ovm voice recording (mocked)', function(done) {
-    mock.enable()
-    let params = "?userId=2&clientId=1"
-    params += `&deliveryDate=${new Date().getTime()}`
-    params += `&type=ovm`
+  it('should accept a pre-recorded voice notification (OVM)', function(done) {
+    mock.enable();
+
+    let params = '?userId=2&clientId=1';
+        params += `&deliveryDate=${new Date().getTime()}`;
+        params += `&type=ovm`;
+
     twilioAgent.post('/webhook/voice/save-recording/' + params)
       .send(twilioRecordingRequest)
       .expect(200)
       .end(function(err, res) {
-        if (err) {return done(err)}
-        return OutboundVoiceMessages.findOneByAttribute(
-          'RecordingSid', 
-          RecordingSid
-        ).then((ovm) => {
-          should.exist(ovm)
-          mock.disable()
-          done()
-        }).catch(done)
+        if (err) {
+          return done(err);
+        }
+
+        return OutboundVoiceMessages.findOneByAttribute('RecordingSid', RecordingSid)
+        .then((ovm) => {
+          should.exist(ovm);
+          mock.disable();
+          done();
+        }).catch(done);
       });
   });
 
-  it('should update status of ovm when applicable', function(done) {
+  it('should update status of OVM when applicable', function(done) {
     twilioAgent.post('/webhook/voice/status/')
       .send(twilioStatusUpdate)
       .expect(200)
       .end(function(err, res) {
-        if (err) {return done(err)}
+        if (err) {
+          return done(err);
+        }
+
         return OutboundVoiceMessages.findOneByAttribute(
           'call_sid', 
           'CA3042ffc8b5de3dfcd0d85e57cec02605'
         ).then((ovm) => {
-          should.equal(ovm.delivered, true)
-          done()
-        }).catch(done)
+          should.equal(ovm.delivered, true);
+          done();
+        }).catch(done);
       });
-  })
+  });
 
   it('should accept a new inbound voice recording (mocked)', function(done) {
     mock.enable()
-    let params = "?commId=2"
+    let params = '?commId=2'
     params += `&type=message`
     twilioAgent.post('/webhook/voice/save-recording/' + params)
       .send(twilioRecordingRequest)
@@ -125,30 +131,30 @@ describe('Voice reqs', function() {
       .send(twilioInboundCall)
       .expect(200)
       .end((err, resp) => {
-        if (err) {return done(err)}
-        resp.text.should.match(/\/save-recording\//)
-        done()
-      })
-  })
+        if (err) {return done(err)};
+        resp.text.should.match(/\/save-recording\//);
+        done();
+      });
+  });
 
   it('should accept a new recording from an unknown number', function(done) {
-    let poorlyFormattedNumber = "2243678900"
-    twilioInboundCall.From = poorlyFormattedNumber
+    let poorlyFormattedNumber = '2243678900';
+    twilioInboundCall.From = poorlyFormattedNumber;
     twilioAgent.post('/webhook/voice')
       .send(twilioInboundCall)
       .expect(200)
       .end((err, resp) => {
         if (err) {
-          return done(err)
+          return done(err);
         } else {
-          resp.text.should.match(/we were unable to connect you with Criminal Justice Services/)
+          resp.text.should.match(/we were unable to connect you with Criminal Justice Services/);
           done();
         }
       })
   })
 
   it('should provide twiml for voice recording', function(done) {
-    let params = "?userId=HHH&commId=JJJ&deliveryDate=XXX&clientId=888"
+    let params = '?userId=HHH&commId=JJJ&deliveryDate=XXX&clientId=888'
     twilioAgent.post('/webhook/voice/record' + params)
       .expect(200)
       .end((err, resp) => {

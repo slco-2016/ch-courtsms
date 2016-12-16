@@ -9,8 +9,14 @@ const TWILIO_NUM = credentials.twilioNum;
 const twilio = require('twilio');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
-const OutboundVoiceMessages = require('../models/outboundVoiceMessages');
-const Communications = require('../models/communications');
+const sms = require('./sms');
+const resourceRequire = require('../lib/resourceRequire');
+
+const Communications = resourceRequire('models', 'Communications');
+const Conversations = resourceRequire('models', 'Conversations');
+const Messages = resourceRequire('models', 'Messages');
+const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
+const Recordings = resourceRequire('models', 'Recordings');
 
 module.exports = {
   
@@ -23,9 +29,9 @@ module.exports = {
     // endpoint with all data needed to know where to save
     // that recording at
     let params = `?userId=${user.cmid}&commId=`;
-    params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
-    params += `&clientId=${clientId}`;
-    params += '&type=ovm';
+        params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
+        params += `&clientId=${clientId}`;
+        params += '&type=ovm';
 
     // TODO: The callback URL is set in credentials
     // Problem: This requires the credentials.js file to be
@@ -58,13 +64,13 @@ module.exports = {
     });
   },
 
-  addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber) {
+  addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber) {
     return new Promise((fulfill, reject) => {
       let recording, conversations, clients;
 
       return Recordings.create({
         comm_id: communication.commid,
-        recording_key: key,
+        recording_key: recordingKey,
         RecordingSid: recordingSid,
         call_to: toNumber,
       }).then((resp) => {
@@ -85,22 +91,57 @@ module.exports = {
         return Messages.insertIntoManyConversations(
           conversationIds,
           communication.commid,
-          'Untranscribed voice message',
+          'Untranscribed inbound voice message',
           recordingSid,
-          'recieved',
+          'received',
           toNumber, {
             recordingId: recording.id,
           }
         );
-      });
+      }).catch(reject);
+    });
+  },
+
+  addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId) {
+    return new Promise((fulfill, reject) => {
+      // Reference variables
+      let conversation, recording;
+
+      return Recordings.create({
+        comm_id: commId,
+        recording_key: recordingKey,
+        RecordingSid: recordingSid,
+        call_to: null, // this is only used with inbound messages/calls/etc.
+      }).then((resp) => {
+        recording = resp;
+
+        // Create a new conversation
+        const subject = 'Outbound Voice Call';
+        const open = true;
+        return Conversations.create(userId, clientId, subject, open);
+      }).then((resp) => {
+        conversation = resp;
+
+        return Messages.insertIntoManyConversations(
+          [conversation.convid, ],
+          commId,
+          'Untranscribed outbound voice message', // Default content for message
+          recordingSid,
+          'received',
+          null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
+          { recordingId: recording.id, } // Fkey pointing Recordings table
+        );
+      }).catch(reject);
+
     });
   },
 
   processPendingOutboundVoiceMessages(ovm, domain) {
-    domain = domain || credentials.twilio.outboundCallbackUrl;  
+    domain = domain || credentials.twilio.outboundCallbackUrl;
 
     return new Promise((fulfill, reject) =>{
       ovmId = ovm.id;
+
       return Communications.findById(ovm.commid)
       .then((communication) => {
         twClient.calls.create({
@@ -115,7 +156,10 @@ module.exports = {
           if (err) {
             reject(err);
           } else {
-            ovm.update({call_sid: call.sid,})
+
+            // Update the OVM table row with the sid of the call that was just placed 
+            // out to the client (so this is the SID of the "voicemail delivery call")
+            ovm.update({call_sid: call.sid, })
             .then((ovm) => {
               fulfill(ovm);
             }).catch(reject);
@@ -125,6 +169,8 @@ module.exports = {
     });
   },
 
+  // TODO: Why do we have a special method just for tests
+  //       should be using "normal" methods
   sendPendingOutboundVoiceMessages(domain) {
     domain = domain || credentials.twilio.outboundCallbackUrl;  
 

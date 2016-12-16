@@ -11,7 +11,7 @@ exports.seed = function(knex, Promise) {
       `DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;`
     ).then(() => {
-      console.log('migrate latest');
+      console.log('Knex DB: migrate latest');
       return knex.migrate.latest();
     }).then(() => {
       console.log('Inserting seed data'.yellow);

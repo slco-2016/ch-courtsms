@@ -6,6 +6,7 @@ const resourceRequire = require('../lib/resourceRequire');
 
 const SentimentAnalysis = require('../models/sentiment');
 
+const Clients = resourceRequire('models', 'Clients');
 const CommConns = resourceRequire('models', 'CommConns');
 const Communications = resourceRequire('models', 'Communications');
 const Conversations = resourceRequire('models', 'Conversations');
@@ -87,63 +88,40 @@ module.exports = {
   },
 
   status(req, res) {
-    let notification, client, communication, conversations;
+    let client, communication, conversations, notification, ovm;
 
     if (req.body.CallStatus === 'completed') {
       const sid = req.body.CallSid;
+
+      // We are looking for the row with a OVM that has the call
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
-      .then((ovm) => {
+      .then((resp) => {
+        ovm = resp;
+        console.log('ovm result', ovm)
+
+        // If we have an OVM, then we should get its notification and 
+        // set it's status to sent as well as create a recording object
+        // and new message + conversation for that client-user pairing.
         if (ovm) {
           return ovm.update({delivered: true,})
           .then((ovm) => {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
-            if (notification) {
-              return notification.update({sent: true,});
-            } else {
-              // TODO: This should throw an error, no reason for hanging OVM
-              return null;
-            }
+            console.log('notification received', notification);
+            return notification.update({sent: true,});
+          }).then((notification) => {
+            const commId = notification.comm;
+            const recordingKey = ovm.recording_key;
+            const recordingSid = ovm.RecordingSid;
+            const clientId = notification.client;
+            const userId = notification.cm;
+
+            return voice.addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId);
           });
-        } else {
-          // TODO: Make sure that this terminates the promise(s)
-          return null;
-        }
-      }).then((resp) => {
-        notification = resp;
 
-        return Clients.findOneByAttribute('clid', notification.client);
-      }).then((resp) => {
-        client = resp;
-
-        return Communications.findOneByAttribute('commid', notification.comm);
-      }).then((resp) => {
-        communication = resp;
-
-        if (client && communication) {
-          // get the most recent conversation
-          const clients = [client, ];
-          return Conversations.retrieveByClientsAndCommunication(clients, communication);
         } else {
           return null;
         }
-
-      }).then((resp) => {
-        conversations = resp;
-
-        const conversationIds = conversations.map((ea) => {
-          return ea.convid;
-        });
-        const commId = notification.comm;
-        const content = 'Outbound voice message.';
-
-        const communicationObj = communication;
-        const recordingKey = ovm.recording_key;
-        const recordingSid = ovm.recordingSid;
-        const toNumber = null;
-
-        return voice.addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
-
       }).then(() => {        
         const emptyResponse = twilio.TwimlResponse().toString();
         res.send(emptyResponse);
@@ -195,7 +173,8 @@ module.exports = {
   },
 
   save(req, res) {
-    console.log('Recording save req body from Twilio\n', req.body);
+    console.log('Recording save req.body from Twilio\n', req.body);
+
     const type = req.query.type;
     if (!type) {
       return res.error500(new Error('save-recording needs a recording type'));
@@ -249,7 +228,7 @@ module.exports = {
             // key (recording_key)
             // RecordingSid 
             // toNumber (10 digit)
-            return voice.addRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
+            return voice.addInboundRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
           }
         });
       }
@@ -303,7 +282,8 @@ module.exports = {
     // Get the phone number the user provided
     // Twilio will call this number to prompt recording
     let phoneNumber = req.body.phonenumber || '';
-    phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
+        phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
+
     if (phoneNumber.length == 10) { 
       phoneNumber = '1' + phoneNumber; 
     }
