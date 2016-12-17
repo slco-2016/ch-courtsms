@@ -230,7 +230,7 @@ class Notifications extends BaseModel {
     });
   }
 
-  static create (userID, clientID, commID, subject, message, send, ovm_id) {
+  static create (userID, clientID, commID, subject, message, send, ovmId) {
     return new Promise((fulfill, reject) => {
       db('notifications')
         .insert({
@@ -240,15 +240,16 @@ class Notifications extends BaseModel {
           subject: subject,
           message: message,
           send: send,
-          ovm_id: ovm_id || null,
+          ovm_id: ovmId || null,
           repeat: false,
           frequency: null,
           sent: false,
           closed: false,
           repeat_terminus: null,
         })
-      .then(() => {
-        fulfill();
+        .returning('*')
+      .then((notifications) => {
+        this._getSingleResponse(notifications, fulfill);
       }).catch(reject);
     });
   }

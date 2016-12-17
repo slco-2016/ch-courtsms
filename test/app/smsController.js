@@ -19,9 +19,19 @@ describe('Sms inbound message endpoint', function() {
   it('should accept a new text', function(done) {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
+      .set('X-Twilio-Signature', 'Hwg7BlBJGBLRPcRAlKwKlwtQ+q0=')
       .expect(200)
       .end(function(err, res) {
-        done();
+        done(err);
+      });
+  });
+
+  it.skip('should not accept an unsigned new text', function(done) {
+    twilioAgent.post('/webhook/sms')
+      .send(smsData)
+      .expect(403)
+      .end(function(err, res) {
+        done(err);
       });
   });
 
@@ -30,6 +40,7 @@ describe('Sms inbound message endpoint', function() {
     newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
+      .set('X-Twilio-Signature', 'K22KSNtyW4+G5tGbpzBm+u9DnQU=')
       .expect(200)
       .end(function(err, res) {
         done(err);
@@ -41,6 +52,7 @@ describe('Sms inbound message endpoint', function() {
     newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
+      .set('X-Twilio-Signature', 'K22KSNtyW4+G5tGbpzBm+u9DnQU=')
       .expect(200)
       .end(function(err, res) {
         Conversations.findByCommunicationValue('10008384828')
@@ -70,6 +82,7 @@ describe('Sms inbound message endpoint', function() {
 
       twilioAgent.post('/webhook/sms')
         .send(newSmsBody)
+        .set('X-Twilio-Signature', '7lwIhNW7ASn7qZKq0Hhs0rIQ1a4=')
         .expect(200)
         .end(function(err, res) {
           Conversations.findByCommunicationValue(newSmsBody.From)
@@ -80,7 +93,7 @@ describe('Sms inbound message endpoint', function() {
               conversation.client.should.not.be.exactly(null);
             });
             done(err);
-          });
+          }).catch(done);
         });
     }).catch(done);
 

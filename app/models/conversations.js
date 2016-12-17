@@ -451,7 +451,7 @@ class Conversations extends BaseModel {
       ).then((resp) => {
         conversations = resp;
 
-        // @maxmcd perhaps this is something that should be a lib/util?
+        // TODO: Move this into a utility
         return this.createNewIfOlderThanSetHours(conversations, 24);
       }).then((resp) => {
         conversations = resp;

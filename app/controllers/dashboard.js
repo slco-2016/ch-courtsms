@@ -71,7 +71,7 @@ module.exports = {
 
       // change date on weeks to end of week rather than beginning
       countsByWeek = countsByWeek.map((ea) => {
-        ea.time_period = moment(ea.time_period).add(7, 'days').format('YYYY-MM-DD');
+        ea.time_period = moment(ea.time_period).add(6, 'days').format('YYYY-MM-DD');
         return ea;
       });
 

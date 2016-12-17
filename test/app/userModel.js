@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const Users = require('../../app/models/users')
+const Users = require('../../app/models/users');
 
 require('colors');
 const should = require('should');

@@ -94,7 +94,37 @@ $darkblue:    #344289;
 
       .allLeft {
         width: 1024px;
+        .clientTab {
+          height: inherit;
+          float: left;
+          color: $white;
+          line-height: 55px;
+          padding-right: 35px;
 
+          &:hover {
+            background-color: $blue;
+          }
+
+          &.open {
+            background-color: $darkblue;
+          }
+
+          .icon {
+            float: left;
+            margin-left: 20px;
+            margin-right: 6px;
+            font-size: 20px;
+            color: $white;
+          }
+
+          .title {
+            float: left;
+            margin-left: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+          }
+        }
         .leftTab {
           height: inherit;
           width: auto;

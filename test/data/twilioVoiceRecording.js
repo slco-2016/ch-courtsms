@@ -27,5 +27,5 @@ module.exports = {
   CalledState: 'CT',
   FromZip: '',
   FromState: 'UT',
-  RecordingDuration: '4' 
-}
+  RecordingDuration: '4' ,
+};

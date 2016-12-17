@@ -10,6 +10,13 @@
     <div class="arrowTop"></div>
 
     <div class="alertsBody receivesNewAlertsHere">
+
+      <% if (ALERTS_FEED.length > 3) { %>
+        <div class="clearAllOption">
+          <button onclick="clearAllAlerts()">Clear All</button>
+        </div>
+      <% } %>
+
       <% ALERTS_FEED.forEach(function (alert) { %>
         <div class="alertRow">
           <div class="message">
@@ -21,6 +28,7 @@
           </div>
         </div>
       <% }) %>
+
     </div>
 
   </div>

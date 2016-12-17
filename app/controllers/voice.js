@@ -6,6 +6,7 @@ const resourceRequire = require('../lib/resourceRequire');
 
 const SentimentAnalysis = require('../models/sentiment');
 
+const Clients = resourceRequire('models', 'Clients');
 const CommConns = resourceRequire('models', 'CommConns');
 const Communications = resourceRequire('models', 'Communications');
 const Conversations = resourceRequire('models', 'Conversations');
@@ -70,8 +71,8 @@ module.exports = {
 
   transcribe(req, res) {
     const RecordingSid = req.body.RecordingSid;
-    Recordings.findOneByAttribute('RecordingSid', RecordingSid)
-    .then((recording) => {
+    Recordings.findManyByAttribute('RecordingSid', RecordingSid)
+    .map((recording) => {
       if (recording) {
         return recording.update({transcription: req.body.TranscriptionText,})
         .then((recording) => {
@@ -80,32 +81,46 @@ module.exports = {
           return message.update({content: req.body.TranscriptionText,});
         });
       }
-    }).then(() => {
+    }).then((messages) => {
       const emptyResponse = twilio.TwimlResponse().toString();
       res.send(emptyResponse);
     }).catch(res.error500);
   },
 
   status(req, res) {
+    let client, communication, conversations, notification, ovm;
+
     if (req.body.CallStatus === 'completed') {
       const sid = req.body.CallSid;
+
+      // We are looking for the row with a OVM that has the call
       OutboundVoiceMessages.findOneByAttribute('call_sid', sid)
-      .then((ovm) => {
+      .then((resp) => {
+        ovm = resp;
+
+        // If we have an OVM, then we should get its notification and 
+        // set it's status to sent as well as create a recording object
+        // and new message + conversation for that client-user pairing.
         if (ovm) {
           return ovm.update({delivered: true,})
           .then((ovm) => {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
-            if (notification) {
-              return notification.update({sent: true,});  
-            } else {
-              return null;
-            }
+            return notification.update({sent: true,});
+          }).then((notification) => {
+            const commId = notification.comm;
+            const recordingKey = ovm.recording_key;
+            const recordingSid = ovm.RecordingSid;
+            const clientId = notification.client;
+            const userId = notification.cm;
+
+            return voice.addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId);
           });
+
         } else {
           return null;
         }
-      }).then((notification) => {
+      }).then(() => {
         const emptyResponse = twilio.TwimlResponse().toString();
         res.send(emptyResponse);
       }).catch(res.error500);
@@ -156,11 +171,13 @@ module.exports = {
   },
 
   save(req, res) {
-    console.log('Recording save req body from Twilio\n', req.body);
+    // console.log('Recording save req.body from Twilio\n', req.body);
+
     const type = req.query.type;
     if (!type) {
       return res.error500(new Error('save-recording needs a recording type'));
     }
+
     s3.uploadFromUrl(
       req.body.RecordingUrl,
       req.body.RecordingSid
@@ -177,12 +194,15 @@ module.exports = {
           delivery_date: deliveryDate,
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
+          call_sid: req.body.CallSid,
         }).then((ovm) => {
           return Notifications.create(
             userId, clientId, 
             commId, 'Outbound Voice Message', '', 
             deliveryDate, ovm.id
           );
+        }).then((notification) => {
+          return notification;
         });
 
       } else if (type === 'message') {
@@ -201,37 +221,16 @@ module.exports = {
               'S3 key is ' + key
             );
           } else {
-            let recording, conversations, clients;
-            return Recordings.create({
-              comm_id: communication.commid,
-              recording_key: key,
-              RecordingSid: req.body.RecordingSid,
-              call_to: toNumber,
-            }).then((resp) => {
-              recording = resp;
-              return sms.retrieveClients(recording.call_to, communication);
-            }).then((resp) =>{
-              clients = resp;
-              return Conversations.retrieveByClientsAndCommunication(
-                clients, communication
-              );
-            }).then((resp) => {
-              conversations = resp;
-              const conversationIds = conversations.map((conversation) => {
-                return conversation.convid;
-              });
+            const recordingSid = req.body.RecordingSid;
+            const recordingKey = key;
+            const communicationObj = communication;
 
-              return Messages.insertIntoManyConversations(
-                conversationIds,
-                communication.commid,
-                'Untranscribed voice message',
-                req.body.RecordingSid,
-                'recieved',
-                toNumber, {
-                  recordingId: recording.id,
-                }
-              );
-            });
+            // Needed to proceed
+            // communication obj
+            // key (recording_key)
+            // RecordingSid 
+            // toNumber (10 digit)
+            return voice.addInboundRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
           }
         });
       }
@@ -246,7 +245,8 @@ module.exports = {
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
 
-      // filter out communications that are not type cell or landli
+      // Filter out communications that are not type cell or landline
+      // Why? We can't send voice messages to email
       communications = communications.filter((communication) => {
         let ok = false;
         if (communication.type == 'landline') ok = true;
@@ -254,10 +254,14 @@ module.exports = {
         return ok;
       });
 
+      // Make sure that there is at least one communication method for voice
+      // left after filtering through all communications
       if (communications.length) {
         res.render('voice/create', {
           communications: communications,
         });
+
+      // If no cell or landline options exist, then do not allow record
       } else {
         res.render('voice/noGoodNumbers');
       }
@@ -265,15 +269,23 @@ module.exports = {
   },
 
   create(req, res) {
+    // A phone number (cell of landline) needs to be selected
+    // This is unlike texts which we allow for "Smart Select"
+    // (which would mean commId being null in that notification row)
     const commId = req.body.commId;
 
+    // Get the components of the scheduled date
+    // and convert them to a date object (with toDate function)
     const deliveryDate = moment(req.body.sendDate)
                     .tz(res.locals.organization.tz)
                     .startOf('day')
                     .add(Number(req.body.sendHour), 'hours');
 
+    // Get the phone number the user provided
+    // Twilio will call this number to prompt recording
     let phoneNumber = req.body.phonenumber || '';
-    phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
+        phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
+
     if (phoneNumber.length == 10) { 
       phoneNumber = '1' + phoneNumber; 
     }
@@ -283,6 +295,7 @@ module.exports = {
         userProvidedNumber: phoneNumber,
       });
       
+      // User the voice library to prompt the call
       voice.recordVoiceMessage(
         req.user,
         commId,
@@ -291,13 +304,18 @@ module.exports = {
         phoneNumber
       );
 
+    // If no good number is provided, prompt to re-enter
     } else {
       req.flash('warning', 'Phone number is not long enough.');
+
+      // Context-sensitive redirect (org or caseload level)
       let redirectAddress = '/clients/';
       if (res.locals.level == 'org') {
         redirectAddress = '/org' + redirectAddress;
       }
       redirectAddress = redirectAddress + res.locals.client.clid + '/voicemessage';
+
+      // Submit redirect response
       res.redirect(redirectAddress);
     }
   },

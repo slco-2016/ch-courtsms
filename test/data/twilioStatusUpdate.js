@@ -1,4 +1,5 @@
-module.exports = { Called: '+16198702271',
+module.exports = { 
+  Called: '+16198702271',
   ToState: 'CA',
   CallerCountry: 'US',
   Direction: 'inbound',
@@ -7,7 +8,7 @@ module.exports = { Called: '+16198702271',
   CallerState: 'CT',
   ToZip: '92123',
   SequenceNumber: '0',
-  CallSid: 'CA3042ffc8b5de3dfcd0d85e57cec02605',
+  CallSid: 'CAc080f49bc9742c4281b9dbcdb652d29a',
   To: '+16198702271',
   CallerZip: '06812',
   ToCountry: 'US',
@@ -27,4 +28,5 @@ module.exports = { Called: '+16198702271',
   FromCity: 'DANBURY',
   CalledState: 'CA',
   FromZip: '06812',
-  FromState: 'CT' }
+  FromState: 'CT',
+};

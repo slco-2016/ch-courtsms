@@ -3,76 +3,38 @@
 <% include ./navBarTop %>
 
 <!-- Load in addition CSS -->
-<link rel="stylesheet" type="text/css" href="/static/css/v4_clientHubFrame.css">
-
+<link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
   <div class="navSub">
+    <div class="allLeftParent">
 
-    <div class="leftTab <%= hub.tab == 'profile' ? 'open' : '' %>">
-      <div class="icon">
-        <a href="<%=`${clientBaseURL}`%>/edit">
-          <i class="fa fa-cog" aria-hidden="true"></i>
-        </a>
-      </div>
-      <div class="title">
-        <a href="<%=`${clientBaseURL}`%>"><%= client.first + ' ' + client.last %></a>
+      <div class="allLeft">
+
+        <div class="clientTab <%= hub.tab == 'profile' ? 'open' : 'closed' %>">
+          <div class="icon">
+            <a href="<%=`${clientBaseURL}`%>/edit">
+              <i class="fa fa-cog" aria-hidden="true"></i>
+            </a>
+          </div>
+          <div class="title">
+            <a href="<%=`${clientBaseURL}`%>"><%= client.first + ' ' + client.last %></a>
+          </div>
+        </div>
+
+        <%- leftTab('messages', hub, level, ['all', 'texts', 'emails'], 'messages', 'method', null, client.clid) %>
+        <%- leftTab('notifications', hub, level, ['pending', 'sent'], 'notifications', 'status', null, client.clid) %>
+        <%- leftTab('contact methods', hub, level, null, 'communications', 'status', null, client.clid) %>
       </div>
     </div>
 
-    <% if (user.class !== "owner" || client.cm == user.cmid) { %>
-      <div class="rightTab <%= hub.tab == 'messages' ? 'open' : 'closed' %>">
-        <div class="title"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">Messages</a></div>
-        <div class="option <%= hub.sel == 'all' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=all`%>">All</a></div>
-        <div class="option <%= hub.sel == 'texts' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=texts`%>">Texts</a></div>
-        <div class="option <%= hub.sel == 'emails' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/messages?method=emails`%>">Emails</a></div>
-      </div>
-    <% } %>
 
-    <div class="rightTab <%= hub.tab == 'notifications' ? 'open' : 'closed' %>">
-      <div class="title"><a href="<%=`/clients/${client.clid}/notifications`%>">Notifications</a></div>
-      <div class="option <%= hub.sel == 'pending' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/notifications?status=pending`%>">Pending</a></div>
-      <div class="option <%= hub.sel == 'sent' ? 'selected' : '' %>"><a href="<%=`/clients/${client.clid}/notifications?status=sent`%>">Sent</a></div>
+    <div class="allRightParent">
+      <div class="allRight">
+        <%- rightTab('clients', 'mobile', level, `${client.clid}/communications/create`, 'contact method') %>
+        <%- rightTab('notifications', 'bell', level, `create?client=${client.clid}&user=${client.cm}`, 'notification') %> 
+        <%- rightTab('clients', 'comments', level, `${client.clid}/address`, 'message') %>
+      </div>
     </div>
-
-    <div class="rightTab <%= hub.tab == 'contactMethods' ? 'open' : 'closed' %>">
-      <div class="title"><a href="<%=`/clients/${client.clid}/communications`%>">Contact Methods</a></div>
-    </div>
-
-    <% if (client.active) { %>
-      <div class="rightActions">
-        <a href="<%=`/clients/${client.clid}/communications/create`%>">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-lg fa-mobile fa-stack-1x fa-inverse"></i>
-          </span>
-          <span class="text">Create Contact Method</span>
-        </a>
-      </div>
-
-      <div class="rightActions">
-          <% if (typeof client == "undefined") { %>
-            <a href="<%=`/notifications/create`%>">
-          <% } else { %>
-            <a href="<%=`/notifications/create?client=${client.clid}&user=${client.cm}`%>">
-          <% } %>
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-bell fa-stack-1x fa-inverse"></i>
-          </span>
-          <span class="text">Create Notification</span>
-        </a>
-      </div>
-
-      <div class="rightActions">
-        <a href="<%=`/clients/${client.clid}/address`%>">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-comments fa-stack-1x fa-inverse"></i>
-          </span>
-          <span class="text">Create Message</span>
-        </a>
-      </div>
-    <% } %>
 
   </div>
 

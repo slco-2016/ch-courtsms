@@ -36,41 +36,6 @@ $darkblue:    #344289;
     overflow: hidden;
     position: fixed;
 
-    .leftTab {
-      height: inherit;
-      float: left;
-      color: $white;
-      line-height: 55px;
-      padding-right: 35px;
-      // margin-right: 25px;
-      // background-color: $white;
-
-      &:hover {
-        background-color: $blue;
-      }
-
-      &.open {
-        background-color: $darkblue;
-      }
-
-      .icon {
-        float: left;
-        margin-left: 20px;
-        margin-right: 6px;
-        font-size: 20px;
-        color: $white;
-      }
-
-      .title {
-        float: left;
-        margin-left: 10px;
-        font-size: 18px;
-        cursor: pointer;
-        // font-style: italic;
-        font-weight: 700;
-      }
-    }
-
     .rightTab {
       height: inherit;
       width: auto;

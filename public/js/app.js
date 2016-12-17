@@ -493,7 +493,17 @@ $(function() {
             else newValsDay.push(0);
           });
 
-          valsWeek.pop();
+          if (valsWeek.length > 1) {
+            var lastWeeksData = valsWeek.pop();
+            try {
+              var newLastDataVal = valsWeek[valsWeek.length - 1];
+              if (lastWeeksData > newLastDataVal) {
+                valsWeek.push(lastWeeksData);
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          }
 
           c3.generate({
             data: {

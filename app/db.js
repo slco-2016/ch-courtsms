@@ -1,7 +1,7 @@
 'use strict';
-const env = process.env.CCENV || 'development';
+const credentials = require('../credentials');
+const env = credentials.CCENV;
 
-console.log('Knex configuration environment: ' + env);
 const config = require('../knexfile');
 const knex = require('knex')(config[env]);
 

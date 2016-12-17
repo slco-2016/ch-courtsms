@@ -1,70 +1,94 @@
-let baseProductionReadyCredentials = {
+const colors = require('colors');
 
-  // Boolean for keeping track of whether or not in test mode without having to use process.env
-  testEnvironment: false,
-  
-  // BELOW: Main body of the credentials object
+// Environment is set with the CCENV process environment variable
+// This can be set in the command line before commands 
+// (e.g. CCENV=development npm start)
+const CCENV = process.env.CCENV || 'development';
+const RECEIVEBACKUPMODE = process.env.RECEIVEBACKUPMODE == 'on' ? true : false;
 
-  // Root url, for testing something like https://16eb4a25.ngrok.io
-  rootUrl: 'http://localhost:4000',
+const baseProductionReadyCredentials = {
+
+  // Allow access to CCENV be consistent from credentials.js
+  // TODO: Update all references to CCENV to be from here
+  CCENV: CCENV,
+  RECEIVEBACKUPMODE: RECEIVEBACKUPMODE,
 
   // Twilio-related
-  accountSid: '****************',
-  authToken: '****************',
-  twilioNum: '+12345678901',
+  accountSid: '**************************',
+  authToken:  '**************************',
+  twilioNum:  '+12344564563',
+
+  // TODO: Move all twilio components into a single key
+  twilio: {
+    outboundCallbackUrl: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
+    outboundCallbackUrlBackup: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
+  },
 
   // Session
-  sessionSecret: 'foobar',
+  sessionSecret: 'abcdefg',
 
-  // For test use
-  // TO DO: roll this in as a modification when in test env
+  // For testing purposes
+  // TODO: Make this something that is set when running the tests
   localDbUser: 'postgres',
 
-  // Connection to production database
+  // Connection details for the production database
   db: {
-    user:     'jane',
-    password: 'password',
-    host:     'foobar.abc123.us-west-1.rds.amazonaws.com',
+    user:     'usernameunqiue',
+    password: '**************************',
+    host:     'unique.lksjdfbj3.us-west-1.rds.amazonaws.com',
   },
 
   // Currently we use Gmail Node library for email comms
+  // TODO: Perhaps use Mailgun and stop relying on Google for outbound notifications
   em: {
-    password: 'gmailpassword',
+    password: '**************************',
   },
 
   // New Relic monitoring information
   newrelic: {
-    key: 'abc123efg456',
+    key: '**************************',
   },
 
   mailgun: {
-    apiKey: 'fake-key',
+    apiKey: '**************************',
   },
 
   // AWS interface/access secrets
   aws: {
-    accessKey: '****************',
-    secretAccessKey: '****************',
+    accessKey:       '**************************',
+    secretAccessKey: '**************************',
   },
+
 };
 
-// Changes made when in test mode
-const TESTENV = process.env.TESTENV;
-if (TESTENV && TESTENV == 'true') {
-  baseProductionReadyCredentials.testEnvironment = true;
-
-  // Update to the test number that we use (so as to not use production Twilio phone number)
-  baseProductionReadyCredentials.twilioNum = '+15671234567';
-  baseProductionReadyCredentials.testRecipientNumber = '+13459057365';
-
+if (CCENV == 'production') {
   baseProductionReadyCredentials.db = {
-    user:     'jane',
-    password: 'password',
-    host:     'foobar-staging.abc123.us-west-1.rds.amazonaws.com',
+    user:     'kuan',
+    password: '1922Park',
+    host:     'clientcomm-v40.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
   };
-
-  console.log('Credentials have been modified with test environment values.');
-  console.log('Database being used: ' + baseProductionReadyCredentials.db.host.split('.')[0]);
 }
+
+// Update the phone number for all non-production environments
+if (CCENV !== 'production') {
+  baseProductionReadyCredentials.twilioNum = '+18987327373';
+
+  // Update the outbound URL to whatever you are using in tests/development
+  // (e.g. could be a Ngrok set up, another EC2 instance, etc.)
+  baseProductionReadyCredentials.twilio.outboundCallbackUrl = 'https://123abc.ngrok.io';
+}
+
+// Changes made when we are developing (e.g. staging server, different rootURL, etc.)
+if (CCENV == 'development') {
+  console.log('Development environment: Credentials have been modified.'.yellow);
+  baseProductionReadyCredentials.db = {
+    user:     'kuan',
+    password: '1922Park',
+    host:     'clientcomm-staging.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
+  };
+}
+
+const hostName = baseProductionReadyCredentials.db.host.split('.')[0];
+console.log(`Database being used: ${hostName}'`.yellow);
 
 module.exports = baseProductionReadyCredentials;

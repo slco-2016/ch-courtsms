@@ -9,6 +9,10 @@ const empw = credentials.em.password;
 const smtps = 'smtps://clientcomm%40codeforamerica.org:' + empw + '@smtp.gmail.com';
 const transporter = nodemailer.createTransport(smtps);
 
+// Include some models
+const Users = require('../models/users');
+const CaptureBoard = require('../models/capture');
+
 module.exports = {
   runEmailUpdates: function () {
     return new Promise((fulfill, reject) => {
@@ -79,7 +83,24 @@ module.exports = {
         }
       }).catch(reject);
     });
-  }, 
+  },
+
+  // runSupportStaffUpdates: function () {
+  //   return new Promise((fulfill, reject) => {
+  //     Users.findOneByAttribute('class', 'support')
+  //     .then((users) => {
+
+  //       // make a list of organizations that are all of the users
+  //       let uniqueOrgs = [];
+  //       users.forEach((user) => {
+  //         let isInList = uniqueOrgs.indexOf(user.org);
+  //         if (!isInList) {
+  //           uniqueOrgs.push(user.org);
+  //         }
+  //       });
+  //     }).catch(reject);
+  //   });
+  // },
 
   notifyUserFailedSend: function (cm, msg) {
     const text = '  Hi, ' + cm.first + '. You are recieving this email because a message you wrote failed to send. ' +

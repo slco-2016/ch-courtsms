@@ -18,6 +18,7 @@ describe('Scheduled operations checks', function() {
   before(function(done) {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
+      .set('X-Twilio-Signature', 'Hwg7BlBJGBLRPcRAlKwKlwtQ+q0=')
       .expect(200)
       .end(function(err, res) {
         done();
@@ -43,7 +44,7 @@ describe('Scheduled operations checks', function() {
           setTimeout(() => { done(); }, 1000);
         }
       });
-    }).catch();
+    }).catch(done);
   });
 
 });

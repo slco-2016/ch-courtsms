@@ -11,7 +11,7 @@ exports.seed = function(knex, Promise) {
       `DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;`
     ).then(() => {
-      console.log('migrate latest');
+      console.log('Knex DB: migrate latest');
       return knex.migrate.latest();
     }).then(() => {
       console.log('Inserting seed data'.yellow);
@@ -211,7 +211,7 @@ const outboundVoiceMessage = {
   RecordingSid: 'REde2dd4be0e7a521f8296a7390a9ab21b',
   delivered: false,
   commid: 1,
-  call_sid: 'CA3042ffc8b5de3dfcd0d85e57cec02605',
+  call_sid: 'CX4042ffc8b5de3dfcd0d85e57cec02605',
 };
 
 const notificationSmartSend = {

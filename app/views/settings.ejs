@@ -79,6 +79,16 @@
 
     <div class="formRow">
       <div class="formLabel">
+        Allow automated notifications for your clients
+      </div>
+
+      <div class="formInput">
+        <input type="checkbox" name="automatedNotificationsAllowed" value="true" <%if (user.allow_automated_notifications) {%>checked<%}%>> Check to toggle whether automated notifications are allowed ("on" if checked) for your clients (e.g. for court dates, etc.)
+      </div>
+    </div>
+
+    <div class="formRow">
+      <div class="formLabel">
         Away message status
       </div>
 

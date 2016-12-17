@@ -8,15 +8,28 @@ $(".alertsBindedClickAction").click(function () {
 
 $(".hiddenAlerts .alertRow .close").click(removeAlert);
 
-function removeAlert () { 
-  var alertId = $(this).attr("alertID");
+function removeAlert (altThis) { 
+  var that;
+  if (altThis) {
+    that = altThis;
+  } else {
+    that = this
+  }
+  
+  var alertId = $(that).attr("alertID");
   if (alertId) {
     submitAlertClosure(alertId);
   }
-  $(this).parent().remove(); 
+  $(that).parent().remove(); 
   var nr = $(".numberRemaining");
   nr.text(Number(nr.text())-1); // reduce the remaining alerts by one
   if ($(".hiddenAlerts .alertRow").length == 0) $(".alerts").remove();
+};
+
+function clearAllAlerts() {
+  $('.alertRow').find('.close').each(function (i, ea) {
+    removeAlert(ea);
+  });
 };
 
 function submitAlertClosure (alertId) {
