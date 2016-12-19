@@ -83,7 +83,16 @@
       </div>
 
       <div class="formInput">
-        <input type="checkbox" name="automatedNotificationsAllowed" value="true" <%if (user.allow_automated_notifications) {%>checked<%}%>> Check to toggle whether automated notifications are allowed ("on" if checked) for your clients (e.g. for court dates, etc.)
+        <input type="radio" value="all" name="toggleAutoNotify">
+        All clients on
+      </div>
+      <div class="formInput">
+        <input type="radio" value="none" name="toggleAutoNotify">
+        All clients off
+      </div>
+      <div class="formInput">
+        <input type="radio" value="ignore" name="toggleAutoNotify" checked>
+        Leave as is
       </div>
     </div>
 

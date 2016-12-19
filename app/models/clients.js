@@ -31,6 +31,7 @@ class Clients extends BaseModel {
         'color_tag',
         'updated',
         'created',
+        'allow_automated_notifications',
       ],
     });
   }
@@ -71,6 +72,7 @@ class Clients extends BaseModel {
           otn:    otn,
           so:     so,
           active: true,
+          allow_automated_notifications: true,
         })
         .returning('*')
       .then((clients) => {
@@ -79,7 +81,7 @@ class Clients extends BaseModel {
     });
   }
 
-  static editOne (clientId, first, middle, last, dob, uniqueID1, uniqueID2) {
+  static editOne (clientId, first, middle, last, dob, uniqueID1, uniqueID2, autoNotify) {
     return new Promise((fulfill, reject) => {
       db('clients')
         .update({
@@ -89,6 +91,7 @@ class Clients extends BaseModel {
           dob: dob,
           so: uniqueID1,
           otn: uniqueID2,
+          allow_automated_notifications: autoNotify,
         })
         .where('clid', clientId)
       .then(() => {

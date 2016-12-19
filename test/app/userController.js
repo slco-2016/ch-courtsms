@@ -81,7 +81,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/departments')
       .expect(200)
       .end(function(err, res) {
-        res.text.should.match(/Pretrial LKJKLJUnique/)
+        res.text.should.match(/Pretrial LKJKLJUnique/);
         done(err);
       });
   });

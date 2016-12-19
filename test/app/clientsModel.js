@@ -27,17 +27,17 @@ describe('Clients checks', function() {
     .then((client) => {
       client.clid.should.be.exactly(1);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('with findOneByAttribute, should return null if none found', function(done) {
-    Clients.findOneByAttribute("clid", 99999999, (baseDbCall) => {
-      return baseDbCall.where("active", true);
+    Clients.findOneByAttribute('clid', 99999999, (baseDbCall) => {
+      return baseDbCall.where('active', true);
     })
     .then((client) => {
       should(client).not.be.ok();
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('clients should be able to be found by attribute type, multi query', function(done) {

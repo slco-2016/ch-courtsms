@@ -1,0 +1,81 @@
+const assert = require('assert');
+const supertest = require('supertest');
+const should = require('should');
+
+const APP = require('../../app/app');
+
+const Clients = require('../../app/models/clients');
+const Users = require('../../app/models/users');
+
+const primary = supertest.agent(APP);
+
+const client = {
+  email: 'primary@test.com',
+};
+const numberOfClientToCreate = 4;
+
+describe('Settings controller view', function() {
+
+  before(function(done) {
+    primary.post('/login')
+      .send({email: client.email, })
+      .send({pass:'123', })
+      .expect(302)
+      .expect('Location', '/')
+      .then(() => {
+
+        // We need to add some clients here
+        // so that this user has clients to update
+        Users.findOneByAttribute({email: client.email})
+        .then((user) => {
+
+          const allNewClients = Array.from(Array(numberOfClientToCreate).keys()).map((ea) => {
+            return {
+              userId: user.cmid,
+              first: `foo_${ea}`,
+              middle: `ka_${ea}`,
+              last: `bar_${ea}`,
+              first: `foo_${ea}`,
+              dob: `0${ea}/12/1990`,
+              otn: ea*100,
+              so: ea*140,
+            };
+          });
+
+          return allNewClients;
+        }).then((client) => {
+          return Clients.create(client.userId, 
+                                client.first, 
+                                client.middle, 
+                                client.last, 
+                                client.dob, 
+                                client.otn, 
+                                client.so);
+        }).then(() => {
+          done();
+        }).catch(done);
+      });
+  });
+
+  it('should be able to view own settings', function(done) {
+    primary.get('/settings')
+      .expect(200)
+    .end(function(err, res) {
+      const email = new RegExp(client.email);
+      res.text.should.match(email);
+      res.text.should.match(/<input type="radio" value="ignore" name="toggleAutoNotify" checked>/);
+      done();
+    });
+  });
+
+  // it('should be able to submit edits on own settings', function(done) {
+  //   primary.get('/settings')
+  //     .expect(200)
+  //   .end(function(err, res) {
+  //     const email = new RegExp(client.email);
+  //     res.text.should.match(email);
+  //     done();
+  //   });
+  // });
+
+});

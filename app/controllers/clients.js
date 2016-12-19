@@ -156,8 +156,8 @@ module.exports = {
             middle, 
             last, 
             dob, 
-            so,  // note these should be renamed
-            otn  // this one as well
+            otn,  // this one as well
+            so  // note these should be renamed
     ).then((client) => {
       if (req.user.cmid == client.cm) {
         res.redirect(`/clients/${client.clid}/messages`);
@@ -179,6 +179,7 @@ module.exports = {
     const dob       = req.body.dob;
     const so        = req.body.uniqueID1;
     const otn       = req.body.uniqueID2;
+    const autoNotify = req.body.autoNotify ? true : false;
     Clients.editOne(
             client, 
             first, 
@@ -186,7 +187,8 @@ module.exports = {
             last, 
             dob, 
             so, 
-            otn
+            otn,
+            autoNotify
     ).then(() => {
       req.logActivity.client(client);
       req.flash('success', 'Edited client.');
