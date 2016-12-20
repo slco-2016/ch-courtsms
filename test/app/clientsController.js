@@ -39,7 +39,7 @@ describe('Clients controller view', function() {
       .end(function(err, res) {
         // TODO: The client attribute uniqueID1 is still 
         //       referered to as "so" in the database
-        Clients.findOneByAttribute({so: uniqueID1, })
+        Clients.findOneByAttribute('so', uniqueID1)
         .then((client) => {
           should.equal(reqBody.first, client.first);
           should.equal(reqBody.last, client.last);
@@ -50,13 +50,13 @@ describe('Clients controller view', function() {
 
   it('should be able to edit the client', function(done) {
     reqBody.autoNotify = false;
-    Clients.findOneByAttribute({so: uniqueID1, })
+    Clients.findOneByAttribute('so', uniqueID1)
     .then((client) => {
       primary.post(`/clients/${client.clid}/edit`)
         .send(reqBody)
         .expect(302)
         .end(function(err, res) {
-          Clients.findOneByAttribute({so: uniqueID1, })
+          Clients.findOneByAttribute('so', uniqueID1)
           .then((client) => {
             client.allow_automated_notifications.should.be.exactly(false);
             done();

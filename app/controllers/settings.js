@@ -10,7 +10,7 @@ module.exports = {
     Settings.findById(req.user.cmid)
     .then((resp) => {
       user = resp;
-      return Clients.findManyByAttribute({cm: user.cmid, });
+      return Clients.findManyByAttribute('cm', user.cmid);
     }).then((clients) => {
       clients.forEach((client) => {
         if (client.allow_automated_notifications) {
@@ -55,7 +55,7 @@ module.exports = {
       if (toggleAutoNotify == 'all' || toggleAutoNotify == 'none') {
         const notify = toggleAutoNotify == 'all' ? true : false;
 
-        return Clients.findManyByAttribute({cm: req.user.cmid, })
+        return Clients.findManyByAttribute('cm', req.user.cmid)
         .then(function (clients) {
           return new Promise((fulfill, reject) => {
             fulfill(clients);

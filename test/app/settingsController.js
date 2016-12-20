@@ -30,9 +30,9 @@ describe('Settings controller view', function() {
         // so that this user has clients to update
         let user;
 
-        Users.findOneByAttribute({email: client.email, })
+        Users.where({email: client.email, })
         .then((resp) => {
-          user = resp;
+          user = resp[0];
 
           return Clients.findManyByAttribute('cm', user.cmid);
         }).then((clients) => {
@@ -78,11 +78,10 @@ describe('Settings controller view', function() {
       res.text.should.match(/<input type="radio" value="ignore" name="toggleAutoNotify" checked>/);
 
       // there are 2 clients created by default in the seed table (see seeds.js)
-      Users.findOneByAttribute({email: client.email, })
+      Users.findOneByAttribute('email', client.email)
       .then((user) => {
         return Clients.findManyByAttribute('cm', user.cmid);
       }).then((clients) => {
-
         // we need to handle the fact that some of the seed/other test clients 
         // might have been set to other than default so we need to acknowlede that
         let clientNotifications = {all_on: 0, all_off: 0, subset_on: 0, subset_off: 0, };
@@ -114,7 +113,7 @@ describe('Settings controller view', function() {
   });
 
   it('should be able to toggle all client notifications off', function(done) {
-    Users.findOneByAttribute({email: client.email, })
+    Users.findOneByAttribute('email', client.email)
     .then((user) => {
       const reqBody = {
         cmid: user.cmid,
@@ -136,9 +135,9 @@ describe('Settings controller view', function() {
         // Now let's query for that same user again
         // but this time make sure that the toggle value 
         // reflects the change that was POSTed
-        Users.findOneByAttribute({email: client.email, })
+        Users.findOneByAttribute('email', client.email)
         .then((user) => {
-          return Clients.findManyByAttribute({cm: user.cmid, });
+          return Clients.findManyByAttribute('cm', user.cmid);
         }).then((clients) => {
           let clientNotifications = {on: 0, off: 0, };
           clients.forEach((client) => {
@@ -165,7 +164,7 @@ describe('Settings controller view', function() {
   });
 
   it('should be able to toggle all client notifications on', function(done) {
-    Users.findOneByAttribute({email: client.email, })
+    Users.findOneByAttribute('email', client.email)
     .then((user) => {
       const reqBody = {
         cmid: user.cmid,
@@ -183,13 +182,12 @@ describe('Settings controller view', function() {
         .send(reqBody)
         .expect(302)
       .end(function(err, res) {
-
         // Now let's query for that same user again
         // but this time make sure that the toggle value 
         // reflects the change that was POSTed
-        Users.findOneByAttribute({email: client.email, })
+        Users.findOneByAttribute('email', client.email)
         .then((user) => {
-          return Clients.findManyByAttribute({cm: user.cmid, });
+          return Clients.findManyByAttribute('cm', user.cmid);
         }).then((clients) => {
           let clientNotifications = {on: 0, off: 0, };
           clients.forEach((client) => {

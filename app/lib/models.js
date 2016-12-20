@@ -42,7 +42,7 @@ class BaseModel {
     const columnNames = this._info.columns;
     for (let i=0; i < columnNames.length; i++) {
       if (obj.hasOwnProperty(columnNames[i])) {
-        out[columnNames[i]] = obj[columnNames[i]];        
+        out[columnNames[i]] = obj[columnNames[i]];
       }
     }
     return out;
@@ -152,6 +152,7 @@ class BaseModel {
 
   static findManyByAttribute(attributeName, value, otherOperations) {
     this._checkModelValidity();
+
     if (!otherOperations) {
       otherOperations = (dbCall) => {
         return dbCall;
@@ -159,12 +160,16 @@ class BaseModel {
     }
     
     return new Promise((fulfill, reject) => {
-      const basicDbCall = db(this.tableName)
-                          .where(attributeName, value);
-      otherOperations(basicDbCall)
-      .then((objects) => {
-        return this._getMultiResponse(objects, fulfill);
-      }).catch(reject);
+      if (typeof attributeName == 'object' || typeof value == 'object') {
+        reject(new Error(`Neither attributeName nor value can be objects: ${attributeName}, ${value}`));
+      } else {
+        const basicDbCall = db(this.tableName)
+                            .where(attributeName, value);
+        otherOperations(basicDbCall)
+        .then((objects) => {
+          return this._getMultiResponse(objects, fulfill);
+        }).catch(reject);
+      }
     });
   }
 
@@ -177,12 +182,16 @@ class BaseModel {
     }
     
     return new Promise((fulfill, reject) => {
-      const basicDbCall = db(this.tableName)
-                          .where(attributeName, value);
-      otherOperations(basicDbCall)
-      .then((objects) => {
-        return this._getSingleResponse(objects, fulfill, reject);
-      }).catch(reject);
+      if (typeof attributeName == 'object' || typeof value == 'object') {
+        reject(new Error(`Neither attributeName nor value can be objects: ${attributeName}, ${value}`));
+      } else {
+        const basicDbCall = db(this.tableName)
+                            .where(attributeName, value);
+        otherOperations(basicDbCall)
+        .then((objects) => {
+          return this._getSingleResponse(objects, fulfill, reject);
+        }).catch(reject);
+      }
     });
   }
 
