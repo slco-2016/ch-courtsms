@@ -1,12 +1,28 @@
 const Settings = require('../models/settings');
+const Clients = require('../models/clients');
 
 module.exports = {
   
   index(req, res) {
+    let user;
+    let clientNotifications = {on: 0, off: 0}
+
     Settings.findById(req.user.cmid)
-    .then((user) => {
+    .then((resp) => {
+      user = resp;
+      return Clients.findManyByAttribute({cm: user.cmid});
+    }).then((clients) => {
+      clients.forEach((client) => {
+        if (client.allow_automated_notifications) {
+          clientNotifications.on += 1;
+        } else {
+          clientNotifications.off += 1;
+        }
+      });
+
       res.render('settings', {
         user: user,
+        clientNotifications: clientNotifications,
       });
     }).catch(res.error500);
   },

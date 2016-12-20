@@ -83,12 +83,19 @@
       </div>
 
       <div class="formInput">
+      <small>
+        <strong><%=clientNotifications.on-%></strong> <%if (clientNotifications.on == 1) {%>client<%} else {%>clients<%}%> receiving notifications<br>
+        <strong><%=clientNotifications.off-%></strong> <%if (clientNotifications.off == 1) {%>client<%} else {%>clients<%}%> <strong>not</strong> receiving notifications
+        </small>
+      </div>
+      <br>
+      <div class="formInput">
         <input type="radio" value="all" name="toggleAutoNotify">
-        All clients on
+        <strong>All</strong> clients receive automatic notifications.
       </div>
       <div class="formInput">
         <input type="radio" value="none" name="toggleAutoNotify">
-        All clients off
+        <strong>No</strong> clients receive automatic notifications.
       </div>
       <div class="formInput">
         <input type="radio" value="ignore" name="toggleAutoNotify" checked>
