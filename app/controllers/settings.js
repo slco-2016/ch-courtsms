@@ -12,6 +12,10 @@ module.exports = {
       user = resp;
       return Clients.findManyByAttribute({cm: user.cmid, });
     }).then((clients) => {
+      console.log('got these clients', clients.map(function(ea) {
+        return ea.first + ' ' + ea.last;
+      }));
+      console.log('this is get stage length', clients.length);
       clients.forEach((client) => {
         if (client.allow_automated_notifications) {
           clientNotifications.on += 1;
@@ -19,6 +23,7 @@ module.exports = {
           clientNotifications.off += 1;
         }
       });
+      console.log('breakdown', clientNotifications);
 
       res.render('settings', {
         user: user,
@@ -54,20 +59,22 @@ module.exports = {
       const toggleAutoNotify = req.body.toggleAutoNotify;
       if (toggleAutoNotify == 'all' || toggleAutoNotify == 'none') {
         const notify = toggleAutoNotify == 'all' ? true : false;
-        Clients.findManyByAttribute({cm: req.user.cmid, })
-        .then((clients) => {
-          return clients;
+
+        return Clients.findManyByAttribute({cm: req.user.cmid, })
+        .then(function (clients) {
+          return new Promise((fulfill, reject) => {
+            fulfill(clients);
+          });
         }).map((client) => {
           return client.update({allow_automated_notifications: notify, });
         }).catch(function (err) {
-          console.log(err);
           return err;
         });
 
       } else {
         return null;
       }
-    }).then(() => {
+    }).then((resp) => {
       req.flash('success', 'Updated your settings.');
       res.redirect('/org/users');
     }).catch(res.error500);

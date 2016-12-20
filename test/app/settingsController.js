@@ -12,7 +12,8 @@ const primary = supertest.agent(APP);
 const client = {
   email: 'primary@test.com',
 };
-const numberOfClientToCreate = 4;
+let numberOfPreexistingClients = 0;
+let numberOfClientToCreate = 4;
 
 describe('Settings controller view', function() {
 
@@ -26,23 +27,34 @@ describe('Settings controller view', function() {
 
         // We need to add some clients here
         // so that this user has clients to update
-        Users.findOneByAttribute({email: client.email})
-        .then((user) => {
+        let user;
+
+        Users.findOneByAttribute({email: client.email, })
+        .then((resp) => {
+          user = resp;
+
+          return Clients.findManyByAttribute('cm', user.cmid);
+        }).then((clients) => {
+          numberOfPreexistingClients = clients.length;
+
           const cmid = user.cmid;
           const allNewClients = Array.from(Array(numberOfClientToCreate).keys()).map((ea) => {
+            ea = Number(ea) + 1;
             return {
               userId: cmid,
               first: `foo_${ea}`,
               middle: `ka_${ea}`,
               last: `bar_${ea}`,
               first: `foo_${ea}`,
-              dob: `0${ea + 1}/12/1990`,
+              dob: `0${ea}/12/1990`,
               otn: ea*100,
               so: ea*140,
             };
           });
 
-          return allNewClients;
+          return new Promise((fulfill, reject) => {
+            fulfill(allNewClients);
+          });
         }).map((client) => {
           return Clients.create(client.userId, 
                                 client.first, 
@@ -51,7 +63,7 @@ describe('Settings controller view', function() {
                                 client.dob, 
                                 client.otn, 
                                 client.so);
-        }).then(() => {
+        }).then((clients) => {
           done();
         }).catch(done);
       });
@@ -64,9 +76,17 @@ describe('Settings controller view', function() {
       const email = new RegExp(client.email);
       res.text.should.match(email);
       res.text.should.match(/<input type="radio" value="ignore" name="toggleAutoNotify" checked>/);
+
       // there are 2 clients created by default in the seed table (see seeds.js)
-      res.text.should.match(RegExp(`<strong>${numberOfClientToCreate + 2}<\/strong> clients receiving notifications<br>`));
-      res.text.should.match(/<strong>0<\/strong> clients <strong>not<\/strong> receiving notifications/);
+      Users.findOneByAttribute({email: client.email, })
+      .then((user) => {
+        return Clients.findManyByAttribute('cm', user.cmid);
+      }).then((clients) => {
+        const totalCount = numberOfClientToCreate + numberOfPreexistingClients;
+        totalCount.should.be.exactly(clients.length);
+        res.text.should.match(RegExp(`<strong>${totalCount}<\/strong> clients receiving notifications<br>`));
+        res.text.should.match(/<strong>0<\/strong> clients <strong>not<\/strong> receiving notifications/);
+      }).catch(done);
       done();
     });
   });
@@ -101,6 +121,7 @@ describe('Settings controller view', function() {
           let clientNotifications = {on: 0, off: 0, };
           clients.forEach((client) => {
             if (client.allow_automated_notifications) {
+              console.log('Client caught: ');
               clientNotifications.on += 1;
             } else {
               clientNotifications.off += 1;
@@ -150,7 +171,7 @@ describe('Settings controller view', function() {
             }
           });
 
-          clientNotifications.on.should.be.exactly(6);
+          clientNotifications.off.should.be.exactly(0);
           done(err);
         }).catch(done);
       });
