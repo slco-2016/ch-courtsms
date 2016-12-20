@@ -7,6 +7,8 @@ const Organizations = require('./models/organizations');
 const PhoneNumbers = require('./models/phoneNumbers');
 const Users = require('./models/users');
 
+const libUser = require('./lib/users');
+
 function _capitalize (word) {
   return word.split(' ').map(function (name) {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -332,7 +334,7 @@ module.exports = {
 
   setUserAndLevel(req, res, next) {
     res.locals.level = 'user';
-    if (req.url.indexOf('/org') == 0) {
+    if (req.url.indexOf('/org') === 0) {
       res.locals.level = 'org';
     }
 
@@ -342,7 +344,7 @@ module.exports = {
 
   getUserPerformance(req, res, next) {
     if (req.user) {
-      Users.getPerformanceComparedToTopInOrganizationThisWeek(req.user.cmid)
+      libUser.getPerformanceComparedToTopInOrganizationThisWeek(req.user.cmid)
       .then((performance) => {
         if (res.locals.user) {
           res.locals.user.performanceThisWeek = performance;

@@ -42,56 +42,15 @@ class Users extends BaseModel {
   }
 
   static getClients() {
+    // Returns a list of clients associated with this user.
+    // TODO: this is only used in a single test, could possibly
+    //       be replaced with findAllByUsers() in the clients model.
     return new Promise((fulfill, reject) => {
       db('clients')
         .where('cm', this.cmid)
       .then((users) => {
         const Clients = require('../models/clients');
         this.constructor._getMultiResponse(users, fulfill, Clients);
-      });
-    });
-  }
-
-  static getPerformanceComparedToTopInOrganizationThisWeek (userId) {
-    return new Promise((fulfill, reject) => {
-      let user;
-      Users.findById(userId)
-      .then((res) => {
-        user = res;
-
-        return db('msgs')
-          .select(db.raw('COUNT(msgid) AS count, cms.cmid'))
-          .leftJoin('convos', 'convos.convid', 'msgs.convo')
-          .leftJoin('cms', 'cms.cmid', 'convos.cm')
-          .whereRaw('msgs.created > date_trunc(\'week\', CURRENT_DATE)')
-          .and.where('org', user.org)
-          .groupBy('cms.cmid')
-          .orderBy('count', 'desc');
-      }).then((results) => {
-        const cmid = user.cmid;
-        let topThisWeek = 0;
-        let usersCount = 0;
-        results.forEach((ea) => {
-          ea.count = Number(ea.count);
-          if (isNaN(ea.count)) {
-            ea.count = 0;
-          }
-
-          if (ea.count > topThisWeek) {
-            topThisWeek = ea.count;
-          }
-          if (cmid == ea.cmid) {
-            usersCount = ea.count;
-          }
-        });
-        if (topThisWeek == 0) {
-          fulfill(0);
-        } else if (usersCount == 0) {
-          fulfill(0);
-        } else {
-          let percent = Math.round(usersCount * 100 / topThisWeek);
-          fulfill(Math.min(100, percent));
-        }
       });
     });
   }
