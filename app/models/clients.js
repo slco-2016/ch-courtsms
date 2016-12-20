@@ -133,7 +133,7 @@ class Clients extends BaseModel {
     if (typeof status == 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
-      Users.findAllByDepartment(departmentId)
+      Users.findManyByAttribute('department_id', departmentId)
       .then((users) => {
         const userIds = users.map(function (u) { return u.cmid; });
         return Clients.findByUsers(userIds, status);
