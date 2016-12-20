@@ -14,20 +14,6 @@ const client = {
 };
 const numberOfClientToCreate = 4;
 
-let reqBody = {
-  cmid: null,
-  first:
-  req.body.first, 
-  req.body.middle, 
-  req.body.last, 
-  req.body.email,
-  alertFrequency,
-  isAway,
-  awayMessage,
-  alertBeep,
-  automatedNotificationsAllowed
-};
-
 describe('Settings controller view', function() {
 
   before(function(done) {
@@ -86,7 +72,7 @@ describe('Settings controller view', function() {
   });
 
   it('should be able to toggle all client notifications off', function(done) {
-    Users.findOneByAttribute({email: client.email})
+    Users.findOneByAttribute({email: client.email, })
     .then((user) => {
       const reqBody = {
         cmid: user.cmid,
@@ -102,22 +88,73 @@ describe('Settings controller view', function() {
       };
       primary.post('/settings')
         .send(reqBody)
-        .expect(200)
+        .expect(302)
       .end(function(err, res) {
-        done(err);
+
+        // Now let's query for that same user again
+        // but this time make sure that the toggle value 
+        // reflects the change that was POSTed
+        Users.findOneByAttribute({email: client.email, })
+        .then((user) => {
+          return Clients.findManyByAttribute({cm: user.cmid, });
+        }).then((clients) => {
+          let clientNotifications = {on: 0, off: 0, };
+          clients.forEach((client) => {
+            if (client.allow_automated_notifications) {
+              clientNotifications.on += 1;
+            } else {
+              clientNotifications.off += 1;
+            }
+          });
+
+          clientNotifications.on.should.be.exactly(0);
+          done(err);
+        }).catch(done);
       });
-    });
+    }).catch(done);
+  });
 
-  }); 
+  it('should be able to toggle all client notifications on', function(done) {
+    Users.findOneByAttribute({email: client.email, })
+    .then((user) => {
+      const reqBody = {
+        cmid: user.cmid,
+        first: user.first,
+        middle: user.middle,
+        last: user.last,
+        email: user.email,
+        alertFrequency: user.email_alert_frequency,
+        isAway: user.is_away,
+        awayMessage: user.away_message,
+        alertBeep: user.alert_beep,
+        toggleAutoNotify: 'all',
+      };
+      primary.post('/settings')
+        .send(reqBody)
+        .expect(302)
+      .end(function(err, res) {
 
-  // it('should be able to submit edits on own settings', function(done) {
-  //   primary.get('/settings')
-  //     .expect(200)
-  //   .end(function(err, res) {
-  //     const email = new RegExp(client.email);
-  //     res.text.should.match(email);
-  //     done();
-  //   });
-  // });
+        // Now let's query for that same user again
+        // but this time make sure that the toggle value 
+        // reflects the change that was POSTed
+        Users.findOneByAttribute({email: client.email, })
+        .then((user) => {
+          return Clients.findManyByAttribute({cm: user.cmid, });
+        }).then((clients) => {
+          let clientNotifications = {on: 0, off: 0, };
+          clients.forEach((client) => {
+            if (client.allow_automated_notifications) {
+              clientNotifications.on += 1;
+            } else {
+              clientNotifications.off += 1;
+            }
+          });
+
+          clientNotifications.on.should.be.exactly(6);
+          done(err);
+        }).catch(done);
+      });
+    }).catch(done);
+  });
 
 });

@@ -108,6 +108,10 @@ $width_row10: 5%;
     color: $white;
     font-weight: 700;
     background-color: $grey !important;
+
+    .leftIconMargin {
+      color: $white !important;
+    }
   }
 
   .column {
@@ -157,7 +161,7 @@ $width_row10: 5%;
     }
 
     .leftIconMargin {
-      color: #739b73;
+      color: $lightblue;
       margin-left: 30px;
     }
 

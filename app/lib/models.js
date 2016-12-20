@@ -41,7 +41,7 @@ class BaseModel {
     const out = {};
     const columnNames = this._info.columns;
     for (let i=0; i < columnNames.length; i++) {
-      if (obj[columnNames[i]]) {
+      if (obj.hasOwnProperty(columnNames[i])) {
         out[columnNames[i]] = obj[columnNames[i]];        
       }
     }

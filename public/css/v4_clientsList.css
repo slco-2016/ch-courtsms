@@ -55,6 +55,8 @@
     color: #FFF;
     font-weight: 700;
     background-color: #898989 !important; }
+    .clientRow:hover .leftIconMargin {
+      color: #FFF !important; }
   .clientRow .column {
     float: left;
     text-align: left; }
@@ -89,7 +91,7 @@
       margin-right: auto;
       cursor: default; }
     .clientRow .column .leftIconMargin {
-      color: #739b73;
+      color: #4A90E2;
       margin-left: 30px; }
     .clientRow .column .fa.highlight {
       padding: 5px;

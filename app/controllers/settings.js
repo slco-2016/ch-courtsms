@@ -5,12 +5,12 @@ module.exports = {
   
   index(req, res) {
     let user;
-    let clientNotifications = {on: 0, off: 0}
+    let clientNotifications = {on: 0, off: 0, };
 
     Settings.findById(req.user.cmid)
     .then((resp) => {
       user = resp;
-      return Clients.findManyByAttribute({cm: user.cmid});
+      return Clients.findManyByAttribute({cm: user.cmid, });
     }).then((clients) => {
       clients.forEach((client) => {
         if (client.allow_automated_notifications) {
@@ -31,7 +31,6 @@ module.exports = {
     const awayMessage = req.body.awayMessage;
     const alertBeep = req.body.alertBeep ? true : false;
     const isAway = req.body.isAway ? true : false;
-    const automatedNotificationsAllowed = req.body.automatedNotificationsAllowed ? true : false;
     
     let alertFrequency = req.body.alertFrequency;
     if (alertFrequency == 'null') {
@@ -49,9 +48,26 @@ module.exports = {
             alertFrequency,
             isAway,
             awayMessage,
-            alertBeep,
-            automatedNotificationsAllowed
+            alertBeep
     ).then(() => {
+      // map through all the clients and update their statuses if that is asked of the tool
+      const toggleAutoNotify = req.body.toggleAutoNotify;
+      if (toggleAutoNotify == 'all' || toggleAutoNotify == 'none') {
+        const notify = toggleAutoNotify == 'all' ? true : false;
+        Clients.findManyByAttribute({cm: req.user.cmid, })
+        .then((clients) => {
+          return clients;
+        }).map((client) => {
+          return client.update({allow_automated_notifications: notify, });
+        }).catch(function (err) {
+          console.log(err);
+          return err;
+        });
+
+      } else {
+        return null;
+      }
+    }).then(() => {
       req.flash('success', 'Updated your settings.');
       res.redirect('/org/users');
     }).catch(res.error500);
