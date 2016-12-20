@@ -12,6 +12,7 @@ const primary = supertest.agent(APP);
 const client = {
   email: 'primary@test.com',
 };
+const superUniqueIdentifier = String(Math.random().toString(36).substring(7));
 let numberOfPreexistingClients = 0;
 let numberOfClientToCreate = 4;
 
@@ -42,7 +43,7 @@ describe('Settings controller view', function() {
             ea = Number(ea) + 1;
             return {
               userId: cmid,
-              first: `foo_${ea}`,
+              first: `foo_${ea}_${superUniqueIdentifier}`,
               middle: `ka_${ea}`,
               last: `bar_${ea}`,
               first: `foo_${ea}`,
@@ -82,10 +83,25 @@ describe('Settings controller view', function() {
       .then((user) => {
         return Clients.findManyByAttribute('cm', user.cmid);
       }).then((clients) => {
-        const totalCount = numberOfClientToCreate + numberOfPreexistingClients;
-        totalCount.should.be.exactly(clients.length);
-        res.text.should.match(RegExp(`<strong>${totalCount}<\/strong> clients receiving notifications<br>`));
-        res.text.should.match(/<strong>0<\/strong> clients <strong>not<\/strong> receiving notifications/);
+
+        // we need to handle the fact that some of the seed/other test clients 
+        // might have been set to other than default so we need to acknowlede that
+        let clientNotifications = {on: 0, off: 0, };
+        clients.forEach((client) => {
+          // only check for the clients that we just created
+          // ignore clients that might have been created from 
+          // other tests that were run
+          if (client.allow_automated_notifications) {
+            clientNotifications.on += 1;
+          } else {
+            clientNotifications.off += 1;
+          }
+        });
+
+        console.log('clientNotifications', clientNotifications);
+        (clientNotifications.on + clientNotifications.off).should.be.exactly(clients.length);
+        res.text.should.match(RegExp(`<strong>${clientNotifications.on}</strong> clients receiving notifications<br>`));
+        res.text.should.match(RegExp(`<strong>${clientNotifications.off}</strong> client <strong>not</strong> receiving notifications`));
       }).catch(done);
       done();
     });
@@ -120,11 +136,18 @@ describe('Settings controller view', function() {
         }).then((clients) => {
           let clientNotifications = {on: 0, off: 0, };
           clients.forEach((client) => {
-            if (client.allow_automated_notifications) {
-              console.log('Client caught: ');
-              clientNotifications.on += 1;
+            // only check for the clients that we just created
+            // ignore clients that might have been created from 
+            // other tests that were run
+            if (client.first.indexOf(superUniqueIdentifier) > -1) {
+              if (client.allow_automated_notifications) {
+                clientNotifications.on += 1;
+              } else {
+                clientNotifications.off += 1;
+              }
             } else {
-              clientNotifications.off += 1;
+              // this client is from some other describe() test
+              // so let us just ignore it
             }
           });
 

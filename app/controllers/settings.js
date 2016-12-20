@@ -12,10 +12,6 @@ module.exports = {
       user = resp;
       return Clients.findManyByAttribute({cm: user.cmid, });
     }).then((clients) => {
-      console.log('got these clients', clients.map(function(ea) {
-        return ea.first + ' ' + ea.last;
-      }));
-      console.log('this is get stage length', clients.length);
       clients.forEach((client) => {
         if (client.allow_automated_notifications) {
           clientNotifications.on += 1;
@@ -23,7 +19,6 @@ module.exports = {
           clientNotifications.off += 1;
         }
       });
-      console.log('breakdown', clientNotifications);
 
       res.render('settings', {
         user: user,
