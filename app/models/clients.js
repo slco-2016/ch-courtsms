@@ -212,30 +212,18 @@ class Clients extends BaseModel {
     });
   }
 
-  static findByManager (userIDs, active) {
-    // findByManager deprecated, use findByUsers
-    console.log('Warning! Clients method findByManager() deprecated, use findByUsers()');
-    if (!Array.isArray(userIDs)) userIDs = [userIDs,];
-    return new Promise((fulfill, reject) => {
-      Clients.findAllByUsers(userIDs, active)
-      .then((clients) => {
-        return fulfill(clients);
-      }).catch(reject);
-    });
-  }
-
   static findByOrg (orgId, status) {
     if (typeof status == 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
-      Users.findByOrg(orgId)
-      .then((users) => {
-        const userIds = users.map(function (u) { return u.cmid; });
-        return Clients.findByUsers(userIds, status);
-      }).then((c) => {
-        return fulfill(c);
-      }).catch(reject);
-    });
+      db('clients')
+        .select('clients.*')
+        .leftJoin('cms', 'cms.cmid', 'clients.cm')
+        .where('cms.org', orgId)
+      .then((clients) => {
+          return this._getMultiResponse(clients, fulfill);
+        }).catch(reject);
+      });
   }
 
   static findBySameName (client) {

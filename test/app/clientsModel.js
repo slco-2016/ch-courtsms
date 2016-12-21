@@ -6,7 +6,6 @@ const CommConns = require('../../app/models/commConns');
 require('colors');
 const should = require('should');
 
-
 let phoneId;
 let phone = '12345678906';
 describe('Clients checks', function() {
@@ -85,5 +84,14 @@ describe('Clients checks', function() {
       done();
     }).catch(done);
   });
-  
+
+  it('Should be able to find clients by organization ID for org 2', function(done) {
+    // only test org 2, which has 1 client, and isn't messed with by other tests
+    Clients.findByOrg(2, true)
+    .then((clients) => {
+      clients.length.should.be.exactly(1);
+      done();
+    }).catch(done);
+  });
+
 });
