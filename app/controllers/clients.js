@@ -465,14 +465,14 @@ module.exports = {
         client, 
         messages,
         viewAll = false;
-
-    Users.findByClientId(req.params.client)
+    
+    Clients.findById(req.params.client)
     .then((resp) => {
-      user = resp;
-
-      return Clients.findById(req.params.client);
-    }).then((resp) => {
       client = resp;
+
+      return Users.findById(client.cm);
+    }).then((resp) => {
+      user = resp;
 
       // check if user has right to just view their conversations with client or all
       // TODO: revisit the permissions logic here
