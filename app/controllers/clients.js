@@ -127,15 +127,13 @@ module.exports = {
     const userClass = req.user.class;
     const level = res.locals.level;
     const org = req.user.org;
+    // don't render the 'Attach to case manager' field if this is a case manager
     if (level === 'user') {
       res.render('clients/create', { users: null, });
     } else {
-      Users.findByOrg(org)
+      Users.where({org: org, active: true})
       .then((users) => {
-        const department = req.user.department;
-        if (department && userClass == 'primary') {
-          users = users.filter((user) => { return user.department == department; });
-        }
+        // if we want to filter by department, we could do it here
         res.render('clients/create', { users: users, });
       }).catch(res.error500);
     }
