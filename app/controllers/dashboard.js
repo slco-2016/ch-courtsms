@@ -3,7 +3,7 @@ const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
 
-// assitance libraries
+// assistance libraries
 const libUser = require('../lib/users');
 
 const moment = require('moment');

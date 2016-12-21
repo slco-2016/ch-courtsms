@@ -7,7 +7,7 @@ const Organizations = require('../models/organizations');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
-// assitance libraries
+// assistance libraries
 const libUser = require('../lib/users');
 
 const moment = require('moment');
