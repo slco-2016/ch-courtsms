@@ -82,6 +82,29 @@ describe('Clients supervisor controller view', function() {
     }).catch(done);
   });
 
+  it('password has should not be visible per issue #311 when the resulting users are logged for typeahead.js', function (done) {
+    Users.findOneByAttribute('email', 'primary@test.com')
+    .then((user) => {
+      // let's see what clients that user has
+      return Clients.findManyByAttribute('cm', user.cmid);
+    }).then((clients) => {
+      // following same query structure as prior test
+      clients.length.should.be.greaterThan(0);
+      const oneClient = clients[0];
+      supervisor.get(`/org/clients/${oneClient.clid}/transfer?allDepartments=true`)
+        .expect(200)
+        .end(function(err, res) {
+          // this is part of the hash we use on all the accounts in the seed
+          // it is the result of the password '123' having been entered once prior
+          // we want to make sure it is not being injected into the json
+          res.text.should.not.match(RegExp('"pass":"$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti"'));
+          // the pass key value should simply not be returned, ever
+          res.text.should.not.match(RegExp('"pass":'));
+          done(err);
+        });
+    }).catch(done);
+  });
+
 });
 
 describe('Clients primary controller view', function() {

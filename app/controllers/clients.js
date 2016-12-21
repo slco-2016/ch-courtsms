@@ -409,7 +409,7 @@ module.exports = {
     }
 
     const usersThatArePresentlyActive = true;
-    libUser.findByOrgWithDepartmentName(req.user.org, usersThatArePresentlyActive)
+    libUser.findByOrgWithDepartmentNameAndNoInfoTag(req.user.org, usersThatArePresentlyActive)
     .then((users) => {
       
       // Limit only to same department transfers

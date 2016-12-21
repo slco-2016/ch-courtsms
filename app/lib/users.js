@@ -53,7 +53,7 @@ module.exports = {
     });
   },
 
-  findByOrgWithDepartmentName: function (orgId, activeStatus) {
+  findByOrgWithDepartmentNameAndNoInfoTag: function (orgId, activeStatus) {
     return new Promise((fulfill, reject) => {
       let methodWithJoin = db('cms')
         .select('cms.*', 'departments.name as department_name')
@@ -68,7 +68,12 @@ module.exports = {
       // continue with the query and get all users
       methodWithJoin.orderBy('cms.last', 'asc')
       .then((users) => {
-        fulfill(users);
+
+        fulfill(users.map((object) => {
+          let newUser = new Users(object);
+          delete newUser._info;
+          return newUser;
+        }));
       }).catch(reject);
     });
   },

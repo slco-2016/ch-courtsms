@@ -338,7 +338,14 @@ module.exports = {
       res.locals.level = 'org';
     }
 
-    res.locals.user = req.user;
+    // we need to clean the user that is being created
+    // we do not want the password has to be visible, for example
+    let toBeProcessed = req.user;
+    if (toBeProcessed) {
+      toBeProcessed = new Users(toBeProcessed);
+      delete toBeProcessed._info;
+    }
+    res.locals.user = toBeProcessed;
     next();
   },
 
