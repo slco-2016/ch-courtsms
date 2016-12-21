@@ -14,9 +14,10 @@
 
     <title>
       ClientComm
+      <!-- TODO: client should be set to null if undefined -->
       <% if (typeof client !== "undefined") { %>
         - Viewing <%= `${client.first} ${client.last}` %>
-      <% } else if (typeof user !== "undefined") { %>
+      <% } else if (user) { %>
         - <%= `${user.first} ${user.last}` %>
       <% } %>
     </title>

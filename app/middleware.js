@@ -340,10 +340,9 @@ module.exports = {
 
     // we need to clean the user that is being created
     // we do not want the password has to be visible, for example
-    let toBeProcessed = req.user;
+    let toBeProcessed = req.user || null;
     if (toBeProcessed) {
-      toBeProcessed = new Users(toBeProcessed);
-      delete toBeProcessed._info;
+      toBeProcessed = new Users(toBeProcessed).getPublicObject();
     }
     res.locals.user = toBeProcessed;
     next();

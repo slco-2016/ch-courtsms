@@ -64,6 +64,12 @@ class Users extends BaseModel {
     return `${this.getFullName()} <${rawEmail}>`;
   }
 
+  getPublicObject() {
+    let toBeProcessed = new Users(this);
+    delete toBeProcessed._info;
+    return toBeProcessed;
+  }
+
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
       // joanne@slco.org => joanne.slco@clientcomm.org

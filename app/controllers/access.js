@@ -14,7 +14,6 @@ module.exports = {
       if ([ 'owner', 
             'supervisor', 
             'support', 
-            'developer',
           ].indexOf(req.user.class) > -1) {
         res.redirect('/org');
       } else {

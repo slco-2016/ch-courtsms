@@ -54,6 +54,8 @@ module.exports = {
   },
 
   findByOrgWithDepartmentNameAndNoInfoTag: function (orgId, activeStatus) {
+    // this is most often used with typeahead.js so we query
+    // and place the results in the client window for the js to parse
     return new Promise((fulfill, reject) => {
       let methodWithJoin = db('cms')
         .select('cms.*', 'departments.name as department_name')
@@ -70,9 +72,7 @@ module.exports = {
       .then((users) => {
 
         fulfill(users.map((object) => {
-          let newUser = new Users(object);
-          delete newUser._info;
-          return newUser;
+          return new Users(object).getPublicObject();
         }));
       }).catch(reject);
     });

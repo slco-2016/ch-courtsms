@@ -96,11 +96,11 @@ var checkingForNewMessages = setInterval(function () {
           clearInterval(checkingForNewMessages);
 
           // make a dinging noise
-          if (typeof SESSION_USER !== 'undefined' && SESSION_USER.alert_beep) {
+          if (SESSION_USER && SESSION_USER.alert_beep) {
             try {
               new Audio('/static/sounds/alert.mp3').play()
             } catch (e) {
-              console.log(error); 
+              console.log('Error playing the beep noise on a new alert: ', error); 
             }
           }
         }
