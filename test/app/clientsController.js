@@ -36,8 +36,8 @@ describe('Clients supervisor controller view', function() {
     supervisor.get('/org/clients/create')
       .expect(200)
       .end(function(err, res) {
-        res.text.should.include('var users =');
-        res.text.should.include('primary@test.com');
+        res.text.should.match(RegExp('var users ='));
+        res.text.should.match(RegExp('primary@test.com'));
         done(err);
       });
   });
