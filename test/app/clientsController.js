@@ -5,6 +5,7 @@ const should = require('should');
 const APP = require('../../app/app');
 
 const Clients = require('../../app/models/clients');
+const Users = require('../../app/models/users');
 
 const primary = supertest.agent(APP);
 const supervisor = supertest.agent(APP);
@@ -30,7 +31,7 @@ describe('Clients supervisor controller view', function() {
       .then(() => {
         done();
       });
-    });
+  });
 
   it('should be able to view clients/create as supervisor', function(done) {
     supervisor.get('/org/clients/create')
@@ -40,6 +41,42 @@ describe('Clients supervisor controller view', function() {
         res.text.should.match(RegExp('primary@test.com'));
         done(err);
       });
+  });
+
+  it('supervisor user should be able to view transfer select page', function (done) {
+    Users.findOneByAttribute('email', 'primary@test.com')
+    .then((user) => {
+      // let's see what clients that user has
+      return Clients.findManyByAttribute('cm', user.cmid);
+    }).then((clients) => {
+      // we need at least one client for this to work
+      // there should be at least one from the seed data
+      // still assert with should here to be safe
+      clients.length.should.be.greaterThan(0);
+      const oneClient = clients[0];
+      supervisor.get(`/org/clients/${oneClient.clid}/transfer`)
+        .expect(200)
+        .end(function(err, res) {
+          done(err);
+        });
+    }).catch(done);
+  });
+
+  it('supervisor should be able to see all department clients in transfer select', function (done) {
+    Users.findOneByAttribute('email', 'primary@test.com')
+    .then((user) => {
+      // let's see what clients that user has
+      return Clients.findManyByAttribute('cm', user.cmid);
+    }).then((clients) => {
+      // following same query structure as prior test
+      clients.length.should.be.greaterThan(0);
+      const oneClient = clients[0];
+      supervisor.get(`/org/clients/${oneClient.clid}/transfer?allDepartments=true`)
+        .expect(200)
+        .end(function(err, res) {
+          done(err);
+        });
+    }).catch(done);
   });
 
 });
