@@ -47,7 +47,7 @@ describe('Clients checks', function() {
     .then((clients) => {
       clients.length.should.be.greaterThan(0);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('with find by many attr multi query, array even if no results, just length 0', function(done) {
@@ -57,7 +57,7 @@ describe('Clients checks', function() {
     .then((clients) => {
       clients.length.should.be.exactly(0);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('Should be able to find clients by the commid created', function(done) {
@@ -79,11 +79,11 @@ describe('Clients checks', function() {
   it('Should be able to update client from BaseModel method', function(done) {
     Clients.findById(1)
     .then((client) => {
-      return client.update({first: 'joe'})
+      return client.update({first: 'joe'});
     }).then((client) => {
-      should.equal(client.first, 'joe')
-      done()
-    }).catch(done)
-  })
+      should.equal(client.first, 'joe');
+      done();
+    }).catch(done);
+  });
   
-})
+});
