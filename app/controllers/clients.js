@@ -7,6 +7,9 @@ const Organizations = require('../models/organizations');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
+// assitance libraries
+const libUser = require('../lib/users');
+
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
@@ -405,8 +408,10 @@ module.exports = {
       allDep = true;
     }
 
-    Users.findByOrg(req.user.org)
+    const usersThatArePresentlyActive = true;
+    libUser.findByOrgWithDepartmentName(req.user.org, usersThatArePresentlyActive)
     .then((users) => {
+      
       // Limit only to same department transfers
       if (!allDep) {
         users = users.filter((ea) => {
