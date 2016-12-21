@@ -7,6 +7,7 @@ const APP = require('../../app/app');
 const Clients = require('../../app/models/clients');
 
 const primary = supertest.agent(APP);
+const supervisor = supertest.agent(APP);
 
 // a client to be created and referenced throughout tests
 const uniqueID1 = '123JKL98237iuh23bkj';
@@ -19,7 +20,31 @@ let reqBody = {
   uniqueID2: '456ABC',
 };
 
-describe('Clients controller view', function() {
+describe('Clients supervisor controller view', function() {
+  before(function(done) {
+    supervisor.post('/login')
+      .send({email:'owner@test.com', })
+      .send({pass:'123', })
+      .expect(302)
+      .expect('Location', '/')
+      .then(() => {
+        done();
+      });
+    });
+
+  it('should be able to view clients/create as supervisor', function(done) {
+    supervisor.get('/org/clients/create')
+      .expect(200)
+      .end(function(err, res) {
+        res.text.should.include('var users =');
+        res.text.should.include('primary@test.com');
+        done(err);
+      });
+  });
+
+});
+
+describe('Clients primary controller view', function() {
 
   before(function(done) {
     primary.post('/login')
@@ -29,6 +54,22 @@ describe('Clients controller view', function() {
       .expect('Location', '/')
       .then(() => {
         done();
+      });
+  });
+
+  it('should be able to view clients/create as case manager', function(done) {
+    primary.get('/clients/create')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
+      });
+  });
+
+  it('should be able to view clients/create', function(done) {
+    primary.get('/clients/create')
+      .expect(200)
+      .end(function(err, res) {
+        done(err);
       });
   });
 
