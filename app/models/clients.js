@@ -129,16 +129,16 @@ class Clients extends BaseModel {
     });
   }
 
-  static findByDepartment (departmentId, status) {
+  static findManyByDepartmentAndStatus (departmentId, status) {
     if (typeof status == 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
       Users.findManyByAttribute('department_id', departmentId)
       .then((users) => {
-        const userIds = users.map(function (u) { return u.cmid; });
+        const userIds = users.map((user) => { return user.cmid; });
         return Clients.findByUsers(userIds, status);
-      }).then((c) => {
-        return fulfill(c);
+      }).then((clients) => {
+        this._getMultiResponse(clients, fulfill);
       }).catch(reject);
     });
   }
@@ -265,6 +265,10 @@ class Clients extends BaseModel {
     });
   }
 
+  // TODO maybe rename to findManyByUsersAndStatus ... or pull into controller,
+  //      rename something appropriate to its actual function (providing data
+  //      for the user list) and create a more generic function for just getting
+  //      user records by id and status.
   static findByUsers (userIDs, activeStatus) {
     if (typeof activeStatus == 'undefined') activeStatus = true;
     if (!Array.isArray(userIDs)) userIDs = [userIDs,];

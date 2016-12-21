@@ -86,21 +86,21 @@ module.exports = {
   
   index(req, res) {
     const status  = req.query.status == 'archived' || req.query.status == 'closed' ? false : true;
-    let department  = req.user.department || req.query.department;
+    let departmentID  = req.user.department || req.query.department;
     const user        = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
 
     // Controls against a case where the owner would accidentally have a department
     if (  (req.user.class == 'owner' || req.user.class == 'support') && 
           !req.query.department) {
-      department = null;
+      departmentID = null;
     }
 
     let method;
     if (res.locals.level == 'user') {
       method = Clients.findByUsers(user, status);
-    } else if (department) {
-      method = Clients.findByDepartment(department, status);
+    } else if (departmentID) {
+      method = Clients.findManyByDepartmentAndStatus(departmentID, status);
     } else {
       method = Clients.findByOrg(req.user.org, status);
     }
