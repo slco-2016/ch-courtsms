@@ -1,7 +1,9 @@
 const Departments = require('../models/departments');
 const Users = require('../models/users');
 
-const emailer = require('../lib/emailer');
+// assistance libraries
+const libEmailer = require('../lib/emailer');
+const libUser = require('../lib/users');
 
 module.exports = {
 
@@ -15,9 +17,8 @@ module.exports = {
       department = null;
     }
 
-    Users.findByOrg(req.user.org, status)
+    libUser.findByOrgWithDepartmentNameAndNoInfoTag(req.user.org, status)
     .then((users) => {
-
       // Limit by department if supervisor, or specified in query
       if (department) {
         users = users.filter((user) => {
@@ -67,7 +68,7 @@ module.exports = {
           req.body.position, 
           req.body.className
         ).then((generatedPass) => {
-          emailer.activationAlert(req.body.email, generatedPass);
+          libEmailer.activationAlert(req.body.email, generatedPass);
           req.flash('success', 'Created new user, sent invite email.');
           res.redirect('/org/users');
         }).catch(res.error500);

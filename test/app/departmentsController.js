@@ -11,7 +11,7 @@ const owner = supertest.agent(APP);
 
 const seededDeptName = 'Pretrial LKJKLJUnique';
 
-describe('Dashboard View', function() {
+describe('Departments View', function() {
 
   // login as the owner account
   before(function(done) {

@@ -53,6 +53,7 @@ class Alerts extends BaseModel {
   }
 
   static createForDepartment (departmentId, createdByUserId, subject, message) {
+    // create alerts for all users in a department.
     const active = true;
     return new Promise((fulfill, reject) => {
       Users.findByDepartment(departmentId, active)
@@ -76,9 +77,11 @@ class Alerts extends BaseModel {
   }
 
   static createForOrganization (organizationId, createdByUserId, subject, message) {
-    const active = true;
+    // create alerts for all users in an organization
+    // NOTE as of 12/21/2016 there's no user interface that triggers this function,
+    //      but you can send a POST request that triggers it.
     return new Promise((fulfill, reject) => {
-      Users.findByOrg(organizationId, active)
+      Users.where({org: organizationId, active: true, })
       .then((users) => {
         const insert = users.map((user) => {
           return {

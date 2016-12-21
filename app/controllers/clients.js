@@ -134,7 +134,7 @@ module.exports = {
     if (level === 'user') {
       res.render('clients/create', { users: null, });
     } else {
-      Users.where({org: org, active: true})
+      Users.where({org: org, active: true, })
       .then((users) => {
         // if we want to filter by department, we could do it here
         res.render('clients/create', { users: users, });
