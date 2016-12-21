@@ -3,6 +3,9 @@ const Departments = require('../models/departments');
 const Users = require('../models/users');
 const Messages = require('../models/messages');
 
+// assistance libraries
+const libUser = require('../lib/users');
+
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
@@ -33,6 +36,7 @@ module.exports = {
     Departments.findByOrg(req.user.org, true)
     .then((depts) => {
       departments = depts;
+      const usersThatArePresentlyActive = true;
 
       if (departmentFilter) {
         if (req.user.department) {
@@ -40,9 +44,12 @@ module.exports = {
             return department.department_id === departmentFilter;
           });
         }
-        return Users.findByDepartment(departmentFilter, true);
+        return Users.findByDepartment(departmentFilter, usersThatArePresentlyActive);
       } else {
-        return Users.findByOrg(req.user.org, true);
+
+        // we use the special library because we want the department 
+        // name with each resulting user
+        return libUser.findByOrgWithDepartmentNameAndNoInfoTag(req.user.org, usersThatArePresentlyActive);
       }
     }).then((resp) => {
       users = resp;

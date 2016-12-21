@@ -1,8 +1,8 @@
 const assert = require('assert');
 const request = require('request');
 
-const Alerts = require('../../app/models/alerts')
-const Users = require('../../app/models/users')
+const Alerts = require('../../app/models/alerts');
+const Users = require('../../app/models/users');
 
 require('colors');
 const should = require('should');
@@ -23,10 +23,10 @@ describe('Attachment checks', function() {
     }).catch(done);
   });
 
-  it('creating one for user should resulted in that being populated in the db', function(done) {
+  it('creating one for user should result in alert being populated in the db', function(done) {
     Alerts.createForUser(targetUserId, createdBy, subject, message)
     .then(() => {
-      return Alerts.findByUser(targetUserId)
+      return Alerts.findByUser(targetUserId);
     }).then((alerts) => {
       alerts.length.should.be.exactly(1);
       let alert = alerts[0];
@@ -45,9 +45,9 @@ describe('Attachment checks', function() {
     .then((alerts) => {
       // We assume one exists because we just made one in the preceding test
       selectedAlert = alerts[0];
-      return Alerts.closeOne(selectedAlert.alert_id)
+      return Alerts.closeOne(selectedAlert.alert_id);
     }).then(() => {
-      return Alerts.findByUser(targetUserId)
+      return Alerts.findByUser(targetUserId);
     }).then((alerts) => {
       alerts.forEach((alert) => {
         alert.alert_id.should.not.be.exactly(selectedAlert.alert_id);
@@ -56,17 +56,17 @@ describe('Attachment checks', function() {
     }).catch(done);
   });
 
-  it('should send to all active user in a department', function(done) {
+  it('should send to all active users in a department', function(done) {
     let departmentId = 1;
     let users;
     Alerts.createForDepartment(departmentId, createdBy, subject, message)
     .then(() => {
-      return Users.findByDepartment(departmentId, true)
+      return Users.findByDepartment(departmentId, true);
     }).then((resp) => {
       users = resp;
       return new Promise((fulfill, reject) => {
-        return fulfill(resp)
-      })
+        return fulfill(resp);
+      });
     }).map((user) => {
       return Alerts.findByUser(user.cmid);
     }).then((listOfAlertsList) => {
@@ -76,22 +76,22 @@ describe('Attachment checks', function() {
       });
 
       // We should have created and closed out all other alerts at this point
-      alerts.length.should.be.exactly(users.length)
+      alerts.length.should.be.exactly(users.length);
       done();
     }).catch(done);
   });
 
-  it('should send to all active user in an org', function(done) {
+  it('should send to all active users in an org', function(done) {
     let organizationId = 1;
     let users;
     Alerts.createForOrganization(organizationId, createdBy, subject, message)
     .then(() => {
-      return Users.findByOrg(organizationId, true)
+      return Users.where({org: organizationId, active: true, });
     }).then((resp) => {
       users = resp;
       return new Promise((fulfill, reject) => {
-        return fulfill(users)
-      })
+        return fulfill(users);
+      });
     }).map((user) => {
       return Alerts.findByUser(user.cmid);
     }).then((listOfAlertsList) => {
@@ -101,8 +101,8 @@ describe('Attachment checks', function() {
       });
       // Should be adding on the ones from the previous test, 
       // since we have not closed all out
-      alerts.length.should.be.greaterThan(users.length)
-      done()
+      alerts.length.should.be.greaterThan(users.length);
+      done();
     }).catch(done);
   });
 
@@ -110,4 +110,4 @@ describe('Attachment checks', function() {
 
   // });
 
-})
+});

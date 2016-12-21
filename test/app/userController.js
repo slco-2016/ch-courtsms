@@ -7,10 +7,10 @@ const APP = require('../../app/app')
 const Clients = require('../../app/models/clients');
 const Users = require('../../app/models/users');
 
-const owner = supertest.agent(APP)
-const supervisor = supertest.agent(APP)
-const primary = supertest.agent(APP)
-const anonymous = supertest.agent(APP)
+const owner = supertest.agent(APP);
+const supervisor = supertest.agent(APP);
+const primary = supertest.agent(APP);
+const anonymous = supertest.agent(APP);
 // request = session(APP)
 
 // http://mherman.org/blog/2016/04/28/test-driven-development-with-node/
@@ -81,7 +81,7 @@ describe('Basic http req tests', function() {
     owner.get('/org/departments')
       .expect(200)
       .end(function(err, res) {
-        res.text.should.match(/Pretrial LKJKLJUnique/)
+        res.text.should.match(/Pretrial LKJKLJUnique/);
         done(err);
       });
   });

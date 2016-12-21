@@ -52,6 +52,22 @@ exports.seed = function(knex, Promise) {
       return knex('notifications').insert(notificationSmartSend);
     }).then(() => {
       return knex('notifications').insert(notification);
+
+    // SECOND ORGANIZATION
+    }).then(() => {
+      return knex('orgs').insert(secondOrg);
+    }).then(() => {
+      return knex('phone_numbers').insert(secondPhoneNumber);
+    }).then(() => {
+      return knex('cms').insert(secondOwner);
+    }).then(() => {
+      return knex('departments').insert(secondDep);
+    }).then(() => {
+      return knex('cms').insert(secondSupervisor);
+    }).then(() => {
+      return knex('department_supervisors').insert(secondDepartmentSupervisorLink);
+    }).then(() => {
+      return knex('clients').insert(secondOrgClient);
     }).catch((err) => {
       throw err;
     });
@@ -61,13 +77,11 @@ exports.seed = function(knex, Promise) {
 };
 
 const phoneNumber = {
-  // phone_number_id: 1,
   organization: 1,
   value: 12435678910,
 };
 
 const org = {
-  // orgid: 1, 
   name: 'Example CJS',
   phone: 1,
   email: 'test@test.com',
@@ -78,7 +92,6 @@ const org = {
 };
 
 const owner = {
-  // cmid: 1,
   org: 1,
   first: 'Test Account',
   last: 'To Remove',
@@ -92,7 +105,6 @@ const owner = {
 };
 
 const dep = {
-  // department_id: 1,
   organization: 1,
   name: 'Pretrial LKJKLJUnique',
   phone_number: 1,
@@ -242,4 +254,73 @@ const notification = {
   closed: false,
   repeat_terminus: null,
   ovm_id: null,
+};
+
+// SECOND ORGANIZATION
+
+const secondOrg = {
+  name: 'Second CJS',
+  phone: 2,
+  email: 'secondcjs@example.com',
+  expiration: '2018-01-01 00:00:00+00',
+  allotment: 10,
+  created: '2016-03-23 07:05:49.381857+00',
+  tz: 'America/Denver',
+};
+
+const secondPhoneNumber = {
+  organization: 2,
+  value: 13425678910,
+};
+
+const secondOwner = {
+  org: 2,
+  first: 'Second Test Account',
+  last: 'To Remove',
+  email: 'secondOwner@example.com',
+  pass: '$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti', //123
+  position: 'Officer',
+  admin: false,
+  active: true,
+  superuser: false,
+  class: 'owner',
+};
+
+const secondDep = {
+  organization: 2,
+  name: 'Pretrial JEOFBAUnique',
+  phone_number: 2,
+  created_by: 2,
+  active: true,
+};
+
+const secondSupervisor = {
+  org: 2,
+  first: 'Supervisor Test Account',
+  last: 'To Remove',
+  email: 'secondsupervisor@example.com',
+  pass: '$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti', //123
+  position: 'Manager',
+  admin: false,
+  active: true,
+  superuser: false,
+  class: 'supervisor',
+  department: 2,
+};
+
+const secondDepartmentSupervisorLink = {
+  department: 2,
+  supervisor: 4,
+  active: true,
+};
+
+const secondOrgClient = {
+  cm: 4,
+  first: 'Delilah',
+  middle: 'X',
+  last: 'Williams',
+  dob: '1992-12-12',
+  so: 123,
+  otn: 456,
+  active: true,
 };

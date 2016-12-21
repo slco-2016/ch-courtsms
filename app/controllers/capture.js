@@ -74,10 +74,12 @@ module.exports = {
     .then((conversation) => {
       if (conversation) {
 
-        Users.findByOrg(orgId)
+        Users.where({org: orgId, active: true, })
         .then((users) => {
           if (departmentFilter) {
-            users = users.filter((u) => { return u.department == departmentFilter; });
+            users = users.filter((user) => {
+              return user.department == departmentFilter;
+            });
           }
 
           res.render('capture/attachUser', {

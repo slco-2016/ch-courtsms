@@ -84,21 +84,27 @@ module.exports = {
   supervisorsIndex(req, res) {
     let supervisors;
     DepartmentSupervisors.findByDepartmentIDs(req.params.department)
-    .then((s) => {
-      supervisors = s;
-      return Users.findByOrg(req.user.org);
-    }).then((users) => {
+    .then((resp) => {
+      supervisors = resp;
 
       // Limit options to only users already added to the department
-      // "Promote from within" concept
-      const members = users.filter(function (u) {
-        return Number(u.department) == Number(req.params.department);
+      // This is a "promote from within" concept
+      return Users.where({
+        org: req.user.org, 
+        department: Number(req.params.department),
+        active: true, 
+      });
+    }).then((users) => {
+
+      // Just sorting by last name here
+      const members = users.sort(function (a, b) {
+        return a.last > b.last;
       });
 
       res.render('departments/supervisors', {
         departmentId: req.params.department,
-        supervisors: supervisors,
-        members: members,
+        supervisors:  supervisors,
+        members:      members,
       });
     }).catch(res.error500);
   },

@@ -1,6 +1,5 @@
 <script type="text/javascript">
   
-
   // REMOVE ALERTS AFTER A SEC
   setTimeout(function () { $(".FLASH").fadeOut("slow"); }, 1500);
   $(".alertsBindedClickAction").click(function () { $(".hiddenAlerts").toggle(); });
@@ -45,12 +44,12 @@
     startTime: new Date().getTime(),
     clientPageVisitEvent: {
       user: {
-        first:      "<%= typeof user == 'undefined' ? null : user.first %>",
-        middle:     "<%= typeof user == 'undefined' ? null : user.middle %>",
-        last:       "<%= typeof user == 'undefined' ? null : user.last %>",
-        email:      "<%= typeof user == 'undefined' ? null : user.email %>",
-        cmid:       "<%= typeof user == 'undefined' ? null : user.cmid %>",
-        department: "<%= typeof user == 'undefined' ? null : user.department %>"
+        first:      "<%= !user ? null : user.first %>",
+        middle:     "<%= !user ? null : user.middle %>",
+        last:       "<%= !user ? null : user.last %>",
+        email:      "<%= !user ? null : user.email %>",
+        cmid:       "<%= !user ? null : user.cmid %>",
+        department: "<%= !user ? null : user.department %>"
       },
       referrer: document.referrer,
       URL:      document.URL,

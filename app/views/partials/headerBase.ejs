@@ -12,11 +12,12 @@
     <meta name="viewport" 
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <!-- TODO: client should be set to null if undefined -->
     <title>
       ClientComm
       <% if (typeof client !== "undefined") { %>
         - Viewing <%= `${client.first} ${client.last}` %>
-      <% } else if (typeof user !== "undefined") { %>
+      <% } else if (user) { %>
         - <%= `${user.first} ${user.last}` %>
       <% } %>
     </title>

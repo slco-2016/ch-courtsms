@@ -6,7 +6,6 @@ const CommConns = require('../../app/models/commConns');
 require('colors');
 const should = require('should');
 
-
 let phoneId;
 let phone = '12345678906';
 describe('Clients checks', function() {
@@ -27,17 +26,17 @@ describe('Clients checks', function() {
     .then((client) => {
       client.clid.should.be.exactly(1);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('with findOneByAttribute, should return null if none found', function(done) {
-    Clients.findOneByAttribute("clid", 99999999, (baseDbCall) => {
-      return baseDbCall.where("active", true);
+    Clients.findOneByAttribute('clid', 99999999, (baseDbCall) => {
+      return baseDbCall.where('active', true);
     })
     .then((client) => {
       should(client).not.be.ok();
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('clients should be able to be found by attribute type, multi query', function(done) {
@@ -47,7 +46,7 @@ describe('Clients checks', function() {
     .then((clients) => {
       clients.length.should.be.greaterThan(0);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('with find by many attr multi query, array even if no results, just length 0', function(done) {
@@ -57,7 +56,7 @@ describe('Clients checks', function() {
     .then((clients) => {
       clients.length.should.be.exactly(0);
       done();
-    }).catch(done)
+    }).catch(done);
   });
 
   it('Should be able to find clients by the commid created', function(done) {
@@ -79,11 +78,20 @@ describe('Clients checks', function() {
   it('Should be able to update client from BaseModel method', function(done) {
     Clients.findById(1)
     .then((client) => {
-      return client.update({first: 'joe'})
+      return client.update({first: 'joe'});
     }).then((client) => {
-      should.equal(client.first, 'joe')
-      done()
-    }).catch(done)
-  })
-  
-})
+      should.equal(client.first, 'joe');
+      done();
+    }).catch(done);
+  });
+
+  it('Should be able to find clients by organization ID for org 2', function(done) {
+    // only test org 2, which has 1 client, and isn't messed with by other tests
+    Clients.findByOrg(2, true)
+    .then((clients) => {
+      clients.length.should.be.exactly(1);
+      done();
+    }).catch(done);
+  });
+
+});

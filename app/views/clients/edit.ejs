@@ -59,6 +59,12 @@
       </div>
     </div>
 
+    <div class="formRow">
+      <div class="formInput">
+        <input type="checkbox" name="autoNotify" value="true" <%if (client.allow_automated_notifications) {%>checked<%}%>> Check to toggle whether client can have notifications automatically created for them
+      </div>
+    </div>
+
     <input type="submit" class="formSubmit padTop" value="Update">
 
   </form>

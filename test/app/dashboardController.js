@@ -11,7 +11,7 @@ const notLoggedInAccount = supertest.agent(APP)
 
 const twilioRecordingRequest = require('../data/twilioVoiceRecording.js')
 
-describe('Voice reqs', function() {
+describe('Dashboard View', function() {
 
   before(function(done) {
     owner.post('/login')

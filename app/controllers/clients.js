@@ -7,6 +7,9 @@ const Organizations = require('../models/organizations');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
 
+// assistance libraries
+const libUser = require('../lib/users');
+
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
@@ -86,21 +89,21 @@ module.exports = {
   
   index(req, res) {
     const status  = req.query.status == 'archived' || req.query.status == 'closed' ? false : true;
-    let department  = req.user.department || req.query.department;
+    let departmentID  = req.user.department || req.query.department;
     const user        = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
 
     // Controls against a case where the owner would accidentally have a department
     if (  (req.user.class == 'owner' || req.user.class == 'support') && 
           !req.query.department) {
-      department = null;
+      departmentID = null;
     }
 
     let method;
     if (res.locals.level == 'user') {
       method = Clients.findByUsers(user, status);
-    } else if (department) {
-      method = Clients.findByDepartment(department, status);
+    } else if (departmentID) {
+      method = Clients.findManyByDepartmentAndStatus(departmentID, status);
     } else {
       method = Clients.findByOrg(req.user.org, status);
     }
@@ -127,15 +130,13 @@ module.exports = {
     const userClass = req.user.class;
     const level = res.locals.level;
     const org = req.user.org;
+    // don't render the 'Attach to case manager' field if this is a case manager
     if (level === 'user') {
       res.render('clients/create', { users: null, });
     } else {
-      Users.findByOrg(org)
+      Users.where({org: org, active: true, })
       .then((users) => {
-        const department = req.user.department;
-        if (department && userClass == 'primary') {
-          users = users.filter((user) => { return user.department == department; });
-        }
+        // if we want to filter by department, we could do it here
         res.render('clients/create', { users: users, });
       }).catch(res.error500);
     }
@@ -156,8 +157,8 @@ module.exports = {
             middle, 
             last, 
             dob, 
-            so,  // note these should be renamed
-            otn  // this one as well
+            otn,  // this one as well
+            so  // note these should be renamed
     ).then((client) => {
       if (req.user.cmid == client.cm) {
         res.redirect(`/clients/${client.clid}/messages`);
@@ -179,6 +180,7 @@ module.exports = {
     const dob       = req.body.dob;
     const so        = req.body.uniqueID1;
     const otn       = req.body.uniqueID2;
+    const autoNotify = req.body.autoNotify ? true : false;
     Clients.editOne(
             client, 
             first, 
@@ -186,7 +188,8 @@ module.exports = {
             last, 
             dob, 
             so, 
-            otn
+            otn,
+            autoNotify
     ).then(() => {
       req.logActivity.client(client);
       req.flash('success', 'Edited client.');
@@ -405,8 +408,10 @@ module.exports = {
       allDep = true;
     }
 
-    Users.findByOrg(req.user.org)
+    const usersThatArePresentlyActive = true;
+    libUser.findByOrgWithDepartmentNameAndNoInfoTag(req.user.org, usersThatArePresentlyActive)
     .then((users) => {
+      
       // Limit only to same department transfers
       if (!allDep) {
         users = users.filter((ea) => {
@@ -463,14 +468,14 @@ module.exports = {
         client, 
         messages,
         viewAll = false;
-
-    Users.findByClientId(req.params.client)
+    
+    Clients.findById(req.params.client)
     .then((resp) => {
-      user = resp;
-
-      return Clients.findById(req.params.client);
-    }).then((resp) => {
       client = resp;
+
+      return Users.findById(client.cm);
+    }).then((resp) => {
+      user = resp;
 
       // check if user has right to just view their conversations with client or all
       // TODO: revisit the permissions logic here

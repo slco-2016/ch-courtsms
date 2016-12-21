@@ -40,7 +40,9 @@
       case manager
     </div>
   <% } else { %>
-    <div class="column">&nbsp;</div>
+    <div class="column">
+      auto-notifiations
+    </div>
   <% } %>  
 
   <% if (hub.sel == "archived") { %>
@@ -138,7 +140,11 @@
             <%=`${client.user_last}, ${client.user_first}`%>
           </span>
         </a>
-      <% } else { %>&nbsp;<% } %>
+      <% } else { %>
+        <% if (client.allow_automated_notifications) { %>
+          <i class="fa leftIconMargin fa-check-circle" aria-hidden="true"></i>
+        <% } else { %>&nbsp;<% } %>
+      <% } %>
     </div>
 
     <div class="column">

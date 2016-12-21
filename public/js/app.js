@@ -406,7 +406,7 @@ $(function() {
             });
             keenQueryClient.run(keenQuery, function (err, res){
               if (!err) {
-                // make keenUsers global
+                // make/keep keenUsers global
                 keenUsers = getRelevantKeenUsers(users, res.result);
                 buildUserActivityChart(keenUsers); 
                 $("#userActivity").parent().find(".loading").hide();
@@ -607,7 +607,10 @@ $(function() {
           });
 
           users = users.filter(function (u) {
-            return keenUserIds.indexOf(u.cmid) < 0;
+            // only get users that do not exist in the keen response
+            // and make sure they are still active
+            // TODO: Get rid of nonactive users from even being returned in this at all
+            return keenUserIds.indexOf(u.cmid) < 0 && users.active;
           }).map(function (u) {
             return {
               activity: 0,
@@ -616,7 +619,7 @@ $(function() {
             }
           });
           
-          return keenUsers.concat(users);
+          return keenUsers.concat(users);;
         }
 
         function buildUserActivityChart(users) {

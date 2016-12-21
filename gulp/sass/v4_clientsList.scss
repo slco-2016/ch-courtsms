@@ -108,6 +108,10 @@ $width_row10: 5%;
     color: $white;
     font-weight: 700;
     background-color: $grey !important;
+
+    .leftIconMargin {
+      color: $white !important;
+    }
   }
 
   .column {
@@ -154,6 +158,11 @@ $width_row10: 5%;
       margin-right: auto;
 
       cursor: default;
+    }
+
+    .leftIconMargin {
+      color: $lightblue;
+      margin-left: 30px;
     }
 
     .fa.highlight {

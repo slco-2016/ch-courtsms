@@ -31,6 +31,7 @@ class Clients extends BaseModel {
         'color_tag',
         'updated',
         'created',
+        'allow_automated_notifications',
       ],
     });
   }
@@ -71,6 +72,7 @@ class Clients extends BaseModel {
           otn:    otn,
           so:     so,
           active: true,
+          allow_automated_notifications: true,
         })
         .returning('*')
       .then((clients) => {
@@ -79,7 +81,7 @@ class Clients extends BaseModel {
     });
   }
 
-  static editOne (clientId, first, middle, last, dob, uniqueID1, uniqueID2) {
+  static editOne (clientId, first, middle, last, dob, uniqueID1, uniqueID2, autoNotify) {
     return new Promise((fulfill, reject) => {
       db('clients')
         .update({
@@ -89,6 +91,7 @@ class Clients extends BaseModel {
           dob: dob,
           so: uniqueID1,
           otn: uniqueID2,
+          allow_automated_notifications: autoNotify,
         })
         .where('clid', clientId)
       .then(() => {
@@ -126,16 +129,16 @@ class Clients extends BaseModel {
     });
   }
 
-  static findByDepartment (departmentId, status) {
+  static findManyByDepartmentAndStatus (departmentId, status) {
     if (typeof status == 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
-      Users.findAllByDepartment(departmentId)
+      Users.findManyByAttribute('department_id', departmentId)
       .then((users) => {
-        const userIds = users.map(function (u) { return u.cmid; });
+        const userIds = users.map((user) => { return user.cmid; });
         return Clients.findByUsers(userIds, status);
-      }).then((c) => {
-        return fulfill(c);
+      }).then((clients) => {
+        this._getMultiResponse(clients, fulfill);
       }).catch(reject);
     });
   }
@@ -209,30 +212,18 @@ class Clients extends BaseModel {
     });
   }
 
-  static findByManager (userIDs, active) {
-    // findByManager deprecated, use findByUsers
-    console.log('Warning! Clients method findByManager() deprecated, use findByUsers()');
-    if (!Array.isArray(userIDs)) userIDs = [userIDs,];
-    return new Promise((fulfill, reject) => {
-      Clients.findAllByUsers(userIDs, active)
-      .then((clients) => {
-        return fulfill(clients);
-      }).catch(reject);
-    });
-  }
-
   static findByOrg (orgId, status) {
     if (typeof status == 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
-      Users.findByOrg(orgId)
-      .then((users) => {
-        const userIds = users.map(function (u) { return u.cmid; });
-        return Clients.findByUsers(userIds, status);
-      }).then((c) => {
-        return fulfill(c);
-      }).catch(reject);
-    });
+      db('clients')
+        .select('clients.*')
+        .leftJoin('cms', 'cms.cmid', 'clients.cm')
+        .where('cms.org', orgId)
+      .then((clients) => {
+          return this._getMultiResponse(clients, fulfill);
+        }).catch(reject);
+      });
   }
 
   static findBySameName (client) {
@@ -262,6 +253,10 @@ class Clients extends BaseModel {
     });
   }
 
+  // TODO maybe rename to findManyByUsersAndStatus ... or pull into controller,
+  //      rename something appropriate to its actual function (providing data
+  //      for the user list) and create a more generic function for just getting
+  //      user records by id and status.
   static findByUsers (userIDs, activeStatus) {
     if (typeof activeStatus == 'undefined') activeStatus = true;
     if (!Array.isArray(userIDs)) userIDs = [userIDs,];

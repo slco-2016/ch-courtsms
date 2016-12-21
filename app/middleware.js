@@ -7,6 +7,8 @@ const Organizations = require('./models/organizations');
 const PhoneNumbers = require('./models/phoneNumbers');
 const Users = require('./models/users');
 
+const libUser = require('./lib/users');
+
 function _capitalize (word) {
   return word.split(' ').map(function (name) {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -332,17 +334,23 @@ module.exports = {
 
   setUserAndLevel(req, res, next) {
     res.locals.level = 'user';
-    if (req.url.indexOf('/org') == 0) {
+    if (req.url.indexOf('/org') === 0) {
       res.locals.level = 'org';
     }
 
-    res.locals.user = req.user;
+    // we need to clean the user that is being created
+    // we do not want the password has to be visible, for example
+    let toBeProcessed = req.user || null;
+    if (toBeProcessed) {
+      toBeProcessed = new Users(toBeProcessed).getPublicObject();
+    }
+    res.locals.user = toBeProcessed;
     next();
   },
 
   getUserPerformance(req, res, next) {
     if (req.user) {
-      Users.getPerformanceComparedToTopInOrganizationThisWeek(req.user.cmid)
+      libUser.getPerformanceComparedToTopInOrganizationThisWeek(req.user.cmid)
       .then((performance) => {
         if (res.locals.user) {
           res.locals.user.performanceThisWeek = performance;

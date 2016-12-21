@@ -18,13 +18,23 @@ class Users extends BaseModel {
     super({
       data: data,
       columns: [
-        'cmid','org', 'first',
-        'last','email','position',
-        'admin','active',
+        'cmid',
+        'org', 
+        'first',
+        'middle',
+        'last',
+        'email',
+        'position',
+        'admin',
+        'active',
         'superuser',
-        'class','department', 
-        'is_away', 'away_message', 'email_alert_frequency',
-        'alert_beep', 'allow_automated_notifications',
+        'class',
+        'department', 
+        'is_away', 
+        'away_message', 
+        'email_alert_frequency',
+        'alert_beep', 
+        'allow_automated_notifications',
       ],
     });
   }
@@ -42,56 +52,15 @@ class Users extends BaseModel {
   }
 
   static getClients() {
+    // Returns a list of clients associated with this user.
+    // TODO: this is only used in a single test, could possibly
+    //       be replaced with findAllByUsers() in the clients model.
     return new Promise((fulfill, reject) => {
       db('clients')
         .where('cm', this.cmid)
       .then((users) => {
         const Clients = require('../models/clients');
         this.constructor._getMultiResponse(users, fulfill, Clients);
-      });
-    });
-  }
-
-  static getPerformanceComparedToTopInOrganizationThisWeek (userId) {
-    return new Promise((fulfill, reject) => {
-      let user;
-      Users.findById(userId)
-      .then((res) => {
-        user = res;
-
-        return db('msgs')
-          .select(db.raw('COUNT(msgid) AS count, cms.cmid'))
-          .leftJoin('convos', 'convos.convid', 'msgs.convo')
-          .leftJoin('cms', 'cms.cmid', 'convos.cm')
-          .whereRaw('msgs.created > date_trunc(\'week\', CURRENT_DATE)')
-          .and.where('org', user.org)
-          .groupBy('cms.cmid')
-          .orderBy('count', 'desc');
-      }).then((results) => {
-        const cmid = user.cmid;
-        let topThisWeek = 0;
-        let usersCount = 0;
-        results.forEach((ea) => {
-          ea.count = Number(ea.count);
-          if (isNaN(ea.count)) {
-            ea.count = 0;
-          }
-
-          if (ea.count > topThisWeek) {
-            topThisWeek = ea.count;
-          }
-          if (cmid == ea.cmid) {
-            usersCount = ea.count;
-          }
-        });
-        if (topThisWeek == 0) {
-          fulfill(0);
-        } else if (usersCount == 0) {
-          fulfill(0);
-        } else {
-          let percent = Math.round(usersCount * 100 / topThisWeek);
-          fulfill(Math.min(100, percent));
-        }
       });
     });
   }
@@ -105,18 +74,10 @@ class Users extends BaseModel {
     return `${this.getFullName()} <${rawEmail}>`;
   }
 
-  static findByClientId (clientId) {
-    return new Promise((fulfill, reject) => {
-      db('clients')
-        .where('clid', clientId)
-      .then((clients) => {
-        const client = clients[0];
-        return db('cms')
-          .where('cmid', client.cm);
-      }).then((users) => {
-        this._getSingleResponse(users, fulfill);
-      }).catch(reject);
-    });
+  getPublicObject() {
+    let toBeProcessed = new Users(this);
+    delete toBeProcessed._info;
+    return toBeProcessed;
   }
 
   static findByClientCommEmail(email) {
@@ -132,35 +93,6 @@ class Users extends BaseModel {
         .limit(1)
       .then((users) => {
         this._getSingleResponse(users, fulfill);
-      }).catch(reject);
-    });
-  }
-
-  static findByOrg (orgID, activeStatus) {
-    if (typeof activeStatus == 'undefined') activeStatus = true;
-
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .select('cms.*', 'departments.name as department_name')
-        .leftJoin('departments', 'departments.department_id', 'cms.department')
-        .where('cms.org', orgID)
-        .andWhere('cms.active', activeStatus)
-        .orderBy('cms.last', 'asc')
-      .then((users) => {
-        fulfill(users);
-      }).catch(reject);
-    });
-  }
-
-  static findAllByDepartment (departmentID) {
-    return new Promise((fulfill, reject) => {
-      let allUsers;
-      Users.findByDepartment(departmentID, true)
-      .then((users) => {
-        allUsers = users;
-        return Users.findByDepartment(departmentID, false);
-      }).then((users) => {
-        fulfill(allUsers.concat(users));
       }).catch(reject);
     });
   }

@@ -1,9 +1,11 @@
 <script type="text/javascript">
   // Place user object as global
-  <% if (typeof user == 'undefined') { %>
-    var SESSION_USER = null;
-  <% } else { %>
+  // user is either user object or null
+  // keeping the if operations just to be explicit
+  <% if (user) { %>
     var SESSION_USER = <%- JSON.stringify(user) %>;
+  <% } else { %>
+    var SESSION_USER = null;
   <% } %>
 </script>
 <script src="/static/js/app.js"></script>
