@@ -86,7 +86,7 @@ describe('Attachment checks', function() {
     let users;
     Alerts.createForOrganization(organizationId, createdBy, subject, message)
     .then(() => {
-      return Users.findByOrg(organizationId, true);
+      return Users.where({org: organizationId, active: true, });
     }).then((resp) => {
       users = resp;
       return new Promise((fulfill, reject) => {

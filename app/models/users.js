@@ -97,22 +97,6 @@ class Users extends BaseModel {
     });
   }
 
-  static findByOrg (orgID, activeStatus) {
-    if (typeof activeStatus == 'undefined') activeStatus = true;
-
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .select('cms.*', 'departments.name as department_name')
-        .leftJoin('departments', 'departments.department_id', 'cms.department')
-        .where('cms.org', orgID)
-        .andWhere('cms.active', activeStatus)
-        .orderBy('cms.last', 'asc')
-      .then((users) => {
-        fulfill(users);
-      }).catch(reject);
-    });
-  }
-
   static findByDepartment (departmentID, activeStatus) {
     if (typeof activeStatus == 'undefined') activeStatus = true;
     return new Promise((fulfill, reject) => {
