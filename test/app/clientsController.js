@@ -74,6 +74,9 @@ describe('Clients supervisor controller view', function() {
       supervisor.get(`/org/clients/${oneClient.clid}/transfer?allDepartments=true`)
         .expect(200)
         .end(function(err, res) {
+          // TODO: We need to think about what we want to check 
+          //       for to make sure that all departments are showing versus the prior test
+          //       otherwise there is no way to discern this test works over the prior
           done(err);
         });
     }).catch(done);
