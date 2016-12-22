@@ -202,7 +202,7 @@ describe('Basic http req tests', function() {
         Clients.findByID(1)
         .then((user) => {
           if (user.active) {
-            done(new Error("User was not successfully closed."));
+            done(new Error('User was not successfully closed.'));
           } else {
             done(null);
           }

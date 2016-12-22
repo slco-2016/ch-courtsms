@@ -122,19 +122,6 @@ class Users extends BaseModel {
     });
   }
 
-  static changeActivityStatus (user, status) {
-    if (typeof status == 'undefined') status = false;
-    
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .where('cmid', user)
-        .update({ active: status, })
-      .then(() => {
-        fulfill();
-      }).catch(reject);
-    });
-  }
-
   static createOne (first, middle, last, email, orgID, department, position, className) {
     const passwordString = Math.random().toString(36).slice(-5);
     const hashedPW = bcrypt.hashSync(passwordString, bcrypt.genSaltSync(8), null);
