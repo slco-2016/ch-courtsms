@@ -440,12 +440,14 @@ module.exports = {
     .then((resp) => {
       org = resp;
 
-      return Users.findByID(toUser);
+      return Users.findById(toUser);
     }).then((resp) => {
       user = resp;
       if (user && user.active) {
         Clients.transfer(client, fromUser, user.cmid, bundle)
         .then(() => {
+          // now that the client has been successfully transfered, let's send them a 
+          // courtesy email to let them know that their contact at that # has changed
           const client   = req.params.client;
           const subject  = 'Automated notification: You have been transferred.';
           const content  = `Your account for communications with ${org.name} has been transferred to the following individual: ${toUser.first} ${toUser.last}. You can start messaging now with ${toUser.first} ${toUser.last} if you have any questions.`;
