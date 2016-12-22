@@ -82,7 +82,7 @@ class Users extends BaseModel {
 
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
-      // joanne@slco.org => joanne.slco@clientcomm.org
+      // Example: joanne@slco.org => joanne.slco@clientcomm.org
       const usernameParts = email.split('@')[0].split('.');
       const host = usernameParts.pop();
       const username = usernameParts.join('.');
