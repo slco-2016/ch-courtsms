@@ -104,7 +104,7 @@ module.exports = {
     });
   },
 
-  addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId) {
+  addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId, status) {
     return new Promise((fulfill, reject) => {
       // Reference variables
       let conversation, recording;
@@ -129,7 +129,7 @@ module.exports = {
           commId,
           'Untranscribed outbound voice message', // Default content for message
           recordingSid,
-          'received',
+          status,
           null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
           { recordingId: recording.id, } // Fkey pointing Recordings table
         );

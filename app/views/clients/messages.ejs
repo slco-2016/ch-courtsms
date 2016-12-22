@@ -1,6 +1,7 @@
 <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
 
 <% include ../partials/clientFrameTop %>
+<% const clearStatuses = ['received', 'sent', 'opened', 'delivered']; %>
 
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_clientMessages.css">
@@ -39,8 +40,10 @@
 
   <div class="messageStream">
     <% messages.forEach((message, messageIndex) => { %>
+      <% const showWarning = clearStatuses.indexOf(message.tw_status) == -1; %>
+
       <div class="messageDiv <%= !message.inbound ? 'rightAligned' : '' %>">
-        <div class="message <%= message.inbound ? 'inbound' : 'outbound' %>"
+        <div class="message <%= message.inbound ? 'inbound' : 'outbound' %> <% if (showWarning) { %>warning<% } %>"
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
           <div class="content">
             <%= message.content %>
@@ -53,6 +56,14 @@
             <% }) %>
 
             <% if (message.recording) { %>
+
+              <% if (message.recording.last_delivery_date) { %>
+                <!-- something should alert user it failed -->
+                <p style="font-weight: bold; color: red;">
+                  This message did not send!!
+                </p>
+              <% } %>
+
               <div class="viewAttachment">
                 <audio controls>
                   <source src="<%= message.recording.getUrl() %>" type="audio/mpeg">
@@ -75,7 +86,8 @@
             <%= message.inbound ? 'Received via' : 'Sent to' %>
             <%= client.first + "'s" %> <%= message.commconn_name %>
 
-            <span class="state">
+            
+            <span class="state <% if (showWarning) { %>warning<% } %>">
               <%= message.tw_status %> on 
               <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at 
               <%= moment.tz(message.created, organization.tz).format("hh:mm A"); %>

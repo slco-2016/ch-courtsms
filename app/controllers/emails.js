@@ -28,11 +28,11 @@ module.exports = {
     const event = req.body.event;
     if (event == 'delivered') {
       const messageId = req.body['Message-Id'];
-      _updateMessages(messageId, 'Delivered', res);
+      _updateMessages(messageId, 'delivered', res);
     } else if (event == 'opened') {
       // why, just why
       const messageId = `<${req.body['message-id']}>`;
-      _updateMessages(messageId, 'Opened', res);
+      _updateMessages(messageId, 'opened', res);
     } else {
       res.send('ok, thanks');
     }

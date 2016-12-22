@@ -10,6 +10,7 @@ const Messages = require('../models/messages');
 
 class CaptureBoard {
 
+  // TODO: This should be a lib function, not the standard "findByOrg" function
   static findByOrg (orgId) {
     return new Promise((fulfill, reject) => {
       db('msgs')
@@ -74,6 +75,10 @@ class CaptureBoard {
           convo.comm.sent_to = inboundsSentTo;
           return convo;
         });
+
+        // now we have an opportunity to use the convo.comm values
+        // to execute the query described in https://github.com/slco-2016/clientcomm/issues/313
+        // if we wanted to and include in the return object
 
         fulfill(convos);
       }).catch(reject);

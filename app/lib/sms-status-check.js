@@ -95,9 +95,9 @@ module.exports = {
           } else {
             const created = new Date(msg.created);
             const now     = new Date();
-            const hrDiff  = Math.floor((now - created)/36e5);
+            const hrDiff  = Math.floor((now - created)/36e5); // this is one hour difference
 
-            // It has been queued for too long
+            // It has been queued for too long (over 1 hour)
             // Should report this to the case manager
             if (hrDiff > 1) {
               db('msgs')

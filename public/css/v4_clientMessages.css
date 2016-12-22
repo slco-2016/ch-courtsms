@@ -92,6 +92,8 @@
       margin-top: 10px;
       border-radius: 5px;
       width: 695px; }
+      .rightContent .messageStream .messageDiv .message.warning {
+        border: 1px solid #E50000; }
       .rightContent .messageStream .messageDiv .message.outbound {
         border: 1px solid #FFF;
         color: #2A2A2A; }
@@ -123,6 +125,8 @@
           font-size: 18px; }
         .rightContent .messageStream .messageDiv .message .bottomRow .state {
           float: right; }
+          .rightContent .messageStream .messageDiv .message .bottomRow .state.warning {
+            color: #E50000; }
 
 .mainVisibleRow::after {
   content: "";

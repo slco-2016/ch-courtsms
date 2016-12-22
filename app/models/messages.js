@@ -246,14 +246,17 @@ class Messages extends BaseModel {
     });
   }
 
+  // TODO: Rename to more clear: "only Twilio texts"
   static findNotClearedMessages () {
     return new Promise((fulfill, reject) => {
       db('msgs')
-        .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .whereNot('msgs.status_cleared', true)
         .and.whereNotNull('tw_sid')
       .then((messages) => {
         messages = messages.filter((message) => {
+          // we only want the texts from twilio
+          // these are multimedia with MM and 
+          // sms or standard message with SM
           const twSid = message.tw_sid;
           return twSid.startsWith('MM') || twSid.startsWith('SM');
         });

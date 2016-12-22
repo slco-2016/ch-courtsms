@@ -89,8 +89,11 @@ module.exports = {
 
   status(req, res) {
     let client, communication, conversations, notification, ovm;
+    const emptyResponse = twilio.TwimlResponse().toString();
 
-    if (req.body.CallStatus === 'completed') {
+    // we need to have an additional capture if callStatus 'failed'
+    const callStatus = req.body.CallStatus;
+    if (callStatus === 'completed' || callStatus == 'failed') {
       const sid = req.body.CallSid;
 
       // We are looking for the row with a OVM that has the call
@@ -101,12 +104,29 @@ module.exports = {
         // If we have an OVM, then we should get its notification and 
         // set it's status to sent as well as create a recording object
         // and new message + conversation for that client-user pairing.
-        if (ovm) {
+
+        // if we do not have an ovm, then it does not exist in the database
+        // TODO: Would this ever happen? Should we keep it?
+
+        // We also need to make sure that 2 tries or 30 (1800000 milliseconds) minutes have passed
+        const rightNow = new Date().getTime();
+        const ovmDeliveryDate = new Date(ovm.delivery_date).getTime();
+        const enoughTimeHasPassed = rightNow - 1800000 > ovmDeliveryDate;
+
+        // make sure one of the two is ok in order to proceed
+        const completedOK = (callStatus === 'completed' && ovm);
+        const failedOK = (callStatus === 'failed' && ovm && enoughTimeHasPassed);
+
+        if (completedOK || failedOK) {
           return ovm.update({delivered: true,})
           .then((ovm) => {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
-            return notification.update({sent: true,});
+            if (failedOK) {
+              return notification.update({sent: true, last_delivery_attempt: new Date().toString(), });
+            } else {
+              return notification.update({sent: true,});
+            }
           }).then((notification) => {
             const commId = notification.comm;
             const recordingKey = ovm.recording_key;
@@ -114,16 +134,27 @@ module.exports = {
             const clientId = notification.client;
             const userId = notification.cm;
 
-            return voice.addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId);
+            // determine what the status should be - whether it was successful or not
+            // default will be 'received'
+            let status = 'received';
+            if (failedOK) {
+              status = 'undelivered';
+            }
+
+            // now we add that just-sent outbound message to the message stream
+            return voice.addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId, status);
           });
 
         } else {
           return null;
         }
       }).then(() => {
-        const emptyResponse = twilio.TwimlResponse().toString();
         res.send(emptyResponse);
       }).catch(res.error500);
+
+    // otherwise, no matter what, we send an empty response
+    } else {
+      res.send(emptyResponse);
     }
   },
 
