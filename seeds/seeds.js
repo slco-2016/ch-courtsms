@@ -59,15 +59,21 @@ exports.seed = function(knex, Promise) {
     }).then(() => {
       return knex('phone_numbers').insert(secondPhoneNumber);
     }).then(() => {
-      return knex('cms').insert(secondOwner);
-    }).then(() => {
       return knex('departments').insert(secondDep);
+    }).then(() => {
+      return knex('cms').insert(secondOwner);
     }).then(() => {
       return knex('cms').insert(secondSupervisor);
     }).then(() => {
       return knex('department_supervisors').insert(secondDepartmentSupervisorLink);
     }).then(() => {
       return knex('clients').insert(secondOrgClient);
+    }).then(() => {
+      return knex('comms').insert(secondOrgClientCommunicationMethod);
+    }).then(() => {
+      return knex('commconns').insert(secondOrgClientCommunicationConnection);
+    }).then(() => {
+      return knex('notifications').insert(notificationToBeSentOnBehalfOfSecondSupervisor);
     }).catch((err) => {
       throw err;
     });
@@ -280,6 +286,7 @@ const secondOwner = {
   email: 'secondOwner@example.com',
   pass: '$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti', //123
   position: 'Officer',
+  department: 2,
   admin: false,
   active: true,
   superuser: false,
@@ -323,4 +330,28 @@ const secondOrgClient = {
   so: 123,
   otn: 456,
   active: true,
+};
+
+const secondOrgClientCommunicationMethod = {
+  description: 'second org comm device',
+  type: 'cell',
+  value: '10900848392',
+};
+
+const secondOrgClientCommunicationConnection = {
+  client: 3,
+  comm: 4,
+  name: 'jim\'s cell phone',
+  retired: null,
+};
+
+const notificationToBeSentOnBehalfOfSecondSupervisor = {
+  cm: 4,     // secondDepartmentSupervisorLink's id
+  client: 3, // secondOrgClient's id
+  comm: 4,
+  subject: 'test',
+  message: 'ship shap shaloop',
+  send: '2016-07-08 04:30:00', // intentionally in the past
+  // repeat ignored
+  // frequency ignored
 };

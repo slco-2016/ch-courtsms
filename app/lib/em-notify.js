@@ -14,46 +14,83 @@ const Users = require('../models/users');
 const CaptureBoard = require('../models/capture');
 
 module.exports = {
+
+  // the purpose is to email case managers/users if they have unread messages
+  // then we email them with an alert that they do
   runEmailUpdates: function () {
     return new Promise((fulfill, reject) => {
+      // reference variables
       let userIds;
       let usersThatNeedToBeAlerted;
+
+      // current date information
       const dayOfTheWeek = new Date().getDay();
       const hourOfTheDay = new Date().getHours();
+
+      // Basically each user has an attribute "email_alert_frequency"
+      // it is an integer set to a "number of hours" between which they would 
+      // like to get email alerts for unread messages.
+      // We determine if it is "the right day" of the week by querying for those with an 
+      // alerts frequency integer that is less than the interval we come up with
+      // in the below logic block.
+      // TODO: Vastly improve.
       let interval = 25; // hours
       if ([1, 3, 5, ].indexOf(dayOfTheWeek) > -1) {
         interval = 50;
       } else if (dayOfTheWeek == 4) {
         interval = 175;
       }
+
+      // TODO: Do not execute raw queries here, either move to a lib or user Model Classes
+      // We jsut want to query for the users who qualify for this runs email update process
       db('cms')
         .where('email_alert_frequency', '<', interval)
         .andWhere('active', true)
       .then((resp) => {
+        // We just want the userIds from the response
         userIds = resp.map((user) => {
           return user.cmid;
         });
 
+                        // want a sum total and only of unreads
         const rawQuery =' SELECT count(msgid), MAX(msgs.created) AS made, cms.cmid, cms.first, cms.last, cms.email ' +
                         ' FROM msgs ' + 
+
+                        // lefts joings allow us to a link a message to a conversation then to a user (from client to user)
                         ' LEFT JOIN (SELECT convos.convid, convos.cm FROM convos) AS convos ON (convos.convid = msgs.convo) ' +
                         ' LEFT JOIN (SELECT cms.cmid, cms.first, cms.last, cms.email FROM cms) AS cms ON (cms.cmid = convos.cm) ' + 
+
+                        // within this bracketed period of time (only of unreads)
                         ' WHERE msgs.read = FALSE AND msgs.created > CURRENT_TIMESTAMP - INTERVAL \'1 day\' ' +
                         ' AND msgs.created < CURRENT_TIMESTAMP ' +
-                        ' GROUP BY cms.cmid, cms.first, cms.last, cms.email ORDER BY made DESC; ';        
+
+                        // break them up by unique users
+                        ' GROUP BY cms.cmid, cms.first, cms.last, cms.email ORDER BY made DESC; ';
+
+        // executes the above query
         return db.raw(rawQuery);
       }).then((resp) => {
+
+        // if you run a raw query, then you have to extract the rows 
+        // from the resp object hence resp.rows
         usersThatNeedToBeAlerted = resp.rows;
+
+        // we are going to filter out any users that should not be updated on this run
         usersThatNeedToBeAlerted = usersThatNeedToBeAlerted.filter((user) => {
           return userIds.indexOf(user.cmid) > -1;
         });
 
+        // iterate over the resulting users list, and create a message object for each, then 
+        // use the transporter library to send a message through the ClientComm Gmail account
         usersThatNeedToBeAlerted.forEach((msg, i) => {
-          const text =  ' Hello, ' + msg.first + ' ' + msg.last + ', this is Kuan from Code for America. ' + 
-                      ' You are receiving this automated email because you have ' + msg.count + ' message(s) waiting for you in ClientComm that is more than 4 hours old. ' +
-                      ' To view this message go to ClientComm.org and login with your user name and password. ' +
-                      ' If you are having issues accessing your account, send me an email at kuan@codeforamerica.org and I will be happy to assist you any time, day or night!'; 
 
+          // the message copy that will be emailed
+          const text =  ' Hello, ' + msg.first + ' ' + msg.last + ', this is Code for America. ' + 
+                      ' You are receiving this automated email because you have ' + msg.count + ' message(s) waiting for you in ClientComm. ' +
+                      ' To view this message go to ClientComm.org and login with your user name and password. ' +
+                      ' If you are having issues accessing your account, send me an email at clientcomm@codeforamerica.org and we will be happy to assist you any time, day or night!'; 
+
+          // this is the formatted object that the transporter library needs
           const mailOptions = {
             from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>', 
             to: msg.email, 
@@ -63,21 +100,31 @@ module.exports = {
           };
 
           // Send mail with defined transport object
-          if (process.env.CCENV !== 'testing') {
+          if (credentials.CCENV !== 'testing') {
             transporter.sendMail (mailOptions, function (error, info) {
               if (error) {
                 console.log(error);
               }
+              // TODO: here we are iterating through the array of clients to update
+              // we then use the below if we want to fulfill() and exit array
+              // but we should actually use a Promise array, map over it
+              // and catch any and all errors instead of the above if statement
               if (i == usersThatNeedToBeAlerted.length - 1) { 
+                // kicks us out of this function successfully
                 fulfill();
               }
             });
+
+          // if we are in testing we need to exit successfully as well
           } else {
             if (i == usersThatNeedToBeAlerted.length - 1) { 
               fulfill();
             }
           }
         });
+
+        // if list is of length zero, then fulfill would never be called and the process would never completed
+        // hence the below, which is why we should use Promise map
         if (usersThatNeedToBeAlerted.length == 0) {
           fulfill();
         }
