@@ -97,19 +97,6 @@ class Users extends BaseModel {
     });
   }
 
-  static findByDepartment (departmentID, activeStatus) {
-    if (typeof activeStatus == 'undefined') activeStatus = true;
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .where('department', departmentID)
-        .andWhere('active', activeStatus)
-        .orderBy('last', 'asc')
-      .then((users) => {
-        fulfill(users);
-      }).catch(reject);
-    });
-  }
-
   static findById (user) {
     return new Promise((fulfill, reject) => {
       db('cms')

@@ -58,7 +58,6 @@ class Alerts extends BaseModel {
         department: departmentId,
         active: true,
       })
-      // Users.findByDepartment(departmentId, active)
       .then((users) => {
         const insert = users.map((user) => {
           return {
