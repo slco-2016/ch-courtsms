@@ -45,35 +45,53 @@ class Notifications extends BaseModel {
     });
   }
 
+  // TODO: this is presently a model function
+  //       but probably should be in a lib on its own
   static checkAndSendNotifications () {
     return new Promise((fulfill, reject) => {
+
+      // look for all notifications that are planned
+      // but have not been sent and have NOT been closed
+      // (note: closing is basically deleting on the user's end)
       db('notifications')
         .where('send', '<', db.fn.now())
         .andWhere('notifications.sent', false)
         .andWhere('notifications.closed', false)
       .then((notifications) => {
+
+        // creating a promise map
         return new Promise((fulfill, reject) => {
           fulfill(notifications);
         });
+
+      // this is for each in the returned prior notifications basically
+      // at this point we need to decide if that message is a voice or nonvoice message
       }).map((notification) => {
 
-        // Voice
+        // Voice: if voice use the sendOVMNotification method
         if (notification.ovm_id) {
           return this.sendOVMNotification(notification);
 
-        // Email or Text
+        // Email or Text: otherwise proceed with the text/sms/email message method
         } else {
           return this.sendTextorEmailNotification(notification);
         }
+
+      // it will then return an array of resulting notifications that have been sent
       }).then((notifications) => {
+        // yet another promise array
         return new Promise((fulfill, reject) => {
           fulfill(notifications);
         });
+
+      // map over the resulting sent notifications
+      // and create an in-app alert for the case manager/user
+      // so that they know their message was sent
       }).map((notification) => {
-        let targetUserId = notification.cm;
-        let createdByUserId = notification.cm;
-        let subject = 'Notification Sent';
-        let message = `Message subject \"${notification.subject}\" was sent and will appear as a sent message in the conversation stream.`;
+        const targetUserId = notification.cm;
+        const createdByUserId = notification.cm;
+        const subject = 'Notification Sent';
+        const message = `Message subject \"${notification.subject}\" was sent and will appear as a sent message in the conversation stream.`;
         return Alerts.createForUser(targetUserId, createdByUserId, subject, message);
       }).then(() => {
         fulfill();

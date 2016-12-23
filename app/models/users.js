@@ -82,7 +82,7 @@ class Users extends BaseModel {
 
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
-      // joanne@slco.org => joanne.slco@clientcomm.org
+      // Example: joanne@slco.org => joanne.slco@clientcomm.org
       const usernameParts = email.split('@')[0].split('.');
       const host = usernameParts.pop();
       const username = usernameParts.join('.');
@@ -93,19 +93,6 @@ class Users extends BaseModel {
         .limit(1)
       .then((users) => {
         this._getSingleResponse(users, fulfill);
-      }).catch(reject);
-    });
-  }
-
-  static findByDepartment (departmentID, activeStatus) {
-    if (typeof activeStatus == 'undefined') activeStatus = true;
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .where('department', departmentID)
-        .andWhere('active', activeStatus)
-        .orderBy('last', 'asc')
-      .then((users) => {
-        fulfill(users);
       }).catch(reject);
     });
   }
@@ -131,19 +118,6 @@ class Users extends BaseModel {
         .whereIn('cms.cmid', userIds)
       .then((users) => {
         fulfill(users);
-      }).catch(reject);
-    });
-  }
-
-  static changeActivityStatus (user, status) {
-    if (typeof status == 'undefined') status = false;
-    
-    return new Promise((fulfill, reject) => {
-      db('cms')
-        .where('cmid', user)
-        .update({ active: status, })
-      .then(() => {
-        fulfill();
       }).catch(reject);
     });
   }

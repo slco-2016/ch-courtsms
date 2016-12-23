@@ -53,10 +53,11 @@ class Alerts extends BaseModel {
   }
 
   static createForDepartment (departmentId, createdByUserId, subject, message) {
-    // create alerts for all users in a department.
-    const active = true;
     return new Promise((fulfill, reject) => {
-      Users.findByDepartment(departmentId, active)
+      Users.where({
+        department: departmentId,
+        active: true,
+      })
       .then((users) => {
         const insert = users.map((user) => {
           return {

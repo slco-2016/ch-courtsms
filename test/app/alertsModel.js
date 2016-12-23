@@ -29,7 +29,7 @@ describe('Attachment checks', function() {
       return Alerts.findByUser(targetUserId);
     }).then((alerts) => {
       alerts.length.should.be.exactly(1);
-      let alert = alerts[0];
+      const alert = alerts[0];
       alert.user.should.be.exactly(targetUserId);
       alert.created_by.should.be.exactly(createdBy);
       alert.subject.should.be.exactly(subject);
@@ -57,11 +57,14 @@ describe('Attachment checks', function() {
   });
 
   it('should send to all active users in a department', function(done) {
-    let departmentId = 1;
+    const departmentId = 1;
     let users;
     Alerts.createForDepartment(departmentId, createdBy, subject, message)
     .then(() => {
-      return Users.findByDepartment(departmentId, true);
+      return Users.where({
+        department: departmentId, 
+        active: true, 
+      });
     }).then((resp) => {
       users = resp;
       return new Promise((fulfill, reject) => {

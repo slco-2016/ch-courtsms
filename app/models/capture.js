@@ -10,6 +10,7 @@ const Messages = require('../models/messages');
 
 class CaptureBoard {
 
+  // TODO: This should be a lib function, not the standard "findByOrg" function
   static findByOrg (orgId) {
     return new Promise((fulfill, reject) => {
       db('msgs')
@@ -18,6 +19,7 @@ class CaptureBoard {
                 'msgs.content',
                 'msgs.inbound',
                 'msgs.created',
+                'msgs.sent_to',
                 'convos.subject',
                 'comms.commid',
                 'comms.type',
@@ -32,7 +34,7 @@ class CaptureBoard {
       .then((floaters) => {
 
         // Reduce results to just convids, and sort incrementally
-        const convos = floaters.map((ea) => { 
+        let convos = floaters.map((ea) => { 
           return ea.convo; 
         }).reduce((a,b) => { 
           if (a.indexOf(b) < 0) {
@@ -42,6 +44,7 @@ class CaptureBoard {
         }, []).map((ea) => { 
           return {
             convo: ea, 
+            comm: {value: null, type: null, sent_to: null, },
             msgs: [],
           };
         });
@@ -52,6 +55,30 @@ class CaptureBoard {
             if (convos[i].convo == ea.convo) convos[i].msgs.push(ea);
           }
         });
+
+        // now we want a sort of "default" comm that was used in the conversation
+        // will determine from the first one use the message array that was inbound
+        convos = convos.map((convo) => {
+          let inboundCommMethod = null;
+          let inboundCommType = null;
+          let inboundsSentTo = null;
+          convo.msgs.forEach((msg, i) => {
+            if (msg.inbound) {
+              // comm method value from join
+              inboundCommMethod = msg.value; 
+              inboundCommType = msg.type;
+              inboundsSentTo = msg.sent_to;
+            }
+          });
+          convo.comm.value =   inboundCommMethod;
+          convo.comm.type =    inboundCommType;
+          convo.comm.sent_to = inboundsSentTo;
+          return convo;
+        });
+
+        // now we have an opportunity to use the convo.comm values
+        // to execute the query described in https://github.com/slco-2016/clientcomm/issues/313
+        // if we wanted to and include in the return object
 
         fulfill(convos);
       }).catch(reject);

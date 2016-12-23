@@ -246,14 +246,17 @@ class Messages extends BaseModel {
     });
   }
 
+  // TODO: Rename to more clear: "only Twilio texts"
   static findNotClearedMessages () {
     return new Promise((fulfill, reject) => {
       db('msgs')
-        .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .whereNot('msgs.status_cleared', true)
         .and.whereNotNull('tw_sid')
       .then((messages) => {
         messages = messages.filter((message) => {
+          // we only want the texts from twilio
+          // these are multimedia with MM and 
+          // sms or standard message with SM
           const twSid = message.tw_sid;
           return twSid.startsWith('MM') || twSid.startsWith('SM');
         });
@@ -534,20 +537,28 @@ class Messages extends BaseModel {
 
   static sendOne (commId, content, conversation) {
     return new Promise((fulfill, reject) => {
+      // reference variables
+      let user;
+      let communication;
       const contentArray = content.match(/.{1,1599}/g);
+
       Communications.findById(commId)
-      .then((communication) => {
+      .then((resp) => {
+        communication = resp;
+
+        return Users.findById(conversation.cm)
+      }).then((resp) => {
+        user = resp;
+
         if (communication.type == 'email') {
 
-          return Users.findById(conversation.cm)
-          .then((user) => {
-            return mailgun.sendEmail(
-              communication.value,
-              user.getClientCommEmail(),
-              `New message from ${user.getFullName()}`,
-              content
-            );
-          }).then((response) => {
+          // TODO: Are we testing this?
+          mailgun.sendEmail(
+            communication.value,
+            user.getClientCommEmail(),
+            `New message from ${user.getFullName()}`,
+            content
+          ).then((response) => {
             return Messages.create(
               conversation.convid,
               commId,
@@ -558,8 +569,7 @@ class Messages extends BaseModel {
           }).then(fulfill).catch(reject);
 
         } else if (communication.type == 'cell') {
-
-          return Departments.findByConversationId(conversation.convid)
+          return Departments.findOneByAttribute('department_id', user.department)
           .then((department) => {
             const phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
@@ -567,8 +577,12 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
-              if (process.env.CCENV !== 'testing') {
+              if (credentials.CCENV !== 'testing') {
                 twClient.sendMessage({
+
+                  // TODO: Remove use of testenv
+                  //       it was used to reroute all outbound messages to a
+                  //       testing number instead of just not sending
                   to: TESTENV ? '+18589057365' : communication.value,
                   from: sentFromValue,
                   body: content,
@@ -695,7 +709,7 @@ class Messages extends BaseModel {
       }).then((resp) => {
         conversation = resp;
         return Communications.findById(commID);
-      }).then((communication) => {
+      }).then((communication) => {        
         Messages.sendOne(commID, content, conversation)
         .then(() => {
           fulfill();

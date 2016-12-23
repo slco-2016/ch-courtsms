@@ -168,6 +168,10 @@ $width_row5:  5%;
         margin-top: 10px;
         border-radius: 5px;
         width: 695px;
+        
+        &.warning {
+          border: 1px solid $red;
+        }
 
         &.outbound {
           border: 1px solid $white;
@@ -217,6 +221,10 @@ $width_row5:  5%;
 
           .state {
             float: right;
+
+            &.warning {
+              color: $red;
+            }
           }
         }
       }

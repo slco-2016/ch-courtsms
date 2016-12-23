@@ -104,7 +104,7 @@ module.exports = {
     });
   },
 
-  addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId) {
+  addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId, status) {
     return new Promise((fulfill, reject) => {
       // Reference variables
       let conversation, recording;
@@ -129,7 +129,7 @@ module.exports = {
           commId,
           'Untranscribed outbound voice message', // Default content for message
           recordingSid,
-          'received',
+          status,
           null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
           { recordingId: recording.id, } // Fkey pointing Recordings table
         );
@@ -148,27 +148,33 @@ module.exports = {
 
       return Communications.findById(ovm.commid)
       .then((communication) => {
-        twClient.calls.create({
-          url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
-          to: communication.value,
-          from: credentials.twilioNum,
-          IfMachine: 'Continue',
-          record: true,
-          statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
-          StatusCallback: `${domain}/webhook/voice/status`,
-        }, (err, call) => {
-          if (err) {
-            reject(err);
-          } else {
 
-            // Update the OVM table row with the sid of the call that was just placed 
-            // out to the client (so this is the SID of the "voicemail delivery call")
-            ovm.update({call_sid: call.sid, })
-            .then((ovm) => {
-              fulfill(ovm);
-            }).catch(reject);
-          }
-        });
+        // we should only create the call is not in testing mode
+        if (credentials.CCENV !== 'testing') {
+          twClient.calls.create({
+            url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
+            to: communication.value,
+            from: credentials.twilioNum,
+            IfMachine: 'Continue',
+            record: true,
+            statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
+            StatusCallback: `${domain}/webhook/voice/status`,
+          }, (err, call) => {
+            if (err) {
+              reject(err);
+            } else {
+
+              // Update the OVM table row with the sid of the call that was just placed 
+              // out to the client (so this is the SID of the "voicemail delivery call")
+              ovm.update({call_sid: call.sid, })
+              .then((ovm) => {
+                fulfill(ovm);
+              }).catch(reject);
+            }
+          });
+        } else {
+          fulfill();
+        }
       }).catch(reject);
     });
   },

@@ -6,6 +6,7 @@ const APP = require('../../app/app');
 const Communications = require('../../app/models/communications');
 
 const owner = supertest.agent(APP);
+const anonUser = supertest.agent(APP);
 
 const twilioAgent = supertest.agent(APP);
 const smsData = require('../data/testSMSData');
@@ -13,6 +14,8 @@ const smsData = require('../data/testSMSData');
 const createUID = () => {
   return String(Math.random().toString(36).substring(7));
 };
+
+// will create a random, unique string
 const inboundBodyMsg = createUID();
 
 describe('Capture Board view', function() {
@@ -29,6 +32,8 @@ describe('Capture Board view', function() {
           done(err);
         } else {
           // create a capture board item
+          // this is coming from an unknown number
+          // will just dump onto board as a result
           const uniqueSMSid = createUID();
           twilioAgent.post('/webhook/sms')
             .send({
@@ -69,6 +74,18 @@ describe('Capture Board view', function() {
       });
   });
 
+  it('Random anon user should NOT be able to view the capture board', function(done) {
+    anonUser.get('/org/captured')
+      .expect(302)
+      .end(function(err, res) {
+        res.redirect.should.be.exactly(true);
+        res.text.should.match(/\/login/); // should be rerouting you to login view
+        done(err);
+      });
+  });
+
+  // make sure that the prior created random, unique string exists on the page
+  // this means that it is working and placing that message in the capture board
   it('Owner should be able to see inbound unknown, unclaimed message', function(done) {
     owner.get('/org/captured')
       .expect(200)

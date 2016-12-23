@@ -1,25 +1,31 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
-const resourceRequire = require('../../app/lib/resourceRequire')
+const resourceRequire = require('../../app/lib/resourceRequire');
 
-const APP = require('../../app/app')
+const APP = require('../../app/app');
 
-const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages')
-const Recordings = resourceRequire('models', 'Recordings')
-const Messages = resourceRequire('models', 'Messages')
-const mock = resourceRequire('lib', 'mock')
+const Notifications = resourceRequire('models', 'Notifications');
+const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
+const Recordings = resourceRequire('models', 'Recordings');
+const Messages = resourceRequire('models', 'Messages');
+const mock = resourceRequire('lib', 'mock');
 
 
-const twilioAgent = supertest.agent(APP)
+const twilioAgent = supertest.agent(APP);
 
-const twilioRecordingRequest = require('../data/twilioVoiceRecording')
-const twilioInboundCall = require('../data/twilioInboundCall')
-const twilioTranscription = require('../data/twilioTranscription')
-const twilioStatusUpdate = require('../data/twilioStatusUpdate')
+const twilioRecordingRequest = require('../data/twilioVoiceRecording');
+const twilioInboundCall = require('../data/twilioInboundCall');
+const twilioTranscription = require('../data/twilioTranscription');
+const twilioStatusUpdate = require('../data/twilioStatusUpdate');
+
+// #2
+const twilioRecordingRequest_2 = require('../data/twilioVoiceRecording_2');
+const twilioStatusUpdate_2 = require('../data/twilioStatusUpdate_2');
 
 
 const RecordingSid = 'REde2dd4be0e7a521f8296a7390a9ab21b';
+const emptyTwilioResponse = '<?xml version="1.0" encoding="UTF-8"?><Response></Response>';
 
 describe('Voice requests with voice controller', function() {
 
@@ -68,6 +74,54 @@ describe('Voice requests with voice controller', function() {
       });
   });
 
+  it('when the call is initiated, twilio api should be able to alert clientcomm and receive empty twilio xml response', function(done) {
+    let iniatedTwilioCallUpdate = JSON.parse(JSON.stringify(twilioStatusUpdate));
+    iniatedTwilioCallUpdate.CallStatus = 'initiated';
+
+    twilioAgent.post('/webhook/voice/status/')
+      .send(iniatedTwilioCallUpdate)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        res.text.should.be.exactly(emptyTwilioResponse);
+
+        return OutboundVoiceMessages.findOneByAttribute(
+          'call_sid', 
+          'CAc080f49bc9742c4281b9dbcdb652d29a'
+        ).then((ovm) => {
+          should.equal(ovm.delivered, false);
+          done();
+        }).catch(done);
+      });
+  });
+
+  it('when the phone is ringing, twilio api should be able to alert clientcomm and receive empty twilio xml response', function(done) {
+    let iniatedTwilioCallUpdate = JSON.parse(JSON.stringify(twilioStatusUpdate));
+    iniatedTwilioCallUpdate.CallStatus = 'ringing';
+    
+    twilioAgent.post('/webhook/voice/status/')
+      .send(iniatedTwilioCallUpdate)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        res.text.should.be.exactly(emptyTwilioResponse);
+
+        return OutboundVoiceMessages.findOneByAttribute(
+          'call_sid', 
+          'CAc080f49bc9742c4281b9dbcdb652d29a'
+        ).then((ovm) => {
+          should.equal(ovm.delivered, false);
+          done();
+        }).catch(done);
+      });
+  });
+
   it('should update status of OVM when applicable (e.g. receiving a callback from an OVM outbound)', function(done) {
     twilioAgent.post('/webhook/voice/status/')
       .send(twilioStatusUpdate)
@@ -82,29 +136,11 @@ describe('Voice requests with voice controller', function() {
           'CAc080f49bc9742c4281b9dbcdb652d29a'
         ).then((ovm) => {
           should.equal(ovm.delivered, true);
-          done();
-        }).catch(done);
-      });
-  });
+          should.equal(ovm.last_delivery_attempt, null);
 
-  it('should accept a new inbound voice recording (mocked)', function(done) {
-    mock.enable();
-
-    let params = '?commId=2';
-        params += `&type=message`;
-
-    twilioAgent.post('/webhook/voice/save-recording/' + params)
-      .send(twilioRecordingRequest)
-      .expect(200)
-      .end(function(err, res) {
-        if (err) {
-          return done(err);
-        }
-
-        return OutboundVoiceMessages.findOneByAttribute('RecordingSid', RecordingSid)
-        .then((ovm) => {
-          should.exist(ovm);
-          mock.disable();
+          return Notifications.findOneByAttribute('ovm_id', ovm.id);
+        }).then((notification) => {
+          should.equal(notification.sent, true);
           done();
         }).catch(done);
       });
@@ -186,22 +222,160 @@ describe('Voice requests with voice controller', function() {
     twilioAgent.post('/webhook/voice/play-message?ovmId=1')
       .expect(200)
       .end((err, resp) => {
-        if (err) {return done(err)}
+        if (err) {
+          return done(err);
+        }
 
         resp.text.should.match(/have a new message from your case manager/)
-        done()
-      })
-  })
+        done();
+      });
+  });
 
   it('should provide twiml to play ovm', function(done) {
     twilioAgent.post('/webhook/voice/play-message')
       .expect(200)
       .end((err, resp) => {
-        if (err) {return done(err)}
+        if (err) {
+          return done(err);
+        }
 
         resp.text.should.match(/t find a recording with that/)
-        done()
-      })
-  })
+        done();
+      });
+  });
 
-})
+
+  //////////////////////////////////////////////////
+  // Processing a second "#2"
+  //////////////////////////////////////////////////
+
+
+  it('should accept a 2nd pre-recorded voice notification (OVM)', function(done) {
+    // When mock is enabled, libraries send fake responses instead of real ones
+    // Example: mailgun library send back fake xml response
+    mock.enable();
+
+    let params = '?userId=2&clientId=1';
+        params += `&deliveryDate=${new Date().getTime()}`;
+        params += `&type=ovm`;
+
+    twilioAgent.post('/webhook/voice/save-recording/' + params)
+      .send(twilioRecordingRequest_2)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        return OutboundVoiceMessages.findOneByAttribute('RecordingSid', twilioRecordingRequest_2.RecordingSid)
+        .then((ovm) => {
+          should.exist(ovm);
+          mock.disable();
+          done();
+        }).catch(done);
+      });
+  });
+
+  it('when the call fails, twilio api should be able to alert clientcomm and receive empty twilio xml response', function(done) {
+    let iniatedTwilioCallUpdate = JSON.parse(JSON.stringify(twilioStatusUpdate_2));
+    iniatedTwilioCallUpdate.CallStatus = 'failed';
+
+    twilioAgent.post('/webhook/voice/status/')
+      .send(iniatedTwilioCallUpdate)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        res.text.should.be.exactly(emptyTwilioResponse);
+
+        return OutboundVoiceMessages.findOneByAttribute(
+          'call_sid', 
+          'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
+        ).then((ovm) => {
+          done();
+        }).catch(done);
+      });
+  });
+
+  it('no recording should have been created yet, because not enough time passed since ovm delivery date', function(done) {
+    Recordings.findOneByAttribute('RecordingSid', twilioRecordingRequest_2.RecordingSid)
+    .then((recording) => {
+      should.equal(recording, null);
+      done();
+
+    }).catch(done);
+  });
+
+  it('when the call fails after 30 minutes and executes status update processes', function(done) {
+    let iniatedTwilioCallUpdate = JSON.parse(JSON.stringify(twilioStatusUpdate_2));
+    iniatedTwilioCallUpdate.CallStatus = 'failed';
+
+    OutboundVoiceMessages.findOneByAttribute(
+      'call_sid', 
+      'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
+    ).then((ovm) => {
+      // just for the test, let's change the delivery date 
+      // to a time that is greater than 30 minutes
+      // such that "enough time has passed"
+      return ovm.update({delivery_date: '2016-11-14 15:00:00', });
+    }).then((ovm) => {
+
+      // thene execute a new post update on status
+      twilioAgent.post('/webhook/voice/status/')
+        .send(iniatedTwilioCallUpdate)
+        .expect(200)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          }
+
+          res.text.should.be.exactly(emptyTwilioResponse);
+
+          return OutboundVoiceMessages.findOneByAttribute(
+            'call_sid', 
+            'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
+          ).then((ovm) => {
+            should.equal(ovm.delivered, true);
+            ovm.last_delivery_attempt.should.not.be.exactly(null);
+            done();
+          }).catch(done);
+        });
+
+    }).catch(done);
+  });
+
+  it('should have created a new message stream item based on that completed ovm', function(done) {
+    Recordings.findOneByAttribute('RecordingSid', twilioRecordingRequest_2.RecordingSid)
+    .then((recording) => {
+      should.exist(recording);
+      done();
+
+    }).catch(done);
+  });
+
+  it('should accept a new inbound voice recording (mocked)', function(done) {
+    mock.enable();
+
+    let params = '?commId=2';
+        params += `&type=message`;
+
+    twilioAgent.post('/webhook/voice/save-recording/' + params)
+      .send(twilioRecordingRequest_2)
+      .expect(200)
+      .end(function(err, res) {
+        if (err) {
+          return done(err);
+        }
+
+        return OutboundVoiceMessages.findOneByAttribute('RecordingSid', twilioRecordingRequest_2.RecordingSid)
+        .then((ovm) => {
+          should.exist(ovm);
+          mock.disable();
+          done();
+        }).catch(done);
+      });
+  });
+
+});

@@ -62,7 +62,7 @@ describe('Email endpoint', function() {
         .then((messages) => {
           should.exist(messages[0])
           messages.forEach((message) => {
-            message.tw_status.should.be.exactly('Opened')
+            message.tw_status.should.be.exactly('opened');
           })
           done()
         })
@@ -79,7 +79,7 @@ describe('Email endpoint', function() {
         .then((messages) => {
           should.exist(messages[0])
           messages.forEach((message) => {
-            message.tw_status.should.be.exactly('Delivered')
+            message.tw_status.should.be.exactly('delivered');
           })
           done()
         })

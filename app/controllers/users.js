@@ -85,12 +85,29 @@ module.exports = {
   },
 
   alter(req, res) {
-    const status = req.params.case === 'close' ? false : true;
+    // we determine whether we are going to change user attribute active
+    // to true or to false
+    const udpatedStatus = req.params.case === 'close' ? false : true;
 
-    Users.changeActivityStatus(req.params.targetUser, status)
-    .then(() => {
-      req.flash('success', 'Updated user activity state.');
-      res.redirect('/org/users');
+    Users.findOneByAttribute('cmid', req.params.targetUser)
+    .then((user) => {
+      if (user) {
+        return user.update({active: udpatedStatus, });
+      } else {
+        // no user was found so just pass null to the next function
+        return null;
+      }
+    }).then((user) => {
+      // if not null then we updated the user successfully
+      if (user) {
+        req.flash('success', 'Updated user activity state.');
+        res.redirect('/org/users');
+      } else {
+        // otherwise we need to warn the user that it did not work
+        req.flash('warning', 'Could not find that user to update.');
+        // and then use the res middleware function to redirect to 404
+        res.notFound();
+      }
     }).catch(res.error500);
   },
 
