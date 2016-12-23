@@ -43,7 +43,7 @@
       <% const showWarning = clearStatuses.indexOf(message.tw_status) == -1; %>
 
       <div class="messageDiv <%= !message.inbound ? 'rightAligned' : '' %>">
-        <div class="message <%= message.inbound ? 'inbound' : 'outbound' %> <% if (showWarning) { %>warning<% } %>"
+        <div class="message <% if (showWarning) { %>warning<% } %> <%= message.inbound ? 'inbound' : 'outbound' %>"
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
           <div class="content">
             <%= message.content %>
