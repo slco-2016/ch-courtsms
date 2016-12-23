@@ -297,7 +297,7 @@ if (credentials.RUNSCHEDULED) {
         smsStatusCheck.checkMsgAgainstTwilio(message);
       });
     }).catch();
-  }, 15 * minute);
+  }, 0.5 * minute);
 }
 
 module.exports = app;
