@@ -118,15 +118,21 @@ module.exports = {
         const failedOK = (callStatus === 'failed' && ovm && enoughTimeHasPassed);
 
         if (completedOK || failedOK) {
-          return ovm.update({delivered: true,})
+          // this is what we are updating about the OVM row
+          let updateObj = {delivered: true, };
+
+          // if the OVM failed to send, we will log a last delivery 
+          // timestamp attempted as well
+          if (failedOK) {
+            updateObj.last_delivery_attempt = moment().tz('Europe/Dublin').format();
+          }
+
+          // execute the udpate
+          return ovm.update(updateObj)
           .then((ovm) => {
             return Notifications.findOneByAttribute('ovm_id', ovm.id);
           }).then((notification) => {
-            if (failedOK) {
-              return notification.update({sent: true, last_delivery_attempt: new Date().toString(), });
-            } else {
-              return notification.update({sent: true,});
-            }
+            return notification.update({sent: true,});
           }).then((notification) => {
             const commId = notification.comm;
             const recordingKey = ovm.recording_key;
