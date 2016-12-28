@@ -10,15 +10,15 @@ $(".hiddenAlerts .alertRow .close").click(removeAlert);
 
 function removeAlert (altThis) { 
   var that;
-  if (altThis) {
+  if (altThis && altThis.type !== 'click') {
     that = altThis;
   } else {
-    that = this
+    that = this;
   }
   
   var alertId = $(that).attr("alertID");
   if (alertId) {
-    submitAlertClosure(alertId);
+    // submitAlertClosure(alertId);
   }
   $(that).parent().remove(); 
   var nr = $(".numberRemaining");
