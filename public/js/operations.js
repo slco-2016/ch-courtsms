@@ -18,7 +18,7 @@ function removeAlert (altThis) {
   
   var alertId = $(that).attr("alertID");
   if (alertId) {
-    // submitAlertClosure(alertId);
+    submitAlertClosure(alertId);
   }
   $(that).parent().remove(); 
   var nr = $(".numberRemaining");
