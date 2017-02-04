@@ -20,8 +20,8 @@ const baseProductionReadyCredentials = {
 
   // TODO: Move all twilio components into a single key
   twilio: {
-    outboundCallbackUrl: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
-    outboundCallbackUrlBackup: 'http://ec3-4-4-44.us-west-1.compute.amazonaws.com',
+    outboundCallbackUrl: 'http://ecx-x-x-xx.us-xxx.compute.amazonaws.com',
+    outboundCallbackUrlBackup: 'http://ecx-x-x-xx.us-xxx.compute.amazonaws.com',
   },
 
   // Session
@@ -63,9 +63,9 @@ const baseProductionReadyCredentials = {
 
 if (CCENV == 'production') {
   baseProductionReadyCredentials.db = {
-    user:     'kuan',
-    password: '1922Park',
-    host:     'clientcomm-v40.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
+    user:     'foobar',
+    password: '**************************',
+    host:     'unique-production.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
   };
 }
 
@@ -82,9 +82,9 @@ if (CCENV !== 'production') {
 if (CCENV == 'development') {
   console.log('Development environment: Credentials have been modified.'.yellow);
   baseProductionReadyCredentials.db = {
-    user:     'kuan',
-    password: '1922Park',
-    host:     'clientcomm-staging.cxzwd26pqge8.us-west-1.rds.amazonaws.com',
+    user:     'foobar',
+    password: '**************************',
+    host:     'unique-staging.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
   };
 }
 
