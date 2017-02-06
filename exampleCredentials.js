@@ -1,5 +1,4 @@
-const colors = require('colors');
-
+/* eslint-disable no-console */
 // Environment is set with the CCENV process environment variable
 // This can be set in the command line before commands 
 // (e.g. CCENV=development npm start)
@@ -61,7 +60,7 @@ const baseProductionReadyCredentials = {
 
 };
 
-if (CCENV == 'production') {
+if (CCENV === 'production') {
   baseProductionReadyCredentials.db = {
     user:     'foobar',
     password: '**************************',
@@ -79,7 +78,7 @@ if (CCENV !== 'production') {
 }
 
 // Changes made when we are developing (e.g. staging server, different rootURL, etc.)
-if (CCENV == 'development') {
+if (CCENV === 'development') {
   console.log('Development environment: Credentials have been modified.'.yellow);
   baseProductionReadyCredentials.db = {
     user:     'foobar',
