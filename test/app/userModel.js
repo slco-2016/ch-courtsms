@@ -1,3 +1,4 @@
+/* global describe it */
 const assert = require('assert');
 
 const Users = require('../../app/models/users');
@@ -62,6 +63,15 @@ describe('User checks', () => {
       done();
     }).catch((err) => {
       done(err);
+    });
+  });
+
+  it('finds a user with .findAllByClientIds', (done) => {
+    // clients 1 and 2 are both assigned to user 2
+    Users.findAllByClientIds([1, 2]).then((users) => {
+      users.length.should.be.exactly(1);
+      users.map(u => u.cmid).should.containDeep([2]);
+      done();
     });
   });
 });
