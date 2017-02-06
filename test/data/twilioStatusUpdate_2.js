@@ -1,4 +1,4 @@
-module.exports = { 
+module.exports = {
   Called: '+16198702271',
   ToState: 'CA',
   CallerCountry: 'US',

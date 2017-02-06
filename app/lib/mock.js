@@ -6,7 +6,7 @@ module.exports = {
   isEnabled() {
     return (process.env.CCMOCK && process.env.CCMOCK == 'true');
   },
-  
+
   disable() {
     process.env.CCMOCK = undefined;
   },

@@ -4,8 +4,8 @@ const request = require('request');
 
 const APP = require('../../app/app');
 
-const Attachments =   require('../../app/models/attachments');
-const Messages =      require('../../app/models/messages');
+const Attachments = require('../../app/models/attachments');
+const Messages = require('../../app/models/messages');
 const Notifications = require('../../app/models/notifications');
 
 require('colors');
@@ -14,30 +14,29 @@ const should = require('should');
 const twilioAgent = supertest.agent(APP);
 const smsData = require('../data/testSMSData');
 
-describe('Scheduled operations checks', function() {
-
-  before(function(done) {
+describe('Scheduled operations checks', () => {
+  before((done) => {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
       .set('X-Twilio-Signature', 'Hwg7BlBJGBLRPcRAlKwKlwtQ+q0=')
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         done();
       });
   });
 
-  it('Check and send email alerts if there are unreads', function(done) {
+  it('Check and send email alerts if there are unreads', (done) => {
     require('../../app/lib/em-notify').runEmailUpdates()
     .then(done).catch(done);
   });
 
 
-  it('See if there are any planned notifications to be sent', function(done) {
+  it('See if there are any planned notifications to be sent', (done) => {
     Notifications.checkAndSendNotifications()
     .then(done).catch(done);
   });
 
-  it('Check uncleared messages', function(done) {
+  it('Check uncleared messages', (done) => {
     Messages.findNotClearedMessages()
     .then((messages) => {
       // We should have at least one message in there from the seed data
@@ -53,5 +52,4 @@ describe('Scheduled operations checks', function() {
       });
     }).catch(done);
   });
-
 });

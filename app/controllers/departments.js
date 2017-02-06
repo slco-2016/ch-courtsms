@@ -8,7 +8,7 @@ const Users = require('../models/users');
 module.exports = {
 
   alter(req, res) {
-    const state = req.params.case === 'close' ? false : true;
+    const state = req.params.case !== 'close';
 
     Departments.findMembers(req.params.department)
     .then((members) => {
@@ -36,7 +36,7 @@ module.exports = {
       res.redirect('/org/departments');
     }).catch(res.error500);
   },
-  
+
   edit(req, res) {
     const departmentId = req.params.department;
     const orgId = req.user.org;
@@ -46,19 +46,18 @@ module.exports = {
         PhoneNumbers.findByOrgID(orgId)
         .then((phoneNumbers) => {
           res.render('departments/edit', {
-            department: department,
-            phoneNumbers: phoneNumbers,
+            department,
+            phoneNumbers,
           });
         }).catch(res.error500);
-
       } else {
         notFound(res);
       }
     }).catch(res.error500);
   },
-  
+
   index(req, res) {
-    const status = req.query.status === 'inactive' ? false : true;
+    const status = req.query.status !== 'inactive';
 
     Departments.findByOrg(req.user.org, status)
     .then((departments) => {
@@ -67,20 +66,20 @@ module.exports = {
           tab: 'departments',
           sel: status ? 'active' : 'inactive',
         },
-        departments: departments,
+        departments,
       });
     }).catch(res.error500);
   },
-  
+
   new(req, res) {
     PhoneNumbers.findByOrgID(req.user.org)
     .then((phoneNumbers) => {
       res.render('departments/create', {
-        phoneNumbers: phoneNumbers,
+        phoneNumbers,
       });
     }).catch(res.error500);
   },
-  
+
   supervisorsIndex(req, res) {
     let supervisors;
     DepartmentSupervisors.findByDepartmentIDs(req.params.department)
@@ -90,31 +89,28 @@ module.exports = {
       // Limit options to only users already added to the department
       // This is a "promote from within" concept
       return Users.where({
-        org: req.user.org, 
+        org: req.user.org,
         department: Number(req.params.department),
-        active: true, 
+        active: true,
       });
     }).then((users) => {
-
       // Just sorting by last name here
-      const members = users.sort(function (a, b) {
-        return a.last > b.last;
-      });
+      const members = users.sort((a, b) => a.last > b.last);
 
       res.render('departments/supervisors', {
         departmentId: req.params.department,
-        supervisors:  supervisors,
-        members:      members,
+        supervisors,
+        members,
       });
     }).catch(res.error500);
   },
-  
+
   supervisorsUpdate(req, res) {
     if (!Array.isArray(req.body.supervisorIds)) req.body.supervisorIds = [req.body.supervisorIds,];
 
     DepartmentSupervisors.updateSupervisors(
-      req.params.department, 
-      req.body.supervisorIds, 
+      req.params.department,
+      req.body.supervisorIds,
       req.body.revertClass
     ).then(() => {
       req.flash('success', 'Updated department supervisors.');

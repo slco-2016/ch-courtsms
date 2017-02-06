@@ -1,14 +1,14 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
-    knex.schema.table("msgs", function(table) {
-      table.text("sent_to")
+    knex.schema.table('msgs', (table) => {
+      table.text('sent_to');
     }),
-  ]);  
+  ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
-    knex.raw("ALTER TABLE msgs DROP COLUMN IF EXISTS sent_to;"),
+    knex.raw('ALTER TABLE msgs DROP COLUMN IF EXISTS sent_to;'),
   ]);
 };

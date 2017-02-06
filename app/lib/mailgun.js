@@ -14,8 +14,8 @@ const mock = resourceRequire('lib', 'mock');
 mailgunWebhookUpdate = (name, url, callback) => {
   request({
     method: 'put',
-    url: 'https://api.mailgun.net/v3/domains/clientcomm.org/webhooks/' + name,
-    formData: {url: url,},
+    url: `https://api.mailgun.net/v3/domains/clientcomm.org/webhooks/${name}`,
+    formData: { url },
     auth: {
       user: 'api',
       password: credentials.mailgun.apiKey,
@@ -33,11 +33,11 @@ module.exports = {
         });
       } else {
         mailgun.messages().send({
-          from: from,
-          to: to,
-          subject: subject,
+          from,
+          to,
+          subject,
           html: content,
-          'o:tracking-opens':1,
+          'o:tracking-opens': 1,
         }, (error, body) => {
           if (error) {
             reject(error);
@@ -56,12 +56,12 @@ module.exports = {
     return new Promise((fulfill, reject) => {
       mailgunWebhookUpdate(
         'deliver',
-        hostUrl + '/webhook/email/status',
+        `${hostUrl}/webhook/email/status`,
         (error, resp, body) => {
           if (error) { return reject(error); }
           mailgunWebhookUpdate(
             'open',
-            hostUrl + '/webhook/email/status',
+            `${hostUrl}/webhook/email/status`,
             (error, resp, body) => {
               if (error) { return reject(error); }
               mailgun.routes().list((error, routes) => {
@@ -80,7 +80,7 @@ module.exports = {
             }
           );
         }
-      );      
+      );
     });
   },
 };

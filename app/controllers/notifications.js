@@ -17,7 +17,7 @@ module.exports = {
     } else {
       strategy = Notifications.findByUser(req.user.cmid, isSent);
     }
-    
+
     strategy.then((n) => {
       res.render('notifications/index', {
         hub: {
@@ -42,14 +42,12 @@ module.exports = {
     Clients.findByUser(user, true)
     .then((clients) => {
       if (preSelect) {
-        clients = clients.filter((client) => {
-          return client.clid == Number(preSelect);
-        });
+        clients = clients.filter(client => client.clid == Number(preSelect));
       }
 
       res.render('notifications/create', {
-        clients: clients,
-        preSelect: preSelect,
+        clients,
+        preSelect,
       });
     }).catch(res.error500);
   },
@@ -72,19 +70,19 @@ module.exports = {
     Templates.findByUser(user)
     .then((templates) => {
       res.render('notifications/templates', {
-        templates: templates,
+        templates,
         parameters: req.query,
       });
     }).catch(res.error500);
   },
 
   create(req, res) {
-    const user     = req.getUser();
-    const client   = req.body.clientID;
-    const comm     = req.body.commID == '' ? null : req.body.commID;
-    const subject  = !req.body.subject ? '' : req.body.subject;
-    const message  = req.body.message;
-    const send     = moment(req.body.sendDate)
+    const user = req.getUser();
+    const client = req.body.clientID;
+    const comm = req.body.commID == '' ? null : req.body.commID;
+    const subject = !req.body.subject ? '' : req.body.subject;
+    const message = req.body.message;
+    const send = moment(req.body.sendDate)
                     .startOf('day')
                     .add(Number(req.body.sendHour), 'hours')
                     .add(6, 'hours') // temp hack to ensure MST (TODO: Fix this!!)
@@ -92,15 +90,15 @@ module.exports = {
                     .format('YYYY-MM-DD HH:mm:ss');
 
     Notifications.create(
-                    user, 
-                    client, 
-                    comm, 
-                    subject, 
-                    message, 
+                    user,
+                    client,
+                    comm,
+                    subject,
+                    message,
                     send
     ).then(() => {
       // log the use of a template if it exists
-      let templateId = req.body.templateid;
+      const templateId = req.body.templateid;
       if (templateId) {
         Templates.logUse(templateId, user, client).then().catch();
       }
@@ -122,13 +120,12 @@ module.exports = {
     }).then((n) => {
       if (n) {
         // Remove all closed clients except for if matches with notification
-        clients = clients.filter((c) => { return c.active || c.clid === n.client; });
+        clients = clients.filter(c => c.active || c.clid === n.client);
 
         res.render('notifications/edit', {
           notification: n,
-          clients: clients,
+          clients,
         });
-
       } else {
         notFound(res);
       }
@@ -136,12 +133,12 @@ module.exports = {
   },
 
   update(req, res) {
-    const notification   = req.params.notification;
-    const client         = req.params.client;
-    const comm           = req.body.commID ? req.body.commID : null;
-    const subject        = req.body.subject;
-    const message        = req.body.message;
-    const send           = moment(new Date(req.body.sendDate))
+    const notification = req.params.notification;
+    const client = req.params.client;
+    const comm = req.body.commID ? req.body.commID : null;
+    const subject = req.body.subject;
+    const message = req.body.message;
+    const send = moment(new Date(req.body.sendDate))
                           .add(12, 'hours')
                           .tz(res.locals.organization.tz)
                           .startOf('day')
@@ -150,11 +147,11 @@ module.exports = {
                           .format('YYYY-MM-DD HH:mm:ss');
 
     Notifications.editOne(
-                    notification, 
-                    client, 
-                    comm, 
-                    send, 
-                    subject, 
+                    notification,
+                    client,
+                    comm,
+                    send,
+                    subject,
                     message
     ).then((notification) => {
       req.flash('success', 'Edited notification.');
@@ -175,14 +172,12 @@ module.exports = {
     Clients.findByUser(user, true)
     .then((clients) => {
       if (preSelect) {
-        clients = clients.filter((client) => {
-          return client.clid == Number(preSelect);
-        });
+        clients = clients.filter(client => client.clid == Number(preSelect));
       }
 
       res.render('notifications/voice', {
-        clients: clients,
-        preSelect: preSelect,
+        clients,
+        preSelect,
       });
     }).catch(res.error500);
   },
@@ -194,7 +189,6 @@ module.exports = {
     .then((notification) => {
       req.flash('success', 'Removed notification.');
       res.redirect(`/clients/${notification.client}/notifications`);
-
     }).catch(res.error500);
   },
 };

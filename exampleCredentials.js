@@ -1,22 +1,22 @@
 const colors = require('colors');
 
 // Environment is set with the CCENV process environment variable
-// This can be set in the command line before commands 
+// This can be set in the command line before commands
 // (e.g. CCENV=development npm start)
 const CCENV = process.env.CCENV || 'development';
-const RECEIVEBACKUPMODE = process.env.RECEIVEBACKUPMODE == 'on' ? true : false;
+const RECEIVEBACKUPMODE = process.env.RECEIVEBACKUPMODE == 'on';
 
 const baseProductionReadyCredentials = {
 
   // Allow access to CCENV be consistent from credentials.js
   // TODO: Update all references to CCENV to be from here
-  CCENV: CCENV,
-  RECEIVEBACKUPMODE: RECEIVEBACKUPMODE,
+  CCENV,
+  RECEIVEBACKUPMODE,
 
   // Twilio-related
   accountSid: '**************************',
-  authToken:  '**************************',
-  twilioNum:  '+12344564563',
+  authToken: '**************************',
+  twilioNum: '+12344564563',
 
   // TODO: Move all twilio components into a single key
   twilio: {
@@ -33,9 +33,9 @@ const baseProductionReadyCredentials = {
 
   // Connection details for the production database
   db: {
-    user:     'usernameunqiue',
+    user: 'usernameunqiue',
     password: '**************************',
-    host:     'unique.lksjdfbj3.us-west-1.rds.amazonaws.com',
+    host: 'unique.lksjdfbj3.us-west-1.rds.amazonaws.com',
   },
 
   // Currently we use Gmail Node library for email comms
@@ -55,7 +55,7 @@ const baseProductionReadyCredentials = {
 
   // AWS interface/access secrets
   aws: {
-    accessKey:       '**************************',
+    accessKey: '**************************',
     secretAccessKey: '**************************',
   },
 
@@ -63,9 +63,9 @@ const baseProductionReadyCredentials = {
 
 if (CCENV == 'production') {
   baseProductionReadyCredentials.db = {
-    user:     'foobar',
+    user: 'foobar',
     password: '**************************',
-    host:     'unique-production.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
+    host: 'unique-production.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
   };
 }
 
@@ -82,9 +82,9 @@ if (CCENV !== 'production') {
 if (CCENV == 'development') {
   console.log('Development environment: Credentials have been modified.'.yellow);
   baseProductionReadyCredentials.db = {
-    user:     'foobar',
+    user: 'foobar',
     password: '**************************',
-    host:     'unique-staging.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
+    host: 'unique-staging.slkdfj9d8sf.us-west-1.rds.amazonaws.com',
   };
 }
 

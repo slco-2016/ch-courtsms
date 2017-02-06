@@ -1,8 +1,8 @@
-'use strict';
+
 
 // Libraries
-const db        = require('../../app/db');
-const Promise   = require('bluebird');
+const db = require('../../app/db');
+const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
 const Communications = require('../models/communications');
@@ -13,7 +13,7 @@ class CommConns extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'commconnid',
         'client',
@@ -26,7 +26,7 @@ class CommConns extends BaseModel {
   }
 
   // override standard find by id
-  static findById (id) {
+  static findById(id) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .leftJoin('comms', 'comms.commid', 'commconns.comm')
@@ -37,7 +37,7 @@ class CommConns extends BaseModel {
     });
   }
 
-  static findByCommId (communicationId) {
+  static findByCommId(communicationId) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .where('comm', communicationId)
@@ -48,7 +48,7 @@ class CommConns extends BaseModel {
     });
   }
 
-  static findByValue (value) {
+  static findByValue(value) {
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
       .then((communication) => {
@@ -57,16 +57,15 @@ class CommConns extends BaseModel {
           return db('commconns')
             .whereNull('retired')
             .andWhere('comm', commId);
-        } else {
-          fulfill([]);
         }
+        fulfill([]);
       }).then((commConns) => {
         this._getMultiResponse(commConns, fulfill);
       }).catch(reject);
     });
   }
-  
-  static findByClientIdWithCommMetaData (clientId) {
+
+  static findByClientIdWithCommMetaData(clientId) {
     return new Promise((fulfill, reject) => {
       CommConns.findByClientIdsWithCommMetaData([clientId, ])
       .then((commconns) => {
@@ -74,8 +73,8 @@ class CommConns extends BaseModel {
       }).catch(reject);
     });
   }
-  
-  static findByClientIdsWithCommMetaData (clientIds) {
+
+  static findByClientIdsWithCommMetaData(clientIds) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .leftJoin(
@@ -91,7 +90,7 @@ class CommConns extends BaseModel {
     });
   }
 
-  static getClientCommunications (clientId) {
+  static getClientCommunications(clientId) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .select('commconns.*', 'comms.type', 'comms.value')
@@ -99,14 +98,12 @@ class CommConns extends BaseModel {
         .whereNull('retired')
         .andWhere('commconns.client', clientId)
       .then((commConns) => {
-        const commConnsIDArray = commConns.map(function (commConn) { 
-          return commConn.comm;
-        });
+        const commConnsIDArray = commConns.map(commConn => commConn.comm);
         CommConns.getUseCounts(clientId, commConnsIDArray)
         .then((counts) => {
-          commConns.map(function (commConn) {
+          commConns.map((commConn) => {
             commConn.useCount = 0;
-            counts.forEach(function (count) {
+            counts.forEach((count) => {
               if (count.comm == commConn.comm) commConn.useCount = count.count;
             });
             return commConn;
@@ -114,10 +111,10 @@ class CommConns extends BaseModel {
           fulfill(commConns);
         }).catch(reject);
       }).catch(reject);
-    }); 
+    });
   }
 
-  static getUseCounts (clientId, communicationIDArray) {
+  static getUseCounts(clientId, communicationIDArray) {
     return new Promise((fulfill, reject) => {
       db('msgs')
         .select(db.raw('count(msgid), msgs.comm'))
@@ -128,7 +125,7 @@ class CommConns extends BaseModel {
       .then((counts) => {
         fulfill(counts);
       }).catch(reject);
-    }); 
+    });
   }
 
   static updateCommConnName(commConnId, newName) {
@@ -142,40 +139,38 @@ class CommConns extends BaseModel {
     });
   }
 
-  static create (clientId, type, name, value) {
+  static create(clientId, type, name, value) {
     return new Promise((fulfill, reject) => {
       Communications.findByValue(value)
       .then((communication) => {
-        // if a communication method already exists just create a reference 
+        // if a communication method already exists just create a reference
         if (communication) {
           db('commconns')
             .insert({
               client: clientId,
               comm: communication.commid,
-              name: name,
+              name,
             })
-          .then((success) => { 
+          .then((success) => {
             fulfill();
           }).catch(reject);
         } else {
           Communications.create(type, name, value)
-          .then((communication) => { 
+          .then((communication) => {
             db('commconns')
               .insert({
                 client: clientId,
                 comm: communication.commid,
-                name: name,
+                name,
               })
-            .then((success) => { 
+            .then((success) => {
               fulfill();
             }).catch(reject);
           }).catch(reject);
         }
         return null;
       }).catch(reject);
-
-
-    }); 
+    });
   }
 
 }

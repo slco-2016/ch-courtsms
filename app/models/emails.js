@@ -1,14 +1,14 @@
-'use strict';
 
-const db      = require('../../app/db');
+
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
 
-class Emails extends BaseModel{
+class Emails extends BaseModel {
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'id',
         'cleanBody',

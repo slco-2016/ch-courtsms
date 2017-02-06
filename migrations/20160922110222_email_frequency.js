@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
 
     // Create a new col for timezone
@@ -8,10 +8,10 @@ exports.up = function(knex, Promise) {
                 ADD COLUMN email_alert_frequency INT default 24;
             `),
 
-  ])
+  ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
     // Remove the timezone column, you will lose that data
@@ -20,5 +20,5 @@ exports.down = function(knex, Promise) {
                 DROP COLUMN IF EXISTS email_alert_frequency;
             `),
 
-  ])
+  ]);
 };

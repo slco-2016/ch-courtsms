@@ -51,23 +51,22 @@ module.exports = {
       // filter by departments if a userFilter is specified
       if (userFilter) {
         return Users.findOneByAttribute('cmid', userFilter);
-      } else {
-        return new Promise((fulfill, reject) => {
-          fulfill(null);
-        });
       }
+      return new Promise((fulfill, reject) => {
+        fulfill(null);
+      });
     }).then((resp) => {
       userToFilterBy = resp;
 
       // user filter trump card, pre-empts the departmentFilter setting prior
       if (userToFilterBy) {
-        departmentFilter  = userToFilterBy.department;
+        departmentFilter = userToFilterBy.department;
       } else {
         userToFilterBy = null;
         userFilter = null;
       }
 
-      // we use the special library because we want the department 
+      // we use the special library because we want the department
       // name with each resulting user
       return libUser.findByOrgWithDepartmentNameAndNoInfoTag(req.user.org, true);
     }).then((resp) => {
@@ -75,29 +74,21 @@ module.exports = {
       users = resp;
 
       if (departmentFilter) {
-        // limit the number of department options 
+        // limit the number of department options
         // that are returned to the only one allowed
-        departments = departments.filter((department) => { 
-          return department.department_id === departmentFilter;
-        });
+        departments = departments.filter(department => department.department_id === departmentFilter);
 
         // also remove all users who are not in that department
-        users = users.filter((user) => {
-          return user.department === departmentFilter;
-        });
+        users = users.filter(user => user.department === departmentFilter);
       }
 
-      // after filtering by department, also make sure only 
-      // if userToFilterBy is not null, then we want to filter for only 
+      // after filtering by department, also make sure only
+      // if userToFilterBy is not null, then we want to filter for only
       // the department that the user has as her/his attribute under department
       if (userToFilterBy) {
-        departments = departments.filter((department) => {
-          return department.department_id === userToFilterBy.department;
-        });
+        departments = departments.filter(department => department.department_id === userToFilterBy.department);
 
-        users = users.filter((eachUser) => { 
-          return eachUser.cmid == userFilter;
-        });
+        users = users.filter(eachUser => eachUser.cmid == userFilter);
       }
 
 
@@ -105,28 +96,20 @@ module.exports = {
       // whether for all counts by a single user, a department, or an org
       if (userFilter) {
         return Messages.countsByUser(userFilter, 'day');
-
       } else if (departmentFilter) {
         return Messages.countsByDepartment(departmentFilter, 'day');
-
-      } else {
-        return Messages.countsByOrg(req.user.org, 'day');
       }
-
+      return Messages.countsByOrg(req.user.org, 'day');
     }).then((resp) => {
       countsByDay = resp;
 
       // this block generate the upper bar in the graph on the dashboard
       if (userFilter) {
         return Messages.countsByUser(userFilter, 'week');
-
       } else if (departmentFilter) {
         return Messages.countsByDepartment(departmentFilter, 'week');
-
-      } else {
-        return Messages.countsByOrg(req.user.org, 'week');
       }
-
+      return Messages.countsByOrg(req.user.org, 'week');
     }).then((counts) => {
       countsByWeek = counts;
 
@@ -140,66 +123,61 @@ module.exports = {
 
       // this section helps us determine the "top" and "bottom" x users for a week
       // first we want all the user ids we are comparing
-      const userIds = users.map((user) => {
-        return user.cmid;
-      });
+      const userIds = users.map(user => user.cmid);
 
       // now we want to do a Promise map over them, running a query for each
       // TODO: is can we do this with one query instead of 50?
-      return new Promise ((fulfill, reject) => {
+      return new Promise((fulfill, reject) => {
         fulfill(userIds);
       });
-    }).map((userId) => {
+    }).map(userId =>
 
       // this is the query that is being mapped
       // we are looking for how many messages that user has sent this week
       // TODO: We should update this query to only check for this week's performance
       //       if we did that we could drop lines 160 - 177 basically
-      return Messages.countsByUser(userId, 'week');
-    }).then((usersWithMessageCountsList) => {
-
+       Messages.countsByUser(userId, 'week')).then((usersWithMessageCountsList) => {
       // so usersWithMessageCountsList returns an array of counts for all weeks
       // in that users history
-      // the below iterates through that and looks for 
+      // the below iterates through that and looks for
       // just the results from the current week
       // otherwise it does not push that user into usersWithMessageCounts
-      const usersWithMessageCounts = [];
-      const now = moment();
-      usersWithMessageCountsList.forEach((dates, i) => {
-        const pairedUser = users[i];
-        pairedUser.week_count = 0;
-        let dateCount = null;
-        dates.forEach((date) => {
-          const test = moment(date.time_period);
-          if (now.isSame(test, 'week')) {
-            dateCount = date;
-          }
-        });
-        if (dateCount) {
-          pairedUser.week_count = Number(dateCount.message_count);
-        }
-        usersWithMessageCounts.push(pairedUser);
-      });
-      users = usersWithMessageCounts;
+         const usersWithMessageCounts = [];
+         const now = moment();
+         usersWithMessageCountsList.forEach((dates, i) => {
+           const pairedUser = users[i];
+           pairedUser.week_count = 0;
+           let dateCount = null;
+           dates.forEach((date) => {
+             const test = moment(date.time_period);
+             if (now.isSame(test, 'week')) {
+               dateCount = date;
+             }
+           });
+           if (dateCount) {
+             pairedUser.week_count = Number(dateCount.message_count);
+           }
+           usersWithMessageCounts.push(pairedUser);
+         });
+         users = usersWithMessageCounts;
 
       // specifically gives you the percentage value for the donut chart in the top right
-      return CloseoutSurveys.getSuccessDistributionByOrg(req.user.org);
-    }).then((surveySynopsis) => {
-
-      res.render('dashboard/index', {
-        hub: {
-          tab: 'dashboard',
-          sel: null,
-        },
-        users:            users,
-        userFilter:       userFilter || null,
-        departments:      departments,
-        departmentFilter: departmentFilter || null,
-        countsByDay:      countsByDay,
-        countsByWeek:     countsByWeek,
-        surveySynopsis:   surveySynopsis,
-      });
-    }).catch(res.error500);
+         return CloseoutSurveys.getSuccessDistributionByOrg(req.user.org);
+       }).then((surveySynopsis) => {
+         res.render('dashboard/index', {
+           hub: {
+             tab: 'dashboard',
+             sel: null,
+           },
+           users,
+           userFilter: userFilter || null,
+           departments,
+           departmentFilter: departmentFilter || null,
+           countsByDay,
+           countsByWeek,
+           surveySynopsis,
+         });
+       }).catch(res.error500);
   },
 
 };

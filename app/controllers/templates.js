@@ -10,7 +10,7 @@ module.exports = {
           tab: 'templates',
           sel: null,
         },
-        templates: templates,
+        templates,
       });
     }).catch(res.error500);
   },
@@ -20,9 +20,9 @@ module.exports = {
   },
 
   create(req, res) {
-    const orgID   = req.user.org;
-    const userID  = req.user.cmid;
-    const title   = req.body.title;
+    const orgID = req.user.org;
+    const userID = req.user.cmid;
+    const title = req.body.title;
     const content = req.body.content;
     Templates.insertNew(orgID, userID, title, content)
     .then(() => {
@@ -44,7 +44,7 @@ module.exports = {
     .then((template) => {
       if (template) {
         res.render('templates/edit', {
-          template: template,
+          template,
         });
       } else {
         notFound(res);
@@ -54,7 +54,7 @@ module.exports = {
 
   update(req, res) {
     const templateId = req.params.template;
-    const title   = req.body.title;
+    const title = req.body.title;
     const content = req.body.content;
     Templates.editOne(templateId, title, content)
     .then(() => {
@@ -62,5 +62,5 @@ module.exports = {
       res.redirect('/templates');
     }).catch(res.error500);
   },
-  
+
 };

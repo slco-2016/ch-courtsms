@@ -19,32 +19,31 @@ const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages')
 const Recordings = resourceRequire('models', 'Recordings');
 
 module.exports = {
-  
+
   // Makes the call from Twilio to get user (case manager)
   // to record a voice message for a client to be sent
   // at a later date (as a notification)
   recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
-
     // Concat parameters so that callback goes to recording
     // endpoint with all data needed to know where to save
     // that recording at
     let params = `?userId=${user.cmid}&commId=`;
-        params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
-        params += `&clientId=${clientId}`;
-        params += '&type=ovm';
+    params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
+    params += `&clientId=${clientId}`;
+    params += '&type=ovm';
 
     // TODO: The callback URL is set in credentials
     // Problem: This requires the credentials.js file to be
     // custom set for every deployment with regards to the Twilio
     // address. Is there a way to programmatically grab the domain?
     if (!domain) {
-      domain = credentials.twilio.outboundCallbackUrl;  
+      domain = credentials.twilio.outboundCallbackUrl;
     }
 
-    const url  = `${domain}/webhook/voice/record/${params}`;
+    const url = `${domain}/webhook/voice/record/${params}`;
     const opts = {
-      url:  url,
-      to:   phoneNumber,
+      url,
+      to: phoneNumber,
       from: credentials.twilioNum,
     };
 
@@ -55,10 +54,9 @@ module.exports = {
         if (err) {
           reject(err);
         } else {
-
-          // Response is (so far) not used, we leave it to the user to 
+          // Response is (so far) not used, we leave it to the user to
           // click "Go to notifications" to proceed
-          fulfill(call);  
+          fulfill(call);
         }
       });
     });
@@ -66,7 +64,9 @@ module.exports = {
 
   addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber) {
     return new Promise((fulfill, reject) => {
-      let recording, conversations, clients;
+      let recording,
+        conversations,
+        clients;
 
       return Recordings.create({
         comm_id: communication.commid,
@@ -77,16 +77,14 @@ module.exports = {
         recording = resp;
 
         return sms.retrieveClients(recording.call_to, communication);
-      }).then((resp) =>{
+      }).then((resp) => {
         clients = resp;
 
         return Conversations.retrieveByClientsAndCommunication(clients, communication);
       }).then((resp) => {
         conversations = resp;
 
-        const conversationIds = conversations.map((conversation) => {
-          return conversation.convid;
-        });
+        const conversationIds = conversations.map(conversation => conversation.convid);
 
         return Messages.insertIntoManyConversations(
           conversationIds,
@@ -107,7 +105,8 @@ module.exports = {
   addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId, status) {
     return new Promise((fulfill, reject) => {
       // Reference variables
-      let conversation, recording;
+      let conversation,
+        recording;
 
       return Recordings.create({
         comm_id: commId,
@@ -131,24 +130,22 @@ module.exports = {
           recordingSid,
           status,
           null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
-          { recordingId: recording.id, } // Fkey pointing Recordings table
+          { recordingId: recording.id } // Fkey pointing Recordings table
         );
       }).then(() => {
         fulfill();
       }).catch(reject);
-
     });
   },
 
   processPendingOutboundVoiceMessages(ovm, domain) {
     domain = domain || credentials.twilio.outboundCallbackUrl;
 
-    return new Promise((fulfill, reject) =>{
+    return new Promise((fulfill, reject) => {
       ovmId = ovm.id;
 
       return Communications.findById(ovm.commid)
       .then((communication) => {
-
         // we should only create the call is not in testing mode
         if (credentials.CCENV !== 'testing') {
           twClient.calls.create({
@@ -163,10 +160,9 @@ module.exports = {
             if (err) {
               reject(err);
             } else {
-
-              // Update the OVM table row with the sid of the call that was just placed 
+              // Update the OVM table row with the sid of the call that was just placed
               // out to the client (so this is the SID of the "voicemail delivery call")
-              ovm.update({call_sid: call.sid, })
+              ovm.update({ call_sid: call.sid })
               .then((ovm) => {
                 fulfill(ovm);
               }).catch(reject);
@@ -182,14 +178,12 @@ module.exports = {
   // TODO: Why do we have a special method just for tests
   //       should be using "normal" methods
   sendPendingOutboundVoiceMessages(domain) {
-    domain = domain || credentials.twilio.outboundCallbackUrl;  
+    domain = domain || credentials.twilio.outboundCallbackUrl;
 
     let ovmId;
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.getNeedToBeSent()
-      .map((ovm) => {
-        return this.processPendingOutboundVoiceMessages(ovm, domain);
-      }).then((ovms) => {
+      .map(ovm => this.processPendingOutboundVoiceMessages(ovm, domain)).then((ovms) => {
         fulfill(ovms);
       }).catch(reject);
     });

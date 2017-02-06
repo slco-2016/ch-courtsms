@@ -1,6 +1,6 @@
-'use strict';
 
-const db      = require('../../app/db');
+
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -10,7 +10,7 @@ class Attachments extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'id',
         'key',
@@ -37,13 +37,11 @@ class Attachments extends BaseModel {
   static createFromMailgunObject(mailgunObj, email) {
     return new Promise((fulfill, reject) => {
       s3.uploadMailGunAttachment(mailgunObj)
-      .then((key) => {
-        return Attachments.create({
-          key: key,
-          contentType: mailgunObj['content-type'],
-          email_id: email.id,
-        });
-      }).then(fulfill).catch(reject);
+      .then(key => Attachments.create({
+        key,
+        contentType: mailgunObj['content-type'],
+        email_id: email.id,
+      })).then(fulfill).catch(reject);
     });
   }
 

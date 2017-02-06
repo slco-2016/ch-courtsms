@@ -8,7 +8,7 @@ const Notifications = resourceRequire('models', 'Notifications');
 
 const mock = resourceRequire('lib', 'mock');
 
-describe('Notifications checks', function() {
+describe('Notifications checks', () => {
 
   // We moved this to scheduled operations tests
   // becuase this should be a lib, not a model method
@@ -18,5 +18,5 @@ describe('Notifications checks', function() {
   //     done();
   // 	}).catch(done);
 
-  // }); 
+  // });
 });

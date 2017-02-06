@@ -1,4 +1,4 @@
-module.exports = { 
+module.exports = {
   Called: '+12033133609',
   Digits: 'hangup',
   RecordingUrl: 'https://api.twilio.com/2010-04-01/Accounts/AC12d7cd4e8a2e993ac0e8d95c60357360/Recordings/REde2dd4be0e7a521f8296a7390a9ab21b',
@@ -27,5 +27,5 @@ module.exports = {
   CalledState: 'CT',
   FromZip: '',
   FromState: 'UT',
-  RecordingDuration: '4' ,
+  RecordingDuration: '4',
 };

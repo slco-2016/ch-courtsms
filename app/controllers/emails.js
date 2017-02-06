@@ -14,14 +14,10 @@ const sms = require('../lib/sms');
 
 const Promise = require('bluebird');
 
-const _updateMessages = (messageId, status, res) => {
-  return Messages.findManyByTwSid(messageId)
-  .map((message) => {
-    return message.update({tw_status: status,});
-  }).then((messages) => {
+const _updateMessages = (messageId, status, res) => Messages.findManyByTwSid(messageId)
+  .map(message => message.update({ tw_status: status })).then((messages) => {
     res.send('ok');
   }).catch(res.error500);
-};
 
 module.exports = {
   status(req, res) {
@@ -54,7 +50,7 @@ module.exports = {
     const timestamp = req.body.timestamp;
     const token = req.body.token;
     const signature = req.body.signature;
-    var recipient = req.body.recipient; 
+    var recipient = req.body.recipient;
     const bodyPlain = req.body['body-plain'];
 
     const cleanBody = req.body['stripped-text'] || req.body['body-plain'];
@@ -68,77 +64,69 @@ module.exports = {
       attachments = JSON.parse(req.body.attachments);
     }
 
-    let clients, communication, users, email;
+    let clients,
+      communication,
+      users,
+      email;
     Emails.create({
       raw: JSON.stringify(req.body),
       from: fromAddress.address,
       to: JSON.stringify(toAddresses),
-      cleanBody: cleanBody,
-      messageId: messageId,
+      cleanBody,
+      messageId,
     }).then((resp) => {
       email = resp;
       return new Promise((fulfill, reject) => {
         fulfill(attachments);
       });
-    }).map((attachment) => {
-      return Attachments.createFromMailgunObject(attachment, email);
-    }).then((attachments) => {
-      return Communications.getOrCreateFromValue(
-        fromAddress.address, 
+    }).map(attachment => Attachments.createFromMailgunObject(attachment, email)).then(attachments => Communications.getOrCreateFromValue(
+        fromAddress.address,
         'email'
-      );
-    }).then((resp) => {
-      communication = resp;
-      return Clients.findByCommId(communication.commid);
-    }).then((resp) => {
-      clients = resp;
-      return new Promise((fulfill, reject) => {
-        fulfill(toAddresses);
-      });
-    }).map((address) => {
-      return Users.findByClientCommEmail(address.address);
-    }).then((resp) => {
-      users = resp;
-      
-      users = users.filter(user => user);
+      )).then((resp) => {
+        communication = resp;
+        return Clients.findByCommId(communication.commid);
+      }).then((resp) => {
+        clients = resp;
+        return new Promise((fulfill, reject) => {
+          fulfill(toAddresses);
+        });
+      }).map(address => Users.findByClientCommEmail(address.address)).then((resp) => {
+        users = resp;
 
-      return new Promise((fulfill, reject) => {
-        fulfill(users);
-      });
-    }).map((user) => {
-      const clientsForUser = clients.filter((client) => {
-        return client.cm === user.cmid;
-      });
-      return Conversations.retrieveByClientsAndCommunication(
-        clientsForUser, 
+        users = users.filter(user => user);
+
+        return new Promise((fulfill, reject) => {
+          fulfill(users);
+        });
+      }).map((user) => {
+        const clientsForUser = clients.filter(client => client.cm === user.cmid);
+        return Conversations.retrieveByClientsAndCommunication(
+        clientsForUser,
         communication
       );
-      // TODO: I mean, like, maybe? 
+      // TODO: I mean, like, maybe?
       // ).then((conversations) => {
       //   return Conversations.closeAllWithClientExcept(client, conversationId);
       // })
+      }).then((listOfListOfConversations) => {
+        let conversations = [];
+        listOfListOfConversations.forEach((conversationList) => {
+          conversations = conversations.concat(conversationList);
+        });
+        const conversationIds = conversations.map(conversation => conversation.convid);
 
-    }).then((listOfListOfConversations) => {
-      let conversations = [];
-      listOfListOfConversations.forEach((conversationList) => {
-        conversations = conversations.concat(conversationList);
-      });
-      const conversationIds = conversations.map((conversation) => {
-        return conversation.convid;
-      });
+        sentTo = toAddresses.map(address => address.address).join(', ');
 
-      sentTo = toAddresses.map( address => address.address ).join(', ');
-
-      return Messages.insertIntoManyConversations(conversationIds,
+        return Messages.insertIntoManyConversations(conversationIds,
                                                   communication.commid,
                                                   cleanBody,
                                                   messageId,
                                                   'received',
                                                   sentTo,
-                                                  {emailId: email.id,});
-    }).then((messages) => {
-      res.send('ok, thanks');
-    }).catch(res.error500);
+                                                  { emailId: email.id });
+      }).then((messages) => {
+        res.send('ok, thanks');
+      }).catch(res.error500);
   },
 };
 

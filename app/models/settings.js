@@ -1,11 +1,11 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 
-const Users     = require('./users');
+const Users = require('./users');
 
 const colors = require('colors');
 
@@ -13,24 +13,22 @@ const colors = require('colors');
 // Class
 class Settings {
 
-  static findById (user) {
+  static findById(user) {
     return new Promise((fulfill, reject) => {
       Users.findById(user)
-      .then((user) => {
-        return fulfill(user);
-      }).catch(reject);
+      .then(user => fulfill(user)).catch(reject);
     });
   }
 
-  static updateOne (userId, first, middle, last, email, alertFrequency, isAway, awayMessage, alertBeep) {
+  static updateOne(userId, first, middle, last, email, alertFrequency, isAway, awayMessage, alertBeep) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .where('cmid', userId)
         .update({
-          first: first,
-          middle: middle,
-          last: last,
-          email: email,
+          first,
+          middle,
+          last,
+          email,
           email_alert_frequency: alertFrequency,
           is_away: isAway,
           away_message: awayMessage,
@@ -42,9 +40,8 @@ class Settings {
       }).catch(reject);
     });
   }
-  
+
 }
 
 module.exports = Settings;
-
 

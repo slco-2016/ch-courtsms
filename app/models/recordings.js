@@ -1,6 +1,6 @@
-'use strict';
 
-const db      = require('../../app/db');
+
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -10,7 +10,7 @@ const s3 = require('../lib/s3');
 class Recordings extends BaseModel {
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'id',
         'comm_id',

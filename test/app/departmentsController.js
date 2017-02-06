@@ -11,38 +11,37 @@ const owner = supertest.agent(APP);
 
 const seededDeptName = 'Pretrial LKJKLJUnique';
 
-describe('Departments View', function() {
-
+describe('Departments View', () => {
   // login as the owner account
-  before(function(done) {
+  before((done) => {
     owner.post('/login')
       .type('form')
-      .send({email:'owner@test.com', })
-      .send({pass:'123', })
+      .send({ email: 'owner@test.com' })
+      .send({ pass: '123' })
       .expect(302)
       .expect('Location', '/')
-      .end(function(err, res) {
+      .end((err, res) => {
         done(err);
       });
   });
 
-  it('we should be able to view the departments index/listing and see departments that are in the org', function(done) {
+  it('we should be able to view the departments index/listing and see departments that are in the org', (done) => {
     owner.get('/org/departments')
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         // make sure that the seeded department shows up on the page
         res.text.should.match(RegExp(seededDeptName));
         done(err);
       });
   });
 
-  it('we should be able to view a single department\'s edit card', function(done) {
+  it('we should be able to view a single department\'s edit card', (done) => {
     // find the department with that unique name
     Departments.findOneByAttribute('name', seededDeptName)
     .then((department) => {
       owner.get(`/org/departments/${department.department_id}/edit`)
         .expect(200)
-        .end(function(err, res) {
+        .end((err, res) => {
           // make sure that the seeded department shows up on the page
           res.text.should.match(RegExp(seededDeptName));
           done(err);
@@ -50,9 +49,10 @@ describe('Departments View', function() {
     }).catch(done);
   });
 
-  it('we should be able to view a single department\'s edit card', function(done) {
+  it('we should be able to view a single department\'s edit card', (done) => {
     // ref variables for the test
-    let department, users;
+    let department,
+      users;
 
     // find the department with that unique name (same as before)
     Departments.findOneByAttribute('name', seededDeptName)
@@ -65,7 +65,7 @@ describe('Departments View', function() {
 
       owner.get(`/org/departments/${department.department_id}/supervisors`)
         .expect(200)
-        .end(function(err, res) {
+        .end((err, res) => {
           users.forEach((user) => {
             res.text.should.match(RegExp(`${user.last}(.*)${user.first}`));
           });
@@ -73,5 +73,4 @@ describe('Departments View', function() {
         });
     }).catch(done);
   });
-
 });

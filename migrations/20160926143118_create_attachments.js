@@ -1,27 +1,25 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
-    knex.schema.createTable("attachments", function(table) {
+    knex.schema.createTable('attachments', (table) => {
+      table.increments('id').primary();
 
-      table.increments("id").primary();
+      table.string('key');
+      table.string('contentType');
 
-      table.string("key");
-      table.string("contentType");
+      table.integer('msg_id')
+        .references('msgid')
+        .inTable('msgs');
 
-      table.integer("msg_id")
-        .references("msgid")
-        .inTable("msgs")
-
-      table.timestamp("created").defaultTo(knex.fn.now());
-
+      table.timestamp('created').defaultTo(knex.fn.now());
     }),
-  ])
+  ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
-    knex.schema.dropTable("attachments"),
+    knex.schema.dropTable('attachments'),
 
   ]);
 };

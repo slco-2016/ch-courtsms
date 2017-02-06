@@ -8,7 +8,7 @@ module.exports = {
 
     Messages.findUnreadsByUser(userId)
     .then((newMessages) => {
-      res.json({ newMessages: newMessages, });
+      res.json({ newMessages });
     }).catch(res.error500);
   },
 
@@ -21,10 +21,10 @@ module.exports = {
       if (alert && alert.user == userId) {
         Alerts.closeOne(alertId)
         .then(() => {
-          res.json({ closed: true, });
+          res.json({ closed: true });
         }).catch(res.error500);
       } else {
-        res.json({ closed: false, error: 'Not allowed to edit this alert.', });
+        res.json({ closed: false, error: 'Not allowed to edit this alert.' });
       }
     }).catch(res.error500);
   },
@@ -33,35 +33,35 @@ module.exports = {
     const orgId = req.user.org;
     const departmentId = req.query.department || null;
     const targetUserId = req.query.user || null;
-    
+
     let scope = 'organization';
     if (departmentId) { scope = 'department'; }
     if (targetUserId) { scope = 'organization'; }
 
     res.render('alerts/create', {
-      orgId: orgId,
-      departmentId: departmentId,
-      targetUserId: targetUserId,
-      scope: scope,
+      orgId,
+      departmentId,
+      targetUserId,
+      scope,
     });
   },
 
   create(req, res) {
-    const orgId        = req.user.org;
+    const orgId = req.user.org;
     const departmentId = req.body.departmentId || null;
-    const createdById  = req.user.cmid;
+    const createdById = req.user.cmid;
     const targetUserId = req.body.targetUserId || null;
-    let subject      = req.body.subject || '';
-    const message      = req.body.message || null;
+    let subject = req.body.subject || '';
+    const message = req.body.message || null;
 
     let redirect = '/alerts/create';
     if (res.locals.level == 'org') {
-      redirect = '/org' + redirect;
+      redirect = `/org${redirect}`;
     }
     if (departmentId) {
-      redirect = redirect + '?department=' + departmentId;
+      redirect = `${redirect}?department=${departmentId}`;
     } else if (targetUserId) {
-      redirect = redirect + '?user=' + targetUserId;
+      redirect = `${redirect}?user=${targetUserId}`;
     }
 
     subject = subject.trim();

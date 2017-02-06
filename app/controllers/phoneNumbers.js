@@ -10,7 +10,7 @@ module.exports = {
           tab: 'numbers',
           sel: null,
         },
-        numbers: numbers,
+        numbers,
       });
     }).catch(res.error500);
   },

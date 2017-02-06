@@ -19,10 +19,10 @@ module.exports = {
       if (conversation &&
           conversation.client == Number(clientId) &&
           conversation.cm == req.user.cmid &&
-          !conversation.accepted && 
+          !conversation.accepted &&
           conversation.open) {
         res.render('capture/conversationClaim', {
-          conversation: conversation,
+          conversation,
         });
       } else {
         res.notFound();
@@ -34,7 +34,7 @@ module.exports = {
     const conversationId = req.params.conversation;
     const userId = req.user.cmid;
     const clientId = req.params.client;
-    const accepted = req.body.accept ? true : false;
+    const accepted = !!req.body.accept;
 
     Conversations.makeClaimDecision(conversationId, userId, clientId, accepted)
     .then((conversations) => {

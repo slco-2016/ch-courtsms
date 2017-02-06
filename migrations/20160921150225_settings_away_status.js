@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
 
     // Create a new col for timezone
@@ -9,10 +9,10 @@ exports.up = function(knex, Promise) {
                 ADD COLUMN away_message TEXT default 'I am currently out of office. I will respond as soon as possible.';
             `),
 
-  ])
+  ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
     // Remove the timezone column, you will lose that data
@@ -22,5 +22,5 @@ exports.down = function(knex, Promise) {
                 DROP COLUMN IF EXISTS away_message;
             `),
 
-  ])
+  ]);
 };

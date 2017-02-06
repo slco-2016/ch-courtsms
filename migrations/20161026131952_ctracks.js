@@ -1,10 +1,10 @@
-// why is this all commented out? 
+// why is this all commented out?
 // this migration should not be a part of the production application
 // it was specific to salt lake only
 // leaving in here as a TODO to make a final decision on where this should go
 
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
 
     // knex.schema.createTable('ctracks', function (table) {
@@ -52,7 +52,7 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
     // knex.schema.dropTable('ctracks'),

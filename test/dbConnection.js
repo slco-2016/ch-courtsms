@@ -1,9 +1,9 @@
-var db = require("../app/db");
+const db = require('../app/db');
 
-  db("cms")
+db('cms')
   .limit(1)
-  .then(function (cms) {
+  .then((cms) => {
     console.log(cms);
-  }).catch(function (error) {
+  }).catch((error) => {
     console.log(error);
-  })
+  });

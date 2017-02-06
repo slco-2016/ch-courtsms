@@ -1,8 +1,8 @@
-var config = require('../../knexfile');
-var knex = require("knex")(config['testing']);
-require("colors");
+const config = require('../../knexfile');
+const knex = require('knex')(config.testing);
+require('colors');
 
-before(function(done) {
+before(function (done) {
   this.timeout(10000);
   knex.seed.run()
   .then(() => done())

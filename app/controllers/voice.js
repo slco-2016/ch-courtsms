@@ -21,15 +21,16 @@ const s3 = require('../lib/s3');
 const voice = require('../lib/voice');
 
 module.exports = {
-  
+
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, '');
-    let toNumber = req.body.To.replace(/\D+/g, '');
-    if (fromNumber.length == 10) { 
-      fromNumber = '1' + fromNumber; 
+    const toNumber = req.body.To.replace(/\D+/g, '');
+    if (fromNumber.length == 10) {
+      fromNumber = `1${fromNumber}`;
     }
     const twilioResponse = new twilio.TwimlResponse();
-    let communication, organizationNumber;
+    let communication,
+      organizationNumber;
 
     Organizations.findOneByPhone(toNumber)
     .then((resp) => {
@@ -41,28 +42,28 @@ module.exports = {
 
       if (communication) {
         twilioResponse.say(
-          {voice: 'woman',}, 'Hello. Please leave a message for your case manager after the beep.');
+          { voice: 'woman' }, 'Hello. Please leave a message for your case manager after the beep.');
         const params = `?type=message&commId=${communication.commid}`;
         const url = `/webhook/voice/save-recording/${params}`;
         twilioResponse.record({
-          action: url, 
-          transcribe: true, 
+          action: url,
+          transcribe: true,
           transcribeCallback: '/webhook/voice/transcribe',
         });
         res.send(twilioResponse.toString());
       } else {
         if (organizationNumber) {
-          twilioResponse.dial({callerId: organizationNumber, });
+          twilioResponse.dial({ callerId: organizationNumber });
         }
 
         // this will make the text-to-voice in twilio read the phone number more clearly
         try {
           organizationNumber = organizationNumber.replace(/\D+/g, '');
           organizationNumber = organizationNumber.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4');
-        } catch (e) {};
+        } catch (e) {}
 
         // TODO: Make this component modular by organization(s)
-        twilioResponse.say({ voice: 'woman', }, 
+        twilioResponse.say({ voice: 'woman' },
           `Sorry, we were unable to connect you with Criminal Justice Services. Please call the front or support desk ${organizationNumber}.`);
         res.send(twilioResponse.toString());
       }
@@ -74,12 +75,8 @@ module.exports = {
     Recordings.findManyByAttribute('RecordingSid', RecordingSid)
     .map((recording) => {
       if (recording) {
-        return recording.update({transcription: req.body.TranscriptionText,})
-        .then((recording) => {
-          return Messages.where({recording_id: recording.id,});
-        }).map((message) => {
-          return message.update({content: req.body.TranscriptionText,});
-        });
+        return recording.update({ transcription: req.body.TranscriptionText })
+        .then(recording => Messages.where({ recording_id: recording.id })).map(message => message.update({ content: req.body.TranscriptionText }));
       }
     }).then((messages) => {
       const emptyResponse = twilio.TwimlResponse().toString();
@@ -88,7 +85,11 @@ module.exports = {
   },
 
   status(req, res) {
-    let client, communication, conversations, notification, ovm;
+    let client,
+      communication,
+      conversations,
+      notification,
+      ovm;
     const emptyResponse = twilio.TwimlResponse().toString();
 
     // we need to have an additional capture if callStatus 'failed'
@@ -101,7 +102,7 @@ module.exports = {
       .then((resp) => {
         ovm = resp;
 
-        // If we have an OVM, then we should get its notification and 
+        // If we have an OVM, then we should get its notification and
         // set it's status to sent as well as create a recording object
         // and new message + conversation for that client-user pairing.
 
@@ -119,9 +120,9 @@ module.exports = {
 
         if (completedOK || failedOK) {
           // this is what we are updating about the OVM row
-          let updateObj = {delivered: true, };
+          const updateObj = { delivered: true };
 
-          // if the OVM failed to send, we will log a last delivery 
+          // if the OVM failed to send, we will log a last delivery
           // timestamp attempted as well
           if (failedOK) {
             updateObj.last_delivery_attempt = moment().tz('Europe/Dublin').format();
@@ -129,11 +130,7 @@ module.exports = {
 
           // execute the udpate
           return ovm.update(updateObj)
-          .then((ovm) => {
-            return Notifications.findOneByAttribute('ovm_id', ovm.id);
-          }).then((notification) => {
-            return notification.update({sent: true,});
-          }).then((notification) => {
+          .then(ovm => Notifications.findOneByAttribute('ovm_id', ovm.id)).then(notification => notification.update({ sent: true })).then((notification) => {
             const commId = notification.comm;
             const recordingKey = ovm.recording_key;
             const recordingSid = ovm.RecordingSid;
@@ -150,10 +147,8 @@ module.exports = {
             // now we add that just-sent outbound message to the message stream
             return voice.addOutboundRecordingAndMessage(commId, recordingKey, recordingSid, clientId, userId, status);
           });
-
-        } else {
-          return null;
         }
+        return null;
       }).then(() => {
         res.send(emptyResponse);
       }).catch(res.error500);
@@ -171,21 +166,21 @@ module.exports = {
     OutboundVoiceMessages.findById(ovmId)
     .then((ovm) => {
       if (ovm) {
-        const url = ovm.getTemporaryRecordingUrl();  
+        const url = ovm.getTemporaryRecordingUrl();
         resp.say(
-          {voice: 'woman',}, 
+          { voice: 'woman' },
           'Hello. You have a new message from your case manager.');
         resp.play(url);
         resp.say(
-          {voice: 'woman',},
+          { voice: 'woman' },
           'Thank you.');
       } else {
         resp.say(
-          {voice: 'woman',}, 
+          { voice: 'woman' },
           'Sorry, we can\'t find a recording with that Id'
         );
       }
-      res.send(resp.toString());              
+      res.send(resp.toString());
     });
   },
 
@@ -195,15 +190,15 @@ module.exports = {
     const clientId = req.query.clientId;
     const deliveryDateEpoch = req.query.deliveryDate;
 
-    const params = `?type=ovm&userId=${userId}&commId=${commId}`+
-      `&deliveryDate=${deliveryDateEpoch}`+
+    const params = `?type=ovm&userId=${userId}&commId=${commId}` +
+      `&deliveryDate=${deliveryDateEpoch}` +
       `&clientId=${clientId}`;
 
     const url = `/webhook/voice/save-recording/${params}`;
 
     const resp = twilio.TwimlResponse();
-    resp.say({voice: 'woman',}, 'Hello! Please leave your message after the beep.');
-    resp.record({action: url,});
+    resp.say({ voice: 'woman' }, 'Hello! Please leave your message after the beep.');
+    resp.record({ action: url });
     res.send(resp.toString());
   },
 
@@ -232,30 +227,24 @@ module.exports = {
           RecordingSid: req.body.RecordingSid,
           recording_key: key,
           call_sid: req.body.CallSid,
-        }).then((ovm) => {
-          return Notifications.create(
-            userId, clientId, 
-            commId, 'Outbound Voice Message', '', 
+        }).then(ovm => Notifications.create(
+            userId, clientId,
+            commId, 'Outbound Voice Message', '',
             deliveryDate, ovm.id
-          );
-        }).then((notification) => {
-          return notification;
-        });
-
+          )).then(notification => notification);
       } else if (type === 'message') {
-        
         const commId = req.query.commId;
         let toNumber = req.body.To.replace(/\D+/g, '');
-        if (toNumber.length == 10) { 
-          toNumber = '1' + toNumber; 
+        if (toNumber.length == 10) {
+          toNumber = `1${toNumber}`;
         }
 
         return Communications.findById(commId)
         .then((communication) => {
           if (!communication) {
             throw new Error(
-              'No communication found for this recording' +
-              'S3 key is ' + key
+              `${'No communication found for this recording' +
+              'S3 key is '}${key}`
             );
           } else {
             const recordingSid = req.body.RecordingSid;
@@ -265,7 +254,7 @@ module.exports = {
             // Needed to proceed
             // communication obj
             // key (recording_key)
-            // RecordingSid 
+            // RecordingSid
             // toNumber (10 digit)
             return voice.addInboundRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
           }
@@ -281,7 +270,6 @@ module.exports = {
     const clientId = req.params.client;
     CommConns.findByClientIdWithCommMetaData(clientId)
     .then((communications) => {
-
       // Filter out communications that are not type cell or landline
       // Why? We can't send voice messages to email
       communications = communications.filter((communication) => {
@@ -295,7 +283,7 @@ module.exports = {
       // left after filtering through all communications
       if (communications.length) {
         res.render('voice/create', {
-          communications: communications,
+          communications,
         });
 
       // If no cell or landline options exist, then do not allow record
@@ -321,17 +309,17 @@ module.exports = {
     // Get the phone number the user provided
     // Twilio will call this number to prompt recording
     let phoneNumber = req.body.phonenumber || '';
-        phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
+    phoneNumber = phoneNumber.replace(/[^0-9.]/g, '');
 
-    if (phoneNumber.length == 10) { 
-      phoneNumber = '1' + phoneNumber; 
+    if (phoneNumber.length == 10) {
+      phoneNumber = `1${phoneNumber}`;
     }
 
     if (phoneNumber.length == 11) {
       res.render('voice/callComing', {
         userProvidedNumber: phoneNumber,
       });
-      
+
       // User the voice library to prompt the call
       voice.recordVoiceMessage(
         req.user,
@@ -348,9 +336,9 @@ module.exports = {
       // Context-sensitive redirect (org or caseload level)
       let redirectAddress = '/clients/';
       if (res.locals.level == 'org') {
-        redirectAddress = '/org' + redirectAddress;
+        redirectAddress = `/org${redirectAddress}`;
       }
-      redirectAddress = redirectAddress + res.locals.client.clid + '/voicemessage';
+      redirectAddress = `${redirectAddress + res.locals.client.clid}/voicemessage`;
 
       // Submit redirect response
       res.redirect(redirectAddress);
