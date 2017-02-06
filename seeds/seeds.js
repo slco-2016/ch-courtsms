@@ -1,30 +1,5 @@
-const Promise = require('bluebird');
-
+/* eslint-disable no-console */
 require('colors');
-
-exports.seed = function (knex, Promise) {
-  console.log('Running seeds.js'.yellow);
-  console.log('Deleting all tables'.yellow);
-
-  if (process.env.CCENV === 'testing') {
-    return knex.raw(
-      `DROP SCHEMA public CASCADE;
-      CREATE SCHEMA public;`
-    ).then(() => {
-      console.log('Knex DB: migrate latest');
-      return knex.migrate.latest();
-    }).then(() => {
-      console.log('Inserting seed data'.yellow);
-      return knex('orgs').insert(org);
-    }).then(() => knex('phone_numbers').insert(phoneNumber)).then(() => knex('cms').insert(owner)).then(() => knex('departments').insert(dep)).then(() => knex('cms').insert(primary)).then(() => knex('clients').insert(client)).then(() => knex('comms').insert(contactMethod)).then(() => knex('commconns').insert(commConn)).then(() => knex('cms').insert(secondPrimary)).then(() => knex('clients').insert(secondClient)).then(() => knex('comms').insert(secondContactMethod)).then(() => knex('commconns').insert(secondCommConn)).then(() => knex('comms').insert(emailContactMethod)).then(() => knex('commconns').insert(emailCommConn)).then(() => knex('convos').insert(conversation)).then(() => knex('msgs').insert(outboundEmailMessage)).then(() => knex('outbound_voice_messages').insert(outboundVoiceMessage)).then(() => knex('notifications').insert(notificationSmartSend)).then(() => knex('notifications').insert(notification)
-
-    // SECOND ORGANIZATION
-    ).then(() => knex('orgs').insert(secondOrg)).then(() => knex('phone_numbers').insert(secondPhoneNumber)).then(() => knex('departments').insert(secondDep)).then(() => knex('cms').insert(secondOwner)).then(() => knex('cms').insert(secondSupervisor)).then(() => knex('department_supervisors').insert(secondDepartmentSupervisorLink)).then(() => knex('clients').insert(secondOrgClient)).then(() => knex('comms').insert(secondOrgClientCommunicationMethod)).then(() => knex('commconns').insert(secondOrgClientCommunicationConnection)).then(() => knex('notifications').insert(notificationToBeSentOnBehalfOfSecondSupervisor)).catch((err) => {
-      throw err;
-    });
-  }
-  throw new Error('Not the testing db!!'.red);
-};
 
 const phoneNumber = {
   organization: 1,
@@ -299,3 +274,54 @@ const notificationToBeSentOnBehalfOfSecondSupervisor = {
   // repeat ignored
   // frequency ignored
 };
+
+exports.seed = (knex) => {
+  console.log('Running seeds.js'.yellow);
+  console.log('Deleting all tables'.yellow);
+
+  if (process.env.CCENV === 'testing') {
+    return knex.raw(
+      `DROP SCHEMA public CASCADE;
+      CREATE SCHEMA public;`
+    ).then(() => {
+      console.log('Knex DB: migrate latest');
+      return knex.migrate.latest();
+    }).then(() => {
+      console.log('Inserting seed data'.yellow);
+      return knex('orgs').insert(org);
+    })
+      .then(() => knex('phone_numbers').insert(phoneNumber))
+      .then(() => knex('cms').insert(owner))
+      .then(() => knex('departments').insert(dep))
+      .then(() => knex('cms').insert(primary))
+      .then(() => knex('clients').insert(client))
+      .then(() => knex('comms').insert(contactMethod))
+      .then(() => knex('commconns').insert(commConn))
+      .then(() => knex('cms').insert(secondPrimary))
+      .then(() => knex('clients').insert(secondClient))
+      .then(() => knex('comms').insert(secondContactMethod))
+      .then(() => knex('commconns').insert(secondCommConn))
+      .then(() => knex('comms').insert(emailContactMethod))
+      .then(() => knex('commconns').insert(emailCommConn))
+      .then(() => knex('convos').insert(conversation))
+      .then(() => knex('msgs').insert(outboundEmailMessage))
+      .then(() => knex('outbound_voice_messages').insert(outboundVoiceMessage))
+      .then(() => knex('notifications').insert(notificationSmartSend))
+      .then(() => knex('notifications').insert(notification))
+      .then(() => knex('orgs').insert(secondOrg))
+      .then(() => knex('phone_numbers').insert(secondPhoneNumber))
+      .then(() => knex('departments').insert(secondDep))
+      .then(() => knex('cms').insert(secondOwner))
+      .then(() => knex('cms').insert(secondSupervisor))
+      .then(() => knex('department_supervisors').insert(secondDepartmentSupervisorLink))
+      .then(() => knex('clients').insert(secondOrgClient))
+      .then(() => knex('comms').insert(secondOrgClientCommunicationMethod))
+      .then(() => knex('commconns').insert(secondOrgClientCommunicationConnection))
+      .then(() => knex('notifications').insert(notificationToBeSentOnBehalfOfSecondSupervisor))
+      .catch((err) => {
+        throw err;
+      });
+  }
+  throw new Error('Not the testing db!!'.red);
+};
+
