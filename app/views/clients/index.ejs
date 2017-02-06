@@ -81,9 +81,11 @@
 <% clients.forEach( function (client) { %>
   <% let clientBaseURL = `${level === "org" ? "/org" : ""}/clients/${client.clid}`; %>
   <% let lastActivity = moment.tz(client.updated, organization.tz).fromNow(); %>
+  <% let manager = usersByCmid[client.cm]; %>
+  <% let managerName = manager ? `${manager.last}, ${manager.first}` : 'Unknown'; %>
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
         data-client-color="<%= client.color_tag %>"
-        data-case-manager="<%= `${client.user_last} ${client.user_first}` %>"
+        data-case-manager="<%= managerName %>"
         data-last-activity="<%= lastActivity %>"
         data-unread="<%= client.unread %>"
         data-client-name="<%= `${client.last} ${client.middle} ${client.first}` %>">
@@ -135,9 +137,9 @@
 
     <div class="column">
       <% if (level == "org") { %>
-        <a href="<%=`/org?user=${client.user_id}&department=${client.department}`%>">
+        <a href="<%=`/org/users/${client.cm}/edit`%>">
           <span class="clientName">
-            <%=`${client.user_last}, ${client.user_first}`%>
+            <%= managerName %>
           </span>
         </a>
       <% } else { %>
