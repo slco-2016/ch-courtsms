@@ -1,4 +1,4 @@
-module.exports = { 
+module.exports = {
   Called: '+16198702271',
   ToState: 'CA',
   CallerCountry: 'US',
@@ -24,5 +24,5 @@ module.exports = {
   FromCity: 'DANBURY',
   CalledState: 'CA',
   FromZip: '06812',
-  FromState: 'CT' 
-}
+  FromState: 'CT',
+};

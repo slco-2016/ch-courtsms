@@ -1,9 +1,8 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
-
 
 
 // TO DOS
@@ -13,7 +12,7 @@ const Promise = require('bluebird');
 // Class
 class ColorTags {
 
-  static selectAllByUser (userId) {
+  static selectAllByUser(userId) {
     return new Promise((fulfill, reject) => {
       db('color_tags')
         .where('created_by', userId)
@@ -25,12 +24,12 @@ class ColorTags {
     });
   }
 
-  static addNewColorTag (userId, color, name) {
+  static addNewColorTag(userId, color, name) {
     return new Promise((fulfill, reject) => {
       db('color_tags')
         .insert({
-          name: name,
-          color: color,
+          name,
+          color,
           created_by: userId,
           active: true,
         })
@@ -40,17 +39,17 @@ class ColorTags {
     });
   }
 
-  static removeColorTag (colorTagId) {
+  static removeColorTag(colorTagId) {
     return new Promise((fulfill, reject) => {
       db('color_tags')
-        .update({ active: false, })
+        .update({ active: false })
         .where('color_tag_id', colorTagId)
       .then(() => {
         fulfill();
       }).catch(reject);
     });
   }
-  
+
 }
 
 module.exports = ColorTags;

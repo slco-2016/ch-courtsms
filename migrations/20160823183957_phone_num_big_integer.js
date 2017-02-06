@@ -1,19 +1,19 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
-  
-    knex.schema.table("phone_numbers", function (table) {
-      table.bigInteger("value");
-    })
+
+    knex.schema.table('phone_numbers', (table) => {
+      table.bigInteger('value');
+    }),
 
 
-  ])
+  ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
-    knex.raw("ALTER TABLE phone_numbers DROP COLUMN IF EXISTS value;"),
+    knex.raw('ALTER TABLE phone_numbers DROP COLUMN IF EXISTS value;'),
 
   ]);
 };

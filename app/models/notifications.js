@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 const BaseModel = require('../lib/models').BaseModel;
 
@@ -21,15 +21,15 @@ const voice = resourceRequire('lib', 'voice');
 
 // Class
 class Notifications extends BaseModel {
-  
+
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'notificationid',
         'cm',
         'client',
-        'comm', 
+        'comm',
         'subject',
         'message',
         'created',
@@ -47,9 +47,8 @@ class Notifications extends BaseModel {
 
   // TODO: this is presently a model function
   //       but probably should be in a lib on its own
-  static checkAndSendNotifications () {
+  static checkAndSendNotifications() {
     return new Promise((fulfill, reject) => {
-
       // look for all notifications that are planned
       // but have not been sent and have NOT been closed
       // (note: closing is basically deleting on the user's end)
@@ -57,37 +56,36 @@ class Notifications extends BaseModel {
         .where('send', '<', db.fn.now())
         .andWhere('notifications.sent', false)
         .andWhere('notifications.closed', false)
-      .then((notifications) => {
+      .then(notifications =>
 
         // creating a promise map
-        return new Promise((fulfill, reject) => {
-          fulfill(notifications);
-        });
+         new Promise((fulfill, reject) => {
+           fulfill(notifications);
+         }),
 
       // this is for each in the returned prior notifications basically
       // at this point we need to decide if that message is a voice or nonvoice message
-      }).map((notification) => {
-
+      ).map((notification) => {
         // Voice: if voice use the sendOVMNotification method
         if (notification.ovm_id) {
           return this.sendOVMNotification(notification);
 
         // Email or Text: otherwise proceed with the text/sms/email message method
-        } else {
-          return this.sendTextorEmailNotification(notification);
         }
+        return this.sendTextorEmailNotification(notification);
+
 
       // it will then return an array of resulting notifications that have been sent
-      }).then((notifications) => {
+      }).then(notifications =>
         // yet another promise array
-        return new Promise((fulfill, reject) => {
-          fulfill(notifications);
-        });
+         new Promise((fulfill, reject) => {
+           fulfill(notifications);
+         }),
 
       // map over the resulting sent notifications
       // and create an in-app alert for the case manager/user
       // so that they know their message was sent
-      }).map((notification) => {
+      ).map((notification) => {
         const targetUserId = notification.cm;
         const createdByUserId = notification.cm;
         const subject = 'Notification Sent';
@@ -99,18 +97,16 @@ class Notifications extends BaseModel {
     });
   }
 
-  static sendOVMNotification (notification) {
+  static sendOVMNotification(notification) {
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.findById(notification.ovm_id)
-      .then((ovm) => {
-        return voice.processPendingOutboundVoiceMessages(ovm);
-      }).then(() => {
+      .then(ovm => voice.processPendingOutboundVoiceMessages(ovm)).then(() => {
         fulfill(notification);
       }).catch(reject);
     });
-  };
+  }
 
-  static sendTextorEmailNotification (notification) {
+  static sendTextorEmailNotification(notification) {
     return new Promise((fulfill, reject) => {
       Users.findById(notification.cm)
       .then((user) => {
@@ -128,17 +124,14 @@ class Notifications extends BaseModel {
           sendMethod = Messages.smartSend(userId, clientId, subject, content);
         }
 
-        sendMethod.then(() => {
-          return this.markAsSent(notification.notificationid);
-        }).then(() => {
+        sendMethod.then(() => this.markAsSent(notification.notificationid)).then(() => {
           fulfill(notification);
         }).catch(reject);
-
       }).catch(reject);
     });
   }
 
-  static markAsSent (notificationId) {
+  static markAsSent(notificationId) {
     return new Promise((fulfill, reject) => {
       db('notifications')
       .where('notificationid', notificationId)
@@ -150,8 +143,8 @@ class Notifications extends BaseModel {
     });
   }
 
-  static findByUser (userID, sent) {
-    if (typeof sent == 'undefined') sent = false;
+  static findByUser(userID, sent) {
+    if (typeof sent === 'undefined') sent = false;
     const order = sent ? 'desc' : 'asc';
 
     return new Promise((fulfill, reject) => {
@@ -171,10 +164,10 @@ class Notifications extends BaseModel {
     });
   }
 
-  static findByClientID (clientId, sent) {
-    if (typeof sent == 'undefined') sent = false;
+  static findByClientID(clientId, sent) {
+    if (typeof sent === 'undefined') sent = false;
     const order = sent ? 'desc' : 'asc';
-    
+
     return new Promise((fulfill, reject) => {
       db('notifications')
         .leftJoin(
@@ -191,7 +184,7 @@ class Notifications extends BaseModel {
           db('commconns')
             .select(db.raw('name as communication_name, comm, commconnid'))
             .where('client', clientId)
-            .as('commconns'), 
+            .as('commconns'),
             'commconns.comm', 'notifications.comm')
         .where('client', clientId)
         .andWhere('sent', sent)
@@ -203,7 +196,7 @@ class Notifications extends BaseModel {
     });
   }
 
-  static findByID (notificationID) {
+  static findByID(notificationID) {
     return new Promise((fulfill, reject) => {
       db('notifications')
         .where('notificationid', notificationID)
@@ -214,10 +207,10 @@ class Notifications extends BaseModel {
     });
   }
 
-  static removeOne (notification) {
+  static removeOne(notification) {
     return new Promise((fulfill, reject) => {
       db('notifications')
-        .update({ closed: true, })
+        .update({ closed: true })
         .where('notificationid', notification)
         .returning('*')
       .then((n) => {
@@ -226,19 +219,19 @@ class Notifications extends BaseModel {
     });
   }
 
-  static editOne (notificationID, clientID, commID, send, subject, message) {
+  static editOne(notificationID, clientID, commID, send, subject, message) {
     if (!commID || commID == 'null') commID = null;
     const f = moment(send).format('ha z');
     console.log('SEND ', f);
-    
+
     return new Promise((fulfill, reject) => {
       db('notifications')
         .update({
           client: clientID,
           comm: commID,
-          subject: subject,
-          message: message,
-          send: send,
+          subject,
+          message,
+          send,
         })
         .where('notificationid', notificationID)
         .returning('*')
@@ -248,16 +241,16 @@ class Notifications extends BaseModel {
     });
   }
 
-  static create (userID, clientID, commID, subject, message, send, ovmId) {
+  static create(userID, clientID, commID, subject, message, send, ovmId) {
     return new Promise((fulfill, reject) => {
       db('notifications')
         .insert({
           cm: userID,
           client: clientID,
           comm: commID,
-          subject: subject,
-          message: message,
-          send: send,
+          subject,
+          message,
+          send,
           ovm_id: ovmId || null,
           repeat: false,
           frequency: null,

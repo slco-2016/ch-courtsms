@@ -1,4 +1,4 @@
-module.exports = { 
+module.exports = {
   city: 'San Francisco',
   domain: 'clientcomm.org',
   'device-type': 'desktop',
@@ -17,5 +17,5 @@ module.exports = {
   timestamp: '1475103604',
   token: 'a88dc5de2c0ab1cee867ba419b203c31b83f3bd889e6b3e470',
   signature: '889a810766df0d2003aaf0815e648a1c3c3c58e97a20497a155273c0860de014',
-  'body-plain': '' 
-}
+  'body-plain': '',
+};

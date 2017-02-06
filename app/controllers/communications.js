@@ -48,8 +48,8 @@ module.exports = {
       value = value.replace(/[^0-9.]/g, '');
 
       // make sure lenght is 11
-      if (value.length == 10) { 
-        value = '1' + value; 
+      if (value.length == 10) {
+        value = `1${value}`;
       }
 
       // if length still is not 11, something is wrong with this number
@@ -69,9 +69,7 @@ module.exports = {
       // First check if this client already has this commConn
       CommConns.findByClientIdWithCommMetaData(client)
       .then((commConns) => {
-        commConns = commConns.filter((commConn) => {
-          return String(value) === String(commConn.value);
-        });
+        commConns = commConns.filter(commConn => String(value) === String(commConn.value));
         if (commConns.length > 0) {
           const currentCommConn = commConns[0];
           if (currentCommConn.name !== description) {
@@ -87,7 +85,6 @@ module.exports = {
         } else {
           CommConns.create(client, type, description, value)
           .then(() => {
-
             // Perform an "override" in that prior version of contact is removed
             // only do this if being directed from the edit view, and it is marked
             if (override) {
@@ -119,7 +116,7 @@ module.exports = {
     CommConns.findById(req.params.communication)
     .then((commConn) => {
       res.render('clients/commConn', {
-        commConn: commConn,
+        commConn,
       });
     }).catch(res.error500);
   },
@@ -135,7 +132,6 @@ module.exports = {
           req.flash('success', 'Removed communication method.');
           res.redirect(`/clients/${client}/communications`);
         }).catch(res.error500);
-
       } else {
         req.flash('warning', 'Can\'t remove the only remaining communication method.');
         res.redirect(`/clients/${client}/communications`);

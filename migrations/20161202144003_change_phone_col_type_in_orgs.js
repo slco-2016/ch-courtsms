@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
 
     knex.raw('ALTER TABLE orgs ALTER COLUMN phone TYPE varchar(255)'),
@@ -7,7 +7,7 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
     knex.raw('ALTER TABLE orgs ALTER COLUMN phone TYPE int4'),

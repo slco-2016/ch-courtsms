@@ -1,30 +1,28 @@
 
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
   return Promise.all([
-    knex.schema.createTable("emails", function(table) {
+    knex.schema.createTable('emails', (table) => {
+      table.increments('id').primary();
 
-      table.increments("id").primary();
+      table.text('raw');
+      table.text('cleanBody');
+      table.string('from');
+      table.string('to');
 
-      table.text("raw");
-      table.text("cleanBody");
-      table.string("from");
-      table.string("to");
+      table.integer('msg_id')
+        .references('msgid')
+        .inTable('msgs');
 
-      table.integer("msg_id")
-        .references("msgid")
-        .inTable("msgs")
-
-      table.timestamp("created").defaultTo(knex.fn.now());
-
+      table.timestamp('created').defaultTo(knex.fn.now());
     }),
-  ])
+  ]);
 };
 
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
   return Promise.all([
 
-    knex.schema.dropTable("emails"),
+    knex.schema.dropTable('emails'),
 
   ]);
 };

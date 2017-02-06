@@ -14,7 +14,7 @@ module.exports = {
           tab: 'captured',
           sel: null,
         },
-        conversations: conversations,
+        conversations,
       });
     }).catch(res.error500);
   },
@@ -27,7 +27,7 @@ module.exports = {
     .then((conversation) => {
       if (conversation) {
         res.render('capture/respond', {
-          conversation: conversation,
+          conversation,
         });
       } else {
         res.notFound();
@@ -42,18 +42,18 @@ module.exports = {
     if (userResponse) {
       CaptureBoard.findByConversationId(orgId, conversationId)
       .then((conversation) => {
-        let firstMessage = conversation.msgs[0];
+        const firstMessage = conversation.msgs[0];
         if (firstMessage && firstMessage.type == 'cell') {
-          let conversation = firstMessage.convo;
-          let commId = firstMessage.commid;
+          const conversation = firstMessage.convo;
+          const commId = firstMessage.commid;
           Messages.sendTextForUnclaimedConversation(commId, userResponse, conversation)
           .then(() => {
             req.flash('success', 'Message sent successfully.');
-            res.redirect(`/org/captured`);
-          }).catch(res.error500);          
+            res.redirect('/org/captured');
+          }).catch(res.error500);
         } else {
           req.flash('warning', 'Cannot send a message to that device.');
-          res.redirect(`/org/captured`);
+          res.redirect('/org/captured');
         }
       }).catch(res.error500);
     } else {
@@ -66,28 +66,24 @@ module.exports = {
     const orgId = req.user.org;
     const conversationId = req.params.conversation;
     let departmentFilter = null;
-    if (req.user.class === 'supervisor') { 
-      departmentFilter = req.user.department; 
+    if (req.user.class === 'supervisor') {
+      departmentFilter = req.user.department;
     }
 
     CaptureBoard.findByConversationId(orgId, conversationId)
     .then((conversation) => {
       if (conversation) {
-
-        Users.where({org: orgId, active: true, })
+        Users.where({ org: orgId, active: true })
         .then((users) => {
           if (departmentFilter) {
-            users = users.filter((user) => {
-              return user.department == departmentFilter;
-            });
+            users = users.filter(user => user.department == departmentFilter);
           }
 
           res.render('capture/attachUser', {
-            conversation: conversation,
-            users: users,
+            conversation,
+            users,
           });
         }).catch(res.error500);
-
       } else {
         res.notFound();
       }
@@ -112,25 +108,22 @@ module.exports = {
     CaptureBoard.findByConversationId(orgId, conversationId)
     .then((conversation) => {
       if (conversation) {
-
         Clients.findByUsers([targetUser,], true)
         .then((clients) => {
           if (clients.length) {
             res.render('capture/attachClient', {
-              conversation: conversation,
-              clients: clients,
+              conversation,
+              clients,
             });
           } else {
             req.flash('warning', 'That user has no active clients in their case load.');
             res.redirect(`/org/captured/attach/${conversationId}`);
           }
         }).catch(res.error500);
-
       } else {
         res.notFound();
       }
     }).catch(res.error500);
-
   },
 
   attachUpdate(req, res) {
@@ -165,7 +158,7 @@ module.exports = {
     .then((conversation) => {
       if (conversation) {
         res.render('capture/removeConfirm', {
-          conversation: conversation,
+          conversation,
         });
       } else {
         res.notFound();

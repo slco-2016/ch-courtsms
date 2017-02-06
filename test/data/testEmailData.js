@@ -1,4 +1,4 @@
-module.exports = { 
+module.exports = {
   domain: 'clientcomm.org',
   From: 'Max McDonnell <max@gmail.com>',
   'X-Envelope-From': '<max@gmail.com>',
@@ -11,9 +11,9 @@ module.exports = {
   'Message-Id': '<CA+fmJFvSa63JWBZP5SUduG73_7haoO97A@mail.gmail.com>',
   'Mime-Version': '1.0',
   Received:
-  [ 'from mail-ua0-f170.google.com (mail-ua0-f170.google.com [209.85.217.170]) by mxa.mailgun.org with ESMTP id 57e981be.7fb5d81c6170-in6; Mon, 26 Sep 2016 20:14:54 -0000 (UTC)',
+  ['from mail-ua0-f170.google.com (mail-ua0-f170.google.com [209.85.217.170]) by mxa.mailgun.org with ESMTP id 57e981be.7fb5d81c6170-in6; Mon, 26 Sep 2016 20:14:54 -0000 (UTC)',
     'by mail-ua0-f170.google.com with SMTP id u68so1030646uau.1        for <Owner.test@clientcomm.org>; Mon, 26 Sep 2016 13:14:53 -0700 (PDT)',
-    'by 10.31.8.16 with HTTP; Mon, 26 Sep 2016 13:14:52 -0700 (PDT)' ],
+    'by 10.31.8.16 with HTTP; Mon, 26 Sep 2016 13:14:52 -0700 (PDT)'],
   'message-url': 'https://so.api.mailgun.net/v3/domains/clientcomm.org/messages/eyJwIjpmYWxzZSwiayI6IjMxNTBkNDg3LWRkMjktNGJmMy04MjVkLTI1YzhhYzFjIiwiYyI6InNib3JkIn0=',
   recipient: 'Owner.test@clientcomm.org',
   sender: 'max@gmail.com',
@@ -27,5 +27,5 @@ module.exports = {
   'body-html': '<div dir="ltr">asdfasdf</div><div class="gmail_extra"><br clear="all"><div><div class="gmail_signature" data-smartmail="gmail_signature">-Max</div></div>\r\n<br><div class="gmail_quote">On Mon, Sep 26, 2016 at 4:12 PM, Max McDonnell <span dir="ltr">&lt;<a href="mailto:max@gmail.com" target="_blank">max@gmail.com</a>&gt;</span> wrote:<br><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr">adfasdfasdf<span class="HOEnZb"><font color="#888888"><br></font></span></div><div class="gmail_extra"><span class="HOEnZb"><font color="#888888"><br clear="all"><div><div data-smartmail="gmail_signature">-Max</div></div></font></span><div><div class="h5">\r\n<br><div class="gmail_quote">On Mon, Sep 26, 2016 at 4:11 PM, Max McDonnell <span dir="ltr">&lt;<a href="mailto:max@gmail.com" target="_blank">max@gmail.com</a>&gt;</span> wrote:<br><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr">asdfasdf</div><div class="gmail_extra"><br clear="all"><div><div data-smartmail="gmail_signature">-Max</div></div>\r\n<br><div class="gmail_quote">On Mon, Sep 26, 2016 at 4:10 PM, Max McDonnell <span dir="ltr">&lt;<a href="mailto:max@gmail.com" target="_blank">max@gmail.com</a>&gt;</span> wrote:<br><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr">testing<span><font color="#888888"><br clear="all"><div><div data-smartmail="gmail_signature">-Max</div></div>\r\n</font></span></div>\r\n</blockquote></div><br></div>\r\n</blockquote></div><br></div></div></div>\r\n</blockquote></div><br></div>\r\n',
   'stripped-html': '<html><head></head><body><div dir="ltr">asdfasdf</div><div class="gmail_extra"><br clear="all"><div><div data-smartmail="gmail_signature" class="gmail_signature">-Max</div></div>\n<br><br></div>\n</body></html>',
   'stripped-text': 'asdfasdf',
-  'stripped-signature': '-Max' 
-}
+  'stripped-signature': '-Max',
+};

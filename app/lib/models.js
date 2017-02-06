@@ -1,12 +1,13 @@
-'use strict';
+
+
 const Promise = require('bluebird');
 const db = require('../../app/db');
 
-function undefinedValuesCheck (array) {
+function undefinedValuesCheck(array) {
   let undefinedExists = false;
 
-  array.forEach(function (ea) {
-    if (typeof ea == 'undefined') undefinedExists = true;
+  array.forEach((ea) => {
+    if (typeof ea === 'undefined') undefinedExists = true;
   });
 
   return undefinedExists;
@@ -15,7 +16,7 @@ function undefinedValuesCheck (array) {
 class BaseModel {
   constructor(info) {
     this._info = info;
-    info.columns.map(name => {
+    info.columns.map((name) => {
       this[name] = info.data[name];
     });
   }
@@ -24,8 +25,8 @@ class BaseModel {
     return new Promise((fulfill, reject) => {
       db(this.constructor.tableName)
       .where(
-        this.constructor.primaryId, 
-        this[this.constructor.primaryId]
+        this.constructor.primaryId,
+        this[this.constructor.primaryId],
       ).update(this._cleanParams(params))
       .returning('*')
       .then((objs) => {
@@ -33,14 +34,14 @@ class BaseModel {
         // and not just the new one so that
         // if it is re-used they are correct?
         this.constructor._getSingleResponse(objs, fulfill);
-      }).catch(reject); 
+      }).catch(reject);
     });
   }
 
   _cleanParams(obj) {
     const out = {};
     const columnNames = this._info.columns;
-    for (let i=0; i < columnNames.length; i++) {
+    for (let i = 0; i < columnNames.length; i++) {
       if (obj.hasOwnProperty(columnNames[i])) {
         out[columnNames[i]] = obj[columnNames[i]];
       }
@@ -59,13 +60,13 @@ class BaseModel {
   }
 
   static _checkForTableName() {
-    if(!this.tableName) {
+    if (!this.tableName) {
       throw new Error('This model needs a tableName!');
     }
   }
 
   static _checkForPrimaryId() {
-    if(!this.primaryId) {
+    if (!this.primaryId) {
       throw new Error('This model needs a primaryId!');
     }
   }
@@ -92,7 +93,7 @@ class BaseModel {
         .returning('*')
         .then((objects) => {
           this._getMultiResponse(objects, fulfill);
-        }).catch(reject);        
+        }).catch(reject);
       }
     });
   }
@@ -111,36 +112,30 @@ class BaseModel {
     if (!model) {
       model = this;
     }
-    fulfill(objects.map((object) => {
-      return new model(object);
-    }));
+    fulfill(objects.map(object => new model(object)));
   }
 
-  static findByID (id) {
+  static findByID(id) {
     this._checkModelValidity();
     return new Promise((fulfill, reject) => {
       db(this.tableName)
       .where(this.primaryId, id)
       .limit(1)
-      .then((objects) => {
-        return this._getSingleResponse(objects, fulfill, reject);
-      }).catch(reject);
+      .then(objects => this._getSingleResponse(objects, fulfill, reject)).catch(reject);
     });
   }
 
-  static findById (id) {
+  static findById(id) {
     this._checkModelValidity();
     return new Promise((fulfill, reject) => {
       db(this.tableName)
       .where(this.primaryId, id)
       .limit(1)
-      .then((objects) => {
-        return this._getSingleResponse(objects, fulfill, reject);
-      }).catch(reject);
+      .then(objects => this._getSingleResponse(objects, fulfill, reject)).catch(reject);
     });
   }
 
-  static findByIds (ids) {
+  static findByIds(ids) {
     return new Promise((fulfill, reject) => {
       db(this.tableName)
         .whereIn(this.primaryId, ids)
@@ -154,21 +149,17 @@ class BaseModel {
     this._checkModelValidity();
 
     if (!otherOperations) {
-      otherOperations = (dbCall) => {
-        return dbCall;
-      };
+      otherOperations = dbCall => dbCall;
     }
-    
+
     return new Promise((fulfill, reject) => {
-      if (typeof attributeName == 'object' || typeof value == 'object') {
+      if (typeof attributeName === 'object' || typeof value === 'object') {
         reject(new Error(`Neither attributeName nor value can be objects: ${attributeName}, ${value}`));
       } else {
         const basicDbCall = db(this.tableName)
                             .where(attributeName, value);
         otherOperations(basicDbCall)
-        .then((objects) => {
-          return this._getMultiResponse(objects, fulfill);
-        }).catch(reject);
+        .then(objects => this._getMultiResponse(objects, fulfill)).catch(reject);
       }
     });
   }
@@ -176,32 +167,28 @@ class BaseModel {
   static findOneByAttribute(attributeName, value, otherOperations) {
     this._checkModelValidity();
     if (!otherOperations) {
-      otherOperations = (dbCall) => {
-        return dbCall;
-      };
+      otherOperations = dbCall => dbCall;
     }
-    
+
     return new Promise((fulfill, reject) => {
-      if (typeof attributeName == 'object' || typeof value == 'object') {
+      if (typeof attributeName === 'object' || typeof value === 'object') {
         reject(new Error(`Neither attributeName nor value can be objects: ${attributeName}, ${value}`));
       } else {
         const basicDbCall = db(this.tableName)
                             .where(attributeName, value);
         otherOperations(basicDbCall)
-        .then((objects) => {
-          return this._getSingleResponse(objects, fulfill, reject);
-        }).catch(reject);
+        .then(objects => this._getSingleResponse(objects, fulfill, reject)).catch(reject);
       }
     });
   }
 
-  static findByEmail (email) {
+  static findByEmail(email) {
     return this.findOneByAttribute('email', email);
   }
 
 }
 
 module.exports = {
-  undefinedValuesCheck: undefinedValuesCheck,
-  BaseModel: BaseModel,
+  undefinedValuesCheck,
+  BaseModel,
 };

@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 // Utilities
@@ -16,10 +16,10 @@ class Users extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'cmid',
-        'org', 
+        'org',
         'first',
         'middle',
         'last',
@@ -29,11 +29,11 @@ class Users extends BaseModel {
         'active',
         'superuser',
         'class',
-        'department', 
-        'is_away', 
-        'away_message', 
+        'department',
+        'is_away',
+        'away_message',
         'email_alert_frequency',
-        'alert_beep', 
+        'alert_beep',
         'allow_automated_notifications',
       ],
     });
@@ -75,7 +75,7 @@ class Users extends BaseModel {
   }
 
   getPublicObject() {
-    let toBeProcessed = new Users(this);
+    const toBeProcessed = new Users(this);
     delete toBeProcessed._info;
     return toBeProcessed;
   }
@@ -86,7 +86,7 @@ class Users extends BaseModel {
       const usernameParts = email.split('@')[0].split('.');
       const host = usernameParts.pop();
       const username = usernameParts.join('.');
-      let addressPart = username + '@' + host;
+      let addressPart = `${username}@${host}`;
       addressPart = addressPart.toLowerCase();
       db('cms')
         .where(db.raw('LOWER(email)'), 'like', `${addressPart}%`)
@@ -97,7 +97,7 @@ class Users extends BaseModel {
     });
   }
 
-  static findById (user) {
+  static findById(user) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .select('cms.*', 'departments.name as department_name')
@@ -110,7 +110,7 @@ class Users extends BaseModel {
     });
   }
 
-  static findByIds (userIds) {
+  static findByIds(userIds) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .select('cms.*', 'departments.name as department_name')
@@ -122,7 +122,7 @@ class Users extends BaseModel {
     });
   }
 
-  static createOne (first, middle, last, email, orgID, department, position, className) {
+  static createOne(first, middle, last, email, orgID, department, position, className) {
     const passwordString = Math.random().toString(36).slice(-5);
     const hashedPW = bcrypt.hashSync(passwordString, bcrypt.genSaltSync(8), null);
     return new Promise((fulfill, reject) => {
@@ -134,13 +134,13 @@ class Users extends BaseModel {
           return db('cms')
                   .insert({
                     org: orgID,
-                    first: first,
-                    middle: middle,
-                    last: last,
-                    email: email,
+                    first,
+                    middle,
+                    last,
+                    email,
                     pass: hashedPW,
-                    department: department,
-                    position: position,
+                    department,
+                    position,
                     class: className,
                     active: true,
                   });
@@ -151,12 +151,12 @@ class Users extends BaseModel {
     });
   }
 
-  static transferOne (targetUserID, department) {
+  static transferOne(targetUserID, department) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .where('cmid', targetUserID)
         .update({
-          department: department,
+          department,
           updated: db.fn.now(),
         })
       .then(() => {
@@ -165,17 +165,17 @@ class Users extends BaseModel {
     });
   }
 
-  static updateOne (targetUserID, first, middle, last, email, department, position, className) {
+  static updateOne(targetUserID, first, middle, last, email, department, position, className) {
     return new Promise((fulfill, reject) => {
       db('cms')
         .where('cmid', targetUserID)
         .update({
-          first: first,
-          middle: middle,
-          last: last,
-          email: email,
-          department: department,
-          position: position,
+          first,
+          middle,
+          last,
+          email,
+          department,
+          position,
           class: className,
           updated: db.fn.now(),
         })
@@ -184,7 +184,7 @@ class Users extends BaseModel {
       }).catch(reject);
     });
   }
-  
+
 }
 
 Users.primaryId = 'cmid';

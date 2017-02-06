@@ -13,16 +13,14 @@ const twilioRecordingRequest = require('../data/twilioVoiceRecording.js');
 const uniquePhoneNumber = '12342342345';
 const uniquePhoneNumberName = 'unique phone number 1';
 
-describe('Voice requirements', function() {
-
-  before(function(done) {
+describe('Voice requirements', () => {
+  before((done) => {
     primary.post('/login')
-      .send({email:'primary@test.com', })
-      .send({pass:'123', })
+      .send({ email: 'primary@test.com' })
+      .send({ pass: '123' })
       .expect(302)
       .expect('Location', '/')
       .then(() => {
-
         // should be able to create a phone number cell type communication
         primary.post('/clients/2/communications/create')
           .send({
@@ -37,13 +35,12 @@ describe('Voice requirements', function() {
               should.equal(communication.type, 'cell');
               should.equal(communication.description, uniquePhoneNumberName);
               done();
-
             }).catch(done);
           });
       });
   });
 
-  it('should be able to create email type communication', function(done) {
+  it('should be able to create email type communication', (done) => {
     primary.post('/clients/2/communications/create')
       .send({
         description: 'email comm',
@@ -51,7 +48,7 @@ describe('Voice requirements', function() {
         value: 'test@test.com',
       })
       .expect(302)
-      .end(function(err, res) {
+      .end((err, res) => {
         Communications.findOneByAttribute('value', 'test@test.com')
         .then((communication) => {
           should.equal(communication.type, 'email');
@@ -61,7 +58,7 @@ describe('Voice requirements', function() {
       });
   });
 
-  it('should be able to create a phone number cell type communication', function (done) {
+  it('should be able to create a phone number cell type communication', (done) => {
     primary.post('/clients/2/communications/create')
       .send({
         description: 'random number',
@@ -69,7 +66,7 @@ describe('Voice requirements', function() {
         value: '18288384838',
       })
       .expect(302)
-      .end(function(err, res) {
+      .end((err, res) => {
         Communications.findOneByAttribute('value', '18288384838')
         .then((communication) => {
           should.equal(communication.type, 'cell');
@@ -79,7 +76,7 @@ describe('Voice requirements', function() {
       });
   });
 
-  it('modifying an existing current phone number', function (done) {
+  it('modifying an existing current phone number', (done) => {
     const newNameForContact = 'unique phone number 1 modified';
     primary.post('/clients/2/communications/create')
       .send({
@@ -88,7 +85,7 @@ describe('Voice requirements', function() {
         value: uniquePhoneNumber,
       })
       .expect(302)
-      .end(function(err, res) {
+      .end((err, res) => {
         Communications.findOneByAttribute('value', uniquePhoneNumber)
         .then((communication) => {
           should.equal(communication.type, 'cell');
@@ -103,5 +100,4 @@ describe('Voice requirements', function() {
         }).catch(done);
       });
   });
-
 });

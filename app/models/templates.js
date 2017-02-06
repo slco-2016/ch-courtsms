@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 
@@ -11,8 +11,8 @@ const Promise = require('bluebird');
 
 // Class
 class Templates {
-  
-  static findByUser (userID) {
+
+  static findByUser(userID) {
     return new Promise((fulfill, reject) => {
       db('templates')
         .leftJoin(
@@ -25,8 +25,7 @@ class Templates {
         .andWhere('active', true)
         .orderBy('title', 'asc')
       .then((templates) => {
-        
-        templates.forEach(function (template) {
+        templates.forEach((template) => {
           if (!template.times_used) template.times_used = 0;
         });
 
@@ -34,8 +33,8 @@ class Templates {
       }).catch(reject);
     });
   }
-  
-  static findByID (templateID) {
+
+  static findByID(templateID) {
     return new Promise((fulfill, reject) => {
       db('templates')
         .where('template_id', templateID)
@@ -45,10 +44,10 @@ class Templates {
     });
   }
 
-  static removeOne (templateID) {
+  static removeOne(templateID) {
     return new Promise((fulfill, reject) => {
       db('templates')
-        .update({ active: false, })
+        .update({ active: false })
         .where('template_id', templateID)
       .then(() => {
         fulfill();
@@ -56,12 +55,12 @@ class Templates {
     });
   }
 
-  static editOne (templateID, title, content) {
+  static editOne(templateID, title, content) {
     return new Promise((fulfill, reject) => {
       db('templates')
         .update({
-          title: title,
-          content: content,
+          title,
+          content,
         })
         .where('template_id', templateID)
       .then(() => {
@@ -70,14 +69,14 @@ class Templates {
     });
   }
 
-  static insertNew (orgID, userID, title, content) {
+  static insertNew(orgID, userID, title, content) {
     return new Promise((fulfill, reject) => {
       db('templates')
         .insert({
           org: orgID,
           casemanager: userID,
-          title: title,
-          content: content,
+          title,
+          content,
         })
       .then(() => {
         fulfill();
@@ -85,7 +84,7 @@ class Templates {
     });
   }
 
-  static logUse (templateId, userId, clientId) {
+  static logUse(templateId, userId, clientId) {
     return new Promise((fulfill, reject) => {
       db('template_use')
         .insert({

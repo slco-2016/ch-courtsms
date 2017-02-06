@@ -1,12 +1,12 @@
-'use strict';
 
-const db      = require('../db');
+
+const db = require('../db');
 const Promise = require('bluebird');
 const Users = require('../models/users');
 
 module.exports = {
 
-  getPerformanceComparedToTopInOrganizationThisWeek: function (userId) {
+  getPerformanceComparedToTopInOrganizationThisWeek(userId) {
     // Returns a number from 0-100 representing the passed user's
     // performance relative to the top performer in the user's
     // organization.
@@ -53,7 +53,7 @@ module.exports = {
     });
   },
 
-  findByOrgWithDepartmentNameAndNoInfoTag: function (orgId, activeStatus) {
+  findByOrgWithDepartmentNameAndNoInfoTag(orgId, activeStatus) {
     // this is most often used with typeahead.js so we query
     // and place the results in the client window for the js to parse
     return new Promise((fulfill, reject) => {
@@ -70,10 +70,7 @@ module.exports = {
       // continue with the query and get all users
       methodWithJoin.orderBy('cms.last', 'asc')
       .then((users) => {
-
-        fulfill(users.map((object) => {
-          return new Users(object).getPublicObject();
-        }));
+        fulfill(users.map(object => new Users(object).getPublicObject()));
       }).catch(reject);
     });
   },

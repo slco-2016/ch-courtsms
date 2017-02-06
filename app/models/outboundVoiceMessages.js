@@ -1,6 +1,6 @@
-'use strict';
 
-const db      = require('../../app/db');
+
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -10,7 +10,7 @@ const s3 = require('../lib/s3');
 class OutboundVoiceMessages extends BaseModel {
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'id',
         'commid',
@@ -31,9 +31,7 @@ class OutboundVoiceMessages extends BaseModel {
       db(this.tableName)
         .where('delivered', false)
         .where(db.raw(`delivery_date < ${db.fn.now()}`))
-        .then((ovms) => {
-          return this._getMultiResponse(ovms, fulfill);
-        }).catch(reject);
+        .then(ovms => this._getMultiResponse(ovms, fulfill)).catch(reject);
     });
   }
 

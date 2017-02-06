@@ -1,14 +1,14 @@
-const modelsImport   = require('../models/models');
+const modelsImport = require('../models/models');
 const Client = modelsImport.Client;
 const Conversations = modelsImport.Conversations;
 
 module.exports = {
 
-  logClientActivity: function (clientID) {
+  logClientActivity(clientID) {
     Clients.logActivity(clientID).then(() => { }).catch(() => { });
   },
 
-  logConversationActivity: function (conversationID) {
+  logConversationActivity(conversationID) {
     Conversations.logActivity(conversationID).then(() => { }).catch(() => { });
   },
 

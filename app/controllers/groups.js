@@ -4,7 +4,7 @@ const Clients = require('../models/clients');
 module.exports = {
 
   index(req, res) {
-    const status = req.query.status === 'deleted' ? false : true;
+    const status = req.query.status !== 'deleted';
 
     Groups.findByUser(req.user.cmid, status)
     .then((groups) => {
@@ -13,7 +13,7 @@ module.exports = {
           tab: 'groups',
           sel: status ? 'current' : 'deleted',
         },
-        groups: groups,
+        groups,
       });
     }).catch(res.error500);
   },
@@ -22,7 +22,7 @@ module.exports = {
     Clients.findByUser(Number(req.user.cmid), true)
     .then((clients) => {
       res.render('groups/create', {
-        clients: clients,
+        clients,
       });
     }).catch(res.error500);
   },
@@ -45,8 +45,8 @@ module.exports = {
         Clients.findByUser(Number(req.user.cmid), true)
         .then((clients) => {
           res.render('groups/edit', {
-            group: group,
-            clients: clients,
+            group,
+            clients,
           });
         }).catch(res.error500);
       } else {
@@ -63,12 +63,12 @@ module.exports = {
     // Clean clientIDs
     let clientIDs = req.body.clientIDs;
     if (!clientIDs) clientIDs = [];
-    if (typeof clientIDs == 'string') clientIDs = isNaN(Number(clientIDs)) ? [] : Number(clientIDs);
-    if (typeof clientIDs == 'number') clientIDs = [clientIDs,];
+    if (typeof clientIDs === 'string') clientIDs = isNaN(Number(clientIDs)) ? [] : Number(clientIDs);
+    if (typeof clientIDs === 'number') clientIDs = [clientIDs,];
     if (Array.isArray(clientIDs)) {
       clientIDs
-      .map(function (ID) { return Number(ID); })
-      .filter(function (ID) { return !(isNaN(ID)); });
+      .map(ID => Number(ID))
+      .filter(ID => !(isNaN(ID)));
       Groups.editOne(userID, groupId, name, clientIDs)
       .then(() => {
         req.flash('success', 'Edited group.');
@@ -113,5 +113,5 @@ module.exports = {
       res.redirect('/groups');
     }).catch(res.error500);
   },
-  
+
 };

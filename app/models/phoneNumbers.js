@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -10,7 +10,7 @@ class PhoneNumbers extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'phone_number_id',
         'organization',
@@ -20,7 +20,7 @@ class PhoneNumbers extends BaseModel {
     });
   }
 
-  static findByOrgID (orgID) {
+  static findByOrgID(orgID) {
     return new Promise((fulfill, reject) => {
       db('phone_numbers')
         .where('organization', orgID)
@@ -29,7 +29,7 @@ class PhoneNumbers extends BaseModel {
       }).catch(reject);
     });
   }
-  
+
 }
 
 PhoneNumbers.primaryId = 'phone_number_id';

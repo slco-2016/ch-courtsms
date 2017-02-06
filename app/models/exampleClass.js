@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 
@@ -12,7 +12,7 @@ const Promise = require('bluebird');
 // Classes
 class Example {
 
-  static create (orgID, name, ownerID, creatorID, color) {
+  static create(orgID, name, ownerID, creatorID, color) {
     return new Promise((fulfill, reject) => {
       // Color is optional
       if (!color) color = null;
@@ -28,17 +28,16 @@ class Example {
       } else {
         db('Examples')
         .insert({
-          org:        orgID,
-          name:       name,
-          color:      color,
-          owner:      ownerID,
+          org: orgID,
+          name,
+          color,
+          owner: ownerID,
           created_by: creatorID,
 
         })
         .returning('Example_id')
         .then((ExampleIDs) => {
           fulfill(ExampleIDs[0]);
-
         }).catch(reject);
       }
     });

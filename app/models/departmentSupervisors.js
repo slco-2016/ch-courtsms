@@ -1,20 +1,18 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
-
-
 
 
 // Class
 class DepartmentSupervisors {
 
-  static findByDepartmentIDs (departmentIDArray, active) {
-    if (typeof active == 'undefined') active = true;
+  static findByDepartmentIDs(departmentIDArray, active) {
+    if (typeof active === 'undefined') active = true;
     return new Promise((fulfill, reject) => {
       db('department_supervisors')
-        .select('department_supervisors.*', 
+        .select('department_supervisors.*',
                 'cms.cmid',
                 'cms.first',
                 'cms.middle',
@@ -28,45 +26,37 @@ class DepartmentSupervisors {
     });
   }
 
-  static updateSupervisors (departmentID, supervisorIDArray, revertClass) {
-    supervisorIDArray = supervisorIDArray.map(function (supervisorID) {
-      return Number(supervisorID);
-    }).filter(function (supervisorID) {
-      return !isNaN(supervisorID);
-    });
+  static updateSupervisors(departmentID, supervisorIDArray, revertClass) {
+    supervisorIDArray = supervisorIDArray.map(supervisorID => Number(supervisorID)).filter(supervisorID => !isNaN(supervisorID));
     let activeSupervisors;
     return new Promise((fulfill, reject) => {
       db('department_supervisors')
         .whereIn('supervisor', supervisorIDArray)
         .andWhere('department', departmentID)
-        .update({ active: true, })
+        .update({ active: true })
         .returning('supervisor')
       .then((updatedSupervisors) => {
         activeSupervisors = updatedSupervisors;
         return db('department_supervisors')
         .whereNotIn('supervisor', supervisorIDArray)
         .andWhere('department', departmentID)
-        .update({ active: false, });
+        .update({ active: false });
       }).then(() => {
-        const remainingSupervisors = supervisorIDArray.filter(function (ID) {
-          return activeSupervisors.indexOf(ID) < 0;
-        });
+        const remainingSupervisors = supervisorIDArray.filter(ID => activeSupervisors.indexOf(ID) < 0);
         return DepartmentSupervisors.createSupervisors(departmentID, remainingSupervisors);
-      }).then(() => {
-        return DepartmentSupervisors.updateUserStatuses(departmentID, supervisorIDArray, revertClass);
-      }).then(() => {
+      }).then(() => DepartmentSupervisors.updateUserStatuses(departmentID, supervisorIDArray, revertClass)).then(() => {
         fulfill();
       }).catch(reject);
     });
   }
 
-  static updateSupervisor (departmentID, supervisorID, activeStatus) {
-    if (typeof activeStatus == 'undefined') activeStatus = true;
+  static updateSupervisor(departmentID, supervisorID, activeStatus) {
+    if (typeof activeStatus === 'undefined') activeStatus = true;
     return new Promise((fulfill, reject) => {
       db('department_supervisors')
         .where('supervisor', supervisorID)
         .andWhere('department', departmentID)
-        .update({ active: activeStatus, })
+        .update({ active: activeStatus })
         .returning('supervisor')
       .then((updatedSupervisors) => {
         if (updatedSupervisors.length > 0) {
@@ -82,26 +72,24 @@ class DepartmentSupervisors {
   }
 
 
-  static updateUserStatuses (departmentID, supervisorIDArray, revertClass) {
-    if (typeof revertClass == 'undefined') revertClass = 'primary';
+  static updateUserStatuses(departmentID, supervisorIDArray, revertClass) {
+    if (typeof revertClass === 'undefined') revertClass = 'primary';
     return new Promise((fulfill, reject) => {
       db('cms')
         .whereIn('cmid', supervisorIDArray)
         .andWhere('department', departmentID)
-        .update({ class: 'supervisor', })
-      .then(() => {
-        return db('cms')
+        .update({ class: 'supervisor' })
+      .then(() => db('cms')
         .whereNotIn('cmid', supervisorIDArray)
         .andWhere('department', departmentID)
-        .update({ class: revertClass, });
-      }).then(() => {
-        fulfill();
-      }).catch(reject);
+        .update({ class: revertClass })).then(() => {
+          fulfill();
+        }).catch(reject);
     });
   }
 
 
-  static createSupervisor (departmentID, supervisorID) {
+  static createSupervisor(departmentID, supervisorID) {
     return new Promise((fulfill, reject) => {
       DepartmentSupervisors.createSupervisors(departmentID, [supervisorID,])
       .then(() => {
@@ -110,15 +98,13 @@ class DepartmentSupervisors {
     });
   }
 
-  static createSupervisors (departmentID, supervisorIDArray) {
+  static createSupervisors(departmentID, supervisorIDArray) {
     return new Promise((fulfill, reject) => {
-      const supervisorArray = supervisorIDArray.map(function (supervisorID) {
-        return {
-          department: departmentID,
-          supervisor: supervisorID,
-          active: true,
-        };
-      });
+      const supervisorArray = supervisorIDArray.map(supervisorID => ({
+        department: departmentID,
+        supervisor: supervisorID,
+        active: true,
+      }));
       db('department_supervisors')
         .insert(supervisorArray)
       .then(() => {
@@ -126,7 +112,7 @@ class DepartmentSupervisors {
       }).catch(reject);
     });
   }
-  
+
 }
 
 module.exports = DepartmentSupervisors;

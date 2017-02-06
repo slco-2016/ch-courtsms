@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -10,7 +10,7 @@ class Communications extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'commid',
         'type',
@@ -22,12 +22,12 @@ class Communications extends BaseModel {
     });
   }
 
-  static findById (commID) {
+  static findById(commID) {
     return new Promise((fulfill, reject) => {
       db('comms')
         .where('commid', commID)
         .limit(1)
-      .then(function (comms) {
+      .then((comms) => {
         fulfill(comms[0]);
       })
       .catch(reject);
@@ -52,10 +52,10 @@ class Communications extends BaseModel {
     });
   }
 
-  static findByValue (value) {
+  static findByValue(value) {
     return new Promise((fulfill, reject) => {
       db('comms')
-        .whereRaw('LOWER(value) = LOWER(\'' + String(value) + '\')')
+        .whereRaw(`LOWER(value) = LOWER('${String(value)}')`)
         .limit(1)
       .then((comms) => {
         this._getSingleResponse(comms, fulfill);
@@ -64,7 +64,7 @@ class Communications extends BaseModel {
     });
   }
 
-  static getUseCounts (clientID, communicationIDArray) {
+  static getUseCounts(clientID, communicationIDArray) {
     return new Promise((fulfill, reject) => {
       db('msgs')
         .select(db.raw('count(msgid), comm'))
@@ -73,33 +73,33 @@ class Communications extends BaseModel {
       .then((counts) => {
         fulfill(counts);
       }).catch(reject);
-    }); 
+    });
   }
 
-  static removeOne (commConnID) {
+  static removeOne(commConnID) {
     return new Promise((fulfill, reject) => {
       db('commconns')
         .where('commconnid', commConnID)
-        .update({ retired: db.fn.now(), })
+        .update({ retired: db.fn.now() })
       .then(() => {
         fulfill();
       }).catch(reject);
-    }); 
+    });
   }
 
-  static create (type, description, value) {
+  static create(type, description, value) {
     return new Promise((fulfill, reject) => {
       db('comms')
       .insert({
-        type: type,
-        value: value,
-        description: description,
+        type,
+        value,
+        description,
       })
       .returning('*')
       .then((comms) => {
         this._getSingleResponse(comms, fulfill);
       }).catch(reject);
-    }); 
+    });
   }
 
 }

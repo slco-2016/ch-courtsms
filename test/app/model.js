@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const BaseModel = require('../../app/lib/models').BaseModel
+const BaseModel = require('../../app/lib/models').BaseModel;
 
 require('colors');
 const should = require('should');
@@ -11,65 +11,61 @@ const should = require('should');
 class TestModel extends BaseModel {
   constructor(data) {
     super({
-      data: data,
-      columns: ["cmid","org"],
-    })
+      data,
+      columns: ['cmid', 'org'],
+    });
   }
 }
 
-describe('BaseModel checks', function() {
-  
-  it('BaseModel should correctly assign props', function(done) {
-    let testModel = new TestModel({cmid: 3, org: "org name"})
-    testModel.cmid.should.be.exactly(3)
-    testModel.org.should.be.exactly("org name")
+describe('BaseModel checks', () => {
+  it('BaseModel should correctly assign props', (done) => {
+    const testModel = new TestModel({ cmid: 3, org: 'org name' });
+    testModel.cmid.should.be.exactly(3);
+    testModel.org.should.be.exactly('org name');
 
     done();
-  })
+  });
 
-  it("BaseModel should be angry if we " +
-    "don't have all the correct attributes", function(done) {
-      
-      should.not.exist(TestModel.tableName)
-      should.not.exist(TestModel.primaryId)
+  it('BaseModel should be angry if we ' +
+    "don't have all the correct attributes", (done) => {
+    should.not.exist(TestModel.tableName);
+    should.not.exist(TestModel.primaryId);
 
-      assert.throws(() => {TestModel.findByID()})
+    assert.throws(() => { TestModel.findByID(); });
 
-      TestModel.tableName = "foo"
-      assert.throws(() => {TestModel.findByID()})
+    TestModel.tableName = 'foo';
+    assert.throws(() => { TestModel.findByID(); });
 
-      TestModel.tableName = null
-      TestModel.primaryId = "foo"
-      assert.throws(() => {TestModel.findByID()})
+    TestModel.tableName = null;
+    TestModel.primaryId = 'foo';
+    assert.throws(() => { TestModel.findByID(); });
 
-      done()
-  })
-
-  it("BaseModel should clean parameters", function(done) {
-    newParams = TestModel._cleanParams({org: 1, created: "nah"})
-    should.deepEqual(newParams, {org: 1})
     done();
-  })
+  });
 
-  it("BaseModel getSingle response should handle edge cases", function(done) {
-    let fulfill = (isNull) => {
-      should.not.exist(isNull)
-    }
+  it('BaseModel should clean parameters', (done) => {
+    newParams = TestModel._cleanParams({ org: 1, created: 'nah' });
+    should.deepEqual(newParams, { org: 1 });
+    done();
+  });
 
-    TestModel._getSingleResponse(undefined, fulfill, null)
-    TestModel._getSingleResponse([], fulfill, null)
-    done()
-  })
+  it('BaseModel getSingle response should handle edge cases', (done) => {
+    const fulfill = (isNull) => {
+      should.not.exist(isNull);
+    };
 
-  it("BaseModel getSingle response should" +
-    "return valid instance", function(done) {
+    TestModel._getSingleResponse(undefined, fulfill, null);
+    TestModel._getSingleResponse([], fulfill, null);
+    done();
+  });
 
-    let fulfill = (instance) => {
-      instance.should.have.property('_info')
-      instance.cmid.should.be.exactly(1)
-    }
-    TestModel._getSingleResponse([{cmid: 1, org: "Org Name"}], fulfill, null)
-    done()
-  })
-
-})
+  it('BaseModel getSingle response should' +
+    'return valid instance', (done) => {
+    const fulfill = (instance) => {
+      instance.should.have.property('_info');
+      instance.cmid.should.be.exactly(1);
+    };
+    TestModel._getSingleResponse([{ cmid: 1, org: 'Org Name' }], fulfill, null);
+    done();
+  });
+});

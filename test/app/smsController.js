@@ -14,47 +14,46 @@ const Messages = require('../../app/models/messages');
 const twilioAgent = supertest.agent(APP);
 const smsData = require('../data/testSMSData');
 
-describe('Sms inbound message endpoint', function() {
-
-  it('should accept a new text', function(done) {
+describe('Sms inbound message endpoint', () => {
+  it('should accept a new text', (done) => {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
       .set('X-Twilio-Signature', 'Hwg7BlBJGBLRPcRAlKwKlwtQ+q0=')
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         done(err);
       });
   });
 
-  it.skip('should not accept an unsigned new text', function(done) {
+  it.skip('should not accept an unsigned new text', (done) => {
     twilioAgent.post('/webhook/sms')
       .send(smsData)
       .expect(403)
-      .end(function(err, res) {
+      .end((err, res) => {
         done(err);
       });
   });
 
-  it('twilio sends an sms from an brand new number', function(done) {
+  it('twilio sends an sms from an brand new number', (done) => {
     const newSmsBody = smsData;
     newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
       .set('X-Twilio-Signature', 'K22KSNtyW4+G5tGbpzBm+u9DnQU=')
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         done(err);
       });
   });
 
-  it('twilio sends an sms from that same new number again', function(done) {
+  it('twilio sends an sms from that same new number again', (done) => {
     const newSmsBody = smsData;
     newSmsBody.From = '10008384828';
     twilioAgent.post('/webhook/sms')
       .send(newSmsBody)
       .set('X-Twilio-Signature', 'K22KSNtyW4+G5tGbpzBm+u9DnQU=')
       .expect(200)
-      .end(function(err, res) {
+      .end((err, res) => {
         Conversations.findByCommunicationValue('10008384828')
         .then((conversations) => {
           // both messages should have been placed in the same new captured conversation
@@ -68,7 +67,7 @@ describe('Sms inbound message endpoint', function() {
       });
   });
 
-  it('twilio sends an an sms to an existing number', function(done) {
+  it('twilio sends an an sms to an existing number', (done) => {
     const newSmsBody = smsData;
     newSmsBody.From = '12033133609';
 
@@ -84,7 +83,7 @@ describe('Sms inbound message endpoint', function() {
         .send(newSmsBody)
         .set('X-Twilio-Signature', '7lwIhNW7ASn7qZKq0Hhs0rIQ1a4=')
         .expect(200)
-        .end(function(err, res) {
+        .end((err, res) => {
           Conversations.findByCommunicationValue(newSmsBody.From)
           .then((conversations) => {
             conversations.forEach((conversation) => {
@@ -96,10 +95,9 @@ describe('Sms inbound message endpoint', function() {
           }).catch(done);
         });
     }).catch(done);
-
   });
 
-  it('claim the conversation with one case manager so it closes for all others', function(done) {
+  it('claim the conversation with one case manager so it closes for all others', (done) => {
     const newSmsBody = smsData;
     newSmsBody.From = '12033133609';
 
@@ -119,15 +117,11 @@ describe('Sms inbound message endpoint', function() {
       .then(() => {
         Conversations.findByCommunicationValue(newSmsBody.From)
         .then((conversations) => {
-          conversations = conversations.filter((conversation) => {
-            return conversation.accepted == true;
-          });
+          conversations = conversations.filter(conversation => conversation.accepted == true);
           conversations.length.should.be.exactly(1);
           done();
         });
       }).catch(done);
     });
-
   });
-
 });

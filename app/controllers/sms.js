@@ -9,18 +9,18 @@ const colors = require('colors');
 
 const sms = require('../lib/sms');
 
-const credentials = require('../../credentials')
+const credentials = require('../../credentials');
 
 module.exports = {
 
   webhook(req, res) {
     let fromNumber = req.body.From.replace(/\D+/g, '');
-    if (fromNumber.length == 10) { 
-      fromNumber = '1' + fromNumber; 
+    if (fromNumber.length == 10) {
+      fromNumber = `1${fromNumber}`;
     }
     let toNumber = req.body.To.replace(/\D+/g, '');
-    if (toNumber.length == 10) { 
-      toNumber = '1' + toNumber; 
+    if (toNumber.length == 10) {
+      toNumber = `1${toNumber}`;
     }
     const text = req.body.Body.replace(/["']/g, '').trim();
     const MessageStatus = req.body.SmsStatus;
@@ -28,7 +28,7 @@ module.exports = {
 
     // validateRequest returns true if the request originated from Twilio
     // TODO: Is there a better way than explicitly setting the protocol to https?
-    let opts = {'protocol': 'https'};
+    const opts = { protocol: 'https' };
     // NOTE: We may need to add our own host because a port number gets added to the host during
     //       tests, which causes tests to fail because the twilio signature we've baked into the
     //       tests doesn't match.
@@ -40,12 +40,15 @@ module.exports = {
       validationPasses = true;
       console.log('Letting tests pass even though validation has failed!'.red);
     }
-    
+
     if (validationPasses) {
       // Log IBM Sensitivity measures
       SentimentAnalysis.logIBMSentimentAnalysis(req.body);
-      
-      let communication, conversations, clients, messages;
+
+      let communication,
+        conversations,
+        clients,
+        messages;
       Communications.getOrCreateFromValue(fromNumber, 'cell')
       .then((resp) => {
         communication = resp;
@@ -53,14 +56,12 @@ module.exports = {
       }).then((resp) => {
         clients = resp;
         return Conversations.retrieveByClientsAndCommunication(
-          clients, communication
+          clients, communication,
         );
       }).then((resp) => {
         conversations = resp;
-        const conversationIds = conversations.map((conversation) => {
-          return conversation.convid;
-        });
-        
+        const conversationIds = conversations.map(conversation => conversation.convid);
+
         return Messages.insertIntoManyConversations(conversationIds,
                                                     communication.commid,
                                                     text,
@@ -82,14 +83,12 @@ module.exports = {
               }).then(() => { }).catch((error) => { console.log(error); });
             }
           });
-        });      
+        });
 
         // determine if there is auto-response logic
         conversations.forEach((conversation) => {
           Messages.findByConversation(conversation)
-          .then((messages) => {
-            return Messages.determineIfAutoResponseShouldBeSent(conversation, messages);
-          }).then((resp) => {
+          .then(messages => Messages.determineIfAutoResponseShouldBeSent(conversation, messages)).then((resp) => {
             const shouldSendResponse = resp.sendResponse;
             if (shouldSendResponse) {
               const commId = resp.sendValues.communicationId;
@@ -97,9 +96,7 @@ module.exports = {
               const messageContent = resp.sendValues.content;
               const clientId = conversation.client;
               Conversations.closeAllWithClientExcept(clientId, conversationId)
-              .then(() => {
-                return Messages.sendOne(commId, messageContent, conversation);
-              }).then(() => { }).catch((error) => { console.log(error); });
+              .then(() => Messages.sendOne(commId, messageContent, conversation)).then(() => { }).catch((error) => { console.log(error); });
             }
           }).catch(res.error500);
 
@@ -111,11 +108,9 @@ module.exports = {
         const twilioResponse = new twilio.TwimlResponse();
         res.send(twilioResponse.toString());
       });
-    }
-    else {
+    } else {
       res.status(403).send('You are not Twilio. Buzz off.');
     }
-
   },
 
 };

@@ -7,11 +7,11 @@ module.exports = {
     ColorTags.selectAllByUser(req.user.cmid)
     .then((colors) => {
       res.render('colors', {
-        colors: colors,
+        colors,
       });
     }).catch(res.error500);
   },
-  
+
   create(req, res) {
     ColorTags.addNewColorTag(req.user.cmid, req.body.color, req.body.name)
     .then(() => {
@@ -25,7 +25,7 @@ module.exports = {
     .then((colors) => {
       if (colors.length > 0) {
         res.render('clients/colors', {
-          colors: colors,
+          colors,
           params: req.params,
         });
       } else {

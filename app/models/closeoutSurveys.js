@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -16,7 +16,7 @@ const Users = require('./users');
 
 class Surveys {
 
-  static findByOrgId (orgId) {
+  static findByOrgId(orgId) {
     return new Promise((fulfill, reject) => {
       db('client_closeout_surveys')
         .select('client_closeout_surveys.*')
@@ -35,10 +35,10 @@ class Surveys {
       .then((surveys) => {
         const result = {};
         result.total = surveys.length;
-        result.likelihoodSuccessWithout = {1:0, 2:0, 3:0, 4:0, 5:0,};
-        result.helpfulness = {critical: 0, helpful: 0, neutral: 0, unhelpful: 0,};
-        result.mostCommonMethod = {inPerson: 0, text: 0, phone: 0, email: 0,};
-        result.closeout = {success: 0, failure: 0, stillOpen: 0,};
+        result.likelihoodSuccessWithout = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+        result.helpfulness = { critical: 0, helpful: 0, neutral: 0, unhelpful: 0 };
+        result.mostCommonMethod = { inPerson: 0, text: 0, phone: 0, email: 0 };
+        result.closeout = { success: 0, failure: 0, stillOpen: 0 };
         surveys.forEach((survey) => {
           result.likelihoodSuccessWithout[survey.likelihood_success_without_cc] += 1;
           result.helpfulness[survey.helpfulness_of_cc] += 1;
@@ -50,14 +50,14 @@ class Surveys {
     });
   }
 
-  static create ( clientId, closeOutStatus, 
-                  mostCommonMethod, likelihoodSuccessWithoutCC, 
-                  helpfulnessCC, mostOftenDiscussed) {
+  static create(clientId, closeOutStatus,
+    mostCommonMethod, likelihoodSuccessWithoutCC,
+    helpfulnessCC, mostOftenDiscussed) {
     return new Promise((fulfill, reject) => {
       db('client_closeout_surveys')
         .insert({
           client: clientId,
-          closeout_status: closeOutStatus, 
+          closeout_status: closeOutStatus,
           most_common_method: mostCommonMethod,
           likelihood_success_without_cc: likelihoodSuccessWithoutCC,
           helpfulness_of_cc: helpfulnessCC,

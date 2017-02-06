@@ -4,17 +4,16 @@ const credentials = require('../../credentials');
 
 module.exports = {
 
-  isLoggedIn: function (req, res, next) {
+  isLoggedIn(req, res, next) {
     const realsuper = req.isAuthenticated() && req.user.hasOwnProperty('superuser') && req.user.superuser;
-    if (req.isAuthenticated() || realsuper) { 
-      return next(); 
-    } else { 
-      req.flash('warning', 'Please log in for access.');
-      res.redirect('/login'); 
+    if (req.isAuthenticated() || realsuper) {
+      return next();
     }
+    req.flash('warning', 'Please log in for access.');
+    res.redirect('/login');
   },
 
-  checkIsAllowed: function(req, res, next) {
+  checkIsAllowed(req, res, next) {
     let allowed = true;
 
     const client = res.locals.client;
@@ -38,7 +37,6 @@ module.exports = {
 
     if (client) {
       if (client.cm !== user.cmid) {
-
         if (client.department.org && client.department.org !== user.org) {
           allowed = false;
         }
@@ -48,43 +46,39 @@ module.exports = {
             allowed = false;
           }
         }
-
       }
     }
 
     if (allowed) {
       return next();
-    } else {
-      res.redirect('/login');
     }
+    res.redirect('/login');
   },
 
-  isAdmin: function (req, res, next) {
+  isAdmin(req, res, next) {
     const realadmin = req.isAuthenticated() && req.user.active && req.user.admin;
     const realsuper = req.isAuthenticated() && req.user.hasOwnProperty('superuser') && req.user.superuser;
-    if (realadmin || realsuper) { 
-      return next(); 
-    } else { 
-      req.flash('warning', 'Sorry you cannot view this page because you do not have Admin access.');
-      res.redirect('/401'); 
+    if (realadmin || realsuper) {
+      return next();
     }
+    req.flash('warning', 'Sorry you cannot view this page because you do not have Admin access.');
+    res.redirect('/401');
   },
 
-  isSuper: function (req, res, next) {
+  isSuper(req, res, next) {
     const realsuper = req.isAuthenticated() && req.user.hasOwnProperty('superuser') && req.user.superuser;
-    if (realsuper) { 
-      return next(); 
-    } else { 
-      req.flash('warning', 'No access allowed, you do not have SUPERUSER access.');
-      res.redirect('/401'); 
+    if (realsuper) {
+      return next();
     }
+    req.flash('warning', 'No access allowed, you do not have SUPERUSER access.');
+    res.redirect('/401');
   },
 
-  hashPw: function (pw) {
-    return bcrypt.hashSync(pw, bcrypt.genSaltSync(8), null); 
+  hashPw(pw) {
+    return bcrypt.hashSync(pw, bcrypt.genSaltSync(8), null);
   },
 
-  validPw: function (pw1, pw2) {
-    return bcrypt.compareSync(pw1, pw2); 
+  validPw(pw1, pw2) {
+    return bcrypt.compareSync(pw1, pw2);
   },
 };

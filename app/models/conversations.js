@@ -1,7 +1,7 @@
-'use strict';
+
 
 // Libraries
-const db      = require('../../app/db');
+const db = require('../../app/db');
 const Promise = require('bluebird');
 const BaseModel = require('../lib/models').BaseModel;
 
@@ -9,7 +9,7 @@ class Conversations extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'convid',
         'cm',
@@ -30,11 +30,11 @@ class Conversations extends BaseModel {
         .andWhere('cm', cmid)
         .andWhere('convos.open', true)
         .pluck('convid')
-        .then(function (convos) {
+        .then((convos) => {
           db('convos').whereIn('convid', convos)
             .update({
               open: false,
-            }).then(function (success) {
+            }).then((success) => {
               fulfill(success);
             })
             .catch(reject);
@@ -42,21 +42,21 @@ class Conversations extends BaseModel {
         .catch(reject);
     });
   }
-  
-  static closeAllBetweenClientAndUser (userID, clientID) {
+
+  static closeAllBetweenClientAndUser(userID, clientID) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('client', clientID)
         .andWhere('cm', userID)
         .andWhere('open', true)
-        .update({ open: false, })
+        .update({ open: false })
       .then(() => {
         fulfill();
       }).catch(reject);
     });
   }
 
-  static closeAllCapturedWithCertainCommunication (communication) {
+  static closeAllCapturedWithCertainCommunication(communication) {
     const value = communication.value;
     return new Promise((fulfill, reject) => {
       Conversations.findByCommunicationValue(value)
@@ -66,9 +66,7 @@ class Conversations extends BaseModel {
           const stillOpen = conversation.open == true;
           return stillOpen && notAccepted;
         });
-        const conversationIds = conversations.map((conversation) => {
-          return conversation.convid;
-        });
+        const conversationIds = conversations.map(conversation => conversation.convid);
 
         return db('convos')
           .whereIn('convid', conversationIds)
@@ -83,24 +81,24 @@ class Conversations extends BaseModel {
     });
   }
 
-  static closeAllWithClient (clientId) {
+  static closeAllWithClient(clientId) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('client', clientId)
-        .update({ open: false, })
+        .update({ open: false })
       .then(() => {
         fulfill();
       }).catch(reject);
     });
   }
 
-  static closeAllWithClientExcept (clientId, conversationId) {
+  static closeAllWithClientExcept(clientId, conversationId) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('client', clientId)
         .andWhere('open', true)
         .and.whereNot('convid', conversationId)
-        .update({ open: false, })
+        .update({ open: false })
       .then(() => {
         fulfill();
       }).catch(reject);
@@ -108,31 +106,29 @@ class Conversations extends BaseModel {
   }
 
   static create(userId, clientId, subject, open) {
-    if (typeof subject == 'undefined') {
+    if (typeof subject === 'undefined') {
       subject = 'Automatically created conversation';
     }
-    if (typeof open == 'undefined') {
+    if (typeof open === 'undefined') {
       open = true;
     }
     return new Promise((fulfill, reject) => {
       Conversations.closeAllBetweenClientAndUser(userId)
-      .then(() => {
-        return db('convos')
+      .then(() => db('convos')
           .insert({
             cm: userId,
             client: clientId,
-            subject: subject,
-            open: open,
+            subject,
+            open,
             accepted: true,
           })
-          .returning('*');
-      }).then((conversations) => {
-        this._getSingleResponse(conversations, fulfill);
-      }).catch(reject);
+          .returning('*')).then((conversations) => {
+            this._getSingleResponse(conversations, fulfill);
+          }).catch(reject);
     });
   }
 
-  static createOrAttachToExistingCaptureBoardConversation (communication) {
+  static createOrAttachToExistingCaptureBoardConversation(communication) {
     const commId = communication.commid;
     return new Promise((fulfill, reject) => {
       db('convos')
@@ -144,13 +140,11 @@ class Conversations extends BaseModel {
         .andWhere('msgs.comm', commId)
       .then((conversations) => {
         if (conversations.length) {
-          const conversationIds = conversations.map((conversation) => {
-            return conversation.convid;
-          });
+          const conversationIds = conversations.map(conversation => conversation.convid);
           return db('convos')
             .whereIn('convid', conversationIds);
-        } else {
-          return db('convos')
+        }
+        return db('convos')
             .insert({
               cm: null,
               client: null,
@@ -159,7 +153,6 @@ class Conversations extends BaseModel {
               accepted: false,
             })
             .returning('*');
-        }
       }).then((conversations) => {
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
@@ -167,7 +160,7 @@ class Conversations extends BaseModel {
   }
 
   static createNewIfOlderThanSetHours(conversations, hourThreshold) {
-    if (!hourThreshold || isNaN(hourThreshold)){
+    if (!hourThreshold || isNaN(hourThreshold)) {
       hourThreshold = 24; // default to 1 day threshold
     }
 
@@ -176,7 +169,6 @@ class Conversations extends BaseModel {
         return new Promise((fulfill, reject) => {
           fulfill(conversations);
         }).map((conversation) => {
-
           const d1 = new Date().getTime();
           const d2 = new Date(conversation.updated).getTime();
           const timeLapsed = Math.round((d2 - d1) / (3600 * 1000)); // in hours
@@ -190,17 +182,16 @@ class Conversations extends BaseModel {
             const subject = 'Automatically created';
             const open = true;
             return Conversations.create(userId, clientId, subject, open);
-          };
+          }
         }).then((conversations) => {
           fulfill(conversations);
         });
-      } else {
-        fulfill([]);
       }
+      fulfill([]);
     });
   }
 
-  static createNewNotAcceptedConversationsForAllClients (clients) {
+  static createNewNotAcceptedConversationsForAllClients(clients) {
     return new Promise((fulfill, reject) => {
       if (clients.length) {
         const insertList = [];
@@ -226,7 +217,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static findByCommunicationValue (communicationValue) {
+  static findByCommunicationValue(communicationValue) {
     return new Promise((fulfill, reject) => {
       const Communications = require('./communications');
       Communications.findByValue(communicationValue)
@@ -236,13 +227,10 @@ class Conversations extends BaseModel {
           return db('convos')
             .join('msgs', 'msgs.convo', 'convos.convid')
             .where('msgs.comm', communicationId);
-        } else {
-          fulfill([]);
         }
+        fulfill([]);
       }).then((conversations) => {
-        const conversationIds = conversations.map((conversationId) => {
-          return conversationId.convid;
-        });
+        const conversationIds = conversations.map(conversationId => conversationId.convid);
         return db('convos')
           .whereIn('convid', conversationIds)
           .andWhere('open', true);
@@ -252,7 +240,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static findByIdsIncludeMessages (conversationIds) {
+  static findByIdsIncludeMessages(conversationIds) {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
     return new Promise((fulfill, reject) => {
       let conversations;
@@ -260,13 +248,13 @@ class Conversations extends BaseModel {
         .whereIn('convid', conversationIds)
       .then((convos) => {
         conversations = convos;
-        
+
         // Did this because can't require Messages b/c Messages requires Conversations...
         return db('msgs')
-          .select('msgs.*', 
+          .select('msgs.*',
                   'sentiment.sentiment',
                   'commconns.client',
-                  'commconns.name as commconn_name', 
+                  'commconns.name as commconn_name',
                   'comms.value as comm_value',
                   'comms.type as comm_type')
           .leftJoin('comms', 'comms.commid', 'msgs.comm')
@@ -279,7 +267,6 @@ class Conversations extends BaseModel {
           .leftJoin('ibm_sentiment_analysis as sentiment', 'sentiment.tw_sid', 'msgs.tw_sid')
           .whereIn('convo', conversationIds)
           .orderBy('created', 'asc');
-
       }).then((messages) => {
         conversations = conversations.map((conversation) => {
           conversation.messages = [];
@@ -290,21 +277,17 @@ class Conversations extends BaseModel {
           });
           return conversation;
         });
-        
+
         fulfill(conversations);
       }).catch(reject);
     });
   }
 
-  static findByClientAndUserInvolvingSpecificCommId (clients, communication) {
+  static findByClientAndUserInvolvingSpecificCommId(clients, communication) {
     // clients is an array of client objects
     // communicatiosn is an object representing a single communication row
-    const clientIds = clients.map((client) => {
-      return client.clid;
-    });
-    const userIds = clients.map((client) => {
-      return client.cm;
-    });
+    const clientIds = clients.map(client => client.clid);
+    const userIds = clients.map(client => client.cm);
     const commId = communication.commid;
     let conversations;
 
@@ -319,9 +302,7 @@ class Conversations extends BaseModel {
         // not with their current case manager
         conversations = conversations.filter((conversation) => {
           // Find the related client
-          const clientsThatAreInThisConversation = clients.filter((client) => {
-            return client.clid == conversation.client;
-          });
+          const clientsThatAreInThisConversation = clients.filter(client => client.clid == conversation.client);
           const relatedClient = clientsThatAreInThisConversation[0];
 
           const conversationClient = conversation.client;
@@ -331,33 +312,26 @@ class Conversations extends BaseModel {
         });
 
         // Get conversation Ids
-        const conversationIds = conversations.map((conversation) => {
-          return conversation.convid;
-        });
+        const conversationIds = conversations.map(conversation => conversation.convid);
 
         // Get messages associated with each conversation that use that commid
         return db('msgs')
           .whereIn('convo', conversationIds)
           .andWhere('comm', commId);
       }).then((messages) => {
-
         // get list of conversationIds from the resulting messages
-        const conversationIds = messages.map((message) => {
-          return message.convo;
-        });
+        const conversationIds = messages.map(message => message.convo);
 
         // Filter out conversations not in conversationIds
-        conversations.filter((conversation) => {
-          return conversationIds.indexOf(conversation.convid) > -1;
-        });
+        conversations.filter(conversation => conversationIds.indexOf(conversation.convid) > -1);
 
         // Final list is good to send off
         this._getMultiResponse(conversations, fulfill);
       }).catch(reject);
     });
   }
-  
-  static findByUserAndClient (userID, clientID) {
+
+  static findByUserAndClient(userID, clientID) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('cm', userID)
@@ -369,7 +343,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static findByUser (userID) {
+  static findByUser(userID) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('cm', userID)
@@ -380,7 +354,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static getconversationMessages (conversationID) {
+  static getconversationMessages(conversationID) {
     return new Promise((fulfill, reject) => {
       db('msgs')
         .where('convo', conversationID)
@@ -391,7 +365,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static getMostRecentConversation (userID, clientID) {
+  static getMostRecentConversation(userID, clientID) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('cm', userID)
@@ -404,50 +378,48 @@ class Conversations extends BaseModel {
     });
   }
 
-  static logActivity (conversationID) {
+  static logActivity(conversationID) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('convid', conversationID)
-        .update({ updated: db.fn.now(), })
+        .update({ updated: db.fn.now() })
       .then(() => {
         fulfill();
       }).catch(reject);
     });
   }
 
-  static makeClaimDecision (conversationId, userId, clientId, accepted) {
-    if (typeof accepted == 'undefined') {
+  static makeClaimDecision(conversationId, userId, clientId, accepted) {
+    if (typeof accepted === 'undefined') {
       accepted = true;
     }
-    accepted = accepted == true ? true : false;
+    accepted = accepted == true;
 
     return new Promise((fulfill, reject) => {
       db('convos')
-        .update({ open: false, })
+        .update({ open: false })
         .where('client', clientId)
         .andWhere('cm', userId)
-      .then(() => {
-        return db('convos')
+      .then(() => db('convos')
         .update({
           cm: userId,
           client: clientId,
           open: accepted,
-          accepted: accepted,
+          accepted,
         })
         .where('convid', conversationId)
-        .returning('*');
-      }).then((conversations) => {
-        fulfill(conversations[0]);
-      }).catch(reject);
+        .returning('*')).then((conversations) => {
+          fulfill(conversations[0]);
+        }).catch(reject);
     });
   }
 
-  static retrieveByClientsAndCommunication (clients, communication) {
-    return new Promise ((fulfill, reject) => {
+  static retrieveByClientsAndCommunication(clients, communication) {
+    return new Promise((fulfill, reject) => {
       let conversations;
       // Get the conversations that are possible candidates
       this.findByClientAndUserInvolvingSpecificCommId(
-        clients, communication
+        clients, communication,
       ).then((resp) => {
         conversations = resp;
 
@@ -467,12 +439,10 @@ class Conversations extends BaseModel {
             const subject = 'Automatically created conversation';
             const open = true;
             return this.create(client.cm, client.clid, subject, open);
-          } else {
-            return this.createNewNotAcceptedConversationsForAllClients(clients);
           }
-        } else {
-          return this.createOrAttachToExistingCaptureBoardConversation(communication);
+          return this.createNewNotAcceptedConversationsForAllClients(clients);
         }
+        return this.createOrAttachToExistingCaptureBoardConversation(communication);
       }).then((conversations) => {
         if (!Array.isArray(conversations)) {
           conversations = [conversations,];
@@ -482,7 +452,7 @@ class Conversations extends BaseModel {
     });
   }
 
-  static transferUserReference (client, fromUser, toUser) {
+  static transferUserReference(client, fromUser, toUser) {
     return new Promise((fulfill, reject) => {
       db('convos')
         .where('cm', fromUser)

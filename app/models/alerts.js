@@ -1,6 +1,6 @@
-'use strict';
 
-const db      = require('../../app/db');
+
+const db = require('../../app/db');
 const Promise = require('bluebird');
 
 const BaseModel = require('../lib/models').BaseModel;
@@ -13,7 +13,7 @@ class Alerts extends BaseModel {
 
   constructor(data) {
     super({
-      data: data,
+      data,
       columns: [
         'alert_id',
         'user',
@@ -26,22 +26,22 @@ class Alerts extends BaseModel {
     });
   }
 
-  static closeOne (alertId) {
+  static closeOne(alertId) {
     return new Promise((fulfill, reject) => {
       db('alerts_feed')
         .where('alert_id', alertId)
-        .update({ open: false, })
+        .update({ open: false })
       .then(fulfill).catch(reject);
     });
   }
 
-  static createForUser (targetUserId, createdByUserId, subject, message) {
+  static createForUser(targetUserId, createdByUserId, subject, message) {
     return new Promise((fulfill, reject) => {
       const insert = {
         user: targetUserId,
         created_by: createdByUserId,
-        subject: subject,
-        message: message,
+        subject,
+        message,
         open: true,
         created: db.fn.now(),
       };
@@ -52,23 +52,21 @@ class Alerts extends BaseModel {
     });
   }
 
-  static createForDepartment (departmentId, createdByUserId, subject, message) {
+  static createForDepartment(departmentId, createdByUserId, subject, message) {
     return new Promise((fulfill, reject) => {
       Users.where({
         department: departmentId,
         active: true,
       })
       .then((users) => {
-        const insert = users.map((user) => {
-          return {
-            user: user.cmid,
-            created_by: createdByUserId,
-            subject: subject,
-            message: message,
-            open: true,
-            created: db.fn.now(),
-          };
-        });
+        const insert = users.map(user => ({
+          user: user.cmid,
+          created_by: createdByUserId,
+          subject,
+          message,
+          open: true,
+          created: db.fn.now(),
+        }));
 
         db('alerts_feed')
           .insert(insert)
@@ -77,23 +75,21 @@ class Alerts extends BaseModel {
     });
   }
 
-  static createForOrganization (organizationId, createdByUserId, subject, message) {
+  static createForOrganization(organizationId, createdByUserId, subject, message) {
     // create alerts for all users in an organization
     // NOTE as of 12/21/2016 there's no user interface that triggers this function,
     //      but you can send a POST request that triggers it.
     return new Promise((fulfill, reject) => {
-      Users.where({org: organizationId, active: true, })
+      Users.where({ org: organizationId, active: true })
       .then((users) => {
-        const insert = users.map((user) => {
-          return {
-            user: user.cmid,
-            created_by: createdByUserId,
-            subject: subject,
-            message: message,
-            open: true,
-            created: db.fn.now(),
-          };
-        });
+        const insert = users.map(user => ({
+          user: user.cmid,
+          created_by: createdByUserId,
+          subject,
+          message,
+          open: true,
+          created: db.fn.now(),
+        }));
 
         db('alerts_feed')
           .insert(insert)
@@ -101,8 +97,8 @@ class Alerts extends BaseModel {
       }).catch(reject);
     });
   }
-  
-  static findByUser (userId) {
+
+  static findByUser(userId) {
     return new Promise((fulfill, reject) => {
       db('alerts_feed')
         .where('user', userId)
