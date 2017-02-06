@@ -89,7 +89,7 @@ describe('Email endpoint', () => {
     mailgun.sendEmail(
       'max.t.mcdonnell@gmail.com',
       'test@clientcomm.org',
-      'maybe a different subject', 'a different body',
+      'maybe a different subject', 'a different body'
     ).then((body) => {
       done();
     }).catch(done);

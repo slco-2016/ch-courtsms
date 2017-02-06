@@ -177,7 +177,7 @@ module.exports = {
       } else {
         resp.say(
           { voice: 'woman' },
-          'Sorry, we can\'t find a recording with that Id',
+          'Sorry, we can\'t find a recording with that Id'
         );
       }
       res.send(resp.toString());
@@ -212,7 +212,7 @@ module.exports = {
 
     s3.uploadFromUrl(
       req.body.RecordingUrl,
-      req.body.RecordingSid,
+      req.body.RecordingSid
     ).then((key) => {
       if (type === 'ovm') {
         const userId = req.query.userId;
@@ -230,7 +230,7 @@ module.exports = {
         }).then(ovm => Notifications.create(
             userId, clientId,
             commId, 'Outbound Voice Message', '',
-            deliveryDate, ovm.id,
+            deliveryDate, ovm.id
           )).then(notification => notification);
       } else if (type === 'message') {
         const commId = req.query.commId;
@@ -244,7 +244,7 @@ module.exports = {
           if (!communication) {
             throw new Error(
               `${'No communication found for this recording' +
-              'S3 key is '}${key}`,
+              'S3 key is '}${key}`
             );
           } else {
             const recordingSid = req.body.RecordingSid;
@@ -326,7 +326,7 @@ module.exports = {
         commId,
         res.locals.client.clid,
         deliveryDate.toDate(),
-        phoneNumber,
+        phoneNumber
       );
 
     // If no good number is provided, prompt to re-enter

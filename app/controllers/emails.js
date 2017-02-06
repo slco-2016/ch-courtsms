@@ -81,7 +81,7 @@ module.exports = {
       });
     }).map(attachment => Attachments.createFromMailgunObject(attachment, email)).then(attachments => Communications.getOrCreateFromValue(
         fromAddress.address,
-        'email',
+        'email'
       )).then((resp) => {
         communication = resp;
         return Clients.findByCommId(communication.commid);
@@ -102,7 +102,7 @@ module.exports = {
         const clientsForUser = clients.filter(client => client.cm === user.cmid);
         return Conversations.retrieveByClientsAndCommunication(
         clientsForUser,
-        communication,
+        communication
       );
       // TODO: I mean, like, maybe?
       // ).then((conversations) => {

@@ -419,7 +419,7 @@ class Conversations extends BaseModel {
       let conversations;
       // Get the conversations that are possible candidates
       this.findByClientAndUserInvolvingSpecificCommId(
-        clients, communication,
+        clients, communication
       ).then((resp) => {
         conversations = resp;
 

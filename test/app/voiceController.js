@@ -39,7 +39,7 @@ describe('Voice requests with voice controller', () => {
         if (err) { return done(err); }
         return OutboundVoiceMessages.findOneByAttribute(
           'RecordingSid',
-          RecordingSid,
+          RecordingSid
         ).then((ovm) => {
           should.exist(ovm);
           done();
@@ -89,7 +89,7 @@ describe('Voice requests with voice controller', () => {
 
         return OutboundVoiceMessages.findOneByAttribute(
           'call_sid',
-          'CAc080f49bc9742c4281b9dbcdb652d29a',
+          'CAc080f49bc9742c4281b9dbcdb652d29a'
         ).then((ovm) => {
           should.equal(ovm.delivered, false);
           done();
@@ -113,7 +113,7 @@ describe('Voice requests with voice controller', () => {
 
         return OutboundVoiceMessages.findOneByAttribute(
           'call_sid',
-          'CAc080f49bc9742c4281b9dbcdb652d29a',
+          'CAc080f49bc9742c4281b9dbcdb652d29a'
         ).then((ovm) => {
           should.equal(ovm.delivered, false);
           done();
@@ -132,7 +132,7 @@ describe('Voice requests with voice controller', () => {
 
         return OutboundVoiceMessages.findOneByAttribute(
           'call_sid',
-          'CAc080f49bc9742c4281b9dbcdb652d29a',
+          'CAc080f49bc9742c4281b9dbcdb652d29a'
         ).then((ovm) => {
           should.equal(ovm.delivered, true);
           should.equal(ovm.last_delivery_attempt, null);
@@ -290,7 +290,7 @@ describe('Voice requests with voice controller', () => {
 
         return OutboundVoiceMessages.findOneByAttribute(
           'call_sid',
-          'CAc123f49ad9742c4281b9dbcdb652d29a', // from voice recording 2
+          'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
         ).then((ovm) => {
           done();
         }).catch(done);
@@ -311,7 +311,7 @@ describe('Voice requests with voice controller', () => {
 
     OutboundVoiceMessages.findOneByAttribute(
       'call_sid',
-      'CAc123f49ad9742c4281b9dbcdb652d29a', // from voice recording 2
+      'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
     ).then(ovm =>
       // just for the test, let's change the delivery date
       // to a time that is greater than 30 minutes
@@ -330,7 +330,7 @@ describe('Voice requests with voice controller', () => {
 
           return OutboundVoiceMessages.findOneByAttribute(
             'call_sid',
-            'CAc123f49ad9742c4281b9dbcdb652d29a', // from voice recording 2
+            'CAc123f49ad9742c4281b9dbcdb652d29a' // from voice recording 2
           ).then((ovm) => {
             should.equal(ovm.delivered, true);
             ovm.last_delivery_attempt.should.not.be.exactly(null);

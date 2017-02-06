@@ -95,7 +95,7 @@ module.exports = {
                     comm,
                     subject,
                     message,
-                    send,
+                    send
     ).then(() => {
       // log the use of a template if it exists
       const templateId = req.body.templateid;
@@ -152,7 +152,7 @@ module.exports = {
                     comm,
                     send,
                     subject,
-                    message,
+                    message
     ).then((notification) => {
       req.flash('success', 'Edited notification.');
       res.redirect('/notifications');

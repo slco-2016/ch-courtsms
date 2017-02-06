@@ -62,7 +62,7 @@ module.exports = {
           req.user.org,
           req.body.department,
           req.body.position,
-          req.body.className,
+          req.body.className
         ).then((generatedPass) => {
           libEmailer.activationAlert(req.body.email, generatedPass);
           req.flash('success', 'Created new user, sent invite email.');
@@ -137,7 +137,7 @@ module.exports = {
               req.body.email,
               req.body.department,
               req.body.position,
-              req.body.className,
+              req.body.className
       ).then(() => {
         req.flash('success', 'Updated user.');
         res.redirect('/org/users');
@@ -166,7 +166,7 @@ module.exports = {
   transferUpdate(req, res) {
     Users.transferOne(
       req.params.targetUser,
-      req.body.department,
+      req.body.department
     ).then(() => {
       req.flash('success', 'Transfered user.');
       res.redirect('/org/users');

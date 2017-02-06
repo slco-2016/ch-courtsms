@@ -113,7 +113,7 @@ app.get('/login', AccessController.login);
 app.post('/login', passport.authenticate('local-login', {
   successRedirect: '/',
   failureRedirect: '/login-fail',
-}),
+})
 );
 app.get('/login-fail', AccessController.loginFail);
 app.get('/login/reset', AccessController.reset);

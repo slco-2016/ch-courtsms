@@ -94,7 +94,7 @@ module.exports = {
           'received',
           toNumber, {
             recordingId: recording.id,
-          },
+          }
         );
       }).then((resp) => {
         fulfill();
@@ -130,7 +130,7 @@ module.exports = {
           recordingSid,
           status,
           null, // This is the "toNumber" or "call_to" which is only used on inbound (see above)
-          { recordingId: recording.id }, // Fkey pointing Recordings table
+          { recordingId: recording.id } // Fkey pointing Recordings table
         );
       }).then(() => {
         fulfill();

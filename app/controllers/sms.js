@@ -56,7 +56,7 @@ module.exports = {
       }).then((resp) => {
         clients = resp;
         return Conversations.retrieveByClientsAndCommunication(
-          clients, communication,
+          clients, communication
         );
       }).then((resp) => {
         conversations = resp;

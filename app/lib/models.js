@@ -26,7 +26,7 @@ class BaseModel {
       db(this.constructor.tableName)
       .where(
         this.constructor.primaryId,
-        this[this.constructor.primaryId],
+        this[this.constructor.primaryId]
       ).update(this._cleanParams(params))
       .returning('*')
       .then((objs) => {

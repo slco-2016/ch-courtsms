@@ -61,7 +61,7 @@ class Notifications extends BaseModel {
         // creating a promise map
          new Promise((fulfill, reject) => {
            fulfill(notifications);
-         }),
+         })
 
       // this is for each in the returned prior notifications basically
       // at this point we need to decide if that message is a voice or nonvoice message
@@ -80,7 +80,7 @@ class Notifications extends BaseModel {
         // yet another promise array
          new Promise((fulfill, reject) => {
            fulfill(notifications);
-         }),
+         })
 
       // map over the resulting sent notifications
       // and create an in-app alert for the case manager/user

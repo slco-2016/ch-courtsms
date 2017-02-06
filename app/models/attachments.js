@@ -26,7 +26,7 @@ class Attachments extends BaseModel {
     return new Promise((fulfill, reject) => {
       db('attachments')
       .insert(
-        this._cleanParams(attachmentObject),
+        this._cleanParams(attachmentObject)
       ).returning('*')
       .then((attachments) => {
         this._getSingleResponse(attachments, fulfill);

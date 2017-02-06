@@ -155,7 +155,7 @@ module.exports = {
             last,
             dob,
             otn,  // this one as well
-            so,  // note these should be renamed
+            so  // note these should be renamed
     ).then((client) => {
       if (req.user.cmid == client.cm) {
         res.redirect(`/clients/${client.clid}/messages`);
@@ -186,7 +186,7 @@ module.exports = {
             dob,
             so,
             otn,
-            autoNotify,
+            autoNotify
     ).then(() => {
       req.logActivity.client(client);
       req.flash('success', 'Edited client.');

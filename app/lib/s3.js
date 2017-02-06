@@ -8,7 +8,7 @@ const mock = require('./mock');
 
 aws.config.credentials = new aws.Credentials(
   credentials.aws.accessKey,
-  credentials.aws.secretAccessKey,
+  credentials.aws.secretAccessKey
 );
 
 const s3 = new aws.S3({ apiVersion: '2006-03-01' });

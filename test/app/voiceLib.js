@@ -33,7 +33,7 @@ describe.skip('Voice lib checks', () => {
         userQuery.value(),
         clients[0],
         deliveryDate,
-        '+18588694735',
+        '+18588694735'
       )).then((call) => {
         const interval = setInterval(() => {
           OutboundVoiceMessages.getNeedToBeSent()

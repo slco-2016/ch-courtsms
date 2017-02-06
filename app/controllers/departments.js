@@ -30,7 +30,7 @@ module.exports = {
                   req.user.org,    // organization
                   req.body.name,   // new dep't name
                   req.body.number, // associated number
-                  req.user.cmid,    // created by
+                  req.user.cmid    // created by
     ).then(() => {
       req.flash('success', 'Made new department.');
       res.redirect('/org/departments');
@@ -111,7 +111,7 @@ module.exports = {
     DepartmentSupervisors.updateSupervisors(
       req.params.department,
       req.body.supervisorIds,
-      req.body.revertClass,
+      req.body.revertClass
     ).then(() => {
       req.flash('success', 'Updated department supervisors.');
       res.redirect('/org/departments');
@@ -122,7 +122,7 @@ module.exports = {
     Departments.editOne(
       req.params.department, // department
       req.body.name,           // new name
-      req.body.number,          // new associated number
+      req.body.number          // new associated number
     ).then(() => {
       req.flash('success', 'Updated department.');
       res.redirect('/org/departments');

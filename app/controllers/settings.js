@@ -48,7 +48,7 @@ module.exports = {
             alertFrequency,
             isAway,
             awayMessage,
-            alertBeep,
+            alertBeep
     ).then(() => {
       // map through all the clients and update their statuses if that is asked of the tool
       const toggleAutoNotify = req.body.toggleAutoNotify;

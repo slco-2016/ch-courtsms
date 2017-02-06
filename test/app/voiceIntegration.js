@@ -32,7 +32,7 @@ describe.skip('Voice lib checks', () => {
         communication.commid,
         deliveryDate,
         '+12033133609',
-        ngrokUrl,
+        ngrokUrl
       )).then((call) => {
         const i = setInterval(() => {
           OutboundVoiceMessages.getNeedToBeSent()

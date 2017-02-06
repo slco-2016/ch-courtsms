@@ -534,13 +534,13 @@ class Messages extends BaseModel {
             communication.value,
             user.getClientCommEmail(),
             `New message from ${user.getFullName()}`,
-            content,
+            content
           ).then(response => Messages.create(
               conversation.convid,
               commId,
               content,
               response.id,
-              response.message,
+              response.message
             )).then(fulfill).catch(reject);
         } else if (communication.type == 'cell') {
           return Departments.findOneByAttribute('department_id', user.department)
