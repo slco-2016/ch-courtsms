@@ -137,7 +137,7 @@
 
     <div class="column">
       <% if (level == "org") { %>
-        <a href="<%=`/org/users/${client.cm}/edit`%>">
+        <a href="<%=`/org?user=${client.cm}${manager ? `&department=${manager.department}` : ''}`%>">
           <span class="clientName">
             <%= managerName %>
           </span>
