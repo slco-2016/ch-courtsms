@@ -112,14 +112,24 @@ module.exports = {
         clients = clients.filter(client => Number(client.cm) === Number(limitByUser));
       }
 
-      res.render('clients/index', {
-        hub: {
-          tab: 'clients',
-          sel: status ? 'current' : 'archived',
-        },
-        clients,
-        limitByUser: limitByUser || null,
-      });
+      Users.findAllByClientIds(clients.map(c => c.clid)).then((users) => {
+        const usersByCmid = users.reduce((a, user) => {
+          /* eslint-disable no-param-reassign */
+          a[user.cmid] = user;
+          /* eslint-enable no-param-reassign */
+          return a;
+        }, {});
+
+        res.render('clients/index', {
+          hub: {
+            tab: 'clients',
+            sel: status ? 'current' : 'archived',
+          },
+          clients,
+          usersByCmid,
+          limitByUser: limitByUser || null,
+        });
+      }).catch(res.error500);
     }).catch(res.error500);
   },
 

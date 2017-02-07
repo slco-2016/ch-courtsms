@@ -1,3 +1,4 @@
+/* global describe it before */
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
@@ -17,6 +18,7 @@ const reqBody = {
   middle: undefined,
   last: 'Nixon',
   dob: '03/12/1990',
+  targetUser: 2, // TODO: this must be the user that is logged in
   uniqueID1,
   uniqueID2: '456ABC',
 };
@@ -148,9 +150,12 @@ describe('Clients primary controller view', () => {
   });
 
   it('should be able to edit the client', (done) => {
-    reqBody.autoNotify = false;
     Clients.findOneByAttribute('so', uniqueID1)
     .then((client) => {
+      // massage reqBody to match the edit form
+      reqBody.autoNotify = false;
+      delete reqBody.targetUser;
+
       primary.post(`/clients/${client.clid}/edit`)
         .send(reqBody)
         .expect(302)
@@ -162,5 +167,23 @@ describe('Clients primary controller view', () => {
           }).catch(done);
         });
     }).catch(done);
+  });
+});
+
+// this describe blocks depends on the existence of a client
+describe('/org/clients index view', () => {
+  it('contains details for a client', (done) => {
+    Clients.findOneByAttribute('so', uniqueID1).then((client) => {
+      supervisor.get('/org/clients')
+        .expect(200)
+        .end((err, res) => {
+          // assert that it includes the "last name, first name"
+          res.text.should.match(RegExp(`${client.last}, ${client.first}`));
+
+          // assert that it includes the case manager
+          res.text.should.match(RegExp(`To Remove, Test Account`));
+          done(err);
+        });
+    });
   });
 });

@@ -110,6 +110,23 @@ class Users extends BaseModel {
     });
   }
 
+  /**
+   * @param {Array[Integer]} clientIds
+   * @return {Array[User]} User records who manage the clients in clientIds
+   */
+  static findAllByClientIds(clientIds) {
+    return new Promise((fulfill, reject) => {
+      db('cms')
+        .distinct('cms.*')
+        .innerJoin('clients', 'clients.cm', 'cms.cmid')
+        .whereIn('clients.clid', clientIds)
+      .then((users) => {
+        this._getMultiResponse(users, fulfill);
+      })
+      .catch(reject);
+    });
+  }
+
   static findByIds(userIds) {
     return new Promise((fulfill, reject) => {
       db('cms')
