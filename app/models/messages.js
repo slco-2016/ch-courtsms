@@ -528,7 +528,7 @@ class Messages extends BaseModel {
       }).then((resp) => {
         user = resp;
 
-        if (communication.type == 'email') {
+        if (communication.type === 'email') {
           // TODO: Are we testing this?
           mailgun.sendEmail(
             communication.value,
@@ -542,7 +542,7 @@ class Messages extends BaseModel {
               response.id,
               response.message
             )).then(fulfill).catch(reject);
-        } else if (communication.type == 'cell') {
+        } else if (communication.type === 'cell') {
           return Departments.findOneByAttribute('department_id', user.department)
           .then((department) => {
             const phoneNumberId = department.phone_number;
@@ -551,34 +551,36 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
-              if (credentials.CCENV !== 'testing') {
-                twClient.sendMessage({
-
-                  // TODO: Remove use of testenv
-                  //       it was used to reroute all outbound messages to a
-                  //       testing number instead of just not sending
-                  to: TESTENV ? '+18589057365' : communication.value,
-                  from: sentFromValue,
-                  body: content,
-                }, (err, msg) => {
-                  if (err) {
-                    reject(err);
-                  } else {
-                    const MessageSid = msg.sid;
-                    const MessageStatus = msg.status;
-                    Messages.create(conversation.convid,
-                                    commId,
-                                    contentPortion,
-                                    MessageSid,
-                                    MessageStatus)
-                    .then(() => {
-                      if (contentIndex == contentArray.length - 1) fulfill();
-                    }).catch(reject);
-                  }
-                });
-              } else {
-                fulfill();
+              if (credentials.CCENV === 'testing') {
+                return fulfill();
               }
+
+              twClient.sendMessage({
+                // TODO: Remove use of testenv
+                //       it was used to reroute all outbound messages to a
+                //       testing number instead of just not sending
+                to: TESTENV ? '+18589057365' : communication.value,
+                from: sentFromValue,
+                body: content,
+              }, (err, msg) => {
+                if (err) {
+                  return reject(err);
+                }
+
+                const MessageSid = msg.sid;
+                const MessageStatus = msg.status;
+                Messages.create(
+                  conversation.convid,
+                  commId,
+                  contentPortion,
+                  MessageSid,
+                  MessageStatus
+                ).then(() => {
+                  if (contentIndex == contentArray.length - 1) {
+                    fulfill();
+                  }
+                }).catch(reject);
+              });
             });
           }).catch(reject);
         }
