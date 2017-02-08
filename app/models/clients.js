@@ -343,30 +343,30 @@ class Clients extends BaseModel {
   }
 
   static transfer(client, fromUser, toUser, bundle) {
-    if (typeof bundle === 'undefined') bundle = true;
-
     return new Promise((fulfill, reject) => {
       db('clients')
         .where('clid', client)
         .andWhere('cm', fromUser)
         .update({ cm: toUser })
-      .then(() =>
-
-        // Always move the notifications over
-         db('notifications')
-        .where('client', client)
-        .andWhere('cm', fromUser)
-        .update({ cm: toUser })).then(() => {
-        // also switch convos
-          if (bundle) {
-            Conversations.transferUserReference(client, fromUser, toUser)
-          .then(() => {
-            fulfill();
-          }).catch(reject);
+        .then(() => {
+          // Always move the notifications over
+          db('notifications')
+           .where('client', client)
+           .andWhere('cm', fromUser)
+           .update({ cm: toUser });
+        })
+        .then(() => {
+          // also switch convos
+          if (typeof bundle !== 'undefined') {
+            Conversations
+              .transferUserReference(client, fromUser, toUser)
+              .then(fulfill)
+              .catch(reject);
           } else {
             fulfill();
           }
-        }).catch(reject);
+        })
+        .catch(reject);
     });
   }
 
