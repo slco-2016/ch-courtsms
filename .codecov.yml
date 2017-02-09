@@ -1,0 +1,5 @@
+codecov:
+  status:
+    patch:
+      default:
+        threshold: 20%
