@@ -75,7 +75,7 @@ var checkingForNewMessages = setInterval(() => {
           number += 1;
 
           // append the new alert to the alerts list
-          const hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=closed">';
+          const hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=archived">';
           $('.numberRemaining').text(number);
           $('.alerts').fadeIn();
           $('.receivesNewAlertsHere').prepend(`${'<div class="alertRow">' +
