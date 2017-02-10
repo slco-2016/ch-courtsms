@@ -1,25 +1,19 @@
-
+// SECRET STUFF
+const {
+  accountSid: ACCOUNT_SID,
+  authToken: AUTH_TOKEN,
+  CCENV,
+} = require('../../credentials');
 
 // Libraries
 const db = require('../../app/db');
 const Promise = require('bluebird');
 const moment = require('moment');
-
-
-// SECRET STUFF
-const credentials = require('../../credentials');
-const ACCOUNT_SID = credentials.accountSid;
-const AUTH_TOKEN = credentials.authToken;
-const TWILIO_NUM = credentials.twilioNum;
-
-// Twilio tools
-const twilio = require('twilio');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
-// Only send to junk number when in test mode
-let TESTENV = true;
-if (process.env.CCENV && process.env.CCENV == 'production') {
-  TESTENV = false;
-}
+
+// Don't send to junk number in production
+// TODO: just use CCENV instead, or better yet specify via config
+const TESTENV = CCENV !== 'production';
 
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
@@ -551,7 +545,7 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
-              if (credentials.CCENV === 'testing') {
+              if (CCENV === 'testing') {
                 return fulfill();
               }
 
@@ -607,7 +601,7 @@ class Messages extends BaseModel {
           const sentFromValue = messages[0].sent_to;
 
           contentArray.forEach((contentPortion, contentIndex) => {
-            if (process.env.CCENV !== 'testing') {
+            if (CCENV !== 'testing') {
               twClient.sendMessage({
                 to: TESTENV ? '+18589057365' : communication.value,
                 from: sentFromValue,
