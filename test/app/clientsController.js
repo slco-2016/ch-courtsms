@@ -1,12 +1,13 @@
 /* global describe it before */
-const assert = require('assert');
-const supertest = require('supertest');
 const should = require('should');
+const simple = require('simple-mock');
+const supertest = require('supertest');
 
 const APP = require('../../app/app');
-
 const Clients = require('../../app/models/clients');
+const Messages = require('../../app/models/messages');
 const Users = require('../../app/models/users');
+const db = require('../../app/db.js');
 
 const primary = supertest.agent(APP);
 const supervisor = supertest.agent(APP);
@@ -23,17 +24,44 @@ const reqBody = {
   uniqueID2: '456ABC',
 };
 
-describe('Clients supervisor controller view', () => {
-  before((done) => {
-    supervisor.post('/login')
-      .send({ email: 'owner@test.com' })
-      .send({ pass: '123' })
-      .expect(302)
-      .expect('Location', '/')
-      .then(() => {
-        done();
-      });
+const logInAsOwner = (done) => {
+  supervisor.post('/login')
+    .send({ email: 'owner@test.com' })
+    .send({ pass: '123' })
+    .expect(302)
+    .expect('Location', '/')
+    .then(() => {
+      done();
+    });
+};
+
+const logInAsPrimary = (done) => {
+  primary.post('/login')
+    .send({ email: 'primary@test.com' })
+    .send({ pass: '123' })
+    .expect(302)
+    .expect('Location', '/')
+    .then(() => {
+      done();
+    });
+};
+
+const createTestUser = (orgID, department) => {
+  // hopefully this won't collide twice on a single test run... callers of this
+  // method should still delete the users afterward
+  const testUserId = Math.floor(Math.random() * 100000);
+  const testUserEmail = `test${testUserId}@example.com`;
+
+  return new Promise((resolve, reject) => {
+    Users.createOne('TestUser', '', `Number${testUserId}`, testUserEmail, orgID, department, 'Test', 'Primary')
+      .then(() => Users.findByEmail(testUserEmail))
+      .then(resolve)
+      .catch(reject);
   });
+};
+
+describe('Clients supervisor controller view', () => {
+  before(logInAsOwner);
 
   it('should be able to view clients/create as supervisor', (done) => {
     supervisor.get('/org/clients/create')
@@ -105,17 +133,66 @@ describe('Clients supervisor controller view', () => {
   });
 });
 
-describe('Clients primary controller view', () => {
+describe('POST /org/clients/:id/transfer', () => {
+  // TODO: is it possible for "primary" users to transfer users as well?
+  before(logInAsOwner);
+
   before((done) => {
-    primary.post('/login')
-      .send({ email: 'primary@test.com' })
-      .send({ pass: '123' })
-      .expect(302)
-      .expect('Location', '/')
-      .then(() => {
+    // first delete any stray objects that may have been around from a previous
+    // version of this test
+    db('cms')
+      .whereIn('email', ['test123@example.com', 'test456@example.com'])
+      .del();
+
+    db('clients')
+      .whereIn('otn', 'otn-1234')
+      .del();
+
+    // create two case manager users to transfer between
+    createTestUser(1, 1)
+      .then((user1) => {
+        this.user1 = user1;
+
+        return createTestUser(1, 1);
+      })
+      .then((user2) => {
+        this.user2 = user2;
+
+        // create a client to transfer
+        return Clients.create(this.user1.cmid, 'Test', 'E', 'McTestuser', '1998-01-01', 'otn-1234', 'so-123');
+      }).then((client) => {
+        this.client = client;
         done();
+      })
+      .catch(err => done(err));
+  });
+
+  it('does something', (done) => {
+    simple.mock(Messages, 'smartSend')
+      .resolveWith('Success!');
+
+    supervisor.post(`/org/clients/${this.client.clid}/transfer`)
+      .send({
+        user: this.user2.cmid,
+        bundleConversations: true,
+      })
+      .expect(302)
+      .end((err) => {
+        // assert that the proper message was sent, one that includes the new
+        // case manager's name
+        const sentMessage = Messages.smartSend.lastCall.args[3];
+        const user2Name = `${this.user2.first} ${this.user2.last}`;
+
+        sentMessage.should.match(new RegExp(user2Name));
+
+        simple.restore();
+        done(err);
       });
   });
+});
+
+describe('Clients primary controller view', () => {
+  before(logInAsPrimary);
 
   it('should be able to view clients/create as case manager', (done) => {
     primary.get('/clients/create')

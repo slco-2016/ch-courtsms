@@ -436,7 +436,7 @@ module.exports = {
           // courtesy email to let them know that their contact at that # has changed
           const client = req.params.client;
           const subject = 'Automated notification: You have been transferred.';
-          const content = `Your account for communications with ${org.name} has been transferred to the following individual: ${toUser.first} ${toUser.last}. You can start messaging now with ${toUser.first} ${toUser.last} if you have any questions.`;
+          const content = `Your account for communications with ${org.name} has been transferred to the following individual: ${user.first} ${user.last}. You can start messaging now with ${user.first} ${user.last} if you have any questions.`;
           const commID = req.body.commID == 'null' ? null : req.body.commID;
 
           return Messages.smartSend(toUser, client, subject, content);
