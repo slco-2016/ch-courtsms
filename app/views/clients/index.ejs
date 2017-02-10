@@ -86,7 +86,7 @@
   <div  class="clientRow <%if (!client.unread) {%>inactive<%}%>" 
         data-client-color="<%= client.color_tag %>"
         data-case-manager="<%= managerName %>"
-        data-last-activity="<%= lastActivity %>"
+        data-last-activity="<%= new Date(client.updated).getTime() %>"
         data-unread="<%= client.unread %>"
         data-client-name="<%= `${client.last} ${client.middle} ${client.first}` %>">
 
