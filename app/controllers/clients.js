@@ -87,7 +87,7 @@ function _getDailyVolumes(messages) {
 module.exports = {
 
   index(req, res) {
-    const status = !(req.query.status == 'archived' || req.query.status == 'closed');
+    const showActiveClients = req.query.status !== 'archived';
     let departmentID = req.user.department || req.query.department;
     const user = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
@@ -100,11 +100,11 @@ module.exports = {
 
     let method;
     if (res.locals.level == 'user') {
-      method = Clients.findByUsers(user, status);
+      method = Clients.findByUsers(user, showActiveClients);
     } else if (departmentID) {
-      method = Clients.findManyByDepartmentAndStatus(departmentID, status);
+      method = Clients.findManyByDepartmentAndStatus(departmentID, showActiveClients);
     } else {
-      method = Clients.findByOrg(req.user.org, status);
+      method = Clients.findByOrg(req.user.org, showActiveClients);
     }
 
     method.then((clients) => {
@@ -123,7 +123,7 @@ module.exports = {
         res.render('clients/index', {
           hub: {
             tab: 'clients',
-            sel: status ? 'current' : 'archived',
+            sel: showActiveClients ? 'current' : 'archived',
           },
           clients,
           usersByCmid,
