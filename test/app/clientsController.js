@@ -172,18 +172,54 @@ describe('Clients primary controller view', () => {
 
 // this describe blocks depends on the existence of a client
 describe('/org/clients index view', () => {
-  it('contains details for a client', (done) => {
-    Clients.findOneByAttribute('so', uniqueID1).then((client) => {
-      supervisor.get('/org/clients')
-        .expect(200)
-        .end((err, res) => {
-          // assert that it includes the "last name, first name"
-          res.text.should.match(RegExp(`${client.last}, ${client.first}`));
+  before((done) => {
+    Clients.findOneByAttribute('so', uniqueID1)
+      .then((client) => { this.client = client; })
+      .then(done);
+  });
 
-          // assert that it includes the case manager
-          res.text.should.match(RegExp(`To Remove, Test Account`));
-          done(err);
-        });
-    });
+  it('contains details for a client', (done) => {
+    supervisor.get('/org/clients')
+      .expect(200)
+      .end((err, res) => {
+        // assert that it includes the "last name, first name"
+        res.text.should.match(RegExp(`${this.client.last}, ${this.client.first}`));
+
+        // assert that it includes the case manager
+        res.text.should.match(RegExp('To Remove, Test Account'));
+        done(err);
+      });
+  });
+
+  it('hides an archived/inactive client by default', (done) => {
+    Clients.alterCase(this.client.clid, false)
+      .then(() => {
+        supervisor.get('/org/clients')
+          .expect(200)
+          .end((err, res) => {
+            // assert that it does not contain the last or first name
+            res.text.should.not.match(RegExp(this.client.first));
+            res.text.should.not.match(RegExp(this.client.last));
+
+            // set the client back, since it's shared
+            Clients.alterCase(this.client.clid, true)
+              .then(() => done(err));
+          });
+      });
+  });
+
+  it('shows an archived/inactive client when ?status=archived', (done) => {
+    Clients.alterCase(this.client.clid, false)
+      .then(() => {
+        supervisor.get('/org/clients?status=archived')
+          .expect(200)
+          .end((err, res) => {
+            // assert that it includes the "last name, first name"
+            res.text.should.match(RegExp(`${this.client.last}, ${this.client.first}`));
+
+            Clients.alterCase(this.client.clid, true)
+              .then(() => done(err));
+          });
+      });
   });
 });

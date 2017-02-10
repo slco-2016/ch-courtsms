@@ -215,6 +215,7 @@ class Clients extends BaseModel {
         .select('clients.*')
         .leftJoin('cms', 'cms.cmid', 'clients.cm')
         .where('cms.org', orgId)
+        .where('clients.active', status)
       .then(clients => this._getMultiResponse(clients, fulfill)).catch(reject);
     });
   }

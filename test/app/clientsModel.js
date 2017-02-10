@@ -78,4 +78,12 @@ describe('Clients checks', () => {
       done();
     }).catch(done);
   });
+
+  it('does not return active clients when status = false', (done) => {
+    Clients.findByOrg(2, false)
+    .then((clients) => {
+      clients.length.should.be.exactly(0);
+      done();
+    }).catch(done);
+  });
 });
