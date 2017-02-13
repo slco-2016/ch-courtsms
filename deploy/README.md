@@ -1,9 +1,14 @@
 # Clientcomm deploy configuration
 
-The configuration in this folder will help us deploy clientcomm in a more
+The configuration in this folder will help us deploy clientcomm in a
+repeatable, testable, and code-reviewable manner. Using tools like Terraform
+and Chef, we will (hopefully!) be able to spin up new clientcomm deploys
+easily. :rocket:
 
 ## credentials checklist
-All credentials should be exported as environment variables.
+All credentials should be exported as environment variables. One good way to do
+this is to create a `.env` file that has a number of lines like `VAR=value`.
+Then, run every command prefixed with `env $(cat .env)`.
 
 * `AWS_ACCESS_KEY_ID`
 * `AWS_SECRET_ACCESS_KEY`
