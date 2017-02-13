@@ -6,3 +6,5 @@ node_modules/
 npm-debug.log
 newrelic_agent.log
 coverage/
+*.tfstate
+*.tfstate.backup

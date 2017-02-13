@@ -7,3 +7,6 @@ Version 4.0.0 represents the final deliverable to Salt Lake County. Future devel
 ## Set up [![Join the chat at https://gitter.im/slco-2016/clientcomm](https://badges.gitter.im/slco-2016/clientcomm.svg)](https://gitter.im/slco-2016/clientcomm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 View the [wiki](https://github.com/slco-2016/clientcomm/wiki) for instructions and assistance.
 
+
+## Deploying Clientcomm
+Are you deploying clientcomm? Check out the [Deploy README.md](/blob/master/deploy/README.md).
