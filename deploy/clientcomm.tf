@@ -45,6 +45,26 @@ resource "aws_security_group" "clientcomm_allow_web" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  // From the Terraform docs:
+  // https://www.terraform.io/docs/providers/aws/r/security_group.html
+  // "By default, AWS creates an ALLOW ALL egress rule when creating a new
+  // Security Group inside of a VPC. When creating a new Security Group inside
+  // a VPC, Terraform will remove this default rule, and require you
+  // specifically re-create it if you desire that rule."
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 // An internet gateway is necessary for traffic to exit the VPC.
@@ -89,6 +109,11 @@ resource "aws_instance" "clientcomm_web" {
   subnet_id = "${aws_subnet.clientcomm_web.id}"
   vpc_security_group_ids = ["${aws_security_group.clientcomm_allow_web.id}"]
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
+}
+
+// Run `terraform output web_ip` to fetch this value.
+output "web_ip" {
+  value = "${aws_instance.clientcomm_web.public_ip}"
 }
 
 // TODO: Get this working by maybe manually building the provider

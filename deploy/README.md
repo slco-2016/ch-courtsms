@@ -28,4 +28,21 @@ imagine it will involve Dropbox and symlinks.
 ```bash
 brew install terraform
 terraform plan
+terraform apply
+```
+
+## chef usage
+Chef is used on the server to install necessary packages and configuration. To
+run the chef code on all the servers, use the `run-chef.sh` script in the `chef`
+directory.
+
+In order to run chef you will need some ruby libraries installed locally. These
+are installed via bundler.
+
+```ruby
+cd chef
+gem install bundler
+bundle install
+
+./run-chef.sh
 ```
