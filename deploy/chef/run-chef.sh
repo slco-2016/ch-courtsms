@@ -4,10 +4,11 @@
 # uploading necessary to run Chef. In a full-blown Chef deployment this is
 # handled by a Chef server, but here it is a lot simpler to just do by hand.
 set -euo pipefail
-
-ip=$(terraform output -state ../terraform.tfstate web_ip)
+terraform_dir=$(cd $(dirname $0)/..; pwd)
+ip=$(terraform output -state $terraform_dir/terraform.tfstate web_ip)
 SSH="ssh ubuntu@$ip"
 
+cd $(dirname $0)
 echo "Installing Chef on ${ip}..."
 $SSH 'if [ ! $(which chef-solo) ]; then curl -L https://www.chef.io/chef/install.sh | sudo bash; fi'
 
@@ -24,6 +25,7 @@ berks package clientcomm.tar.gz
 echo "Uploading cookbooks"
 $SSH sudo rm -rf "${cookbooks_dir}/*"
 cat clientcomm.tar.gz | $SSH sudo tar xz --strip-components=1 -C "${cookbooks_dir}"
+trap "rm -f clientcomm.tar.gz" EXIT
 
 echo "Running chef..."
 $SSH 'sudo chef-solo --config /etc/chef/solo.rb -o "recipe[clientcomm]"'

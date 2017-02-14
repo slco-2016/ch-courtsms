@@ -11,6 +11,82 @@ variable "ssh_public_key_path" {
   description = "The path to your SSH public key"
 }
 
+// TODO: This will probably have to come from the deployer's local environment.
+variable "twilio_account_sid" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This will probably have to come from the deployer's local environment.
+variable "twilio_auth_token" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This can probably be provisioned with terraform.
+variable "twilio_num" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: I think this is a constant, or at least derived from the hostname of
+// the deploy.
+variable "twilio_outbound_callback_url" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: I think this is a constant, or at least derived from the hostname of
+// the deploy.
+variable "twilio_outbound_callback_url_backup" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This will have to come from the deployer's local environment and it
+// will be shared amongst all deployers of the app.
+variable "session_secret" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This will be determined from an RDS resource provisioned by terraform
+variable "database_user" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This will be determined from an RDS resource provisioned by terraform
+variable "database_password" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This will be determined from an RDS resource provisioned by terraform
+variable "database_host" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: Do we really need gmail integration here, or can we replace this
+// dependency with mailgun?
+variable "gmail_password" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This can be provisioned by terraform.
+variable "newrelic_key" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
+// TODO: This can be provisioned by terraform.
+variable "mailgun_api_key" {
+  description = ""
+  default = "TODO ******TODO ******TODO *******"
+}
+
 resource "aws_vpc" "clientcomm" {
   cidr_block = "10.0.0.0/16"
 }
@@ -95,6 +171,51 @@ resource "aws_route_table_association" "clientcomm" {
 }
 
 // ////////////////////////////////////////////////////////////////////////////
+// STORAGE
+// ////////////////////////////////////////////////////////////////////////////
+resource "aws_s3_bucket" "clientcomm" {
+  bucket = "clientcomm-multnomah-attachments"
+  acl = "private"
+  tags = {
+    Name = "Cientcomm Multnomah"
+  }
+}
+
+resource "aws_iam_user" "clientcomm" {
+  name = "clientcomm"
+}
+
+resource "aws_iam_user_policy" "clientcomm" {
+  name = "clientcomm"
+  user = "${aws_iam_user.clientcomm.name}"
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.clientcomm.bucket}"
+    },
+    {
+      "Action": [
+        "s3:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.clientcomm.bucket}/*"
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_access_key" "clientcomm" {
+  user = "${aws_iam_user.clientcomm.name}"
+}
+
+// ////////////////////////////////////////////////////////////////////////////
 // COMPUTE
 // ////////////////////////////////////////////////////////////////////////////
 // Superuser credentials for the created server.
@@ -109,6 +230,33 @@ resource "aws_instance" "clientcomm_web" {
   subnet_id = "${aws_subnet.clientcomm_web.id}"
   vpc_security_group_ids = ["${aws_security_group.clientcomm_allow_web.id}"]
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
+
+  provisioner "file" {
+    destination = "/home/ubuntu/clientcomm.conf"
+    connection {
+      user = "ubuntu"
+    }
+    content = <<ENV
+CCENV=production
+TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
+TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
+TWILIO_NUM=${var.twilio_num}
+TWILIO_OUTBOUND_CALLBACK_URL=${var.twilio_outbound_callback_url}
+TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=${var.twilio_outbound_callback_url_backup}
+SESSION_SECRET=${var.session_secret}
+LOCAL_DATABASE_USER=clientcomm
+# TODO: replace these with RDS:
+DATABASE_USER=${var.database_user}
+DATABASE_PASSWORD=${var.database_password}
+DATABASE_HOST=${var.database_host}
+GMAIL_PASSWORD=${var.gmail_password}
+NEWRELIC_KEY=${var.newrelic_key}
+MAILGUN_API_KEY=${var.mailgun_api_key}
+AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
+AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.clientcomm.secret}
+S3_BUCKET_NAME=${aws_s3_bucket.clientcomm.bucket}
+ENV
+  }
 }
 
 // Run `terraform output web_ip` to fetch this value.
