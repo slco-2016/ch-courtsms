@@ -11,61 +11,77 @@ variable "ssh_public_key_path" {
   description = "The path to your SSH public key"
 }
 
+// TODO: This will probably have to come from the deployer's local environment.
 variable "twilio_account_sid" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This will probably have to come from the deployer's local environment.
 variable "twilio_auth_token" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This can probably be provisioned with terraform.
 variable "twilio_num" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: I think this is a constant, or at least derived from the hostname of
+// the deploy.
 variable "twilio_outbound_callback_url" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: I think this is a constant, or at least derived from the hostname of
+// the deploy.
 variable "twilio_outbound_callback_url_backup" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This will have to come from the deployer's local environment and it
+// will be shared amongst all deployers of the app.
 variable "session_secret" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This will be determined from an RDS resource provisioned by terraform
 variable "database_user" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This will be determined from an RDS resource provisioned by terraform
 variable "database_password" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This will be determined from an RDS resource provisioned by terraform
 variable "database_host" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: Do we really need gmail integration here, or can we replace this
+// dependency with mailgun?
 variable "gmail_password" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This can be provisioned by terraform.
 variable "newrelic_key" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
 }
 
+// TODO: This can be provisioned by terraform.
 variable "mailgun_api_key" {
   description = ""
   default = "TODO ******TODO ******TODO *******"
