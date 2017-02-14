@@ -216,7 +216,10 @@ resource "aws_instance" "clientcomm_web" {
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
 
   provisioner "file" {
-    destination = "/etc/clientcomm.conf"
+    destination = "/home/ubuntu/clientcomm.conf"
+    connection {
+      user = "ubuntu"
+    }
     content = <<ENV
 CCENV=production
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
@@ -235,7 +238,7 @@ NEWRELIC_KEY=${var.newrelic_key}
 MAILGUN_API_KEY=${var.mailgun_api_key}
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
 AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.clientcomm.secret}
-S3_BUCKET_NAME=${aws_s3_bucket.clientcomm.name}
+S3_BUCKET_NAME=${aws_s3_bucket.clientcomm.bucket}
 ENV
   }
 }
