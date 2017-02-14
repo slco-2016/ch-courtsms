@@ -111,6 +111,11 @@ resource "aws_instance" "clientcomm_web" {
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
 }
 
+// Run `terraform output web_ip` to fetch this value.
+output "web_ip" {
+  value = "${aws_instance.clientcomm_web.public_ip}"
+}
+
 // TODO: Get this working by maybe manually building the provider
 // resource "twilio_phonenumber" "clientcomm" {
 //   location {
