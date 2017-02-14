@@ -4,10 +4,11 @@
 # uploading necessary to run Chef. In a full-blown Chef deployment this is
 # handled by a Chef server, but here it is a lot simpler to just do by hand.
 set -euo pipefail
-
-ip=$(terraform output -state ../terraform.tfstate web_ip)
+terraform_dir=$(cd $(dirname $0)/..; pwd)
+ip=$(terraform output -state $terraform_dir/terraform.tfstate web_ip)
 SSH="ssh ubuntu@$ip"
 
+cd $(dirname $0)
 echo "Installing Chef on ${ip}..."
 $SSH 'if [ ! $(which chef-solo) ]; then curl -L https://www.chef.io/chef/install.sh | sudo bash; fi'
 
