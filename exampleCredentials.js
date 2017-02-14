@@ -64,6 +64,9 @@ const baseProductionReadyCredentials = {
     secretAccessKey: '**************************',
   },
 
+  s3: {
+    bucketName: 'clientcomm-attachments',
+  },
 };
 
 if (CCENV == 'production') {
