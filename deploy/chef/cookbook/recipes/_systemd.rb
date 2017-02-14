@@ -5,6 +5,7 @@ systemd_service 'clientcomm' do
     wanted_by 'multi-user.target'
   end
   service do
+    environment_file '/etc/clientcomm.conf'
     exec_start '/usr/local/bin/node app/app.js'
     working_directory '/home/clientcomm/clientcomm'
     user 'clientcomm'

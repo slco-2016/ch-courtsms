@@ -11,11 +11,13 @@ git '/home/clientcomm/clientcomm' do
   notifies :run, 'execute[npm install]', :immediately
 end
 
+cookbook_file '/home/clientcomm/clientcomm/credentials.js'
+
 execute 'npm install' do
   user 'clientcomm'
   cwd '/home/clientcomm/clientcomm'
   environment(
-    HOME: '/home/clientcomm'
+    HOME: '/home/clientcomm',
   )
   action :nothing
 end
