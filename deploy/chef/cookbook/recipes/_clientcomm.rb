@@ -13,6 +13,10 @@ end
 
 cookbook_file '/home/clientcomm/clientcomm/credentials.js'
 
+execute 'mv /home/ubuntu/clientcomm.conf /etc/clientcomm.conf' do
+  only_if '[ -f /home/ubuntu/clientcomm.conf ]'
+end
+
 execute 'npm install' do
   user 'clientcomm'
   cwd '/home/clientcomm/clientcomm'
