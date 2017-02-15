@@ -10,6 +10,10 @@ provider "twilio" {
   auth_token = "${var.twilio_auth_token}"
 }
 
+variable "deploy_base_url" {
+  description = "The publicly-accessible URL base of this deploy (e.g. 'multnomah.clientcomm.org')"
+}
+
 // Specify this with an environment variable, something like:
 // export TF_VAR_ssh_public_key_path=~/.ssh/clientcomm.pub
 variable "ssh_public_key_path" {
@@ -24,20 +28,6 @@ variable "twilio_account_sid" {
 // Specify with TF_VAR_twilio_auth_token
 variable "twilio_auth_token" {
   description = "Twilio auth token for the account/subaccount"
-}
-
-// TODO: I think this is a constant, or at least derived from the hostname of
-// the deploy.
-variable "twilio_outbound_callback_url" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
-// TODO: I think this is a constant, or at least derived from the hostname of
-// the deploy.
-variable "twilio_outbound_callback_url_backup" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
 }
 
 variable "session_secret" {
@@ -101,6 +91,11 @@ resource "twilio_phonenumber" "clientcomm" {
       longitude = -122.6765
     }
   }
+
+  // TODO: support fallback URLs as well, possibly with a secondary deploy URL
+  // variable
+  voice_url = "https://${var.deploy_base_url}/webhooks/voice"
+  sms_url = "https://${var.deploy_base_url}/webhooks/sms"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -253,8 +248,8 @@ CCENV=production
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
 TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
-TWILIO_OUTBOUND_CALLBACK_URL=${var.twilio_outbound_callback_url}
-TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=${var.twilio_outbound_callback_url_backup}
+TWILIO_OUTBOUND_CALLBACK_URL=https://${var.deploy_base_url}
+# TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
 LOCAL_DATABASE_USER=clientcomm
 # TODO: replace these with RDS:

@@ -17,7 +17,7 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `TF_VAR_twilio_account_sid`
 * `TF_VAR_twilio_auth_token`
 
-(TODO: Twilio, Newrelic, mailgun, gmail SMTP)
+(TODO: Newrelic, mailgun, gmail SMTP)
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
