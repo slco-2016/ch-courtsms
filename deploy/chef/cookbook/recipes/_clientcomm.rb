@@ -17,6 +17,8 @@ execute 'mv /home/ubuntu/clientcomm.conf /etc/clientcomm.conf' do
   only_if '[ -f /home/ubuntu/clientcomm.conf ]'
 end
 
+package 'postgresql-client-9.5'
+
 execute 'npm install' do
   user 'clientcomm'
   cwd '/home/clientcomm/clientcomm'

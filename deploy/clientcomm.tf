@@ -34,16 +34,9 @@ variable "session_secret" {
   description = "Cookie encryption key for end users"
 }
 
-// TODO: This will be determined from an RDS resource provisioned by terraform
-variable "database_user" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
-// TODO: This will be determined from an RDS resource provisioned by terraform
+// RDS database password. Specify with TF_VAR_database_password
 variable "database_password" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "Clientcomm database password"
 }
 
 // TODO: This will be determined from an RDS resource provisioned by terraform
@@ -108,6 +101,29 @@ resource "aws_subnet" "clientcomm_web" {
   cidr_block = "10.0.1.0/24"
 }
 
+resource "aws_subnet" "clientcomm_database_primary" {
+  vpc_id = "${aws_vpc.clientcomm.id}"
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "us-west-2a"
+}
+
+resource "aws_subnet" "clientcomm_database_replica" {
+  vpc_id = "${aws_vpc.clientcomm.id}"
+  cidr_block = "10.0.3.0/24"
+  availability_zone = "us-west-2b" // (must be in different AZ than primary
+}
+
+resource "aws_db_subnet_group" "clientcomm_database" {
+  name = "clientcomm_production_database"
+  subnet_ids = [
+    "${aws_subnet.clientcomm_database_primary.id}",
+    "${aws_subnet.clientcomm_database_replica.id}"
+  ]
+  tags = {
+    Name = "clientcomm production database"
+  }
+}
+
 // Allow access from the public internet to key web ports - 22, 80, 443
 resource "aws_security_group" "clientcomm_allow_web" {
   name = "ClientComm Allow Web"
@@ -150,6 +166,33 @@ resource "aws_security_group" "clientcomm_allow_web" {
   }
 }
 
+resource "aws_security_group" "clientcomm_database" {
+  name = "ClientComm Database"
+  description = "Allow 22 publicly, 5432 from web servers"
+  vpc_id = "${aws_vpc.clientcomm.id}"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    cidr_blocks = ["${aws_subnet.clientcomm_web.cidr_block}"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 // An internet gateway is necessary for traffic to exit the VPC.
 resource "aws_internet_gateway" "clientcomm" {
   vpc_id = "${aws_vpc.clientcomm.id}"
@@ -175,6 +218,22 @@ resource "aws_route_table" "clientcomm" {
 resource "aws_route_table_association" "clientcomm" {
   subnet_id = "${aws_subnet.clientcomm_web.id}"
   route_table_id = "${aws_route_table.clientcomm.id}"
+}
+
+// ////////////////////////////////////////////////////////////////////////////
+// DATABASE
+// ////////////////////////////////////////////////////////////////////////////
+resource "aws_db_instance" "clientcomm" {
+  name = "clientcomm"
+  allocated_storage = 20 // GB
+  engine = "postgres"
+  instance_class = "db.t2.medium" // TODO: use a non-bursty instance type
+  engine_version = "9.6.1"
+  identifier = "clientcomm"
+  username = "clientcomm"
+  password = "${var.database_password}"
+  vpc_security_group_ids = ["${aws_security_group.clientcomm_database.id}"]
+  db_subnet_group_name = "${aws_db_subnet_group.clientcomm_database.name}"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -252,11 +311,11 @@ TWILIO_OUTBOUND_CALLBACK_URL=https://${var.deploy_base_url}
 # TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
 LOCAL_DATABASE_USER=clientcomm
-# TODO: replace these with RDS:
-DATABASE_USER=${var.database_user}
-DATABASE_PASSWORD=${var.database_password}
-DATABASE_HOST=${var.database_host}
-GMAIL_PASSWORD=${var.gmail_password}
+DATABASE_USER=${aws_db_instance.clientcomm.username}
+DATABASE_PASSWORD=${aws_db_instance.clientcomm.password}
+DATABASE_HOST=${aws_db_instance.clientcomm.address}
+# TODO: see if we can remove this dependency
+# GMAIL_PASSWORD=
 NEWRELIC_KEY=${var.newrelic_key}
 MAILGUN_API_KEY=${var.mailgun_api_key}
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
