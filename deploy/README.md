@@ -28,6 +28,8 @@ imagine it will involve Dropbox and symlinks.
 
 ```bash
 brew install terraform
+# you will need to install https://github.com/tulip/terraform-provider-twilio
+# (TODO: better instructions)
 terraform plan
 terraform apply
 ```

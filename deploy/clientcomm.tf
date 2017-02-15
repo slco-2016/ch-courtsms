@@ -89,6 +89,24 @@ resource "aws_vpc" "clientcomm" {
 }
 
 // ////////////////////////////////////////////////////////////////////////////
+// HOSTED SERVICES (TWILIO, ETC)
+// ////////////////////////////////////////////////////////////////////////////
+// NOTE: I had to build the terraform plugin for twilio myself due to an API
+// inconsistency with terraform. Installation instructions will be difficult
+// until my open issue is resolved:
+// https://github.com/tulip/terraform-provider-twilio/issues/2
+resource "twilio_phonenumber" "clientcomm" {
+  name = "clientcomm multnomah"
+
+  location {
+    near_lat_long {
+      latitude = 45.5231
+      longitude = -122.6765
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////
 // NETWORKING
 // ////////////////////////////////////////////////////////////////////////////
 // Create a subnet to contain our web servers
@@ -237,7 +255,7 @@ resource "aws_instance" "clientcomm_web" {
 CCENV=production
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
-TWILIO_NUM=${var.twilio_num}
+TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
 TWILIO_OUTBOUND_CALLBACK_URL=${var.twilio_outbound_callback_url}
 TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=${var.twilio_outbound_callback_url_backup}
 SESSION_SECRET=${var.session_secret}
@@ -260,13 +278,3 @@ ENV
 output "web_ip" {
   value = "${aws_instance.clientcomm_web.public_ip}"
 }
-
-// TODO: Get this working by maybe manually building the provider
-// resource "twilio_phonenumber" "clientcomm" {
-//   location {
-//     near_lat_long {
-//       latitude = 45.5231
-//       longitude = -122.6765
-//     }
-//   }
-// }
