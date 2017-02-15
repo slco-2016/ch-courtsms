@@ -5,28 +5,25 @@ provider "aws" {
   region = "us-west-2"
 }
 
+provider "twilio" {
+  account_sid = "${var.twilio_account_sid}"
+  auth_token = "${var.twilio_auth_token}"
+}
+
 // Specify this with an environment variable, something like:
 // export TF_VAR_ssh_public_key_path=~/.ssh/clientcomm.pub
 variable "ssh_public_key_path" {
   description = "The path to your SSH public key"
 }
 
-// TODO: This will probably have to come from the deployer's local environment.
+// Specify with TF_VAR_twilio_account_sid
 variable "twilio_account_sid" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "Twilio SID for the account/subaccount"
 }
 
-// TODO: This will probably have to come from the deployer's local environment.
+// Specify with TF_VAR_twilio_auth_token
 variable "twilio_auth_token" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
-// TODO: This can probably be provisioned with terraform.
-variable "twilio_num" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "Twilio auth token for the account/subaccount"
 }
 
 // TODO: I think this is a constant, or at least derived from the hostname of
