@@ -43,11 +43,8 @@ variable "twilio_outbound_callback_url_backup" {
   default = "TODO ******TODO ******TODO *******"
 }
 
-// TODO: This will have to come from the deployer's local environment and it
-// will be shared amongst all deployers of the app.
 variable "session_secret" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "Cookie encryption key for end users"
 }
 
 // TODO: This will be determined from an RDS resource provisioned by terraform

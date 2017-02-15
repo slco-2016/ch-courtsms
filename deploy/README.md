@@ -13,6 +13,7 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `AWS_ACCESS_KEY_ID`
 * `AWS_SECRET_ACCESS_KEY`
 * `TF_VAR_ssh_public_key_path` (e.g. `~/.ssh/clientcomm`)
+* `TF_VAR_session_secret` (generate with `openssl rand -base64 80 | tr -d '\n'`)
 
 (TODO: Twilio, Newrelic, mailgun, gmail SMTP)
 
