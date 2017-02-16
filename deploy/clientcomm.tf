@@ -226,6 +226,20 @@ resource "aws_route_table_association" "clientcomm" {
   route_table_id = "${aws_route_table.clientcomm.id}"
 }
 
+// TODO: provision the DNS zone here instead of looking it up?
+data "aws_route53_zone" "clientcomm" {
+  // transform 'https://multnomah.clientcomm.org' -> 'clientcomm.org.'
+  name = "${replace(replace(var.deploy_base_url, "/https:\\/\\//", ""), "/^[^\\.]+\\./", "")}."
+}
+
+resource "aws_route53_record" "clientcomm" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
+  type = "A"
+  ttl = 60
+  records = ["${aws_instance.clientcomm_web.public_ip}"]
+}
+
 // ////////////////////////////////////////////////////////////////////////////
 // DATABASE
 // ////////////////////////////////////////////////////////////////////////////
