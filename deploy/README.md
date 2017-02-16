@@ -13,8 +13,12 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `AWS_ACCESS_KEY_ID`
 * `AWS_SECRET_ACCESS_KEY`
 * `TF_VAR_ssh_public_key_path` (e.g. `~/.ssh/clientcomm`)
+* `TF_VAR_session_secret` (generate with `openssl rand -base64 80 | tr -d '\n'`)
+* `TF_VAR_twilio_account_sid`
+* `TF_VAR_twilio_auth_token`
+* `TF_VAR_database_password` (generate with `openssl rand -base64 24 | tr -d '\n/+='`)
 
-(TODO: Twilio, Newrelic, mailgun, gmail SMTP)
+(TODO: Newrelic, mailgun, gmail SMTP)
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
@@ -27,6 +31,8 @@ imagine it will involve Dropbox and symlinks.
 
 ```bash
 brew install terraform
+# you will need to install https://github.com/tulip/terraform-provider-twilio
+# (TODO: better instructions)
 terraform plan
 terraform apply
 ```
