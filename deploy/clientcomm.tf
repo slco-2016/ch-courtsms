@@ -52,10 +52,16 @@ variable "gmail_password" {
   default = "TODO ******TODO ******TODO *******"
 }
 
-// TODO: This can be provisioned by terraform.
+// Specify with TF_VAR_newrelic_key
 variable "newrelic_key" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "API Key for Newrelic from the Web UI"
+}
+
+// Newrelic auto-creates apps when they send data for the first time, so no
+// action is necessary from terraform here.
+// Specify with the TF_VAR_newrelic_app_name
+variable "newrelic_app_name" {
+  description = "App name for Newrelic"
 }
 
 // TODO: This can be provisioned by terraform.
@@ -317,6 +323,7 @@ DATABASE_HOST=${aws_db_instance.clientcomm.address}
 # TODO: see if we can remove this dependency
 # GMAIL_PASSWORD=
 NEWRELIC_KEY=${var.newrelic_key}
+NEWRELIC_APP_NAME=${var.newrelic_app_name}
 MAILGUN_API_KEY=${var.mailgun_api_key}
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
 AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.clientcomm.secret}

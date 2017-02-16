@@ -17,8 +17,10 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `TF_VAR_twilio_account_sid`
 * `TF_VAR_twilio_auth_token`
 * `TF_VAR_database_password` (generate with `openssl rand -base64 24 | tr -d '\n/+='`)
+* `TF_VAR_newrelic_key`
+* `TF_VAR_newrelic_app_name`
 
-(TODO: Newrelic, mailgun, gmail SMTP)
+(TODO: mailgun, gmail SMTP)
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
