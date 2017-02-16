@@ -11,7 +11,7 @@ provider "twilio" {
 }
 
 variable "deploy_base_url" {
-  description = "The publicly-accessible URL base of this deploy (e.g. 'multnomah.clientcomm.org')"
+  description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
 
 // Specify this with an environment variable, something like:
@@ -93,8 +93,8 @@ resource "twilio_phonenumber" "clientcomm" {
 
   // TODO: support fallback URLs as well, possibly with a secondary deploy URL
   // variable
-  voice_url = "https://${var.deploy_base_url}/webhooks/voice"
-  sms_url = "https://${var.deploy_base_url}/webhooks/sms"
+  voice_url = "${var.deploy_base_url}/webhooks/voice"
+  sms_url = "${var.deploy_base_url}/webhooks/sms"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -310,10 +310,11 @@ resource "aws_instance" "clientcomm_web" {
     }
     content = <<ENV
 CCENV=production
+BASE_URL=${var.deploy_base_url}
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
 TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
-TWILIO_OUTBOUND_CALLBACK_URL=https://${var.deploy_base_url}
+TWILIO_OUTBOUND_CALLBACK_URL=${var.deploy_base_url}
 # TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
 LOCAL_DATABASE_USER=clientcomm
