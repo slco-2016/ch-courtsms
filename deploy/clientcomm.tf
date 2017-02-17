@@ -262,7 +262,9 @@ resource "aws_elb" "clientcomm" {
   health_check {
     healthy_threshold = 3 // checks before the instance is healthy
     unhealthy_threshold = 3 // checks before the instance is unhealthy
-    target = "HTTP:80:/"
+    // TODO: Use HTTP here by whitelisting a health check from the HTTP -> HTTPS
+    // redirect
+    target = "TCP:80"
     interval = 30 // seconds between checks
     timeout = 10 // seconds
   }
