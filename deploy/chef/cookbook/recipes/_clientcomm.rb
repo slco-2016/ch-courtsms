@@ -40,6 +40,8 @@ systemd_service 'clientcomm' do
     working_directory '/home/clientcomm/clientcomm'
     user 'clientcomm'
     group 'clientcomm'
+    restart 'on-failure'
+    restart_sec '10s'
   end
 
   # This recipe should be included after all the clientcomm setup.
