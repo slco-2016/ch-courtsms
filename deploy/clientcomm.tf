@@ -72,6 +72,9 @@ variable "mailgun_api_key" {
 
 resource "aws_vpc" "clientcomm" {
   cidr_block = "10.0.0.0/8"
+  tags = {
+    Name = "clientcomm"
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////
