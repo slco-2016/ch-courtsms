@@ -27,7 +27,8 @@ describe('Scheduled operations checks', () => {
 
   it('Check and send email alerts if there are unreads', (done) => {
     require('../../app/lib/em-notify').runEmailUpdates()
-    .then(done).catch(done);
+      .then(() => done())
+      .catch(done);
   });
 
 

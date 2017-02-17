@@ -8,6 +8,7 @@ const empw = credentials.em.password;
 // Create reusable transporter object using the default SMTP transport
 const smtps = `smtps://clientcomm%40codeforamerica.org:${empw}@smtp.gmail.com`;
 const transporter = nodemailer.createTransport(smtps);
+const mailgun = require('./mailgun');
 
 // Include some models
 const Users = require('../models/users');
@@ -76,51 +77,31 @@ module.exports = {
         usersThatNeedToBeAlerted = usersThatNeedToBeAlerted.filter(user => userIds.indexOf(user.cmid) > -1);
 
         // iterate over the resulting users list, and create a message object for each, then
-        // use the transporter library to send a message through the ClientComm Gmail account
-        usersThatNeedToBeAlerted.forEach((msg, i) => {
+        // send a message through mailgun
+        const emailPromises = usersThatNeedToBeAlerted.map((msg, i) => {
           // the message copy that will be emailed
           const text = ` Hello, ${msg.first} ${msg.last}, this is Code for America. ` +
                       ` You are receiving this automated email because you have ${msg.count} message(s) waiting for you in ClientComm. ` +
                       ' To view this message go to ClientComm.org and login with your user name and password. ' +
                       ' If you are having issues accessing your account, send me an email at clientcomm@codeforamerica.org and we will be happy to assist you any time, day or night!';
 
-          // this is the formatted object that the transporter library needs
-          const mailOptions = {
-            from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
-            to: msg.email,
-            subject: 'Alert: New Unread ClientComm Messages!',
-            text,
-            html: text,
-          };
-
           // Send mail with defined transport object
-          if (credentials.CCENV !== 'testing') {
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) {
-                console.log(error);
-              }
-              // TODO: here we are iterating through the array of clients to update
-              // we then use the below if we want to fulfill() and exit array
-              // but we should actually use a Promise array, map over it
-              // and catch any and all errors instead of the above if statement
-              if (i == usersThatNeedToBeAlerted.length - 1) {
-                // kicks us out of this function successfully
-                fulfill();
-              }
-            });
-
-          // if we are in testing we need to exit successfully as well
-          } else if (i == usersThatNeedToBeAlerted.length - 1) {
-            fulfill();
+          if (credentials.CCENV === 'testing') {
+            return Promise.resolve();
+          } else {
+            return mailgun.sendEmail(
+              msg.email,
+              '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
+              'Alert: New Unread ClientComm Messages!',
+              text
+            );
           }
         });
 
-        // if list is of length zero, then fulfill would never be called and the process would never completed
-        // hence the below, which is why we should use Promise map
-        if (usersThatNeedToBeAlerted.length == 0) {
-          fulfill();
-        }
-      }).catch(reject);
+        return Promise.all(emailPromises);
+      })
+        .then(fulfill)
+        .catch(reject);
     });
   },
 
