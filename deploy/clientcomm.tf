@@ -394,5 +394,5 @@ ENV
 
 // Run `terraform output web_ip` to fetch this value.
 output "web_ip" {
-  value = "${aws_instance.clientcomm_web.public_ip}"
+  value = ["${aws_instance.clientcomm_web.*.public_ip}"]
 }
