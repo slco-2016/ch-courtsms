@@ -274,14 +274,13 @@ data "aws_route53_zone" "clientcomm" {
   name = "${replace(replace(var.deploy_base_url, "/https:\\/\\//", ""), "/^[^\\.]+\\./", "")}."
 }
 
-// TODO: Point this record at the ELB
-// resource "aws_route53_record" "clientcomm" {
-//   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-//   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
-//   type = "A"
-//   ttl = 60
-//   records = ["${aws_instance.clientcomm_web.public_ip}"]
-// }
+resource "aws_route53_record" "clientcomm" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
+  type = "CNAME"
+  ttl = 60
+  records = ["${aws_elb.clientcomm.dns_name}"]
+}
 
 // ////////////////////////////////////////////////////////////////////////////
 // DATABASE
