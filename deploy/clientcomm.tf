@@ -109,7 +109,7 @@ resource "aws_subnet" "clientcomm_web" {
   map_public_ip_on_launch = true
   cidr_block = "10.1.${count.index}.0/24"
   // Distribute across AZ's with modulo; 'a' has ASCII value 97.
-  availability_zone = "${format("us-west-2%c", 97 + (count.index % 4))}"
+  availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
   count = 3
 }
 
@@ -347,7 +347,7 @@ resource "aws_instance" "clientcomm_web" {
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
   count = 2
   // Distribute across AZ's with modulo; 'a' has ASCII value 97.
-  availability_zone = "${format("us-west-2%c", 97 + (count.index % 4))}"
+  availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
 
   provisioner "file" {
     destination = "/home/ubuntu/clientcomm.conf"
