@@ -242,6 +242,7 @@ resource "aws_elb" "clientcomm" {
   name = "clientcomm"
   subnets = ["${aws_subnet.clientcomm_web.*.id}"]
   instances = ["${aws_instance.clientcomm_web.*.id}"]
+  security_groups = ["${aws_security_group.clientcomm_allow_web.id}"]
 
   listener {
     instance_port = 80
