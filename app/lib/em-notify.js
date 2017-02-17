@@ -141,17 +141,12 @@ module.exports = {
 
     const html = `<p>${text.split('\n').join('</p><p>')}</p>`;
 
-    const mailOptions = {
-      from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
-      to: cm.email,
-      subject: 'Alert: Error sending message from ClientComm!',
-      text,
-      html,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) console.log(error);
-    });
+    mailgun.sendEmail(
+      cm.email,
+      '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
+      'Alert: Error sending message from ClientComm!',
+      html
+    ).catch(error => console.error('Error sending notifyUserFailedSend email:', error));
   },
 
   sendPassResetEmail(cm, uid, cb) {
