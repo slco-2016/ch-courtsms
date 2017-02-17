@@ -11,7 +11,7 @@ provider "twilio" {
 }
 
 variable "deploy_base_url" {
-  description = "The publicly-accessible URL base of this deploy (e.g. 'multnomah.clientcomm.org')"
+  description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
 
 // Specify this with an environment variable, something like:
@@ -52,10 +52,16 @@ variable "gmail_password" {
   default = "TODO ******TODO ******TODO *******"
 }
 
-// TODO: This can be provisioned by terraform.
+// Specify with TF_VAR_newrelic_key
 variable "newrelic_key" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "API Key for Newrelic from the Web UI"
+}
+
+// Newrelic auto-creates apps when they send data for the first time, so no
+// action is necessary from terraform here.
+// Specify with the TF_VAR_newrelic_app_name
+variable "newrelic_app_name" {
+  description = "App name for Newrelic"
 }
 
 // TODO: This can be provisioned by terraform.
@@ -65,7 +71,10 @@ variable "mailgun_api_key" {
 }
 
 resource "aws_vpc" "clientcomm" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/8"
+  tags = {
+    Name = "clientcomm"
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -87,8 +96,8 @@ resource "twilio_phonenumber" "clientcomm" {
 
   // TODO: support fallback URLs as well, possibly with a secondary deploy URL
   // variable
-  voice_url = "https://${var.deploy_base_url}/webhooks/voice"
-  sms_url = "https://${var.deploy_base_url}/webhooks/sms"
+  voice_url = "${var.deploy_base_url}/webhooks/voice"
+  sms_url = "${var.deploy_base_url}/webhooks/sms"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -98,7 +107,10 @@ resource "twilio_phonenumber" "clientcomm" {
 resource "aws_subnet" "clientcomm_web" {
   vpc_id = "${aws_vpc.clientcomm.id}"
   map_public_ip_on_launch = true
-  cidr_block = "10.0.1.0/24"
+  cidr_block = "10.1.${count.index}.0/24"
+  // Distribute across AZ's with modulo; 'a' has ASCII value 97.
+  availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
+  count = 3
 }
 
 resource "aws_subnet" "clientcomm_database_primary" {
@@ -182,7 +194,7 @@ resource "aws_security_group" "clientcomm_database" {
     from_port = 5432
     to_port = 5432
     protocol = "tcp"
-    cidr_blocks = ["${aws_subnet.clientcomm_web.cidr_block}"]
+    cidr_blocks = ["${aws_subnet.clientcomm_web.*.cidr_block}"]
   }
 
   egress {
@@ -216,9 +228,46 @@ resource "aws_route_table" "clientcomm" {
 // We must configure our subnets to use the route table rather than a
 // created-by-default one that doesn't have a public route.
 resource "aws_route_table_association" "clientcomm" {
-  subnet_id = "${aws_subnet.clientcomm_web.id}"
+  subnet_id = "${element(aws_subnet.clientcomm_web.*.id, count.index)}"
   route_table_id = "${aws_route_table.clientcomm.id}"
+  count = 3
 }
+
+resource "aws_elb" "clientcomm" {
+  name = "clientcomm"
+  subnets = ["${aws_subnet.clientcomm_web.*.id}"]
+  instances = ["${aws_instance.clientcomm_web.*.id}"]
+
+  listener {
+    instance_port = 80
+    instance_protocol = "HTTP"
+    lb_port = 80
+    lb_protocol = "HTTP"
+  }
+
+  health_check {
+    healthy_threshold = 3 // checks before the instance is healthy
+    unhealthy_threshold = 3 // checks before the instance is unhealthy
+    target = "HTTP:80:/"
+    interval = 30 // seconds between checks
+    timeout = 10 // seconds
+  }
+}
+
+// TODO: provision the DNS zone here instead of looking it up?
+data "aws_route53_zone" "clientcomm" {
+  // transform 'https://multnomah.clientcomm.org' -> 'clientcomm.org.'
+  name = "${replace(replace(var.deploy_base_url, "/https:\\/\\//", ""), "/^[^\\.]+\\./", "")}."
+}
+
+// TODO: Point this record at the ELB
+// resource "aws_route53_record" "clientcomm" {
+//   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+//   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
+//   type = "A"
+//   ttl = 60
+//   records = ["${aws_instance.clientcomm_web.public_ip}"]
+// }
 
 // ////////////////////////////////////////////////////////////////////////////
 // DATABASE
@@ -293,9 +342,12 @@ resource "aws_key_pair" "clientcomm_deployer" {
 resource "aws_instance" "clientcomm_web" {
   ami = "ami-d206bdb2"
   instance_type = "t2.micro"
-  subnet_id = "${aws_subnet.clientcomm_web.id}"
+  subnet_id = "${element(aws_subnet.clientcomm_web.*.id, count.index)}"
   vpc_security_group_ids = ["${aws_security_group.clientcomm_allow_web.id}"]
   key_name = "${aws_key_pair.clientcomm_deployer.key_name}"
+  count = 2
+  // Distribute across AZ's with modulo; 'a' has ASCII value 97.
+  availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
 
   provisioner "file" {
     destination = "/home/ubuntu/clientcomm.conf"
@@ -304,10 +356,11 @@ resource "aws_instance" "clientcomm_web" {
     }
     content = <<ENV
 CCENV=production
+BASE_URL=${var.deploy_base_url}
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
 TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
-TWILIO_OUTBOUND_CALLBACK_URL=https://${var.deploy_base_url}
+TWILIO_OUTBOUND_CALLBACK_URL=${var.deploy_base_url}
 # TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
 LOCAL_DATABASE_USER=clientcomm
@@ -317,6 +370,7 @@ DATABASE_HOST=${aws_db_instance.clientcomm.address}
 # TODO: see if we can remove this dependency
 # GMAIL_PASSWORD=
 NEWRELIC_KEY=${var.newrelic_key}
+NEWRELIC_APP_NAME=${var.newrelic_app_name}
 MAILGUN_API_KEY=${var.mailgun_api_key}
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
 AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.clientcomm.secret}

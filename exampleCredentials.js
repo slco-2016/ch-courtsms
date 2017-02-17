@@ -18,6 +18,11 @@ const baseProductionReadyCredentials = {
   authToken: '**************************',
   twilioNum: '+12344564563',
 
+  // URL base of the current deploy
+  //   e.g. 'https://multnomah.clientcomm.org'
+  //   or 'http://localhost:4000' for local development
+  baseUrl: 'http://localhost:4000',
+
   // TODO: Move all twilio components into a single key
   twilio: {
     outboundCallbackUrl: 'http://ecx-x-x-xx.us-xxx.compute.amazonaws.com',
