@@ -76,7 +76,7 @@ variable "mailgun_api_key" {
 }
 
 resource "aws_vpc" "clientcomm" {
-  cidr_block = "10.0.0.0/8"
+  cidr_block = "10.0.0.0/16"
   tags = {
     Name = "clientcomm"
   }
@@ -112,7 +112,7 @@ resource "twilio_phonenumber" "clientcomm" {
 resource "aws_subnet" "clientcomm_web" {
   vpc_id = "${aws_vpc.clientcomm.id}"
   map_public_ip_on_launch = true
-  cidr_block = "10.1.${count.index}.0/24"
+  cidr_block = "10.0.${count.index}.0/24"
   // Distribute across AZ's with modulo; 'a' has ASCII value 97.
   availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
   count = 3
@@ -120,13 +120,13 @@ resource "aws_subnet" "clientcomm_web" {
 
 resource "aws_subnet" "clientcomm_database_primary" {
   vpc_id = "${aws_vpc.clientcomm.id}"
-  cidr_block = "10.0.2.0/24"
+  cidr_block = "10.0.10.0/25"
   availability_zone = "us-west-2a"
 }
 
 resource "aws_subnet" "clientcomm_database_replica" {
   vpc_id = "${aws_vpc.clientcomm.id}"
-  cidr_block = "10.0.3.0/24"
+  cidr_block = "10.0.10.128/25"
   availability_zone = "us-west-2b" // (must be in different AZ than primary
 }
 
