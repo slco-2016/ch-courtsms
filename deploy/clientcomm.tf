@@ -101,8 +101,8 @@ resource "twilio_phonenumber" "clientcomm" {
 
   // TODO: support fallback URLs as well, possibly with a secondary deploy URL
   // variable
-  voice_url = "${var.deploy_base_url}/webhooks/voice"
-  sms_url = "${var.deploy_base_url}/webhooks/sms"
+  voice_url = "${var.deploy_base_url}/webhook/voice"
+  sms_url = "${var.deploy_base_url}/webhook/sms"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
