@@ -149,7 +149,7 @@ module.exports = {
     ).catch(error => console.error('Error sending notifyUserFailedSend email:', error));
   },
 
-  sendPassResetEmail(cm, uid, cb) {
+  sendPassResetEmail(cm, uid) {
     const text = `  Hello, ${cm.first} ${cm.last}. You are recieving this email because your account (${cm.email}) has requested a password reset. ` +
                 ' \n If this was not you, you don\'t need to do anything. If it was you and you did intend to reset your password, please go to the ' +
                 ' following address by either clicking on or cutting and pasting the following address: ' +
@@ -158,18 +158,12 @@ module.exports = {
 
     const html = `<p>${text.split('\n').join('</p><p>')}</p>`;
 
-    const mailOptions = {
-      from: '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
-      to: cm.email,
-      subject: 'CientComm Password Reset Email',
-      text,
-      html,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) console.log(error);
-      cb();
-    });
+    return mailgun.sendEmail(
+      cm.email,
+      '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
+      'CientComm Password Reset Email',
+      html
+    )
   },
 };
 
