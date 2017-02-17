@@ -19,6 +19,7 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `TF_VAR_database_password` (generate with `openssl rand -base64 24 | tr -d '\n/+='`)
 * `TF_VAR_newrelic_key`
 * `TF_VAR_newrelic_app_name`
+* `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
 
 (TODO: mailgun, gmail SMTP)
 
@@ -54,3 +55,15 @@ bundle install
 
 ./run-chef.sh
 ```
+
+## Setting up TLS
+TLS is managed by AWS's Certificate Manager feature. You will have to set this
+up manually for each deployment. The approval flow for my domain was to click a
+link in an email sent to the administrative contacts given in the domain's WHOIS
+data.
+
+Start the process here:
+https://us-west-2.console.aws.amazon.com/acm/home
+
+Once you get the certificate set up, grab the certificate's ARN and export it as
+the `TF_VAR_aws_ssl_certificate_arn` environment variable.

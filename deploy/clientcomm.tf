@@ -14,6 +14,11 @@ variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
 
+// Specify with TF_VAR_aws_ssl_certificate_arn
+variable "aws_ssl_certificate_arn" {
+  description = "ARN of an SSL certificate in AWS Certificate Manager"
+}
+
 // Specify this with an environment variable, something like:
 // export TF_VAR_ssh_public_key_path=~/.ssh/clientcomm.pub
 variable "ssh_public_key_path" {
@@ -243,6 +248,14 @@ resource "aws_elb" "clientcomm" {
     instance_protocol = "HTTP"
     lb_port = 80
     lb_protocol = "HTTP"
+  }
+
+  listener {
+    instance_port = 80
+    instance_protocol = "HTTP"
+    lb_port = 443
+    lb_protocol = "HTTPS"
+    ssl_certificate_id = "${var.aws_ssl_certificate_arn}"
   }
 
   health_check {
