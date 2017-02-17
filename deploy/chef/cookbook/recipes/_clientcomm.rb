@@ -44,6 +44,29 @@ systemd_service 'clientcomm' do
     restart_sec '10s'
   end
 
-  # This recipe should be included after all the clientcomm setup.
   action [:create, :enable, :start]
+end
+
+systemd_service 'clientcomm-worker' do
+  description 'Clientcomm background worker'
+  after %w[network.target]
+  install do
+    wanted_by 'multi-user.target'
+  end
+  service do
+    environment_file '/etc/clientcomm.conf'
+    environment(
+      RUNSCHEDULED: true
+    )
+    # Don't run 'server.js' to prevent contention of the same TCP port
+    exec_start '/usr/local/bin/node app/app.js'
+    working_directory '/home/clientcomm/clientcomm'
+    user 'clientcomm'
+    group 'clientcomm'
+    restart 'on-failure'
+    restart_sec '10s'
+  end
+
+  # Start this on only one web node
+  action [:create]
 end
