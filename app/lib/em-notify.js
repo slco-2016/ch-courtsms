@@ -1,13 +1,7 @@
 const db = require('../../app/db');
 const Promise = require('bluebird');
-const nodemailer = require('nodemailer');
 
 const credentials = require('../../credentials');
-const empw = credentials.em.password;
-
-// Create reusable transporter object using the default SMTP transport
-const smtps = `smtps://clientcomm%40codeforamerica.org:${empw}@smtp.gmail.com`;
-const transporter = nodemailer.createTransport(smtps);
 const mailgun = require('./mailgun');
 
 // Include some models
