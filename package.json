@@ -33,7 +33,6 @@
     "newrelic": "~1.28.0",
     "ngrok": "^2.2.3",
     "node-uuid": "~1.4.7",
-    "nodemailer": "~2.4.1",
     "nodemon": "~1.9.1",
     "passport": "~0.3.2",
     "passport-local": "~1.0.0",
