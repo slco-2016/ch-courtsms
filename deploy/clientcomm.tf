@@ -14,6 +14,11 @@ variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
 
+// Specify with TF_VAR_aws_ssl_certificate_arn
+variable "aws_ssl_certificate_arn" {
+  description = "ARN of an SSL certificate in AWS Certificate Manager"
+}
+
 // Specify this with an environment variable, something like:
 // export TF_VAR_ssh_public_key_path=~/.ssh/clientcomm.pub
 variable "ssh_public_key_path" {
@@ -71,7 +76,7 @@ variable "mailgun_api_key" {
 }
 
 resource "aws_vpc" "clientcomm" {
-  cidr_block = "10.0.0.0/8"
+  cidr_block = "10.0.0.0/16"
   tags = {
     Name = "clientcomm"
   }
@@ -96,8 +101,8 @@ resource "twilio_phonenumber" "clientcomm" {
 
   // TODO: support fallback URLs as well, possibly with a secondary deploy URL
   // variable
-  voice_url = "${var.deploy_base_url}/webhooks/voice"
-  sms_url = "${var.deploy_base_url}/webhooks/sms"
+  voice_url = "${var.deploy_base_url}/webhook/voice"
+  sms_url = "${var.deploy_base_url}/webhook/sms"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -107,7 +112,7 @@ resource "twilio_phonenumber" "clientcomm" {
 resource "aws_subnet" "clientcomm_web" {
   vpc_id = "${aws_vpc.clientcomm.id}"
   map_public_ip_on_launch = true
-  cidr_block = "10.1.${count.index}.0/24"
+  cidr_block = "10.0.${count.index}.0/24"
   // Distribute across AZ's with modulo; 'a' has ASCII value 97.
   availability_zone = "${format("us-west-2%c", 97 + (count.index % 3))}"
   count = 3
@@ -115,13 +120,13 @@ resource "aws_subnet" "clientcomm_web" {
 
 resource "aws_subnet" "clientcomm_database_primary" {
   vpc_id = "${aws_vpc.clientcomm.id}"
-  cidr_block = "10.0.2.0/24"
+  cidr_block = "10.0.10.0/25"
   availability_zone = "us-west-2a"
 }
 
 resource "aws_subnet" "clientcomm_database_replica" {
   vpc_id = "${aws_vpc.clientcomm.id}"
-  cidr_block = "10.0.3.0/24"
+  cidr_block = "10.0.10.128/25"
   availability_zone = "us-west-2b" // (must be in different AZ than primary
 }
 
@@ -157,7 +162,7 @@ resource "aws_security_group" "clientcomm_allow_web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
+  ingress {
     from_port = 443
     to_port = 443
     protocol = "tcp"
@@ -237,6 +242,7 @@ resource "aws_elb" "clientcomm" {
   name = "clientcomm"
   subnets = ["${aws_subnet.clientcomm_web.*.id}"]
   instances = ["${aws_instance.clientcomm_web.*.id}"]
+  security_groups = ["${aws_security_group.clientcomm_allow_web.id}"]
 
   listener {
     instance_port = 80
@@ -245,10 +251,20 @@ resource "aws_elb" "clientcomm" {
     lb_protocol = "HTTP"
   }
 
+  listener {
+    instance_port = 80
+    instance_protocol = "HTTP"
+    lb_port = 443
+    lb_protocol = "HTTPS"
+    ssl_certificate_id = "${var.aws_ssl_certificate_arn}"
+  }
+
   health_check {
     healthy_threshold = 3 // checks before the instance is healthy
     unhealthy_threshold = 3 // checks before the instance is unhealthy
-    target = "HTTP:80:/"
+    // TODO: Use HTTP here by whitelisting a health check from the HTTP -> HTTPS
+    // redirect
+    target = "TCP:80"
     interval = 30 // seconds between checks
     timeout = 10 // seconds
   }
@@ -260,14 +276,13 @@ data "aws_route53_zone" "clientcomm" {
   name = "${replace(replace(var.deploy_base_url, "/https:\\/\\//", ""), "/^[^\\.]+\\./", "")}."
 }
 
-// TODO: Point this record at the ELB
-// resource "aws_route53_record" "clientcomm" {
-//   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-//   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
-//   type = "A"
-//   ttl = 60
-//   records = ["${aws_instance.clientcomm_web.public_ip}"]
-// }
+resource "aws_route53_record" "clientcomm" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
+  type = "CNAME"
+  ttl = 60
+  records = ["${aws_elb.clientcomm.dns_name}"]
+}
 
 // ////////////////////////////////////////////////////////////////////////////
 // DATABASE
@@ -381,5 +396,5 @@ ENV
 
 // Run `terraform output web_ip` to fetch this value.
 output "web_ip" {
-  value = "${aws_instance.clientcomm_web.public_ip}"
+  value = ["${aws_instance.clientcomm_web.*.public_ip}"]
 }

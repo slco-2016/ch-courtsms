@@ -1,7 +1,9 @@
 include_recipe 'nginx::package'
 
-cookbook_file '/etc/nginx/sites-available/clientcomm' do
-  source 'nginx.conf'
+template '/etc/nginx/sites-available/clientcomm' do
+  source 'nginx.conf.erb'
+
+  notifies :reload, 'service[nginx]', :immediately
 end
 
 nginx_site 'clientcomm' do
