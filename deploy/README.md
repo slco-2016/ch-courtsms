@@ -23,6 +23,7 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `TF_VAR_newrelic_app_name`
 * `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
 * `TF_VAR_mailgun_api_key`
+* `TF_VAR_s3_bucket_name` (e.g. `clientcomm-multnomah-attachments`)
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of

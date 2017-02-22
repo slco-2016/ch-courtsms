@@ -81,6 +81,10 @@ variable "mailgun_smtp_password" {
   description = "The SMTP password for Mailgun"
 }
 
+variable "s3_bucket_name" {
+  description = "S3 bucket to store attached media"
+}
+
 resource "aws_vpc" "clientcomm" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -359,7 +363,7 @@ resource "aws_db_instance" "clientcomm" {
 // STORAGE
 // ////////////////////////////////////////////////////////////////////////////
 resource "aws_s3_bucket" "clientcomm" {
-  bucket = "clientcomm-multnomah-attachments"
+  bucket = "${var.s3_bucket_name}" // e.g. "clientcomm-multnomah-attachments"
   acl = "private"
   tags = {
     Name = "Cientcomm Multnomah"
