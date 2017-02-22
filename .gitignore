@@ -8,3 +8,5 @@ newrelic_agent.log
 coverage/
 *.tfstate
 *.tfstate.backup
+.env
+terraform-commands.log
