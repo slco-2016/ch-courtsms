@@ -413,8 +413,16 @@ resource "aws_key_pair" "clientcomm_deployer" {
   public_key = "${file(var.ssh_public_key_path)}"
 }
 
+data "aws_ami" "ubuntu_lts" {
+  most_recent = true
+  filter {
+    name = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server*"]
+  }
+}
+
 resource "aws_instance" "clientcomm_web" {
-  ami = "ami-d206bdb2"
+  ami = "${data.aws_ami.ubuntu_lts.id}"
   instance_type = "t2.micro"
   subnet_id = "${element(aws_subnet.clientcomm_web.*.id, count.index)}"
   vpc_security_group_ids = ["${aws_security_group.clientcomm_allow_web.id}"]
