@@ -10,6 +10,10 @@ provider "twilio" {
   auth_token = "${var.twilio_auth_token}"
 }
 
+provider "mailgun" {
+  api_key = "${var.mailgun_api_key}"
+}
+
 variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
@@ -69,10 +73,12 @@ variable "newrelic_app_name" {
   description = "App name for Newrelic"
 }
 
-// TODO: This can be provisioned by terraform.
 variable "mailgun_api_key" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
+  description = "The Mailgun API key"
+}
+
+variable "mailgun_smtp_password" {
+  description = "The SMTP password for Mailgun"
 }
 
 resource "aws_vpc" "clientcomm" {
@@ -103,6 +109,11 @@ resource "twilio_phonenumber" "clientcomm" {
   // variable
   voice_url = "${var.deploy_base_url}/webhook/voice"
   sms_url = "${var.deploy_base_url}/webhook/sms"
+}
+
+resource "mailgun_domain" "clientcomm" {
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
+  smtp_password = "${var.mailgun_smtp_password}"
 }
 
 // ////////////////////////////////////////////////////////////////////////////
@@ -279,10 +290,54 @@ data "aws_route53_zone" "clientcomm" {
 resource "aws_route53_record" "clientcomm" {
   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
-  type = "CNAME"
-  ttl = 60
-  records = ["${aws_elb.clientcomm.dns_name}"]
+  type = "A"
+  alias {
+    name = "${aws_elb.clientcomm.dns_name}"
+    zone_id = "${aws_elb.clientcomm.zone_id}"
+    evaluate_target_health = true
+  }  
 }
+
+resource "aws_route53_record" "clientcomm_mailgun_sending_2" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${mailgun_domain.clientcomm.sending_records.2.name}"
+  type = "${mailgun_domain.clientcomm.sending_records.2.record_type}"
+  ttl = 60
+  records = ["${mailgun_domain.clientcomm.sending_records.2.value}"]
+}
+
+resource "aws_route53_record" "clientcomm_mailgun_sending_1" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${mailgun_domain.clientcomm.sending_records.1.name}"
+  type = "${mailgun_domain.clientcomm.sending_records.1.record_type}"
+  ttl = 60
+  records = ["${mailgun_domain.clientcomm.sending_records.1.value}"]
+}
+
+resource "aws_route53_record" "clientcomm_mailgun_sending_0" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${mailgun_domain.clientcomm.sending_records.0.name}"
+  type = "${mailgun_domain.clientcomm.sending_records.0.record_type}"
+  ttl = 60
+  records = ["${mailgun_domain.clientcomm.sending_records.0.value}"]
+}
+
+resource "aws_route53_record" "clientcomm_mailgun_receiving_1" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
+  type = "${mailgun_domain.clientcomm.receiving_records.1.record_type}"
+  ttl = 60
+  records = ["${mailgun_domain.clientcomm.receiving_records.1.priority} ${mailgun_domain.clientcomm.receiving_records.1.value}"]
+}
+
+resource "aws_route53_record" "clientcomm_mailgun_receiving_0" {
+  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
+  type = "${mailgun_domain.clientcomm.receiving_records.0.record_type}"
+  ttl = 60
+  records = ["${mailgun_domain.clientcomm.receiving_records.0.priority} ${mailgun_domain.clientcomm.receiving_records.0.value}"]
+}
+
 
 // ////////////////////////////////////////////////////////////////////////////
 // DATABASE

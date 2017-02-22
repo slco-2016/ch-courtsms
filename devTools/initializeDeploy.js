@@ -81,12 +81,12 @@ ask(`Login email for superuser? `, (user) => {
       .then(() => db('phone_numbers').insert(phoneNumber))
       .then(() => db('departments').insert(department))
       .then(() => {
-        console.log('Created Org, Department, and User!')
+        console.log('Created Org, Department, and User!');
         process.exit(0);
       })
       .catch(err => {
         console.error(err);
-        process.exit(1)
+        process.exit(1);
       });
   });
 });

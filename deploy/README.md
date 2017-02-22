@@ -20,8 +20,7 @@ Then, run every command prefixed with `env $(cat .env)`.
 * `TF_VAR_newrelic_key`
 * `TF_VAR_newrelic_app_name`
 * `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
-
-(TODO: mailgun, gmail SMTP)
+* `TF_VAR_mailgun_api_key`
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
