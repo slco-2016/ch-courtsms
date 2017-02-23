@@ -285,29 +285,22 @@ resource "aws_elb" "clientcomm" {
   }
 }
 
-// TODO: provision the DNS zone here instead of looking it up?
+// This requires the DNS zone to be created in the AWS console first.
 data "aws_route53_zone" "clientcomm" {
-  // transform 'https://multnomah.clientcomm.org' -> 'clientcomm.org.'
-  name = "${replace(replace(var.deploy_base_url, "/https:\\/\\//", ""), "/^[^\\.]+\\./", "")}."
+  // transform 'https://multnomah.clientcomm.org' -> 'multnomah.clientcomm.org.'
+  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
 }
 
 resource "aws_route53_record" "clientcomm" {
   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
+  name = "${data.aws_route53_zone.clientcomm.name}"
   type = "A"
+
   alias {
     name = "${aws_elb.clientcomm.dns_name}"
     zone_id = "${aws_elb.clientcomm.zone_id}"
     evaluate_target_health = true
-  }  
-}
-
-resource "aws_route53_record" "clientcomm_mailgun_sending_2" {
-  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-  name = "${mailgun_domain.clientcomm.sending_records.2.name}"
-  type = "${mailgun_domain.clientcomm.sending_records.2.record_type}"
-  ttl = 60
-  records = ["${mailgun_domain.clientcomm.sending_records.2.value}"]
+  }
 }
 
 resource "aws_route53_record" "clientcomm_mailgun_sending_1" {
