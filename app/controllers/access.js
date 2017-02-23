@@ -69,11 +69,16 @@ module.exports = {
             uid,
             email: cm.email,
           })).then(() => {
-            emUtil.sendPassResetEmail(cm, uid, () => {
-            // Render direction to check email card
-              req.flash('success', `Reset password email was sent to ${cm.email}`);
-              res.render('access/loginresetsent', { cm });
-            });
+            emUtil.sendPassResetEmail(cm, uid)
+              .then(() => {
+                // Render direction to check email card
+                req.flash('success', `Reset password email was sent to ${cm.email}`);
+                res.render('access/loginresetsent', { cm });
+              })
+              .catch((err) => {
+                console.error('Error sending password reset email: ', err);
+                res.error500();
+              });
           }).catch(res.error500); // Query 3
       }
     }).catch(res.error500); // Query 1
