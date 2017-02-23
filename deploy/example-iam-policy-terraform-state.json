@@ -1,0 +1,27 @@
+j{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1487809984000",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::clientcomm-terraform-multnomah"
+            ]
+        },
+        {
+            "Sid": "Stmt1487810007000",
+            "Effect": "Allow",
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::clientcomm-terraform-multnomah/*"
+            ]
+        }
+    ]
+}

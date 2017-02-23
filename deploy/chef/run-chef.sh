@@ -48,6 +48,6 @@ JSON
   $SSH 'sudo chef-solo --config /etc/chef/solo.rb -o "recipe[clientcomm]"'
 }
 
-for IP in $(terraform output -json -state $terraform_dir/terraform.tfstate web_ip | jq -r '.value[]'); do
+for IP in $(cd $terraform_dir; terraform output -json web_ip | jq -r '.value[]'); do
   run_node "$IP"
 done
