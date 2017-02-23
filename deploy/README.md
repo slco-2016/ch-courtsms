@@ -34,8 +34,8 @@ subsequent invocations of terraform will know which resources it previously
 created.
 
 It is important that only one person is modifying the terraform state at a
-time. **For this reason, before running terraform commands please send an
-`@channel` message in the #clientcomm channel.**
+time. **For this reason, before running terraform commands please send a
+message in the #clientcomm channel.**
 
 ```bash
 # 1. install system packages:
