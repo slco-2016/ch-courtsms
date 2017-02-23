@@ -106,6 +106,10 @@ export $(cat /etc/clientcomm.conf)
 ./node_modules/.bin/knex migrate:latest
 ./devTools/initializeDeploy.js --multnomah
 
+# install js dependencies
+npm install bower
+./node_modules/.bin/bower install
+
 # start the worker process; this should be done on one web node only
 systemctl start clientcomm-worker
 ```
