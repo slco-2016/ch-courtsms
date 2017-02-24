@@ -34,6 +34,13 @@
   <link rel="stylesheet" type="text/css" href="/static/css/v4_base.css">
 
   <script src="/modules/jquery/dist/jquery.min.js"></script>
+  <script>
+    window.clientcomm = window.clientcomm || {};
+
+    window.clientcomm.keenProjectId = "<%= keenProjectId %>";
+    window.clientcomm.keenWriteKey = "<%= keenWriteKey %>";
+    window.clientcomm.keenReadKey = "<%= keenReadKey %>";
+  </script>
 
   <body>
 

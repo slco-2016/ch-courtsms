@@ -367,8 +367,8 @@ $(() => {
         $(window).resize(adjustDivs);
         $(document).ready(() => {
           keenQueryClient = new Keen({
-            projectId: '5750a91433e4063ccd5b6c7e',
-            readKey: 'a70db21e3f6527c10ee23f2697714bf883783b6018b8f3fd27d94bf0b0d9eb9cb26a22d69709dff266866c526ad0e9e845c82dd5393b417d99c2ef7712d979a960e9247806dc09231e9ff7880ab2772cfa1b41d9900de385db8d5942d4d337bd',
+            projectId: window.clientcomm.keenProjectId,
+            readKey: window.clientcomm.keenReadKey,
           });
           getAndRenderUserActivity();
         });
