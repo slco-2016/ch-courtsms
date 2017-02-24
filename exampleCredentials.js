@@ -67,6 +67,10 @@ const baseProductionReadyCredentials = {
   s3: {
     bucketName: 'clientcomm-attachments',
   },
+
+  keenProjectId: '*****************************',
+  keenWriteKey: '********** VERY LONG **********',
+  keenReadKey: '********** VERY LONG **********',
 };
 
 if (CCENV == 'production') {

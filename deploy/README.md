@@ -26,6 +26,9 @@ easily. :rocket:
 6. Generate a RSA keypair for root-level access to the web servers. (e.g.
    `ssh-keygen ~/.ssh/clientcomm-multnomah`). Upload the private key to
    lastpass as an attachment to the .env file.
+7. For the Twilio account, make sure that the "IBM Watson" add-ons are enabled
+   in the "Programmable SMS Add-Ons" settings page.
+8. Create a Keen.io project for the deploy
 
 ## actually deploying a new version of code
 ```bash
@@ -155,6 +158,9 @@ in every terminal window you have open.
 * `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
 * `TF_VAR_mailgun_api_key`
 * `TF_VAR_s3_bucket_name` (e.g. `clientcomm-multnomah-attachments`)
+* `TF_VAR_keen_project_id`
+* `TF_VAR_keen_write_key`
+* `TF_VAR_keen_read_key`
 
 ## Setting up TLS
 TLS is managed by AWS's Certificate Manager feature. You will have to set this

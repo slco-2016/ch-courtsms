@@ -21,6 +21,10 @@ const session = require('cookie-session');
 const flash = require('connect-flash');
 const colors = require('colors');
 
+app.locals.keenProjectId = credentials.keenProjectId || '5750a91433e4063ccd5b6c7e';
+app.locals.keenWriteKey = credentials.keenWriteKey || '57bd2513349615cb4f61859fbecf3252d67cf5820f085ce7788892b314cc9399e2bfdc084c3b5f5c60712c4c48143e7f31a9eb9e78c0955228e3cf08304bb64fa4e725862dfee3ceb3bb3298600faa954e487950dbe49b2c353167d4ceaa785f';
+app.locals.keenReadKey = credentials.keenReadKey || 'a70db21e3f6527c10ee23f2697714bf883783b6018b8f3fd27d94bf0b0d9eb9cb26a22d69709dff266866c526ad0e9e845c82dd5393b417d99c2ef7712d979a960e9247806dc09231e9ff7880ab2772cfa1b41d9900de385db8d5942d4d337bd';
+
 // CONFIGURATION 1
 app.set('view engine', 'ejs');
 app.set('views', `${__dirname}/views`);

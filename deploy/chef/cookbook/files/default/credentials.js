@@ -36,6 +36,9 @@ const baseProductionReadyCredentials = {
   s3: {
     bucketName: process.env.S3_BUCKET_NAME,
   },
+  keenProjectId: process.env.KEEN_PROJECT_ID,
+  keenWriteKey: process.env.KEEN_WRITE_KEY,
+  keenReadKey: process.env.KEEN_READ_KEY,
 };
 
 const colors = require('colors');

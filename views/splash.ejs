@@ -642,8 +642,8 @@
   // Keen.io tracking operations
   function createKeenClient () {
     var client = new Keen({
-      projectId: "5750a91433e4063ccd5b6c7e",
-      writeKey: "57bd2513349615cb4f61859fbecf3252d67cf5820f085ce7788892b314cc9399e2bfdc084c3b5f5c60712c4c48143e7f31a9eb9e78c0955228e3cf08304bb64fa4e725862dfee3ceb3bb3298600faa954e487950dbe49b2c353167d4ceaa785f"
+      projectId: "<%= keenProjectId %>",
+      writeKey: "<%= keenWriteKey %>"
     });
     return client;
   };
