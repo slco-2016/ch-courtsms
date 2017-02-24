@@ -28,7 +28,8 @@ easily. :rocket:
    lastpass as an attachment to the .env file.
 7. For the Twilio account, make sure that the "IBM Watson" add-ons are enabled
    in the "Programmable SMS Add-Ons" settings page.
-8. Create a Keen.io project for the deploy
+8. Create a Keen.io project for the deploy and add its project ID, read key,
+   and write key, to the .env file.
 
 ## actually deploying a new version of code
 ```bash
