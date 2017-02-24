@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+SSH="ssh -i $(echo ~/.ssh/clientcomm)"
+servers=$(cd $(dirname $0)/../deploy; terraform output -json web_ip | jq -r '.value[]')
+pids=""
+
+for IP in $servers; do
+  $SSH ubuntu@$IP sudo journalctl -f -u clientcomm -u clientcomm-worker "$@" &
+  pids+="$! "
+done
+
+trap "kill $pids" EXIT
+eval "wait $pids"
