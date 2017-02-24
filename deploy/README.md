@@ -32,20 +32,8 @@ easily. :rocket:
    and write key, to the .env file.
 
 ## actually deploying a new version of code
-```bash
-# 1. log in to an app server with:
-ssh -i ~/.ssh/clientcomm ubuntu@$(cd deploy; terraform output -json web_ip | jq -r '.value[0]')
-
-# 2. on the app server, pull the new clientcomm code
-sudo su - clientcomm
-cd clientcomm
-git pull origin master
-
-# 3. on the app server, restart the clientcomm process
-exit # (to become the 'ubuntu' root user again)
-sudo systemctl restart clientcomm
-sudo systemctl restart clientcomm-worker # (on the first web machine only)
-```
+To deploy a new version of code, run the `devTools/deploy` script. Currently
+this script will only support deploying to the Multnomah instance of clientcomm.
 
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
