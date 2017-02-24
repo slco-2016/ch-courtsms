@@ -1,8 +1,11 @@
 #!/bin/bash
-# usage: ./run-chef.sh
+# usage: ./run-chef.sh [IP]
 # This script wraps the initial Chef setup installation/logic and cookbook
 # uploading necessary to run Chef. In a full-blown Chef deployment this is
 # handled by a Chef server, but here it is a lot simpler to just do by hand.
+#
+# By default it will run on all servers, but you can pass a single IP as an
+# argument to run Chef just on that machine.
 set -euo pipefail
 
 terraform_dir=$(cd $(dirname $0)/..; pwd)
@@ -48,6 +51,10 @@ JSON
   $SSH 'sudo chef-solo --config /etc/chef/solo.rb -o "recipe[clientcomm]"'
 }
 
-for IP in $(cd $terraform_dir; terraform output -json web_ip | jq -r '.value[]'); do
-  run_node "$IP"
-done
+if [ $# -eq 1 ]; then
+  run_node $1
+else
+  for IP in $(cd $terraform_dir; terraform output -json web_ip | jq -r '.value[]'); do
+    run_node "$IP"
+  done
+fi
