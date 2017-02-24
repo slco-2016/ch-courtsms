@@ -13,7 +13,13 @@ aws.config.credentials = new aws.Credentials(
 
 const s3 = new aws.S3({ apiVersion: '2006-03-01' });
 
-const bucketName = 'clientcomm-attachments';
+let bucketName;
+if (credentials.s3) {
+  bucketName = credentials.s3.bucketName;
+} else {
+  console.warn('DEPRECATION WARNING: You should add "s3: { bucketName: \'clientcomm-attachments\' }" to credentials.js');
+  bucketName = 'clientcomm-attachments';
+}
 
 module.exports = {
 
