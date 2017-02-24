@@ -48,19 +48,6 @@ variable "database_password" {
   description = "Clientcomm database password"
 }
 
-// TODO: This will be determined from an RDS resource provisioned by terraform
-variable "database_host" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
-// TODO: Do we really need gmail integration here, or can we replace this
-// dependency with mailgun?
-variable "gmail_password" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
 // Specify with TF_VAR_newrelic_key
 variable "newrelic_key" {
   description = "API Key for Newrelic from the Web UI"
@@ -442,8 +429,6 @@ LOCAL_DATABASE_USER=clientcomm
 DATABASE_USER=${aws_db_instance.clientcomm.username}
 DATABASE_PASSWORD=${aws_db_instance.clientcomm.password}
 DATABASE_HOST=${aws_db_instance.clientcomm.address}
-# TODO: see if we can remove this dependency
-# GMAIL_PASSWORD=
 NEWRELIC_KEY=${var.newrelic_key}
 NEWRELIC_APP_NAME=${var.newrelic_app_name}
 MAILGUN_API_KEY=${var.mailgun_api_key}
