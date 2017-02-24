@@ -310,20 +310,15 @@ resource "aws_route53_record" "clientcomm_mailgun_sending_0" {
   records = ["${mailgun_domain.clientcomm.sending_records.0.value}"]
 }
 
-resource "aws_route53_record" "clientcomm_mailgun_receiving_1" {
-  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
-  type = "${mailgun_domain.clientcomm.receiving_records.1.record_type}"
-  ttl = 60
-  records = ["${mailgun_domain.clientcomm.receiving_records.1.priority} ${mailgun_domain.clientcomm.receiving_records.1.value}"]
-}
-
-resource "aws_route53_record" "clientcomm_mailgun_receiving_0" {
+resource "aws_route53_record" "clientcomm_mailgun_receiving" {
   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
   type = "${mailgun_domain.clientcomm.receiving_records.0.record_type}"
   ttl = 60
-  records = ["${mailgun_domain.clientcomm.receiving_records.0.priority} ${mailgun_domain.clientcomm.receiving_records.0.value}"]
+  records = [
+    "${mailgun_domain.clientcomm.receiving_records.0.priority} ${mailgun_domain.clientcomm.receiving_records.0.value}",
+    "${mailgun_domain.clientcomm.receiving_records.1.priority} ${mailgun_domain.clientcomm.receiving_records.1.value}"
+  ]
 }
 
 
