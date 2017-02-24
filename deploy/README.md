@@ -27,6 +27,22 @@ easily. :rocket:
    `ssh-keygen ~/.ssh/clientcomm-multnomah`). Upload the private key to
    lastpass as an attachment to the .env file.
 
+## actually deploying a new version of code
+```bash
+# 1. log in to an app server with:
+ssh -i ~/.ssh/clientcomm ubuntu@$(cd deploy; terraform output -json web_ip | jq -r '.value[0]')
+
+# 2. on the app server, pull the new clientcomm code
+sudo su - clientcomm
+cd clientcomm
+git pull origin master
+
+# 3. on the app server, restart the clientcomm process
+exit # (to become the 'ubuntu' root user again)
+sudo systemctl restart clientcomm
+sudo systemctl restart clientcomm-worker # (on the first web machine only)
+```
+
 ## terraform usage
 Terraform will create all necessary AWS resources for a default deployment of
 clientcomm. It will save a "state file" of the resources to S3 so that
