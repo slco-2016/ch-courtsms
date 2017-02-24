@@ -85,6 +85,18 @@ variable "s3_bucket_name" {
   description = "S3 bucket to store attached media"
 }
 
+variable "keen_project_id" {
+  description = "ID of the project in Keen.io"
+}
+
+variable "keen_write_key" {
+  description = "Write key for the project in Keen"
+}
+
+variable "keen_read_key" {
+  description = "Read key for the project in Keen"
+}
+
 resource "aws_vpc" "clientcomm" {
   cidr_block = "10.0.0.0/16"
   tags = {
@@ -450,6 +462,9 @@ MAILGUN_API_KEY=${var.mailgun_api_key}
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.clientcomm.id}
 AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.clientcomm.secret}
 S3_BUCKET_NAME=${aws_s3_bucket.clientcomm.bucket}
+KEEN_PROJECT_ID=${var.keen_project_id}
+KEEN_WRITE_KEY=${var.keen_write_key}
+KEEN_READ_KEY=${var.keen_read_key}
 ENV
   }
 }
