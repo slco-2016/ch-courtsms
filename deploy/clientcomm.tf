@@ -14,6 +14,10 @@ provider "mailgun" {
   api_key = "${var.mailgun_api_key}"
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+// VARIABLES
+// /////////////////////////////////////////////////////////////////////////////
+
 variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
