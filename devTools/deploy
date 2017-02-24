@@ -1,0 +1,59 @@
+#!/bin/bash
+set -euo pipefail
+
+deploy_dir=$(cd $(dirname $0)/../deploy; pwd)
+servers=$(cd $deploy_dir; terraform output -json web_ip | jq -r '.value[]')
+repo=https://github.com/slco-2016/clientcomm
+api_base=https://api.github.com/repos/slco-2016/clientcomm
+
+# you will need the .env file from lastpass
+if [ ! -f "$deploy_dir/.env" ]; then
+  echo 'You will need the .env file from lastpass, store it in the deploy directory.'
+  exit 1
+else
+  export $(cat "$deploy_dir/.env")
+fi
+
+# let's give the deployer a bit of information about what they are about to do:
+sha=$(git ls-remote "$repo" master | awk '{ print $1 }')
+curl --silent "${api_base}/git/commits/${sha}" | jq -j '"You are about to deploy commit: \(.sha)
+
+=============================================================================
+\(.message)
+
+-----------------------------------------------------------------------------
+by \(.author.name) at \(.committer.date)
+
+\(.html_url)
+=============================================================================
+
+Are you sure? [y/N]:"'
+read confirm
+if [ "$confirm" != "y" -a "$confirm" != "Y" ]; then
+  exit 1
+fi
+
+server_index=0
+for IP in $servers; do
+  SSH="ssh clientcomm@$IP"
+
+  # the deploy process is:
+  # 1. run chef to make sure that the system's configuration is as expected
+  $(dirname $0)/../deploy/chef/run-chef.sh "$IP"
+
+  # 2. fetch the new version of the code (currently done by chef)
+  # $SSH 'cd clientcomm && git pull origin master'
+
+  # 3. restart the web process
+  echo 'Restarting clientcomm...'
+  $SSH 'sudo systemctl restart clientcomm'
+  $SSH 'systemctl is-active clientcomm >/dev/null'
+
+  # 4. restart the worker process if this is the first web machine
+  if [ $server_index == 0 ]; then
+    echo 'Restarting clientcomm-worker...'
+    $SSH 'sudo systemctl restart clientcomm-worker'
+    $SSH 'systemctl is-active clientcomm-worker >/dev/null'
+  fi
+  server_index=$(($server_index + 1))
+done
