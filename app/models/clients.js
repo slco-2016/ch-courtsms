@@ -131,7 +131,7 @@ class Clients extends BaseModel {
     if (typeof status === 'undefined') status = true;
 
     return new Promise((fulfill, reject) => {
-      Users.findManyByAttribute('department_id', departmentId)
+      Users.findManyByAttribute('department', departmentId)
       .then((users) => {
         const userIds = users.map(user => user.cmid);
         return Clients.findByUsers(userIds, status);
