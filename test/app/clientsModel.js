@@ -62,6 +62,16 @@ describe('Clients checks', () => {
     }).catch(done);
   });
 
+  it('Should be able to find many by department and status', (done) => {
+    Clients.findManyByDepartmentAndStatus(1, true)
+    .then((clients) => {
+      // there are two clients in department 1 in the test data
+      // at this point
+      clients.length.should.be.exactly(2);
+      done();
+    }).catch(done);
+  });
+
   it('Should be able to update client from BaseModel method', (done) => {
     Clients.findById(1)
     .then(client => client.update({ first: 'joe' })).then((client) => {
