@@ -65,9 +65,9 @@ describe('Clients checks', () => {
   it('Should be able to find many by department and status', (done) => {
     Clients.findManyByDepartmentAndStatus(1, true)
     .then((clients) => {
-      // there are two clients in department 1 in the test data
+      // there are five active clients in department 1 in the test data
       // at this point
-      clients.length.should.be.exactly(2);
+      clients.length.should.be.exactly(5);
       done();
     }).catch(done);
   });
