@@ -1,5 +1,6 @@
 const db = require('../../app/db');
 const Promise = require('bluebird');
+const moment = require('moment');
 
 const credentials = require('../../credentials');
 const mailgun = require('./mailgun');
@@ -139,7 +140,7 @@ module.exports = {
                  `\n"${msg.content}"` +
 
                  `\n<b>More details:</b> The message was sent ` +
-                 `at ${msg.created}. ` +
+                 `at ${moment(msg.created).format('h:mmA on dddd, MMMM Do, YYYY')}. ` +
                  `Its last known status was: ${msg.tw_status}.` +
 
                  `\n<b>What should I do?</b> ` +
