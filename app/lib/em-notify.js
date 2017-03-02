@@ -112,24 +112,18 @@ module.exports = {
     });
   },
 
-  notifyUserFailedSend(cm, msg) {
+  notifyUserFailedSend(cm, client, msg) {
     const text = `Hi, ${cm.first}. You are receiving this email because a ` +
                  `message you wrote failed to send. This was not your fault ` +
                  `- it was likely an error with the SMS service provider.` +
 
-                 `\n<b>What was the message?</b> ` +
-                 `The contents of the message are included below:` +
+                 `\n<b>The message</b> was sent to ${client.first} ${client.last} ` +
+                 `at ${moment(msg.created).format('h:mmA on dddd, MMMM Do, YYYY')}.` +
 
-                 `\n"${msg.content}"` +
+                 `\n<b>What should I do?</b> Please check the message and ` +
+                 `send it again, if needed.` +
 
-                 `\n<b>More details:</b> The message was sent ` +
-                 `at ${moment(msg.created).format('h:mmA on dddd, MMMM Do, YYYY')}. ` +
-                 `Its last known status was: ${msg.tw_status}.` +
-
-                 `\n<b>What should I do?</b> ` +
-                 `Please check the message and send it again, if needed.` +
-
-                 `\nThanks much and apologies for the inconvenience.`;
+                 `\nThanks much, and apologies for the inconvenience.`;
 
     const html = `<p>${text.split('\n').join('</p><p>')}</p>`;
 
