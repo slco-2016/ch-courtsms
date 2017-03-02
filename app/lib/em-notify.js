@@ -45,20 +45,28 @@ module.exports = {
         // We just want the userIds from the response
         userIds = resp.map(user => user.cmid);
 
-                        // want a sum total and only of unreads
-        const rawQuery = ' SELECT count(msgid), MAX(msgs.created) AS made, cms.cmid, cms.first, cms.last, cms.email ' +
-                        ' FROM msgs ' +
-
-                        // lefts joings allow us to a link a message to a conversation then to a user (from client to user)
-                        ' LEFT JOIN (SELECT convos.convid, convos.cm FROM convos) AS convos ON (convos.convid = msgs.convo) ' +
-                        ' LEFT JOIN (SELECT cms.cmid, cms.first, cms.last, cms.email FROM cms) AS cms ON (cms.cmid = convos.cm) ' +
-
-                        // within this bracketed period of time (only of unreads)
-                        ' WHERE msgs.read = FALSE AND msgs.created > CURRENT_TIMESTAMP - INTERVAL \'1 day\' ' +
-                        ' AND msgs.created < CURRENT_TIMESTAMP ' +
-
-                        // break them up by unique users
-                        ' GROUP BY cms.cmid, cms.first, cms.last, cms.email ORDER BY made DESC; ';
+        // want a sum total and only of unreads
+        const rawQuery = `SELECT ` +
+                         `count(msgid), ` +
+                         `MAX(msgs.created) AS made, ` +
+                         `cms.cmid, ` +
+                         `cms.first, ` +
+                         `cms.last, ` +
+                         `cms.email ` +
+                         `FROM msgs ` +
+                         // left joins allow us to a link a message to a 
+                         // conversation, then to a user (from client to user)
+                         `LEFT JOIN (SELECT convos.convid, convos.cm FROM convos) AS convos ` +
+                         `ON (convos.convid = msgs.convo) ` +
+                         `LEFT JOIN (SELECT cms.cmid, cms.first, cms.last, cms.email FROM cms) AS cms ` +
+                         `ON (cms.cmid = convos.cm) ` +
+                         // within this bracketed period of time (only of unreads)
+                         `WHERE msgs.read = FALSE ` +
+                         `AND msgs.created > CURRENT_TIMESTAMP - INTERVAL '1 day' ` +
+                         `AND msgs.created < CURRENT_TIMESTAMP ` +
+                         // group them by unique users
+                         `GROUP BY cms.cmid, cms.first, cms.last, cms.email ` +
+                         `ORDER BY made DESC;`;
 
         // executes the above query
         return db.raw(rawQuery);
