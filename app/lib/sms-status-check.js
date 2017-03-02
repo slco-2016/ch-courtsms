@@ -58,7 +58,7 @@ module.exports = {
 
         // There was a change
         } else {
-          // The message changed to a valud we accept as closed
+          // The message changed to a value we accept as closed
           if (sms.status == 'received') {
             db('msgs')
             .where('msgid', msg.msgid)
@@ -89,7 +89,7 @@ module.exports = {
             const hrDiff = Math.floor((now - created) / 36e5); // this is one hour difference
 
             // It has been queued for too long (over 1 hour)
-            // Should report this to the case manager
+            // Report this to the case manager
             if (hrDiff > 1) {
               db('msgs')
               .where('msgid', msg.msgid)
@@ -98,15 +98,23 @@ module.exports = {
                 console.log(`Cleared msg ${msg.msgid}, but it failed to send.`);
 
                 // Send an email to the case manager
-                db('cms')
-                .join('convos', 'cms.cmid', 'convos.cm')
+                db('convos')
+                .select(
+                  'cms.first AS cm_first',
+                  'cms.last AS cm_last',
+                  'cms.email AS cm_email',
+                  'clients.first AS client_first',
+                  'clients.last AS client_last')
+                .join('cms', 'cms.cmid', 'convos.cm')
+                .join('clients', 'convos.client', 'clients.clid')
                 .where('convos.convid', msg.convo)
-                .then((cms) => {
-                  // Can only send if we find a cm associated with that convo
-                  // TO DO: Include information about the client in the email
-                  if (cms.length > 0) {
-                    const cm = cms[0];
-                    notifyUserFailedSend(cm, msg);
+                .then((rslts) => {
+                  // Only send if we found a cm and client
+                  if (rslts.length > 0) {
+                    const rcrd = rslts[0];
+                    const cm = {first: rcrd.cm_first, last: rcrd.cm_last, email: rcrd.cm_email};
+                    const client = {first: rcrd.client_first, last: rcrd.client_last};
+                    notifyUserFailedSend(cm, client, msg);
                   }
                 }).catch((err) => { console.log(err); });
               }).catch((err) => { console.log(err); });
