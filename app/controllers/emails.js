@@ -34,8 +34,8 @@ module.exports = {
     }
   },
   webhook(req, res) {
-    // mailgun's philosophy here seems to be that if they can populate a section they
-    // will, or they will omit it. This can be very confusing.
+    // mailgun's philosophy here seems to be that if they can populate a
+    // section, they will, or they will omit it. This can be very confusing.
     // eg: if there is one recipient they will populate "recipient", but they
     // will populate "reciepients" if there are multiple.
     // would keep this in mind when trusing these values.
@@ -45,7 +45,6 @@ module.exports = {
     const domain = req.body.domain;
     const headers = req.body['message-headers'];
     const messageId = req.body['Message-Id'];
-    var recipient = req.body.recipient;
     const event = req.body.event;
     const timestamp = req.body.timestamp;
     const token = req.body.token;
