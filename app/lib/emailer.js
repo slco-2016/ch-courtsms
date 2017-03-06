@@ -12,7 +12,7 @@ module.exports = {
     const text = `Hello and welcome to ClientComm. `+
                  `Your temporary password is: ${password}` +
 
-                 `\nYou can log on to your ClientComm account by going to:` +
+                 `\nYou can log on to your ClientComm account by going to: ` +
                  `${credentials.baseUrl}/login` +
 
                  `\nWe recommend that you set your own password immediately ` +
