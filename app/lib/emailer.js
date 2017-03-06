@@ -18,7 +18,7 @@ module.exports = {
 
     if (CCENV === 'production') {
       return mailgun.sendEmail(
-        CCENV === 'development' ? 'clientcomm@codeforamerica.org' : email,
+        email,
         '"ClientComm - CJS" <clientcomm@codeforamerica.org>',
         'ClientComm - Welcome to ClientComm!',
         html
