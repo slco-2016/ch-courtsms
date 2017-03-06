@@ -14,6 +14,8 @@ module.exports = {
                 }\n You can log on to your ClientComm account by going to www.clientcomm.org and, ` +
                 'from the login screen, you can choose to reset your password.';
 
+    const html = `<p>${text.split('\n').join('</p><p>')}</p>`;
+
     if (CCENV === 'production') {
       return mailgun.sendEmail(
         CCENV === 'development' ? 'clientcomm@codeforamerica.org' : email,
