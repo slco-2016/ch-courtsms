@@ -8,11 +8,16 @@ const mailgun = require('./mailgun');
 const CCENV = process.env.CCENV || 'development';
 
 module.exports = {
-
   activationAlert(email, password) {
-    const text = `Hello and welcome to ClientComm. Your temporary password is: ${password
-                }\n You can log on to your ClientComm account by going to www.clientcomm.org and, ` +
-                'from the login screen, you can choose to reset your password.';
+    const text = `Hello and welcome to ClientComm. `+
+                 `Your temporary password is: ${password}` +
+
+                 `\nYou can log on to your ClientComm account by going to:` +
+                 `${credentials.baseUrl}/login` +
+
+                 `\nWe recommend that you set your own password immediately ` +
+                 `by entering your email address in the form here: ` +
+                 `${credentials.baseUrl}/login/reset`;
 
     const html = `<p>${text.split('\n').join('</p><p>')}</p>`;
 
