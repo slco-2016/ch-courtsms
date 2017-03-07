@@ -89,11 +89,11 @@ module.exports = {
             msg_msgs = "messages";
             this_these = "these";
           }
-          const text = `Hello, ${msg.first}, you are receiving this ` +
+          const text = `Hi, ${msg.first}. You are receiving this ` +
                        `automated email because you have ${msg.count} ` +
                        `${msg_msgs} waiting for you in ClientComm. To view ` +
-                       `${this_these} ${msg_msgs} go to clientcomm.org and ` +
-                       `login with your user name and password. If you are ` +
+                       `${this_these} ${msg_msgs} go to ${credentials.baseUrl} ` +
+                       `and login with your user name and password. If you are ` +
                        `having issues accessing your account, send an email ` +
                        `to clientcomm@codeforamerica.org and we will be ` +
                        `happy to assist you any time, day or night!`;
@@ -119,12 +119,14 @@ module.exports = {
   },
 
   notifyUserFailedSend(cm, client, msg) {
-    const text = `Hi, ${cm.first}. You are receiving this email because a ` +
-                 `message you wrote failed to send. This was not your fault ` +
-                 `- it was likely an error with the SMS service provider.` +
+    const send_time = moment(msg.created).format('h:mmA on dddd, MMMM Do, YYYY');
+    const text = `Hi, ${cm.first}. You are receiving this automated email ` +
+                 `because a message you wrote failed to send. This was not ` +
+                 `your fault; it was likely an error with the SMS ` +
+                 `service provider.` +
 
-                 `\n<b>The message</b> was sent to ${client.first} ${client.last} ` +
-                 `at ${moment(msg.created).format('h:mmA on dddd, MMMM Do, YYYY')}.` +
+                 `\n<b>The message:</b> ClientComm attempted to send the message to ` +
+                 `${client.first} ${client.last} at ${send_time}.` +
 
                  `\n<b>What should I do?</b> Please check the message and ` +
                  `send it again, if needed.` +
@@ -142,13 +144,14 @@ module.exports = {
   },
 
   sendPassResetEmail(cm, uid) {
-    const text = `Hello, ${cm.first} ${cm.last}. You are receiving this email ` +
-                 `because your account (${cm.email}) has requested a password reset.` +
+    const text = `Hi, ${cm.first}. You are receiving this automated email ` +
+                 `because your account (${cm.email}) has requested a ` +
+                 `password reset.` +
 
                  `\nIf this was not you, you don't need to do anything. If it ` +
-                 `was you and you did intend to reset your password, please go to the ` +
-                 `following address by either clicking on or cutting and ` +
-                 `pasting the following address:` +
+                 `was you and you did intend to reset your password, please ` +
+                 `go to the following address by either clicking on or ` +
+                 `cutting and pasting the following address:` +
 
                  `\n${credentials.baseUrl}/login/reset/${String(uid)}` +
 
