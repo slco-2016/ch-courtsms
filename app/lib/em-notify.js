@@ -83,14 +83,20 @@ module.exports = {
         // send a message through mailgun
         const emailPromises = usersThatNeedToBeAlerted.map((msg, i) => {
           // the message copy that will be emailed
-          const text = `Hello, ${msg.first} ${msg.last},` +
-                       `You are receiving this automated email because ` +
-                       `you have ${msg.count} message(s) waiting for you ` +
-                       `in ClientComm. To view this message go to ` +
-                       `ClientComm.org and login with your user name ` +
-                       `and password. If you are having issues accessing ` +
-                       `your account, send an email to clientcomm@codeforamerica.org ` +
-                       `and we will be happy to assist you any time, day or night!`;
+          let msg_msgs = "message";
+          let this_these = "this";
+          if (msg.count > 1) {
+            msg_msgs = "messages";
+            this_these = "these";
+          }
+          const text = `Hello, ${msg.first}, you are receiving this ` +
+                       `automated email because you have ${msg.count} ` +
+                       `${msg_msgs} waiting for you in ClientComm. To view ` +
+                       `${this_these} ${msg_msgs} go to clientcomm.org and ` +
+                       `login with your user name and password. If you are ` +
+                       `having issues accessing your account, send an email ` +
+                       `to clientcomm@codeforamerica.org and we will be ` +
+                       `happy to assist you any time, day or night!`;
 
           // Send mail with defined transport object
           if (credentials.CCENV === 'testing') {
