@@ -10,7 +10,7 @@ easily. :rocket:
    `clientcomm-terraform-multnomah`). Put its access key and secret access key
    into lastpass with "terraform" in the name. Enable versioning on the bucket.
 2. Create an IAM user that can access the bucket and only the bucket.
-   [Here's an example policy](/slco-2016/clientcomm/blob/master/deploy/example-iam-policy-terraform-state.json)
+   [Here's an example policy](example-iam-policy-terraform-state.json)
 3. Create an empty .env file with the keys specified in "Credentials Checklist"
    below.
 4. Create an IAM user for terraform with the following policies attached. Put
