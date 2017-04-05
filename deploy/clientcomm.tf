@@ -14,6 +14,10 @@ provider "mailgun" {
   api_key = "${var.mailgun_api_key}"
 }
 
+// /////////////////////////////////////////////////////////////////////////////
+// VARIABLES
+// /////////////////////////////////////////////////////////////////////////////
+
 variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
 }
@@ -46,19 +50,6 @@ variable "session_secret" {
 // RDS database password. Specify with TF_VAR_database_password
 variable "database_password" {
   description = "Clientcomm database password"
-}
-
-// TODO: This will be determined from an RDS resource provisioned by terraform
-variable "database_host" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
-}
-
-// TODO: Do we really need gmail integration here, or can we replace this
-// dependency with mailgun?
-variable "gmail_password" {
-  description = ""
-  default = "TODO ******TODO ******TODO *******"
 }
 
 // Specify with TF_VAR_newrelic_key
@@ -331,20 +322,15 @@ resource "aws_route53_record" "clientcomm_mailgun_sending_0" {
   records = ["${mailgun_domain.clientcomm.sending_records.0.value}"]
 }
 
-resource "aws_route53_record" "clientcomm_mailgun_receiving_1" {
-  zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
-  name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
-  type = "${mailgun_domain.clientcomm.receiving_records.1.record_type}"
-  ttl = 60
-  records = ["${mailgun_domain.clientcomm.receiving_records.1.priority} ${mailgun_domain.clientcomm.receiving_records.1.value}"]
-}
-
-resource "aws_route53_record" "clientcomm_mailgun_receiving_0" {
+resource "aws_route53_record" "clientcomm_mailgun_receiving" {
   zone_id = "${data.aws_route53_zone.clientcomm.zone_id}"
   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}"
   type = "${mailgun_domain.clientcomm.receiving_records.0.record_type}"
   ttl = 60
-  records = ["${mailgun_domain.clientcomm.receiving_records.0.priority} ${mailgun_domain.clientcomm.receiving_records.0.value}"]
+  records = [
+    "${mailgun_domain.clientcomm.receiving_records.0.priority} ${mailgun_domain.clientcomm.receiving_records.0.value}",
+    "${mailgun_domain.clientcomm.receiving_records.1.priority} ${mailgun_domain.clientcomm.receiving_records.1.value}"
+  ]
 }
 
 
@@ -454,8 +440,6 @@ LOCAL_DATABASE_USER=clientcomm
 DATABASE_USER=${aws_db_instance.clientcomm.username}
 DATABASE_PASSWORD=${aws_db_instance.clientcomm.password}
 DATABASE_HOST=${aws_db_instance.clientcomm.address}
-# TODO: see if we can remove this dependency
-# GMAIL_PASSWORD=
 NEWRELIC_KEY=${var.newrelic_key}
 NEWRELIC_APP_NAME=${var.newrelic_app_name}
 MAILGUN_API_KEY=${var.mailgun_api_key}
