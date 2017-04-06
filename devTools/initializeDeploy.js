@@ -27,6 +27,13 @@ if (process.argv[2] === '--multnomah') {
   DEPT_NAME = 'Department of Community Justice';
   CFA_FIRST_NAME = 'Code for';
   CFA_LAST_NAME = 'America';
+} else if (process.argv[2] == '--saltlake') {
+  ORG_NAME = 'Salt Lake County';
+  ORG_EMAIL = 'clientcomm@codeforamerica.org';
+  ORG_TZ = 'America/Denver';
+  DEPT_NAME = 'Criminal Justice Services';
+  CFA_FIRST_NAME = 'Code for';
+  CFA_LAST_NAME = 'America';
 } else {
   throw new Error('No deploy information set! Call this script with an argument.');
 }
