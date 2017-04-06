@@ -5,17 +5,10 @@ const readline = require('readline');
 const credentials = require('../credentials');
 const hashPw = require('../app/lib/pass').hashPw;
 
-const ask = (prompt, callback) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  rl.question(prompt, (answer) => {
-    callback(answer);
-    rl.close();
-  });
-};
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 let ORG_NAME, ORG_EMAIL, ORG_TZ, DEPT_NAME, CFA_FIRST_NAME,
   CFA_LAST_NAME;
@@ -76,8 +69,8 @@ const phoneNumber = {
   organization: 1,
 };
 
-ask(`Login email for superuser? `, (user) => {
-  ask(`Login Password for ${user}? `, (pw) => {
+rl.question(`Login email for superuser? `, (user) => {
+  rl.question(`Login password for ${user}? `, (pw) => {
     owner.email = user;
     owner.pass = hashPw(pw);
 
@@ -89,10 +82,12 @@ ask(`Login email for superuser? `, (user) => {
       .then(() => db('departments').insert(department))
       .then(() => {
         console.log('Created Org, Department, and User!');
+        rl.close();
         process.exit(0);
       })
       .catch(err => {
         console.error(err);
+        rl.close();
         process.exit(1);
       });
   });
