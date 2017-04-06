@@ -1,5 +1,3 @@
-
-
 const credentials = require('../credentials');
 const env = credentials.CCENV;
 
