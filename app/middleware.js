@@ -152,7 +152,7 @@ module.exports = {
   },
 
   templateHelpers(req, res, next) {
-    res.locals.leftTab = (name, hub, level, optionsList, path, paramName='status', action, clientID) => {
+    res.locals.leftTab = (name, hub, level, optionsList, path, action, clientID, paramName='status') => {
       let capitalized = _capitalize(name);
 
       let url = `/${path||name}`;
@@ -194,7 +194,7 @@ module.exports = {
       `;
     };
 
-    res.locals.rightTab = (name, fa, level, action='create', label) => {
+    res.locals.rightTab = (name, fa, level, label, action='create') => {
       
       let url = `/${name}`;
       if (level == 'org') {
@@ -328,7 +328,7 @@ module.exports = {
         next();
       }
     } else {
-      next();      
+      next();
     }
   },
 

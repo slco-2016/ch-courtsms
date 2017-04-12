@@ -20,19 +20,18 @@
             <a href="<%=`${clientBaseURL}`%>"><%= client.first + ' ' + client.last %></a>
           </div>
         </div>
-
-        <%- leftTab('messages', hub, level, ['all', 'texts', 'emails'], 'messages', 'method', null, client.clid) %>
-        <%- leftTab('notifications', hub, level, ['pending', 'sent'], 'notifications', 'status', null, client.clid) %>
-        <%- leftTab('contact methods', hub, level, null, 'communications', 'status', null, client.clid) %>
+        <%- leftTab('messages', hub, level, ['all', 'texts', 'emails'], 'messages', null, client.clid, 'method') %>
+        <%- leftTab('notifications', hub, level, ['pending', 'sent'], 'notifications', null, client.clid, 'status') %>
+        <%- leftTab('contact methods', hub, level, null, 'communications', null, client.clid, 'status') %>
       </div>
     </div>
 
 
     <div class="allRightParent">
       <div class="allRight">
-        <%- rightTab('clients', 'mobile', level, `${client.clid}/communications/create`, 'contact method') %>
-        <%- rightTab('notifications', 'bell', level, `create?client=${client.clid}&user=${client.cm}`, 'notification') %> 
-        <%- rightTab('clients', 'comments', level, `${client.clid}/address`, 'message') %>
+        <%- rightTab('clients', 'mobile', level, 'contact method', `${client.clid}/communications/create`) %>
+        <%- rightTab('notifications', 'bell', level, 'notification', `create?client=${client.clid}&user=${client.cm}`) %> 
+        <%- rightTab('clients', 'comments', level, 'message', `${client.clid}/address`) %>
       </div>
     </div>
 
