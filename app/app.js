@@ -70,7 +70,6 @@ app.use(middleware.setApplicationDetails);
 app.use(middleware.setUserAndLevel);
 app.use(middleware.getUserPerformance);
 
-app.use(middleware.attachErrorHandlers);
 app.use(middleware.attachLoggingTools);
 app.use(middleware.attachRoutingTools);
 app.use(middleware.attachTemplateLibraries);
