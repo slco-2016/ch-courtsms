@@ -34,7 +34,7 @@ app.use('/components', express.static('bower_components'));
 app.use('/modules', express.static('node_modules'));
 app.use(cookieParser());
 
-// PASSPORT SESSIONS, USERS
+// PASSPORT SESSIONS, USERS (authentication)
 const bcrypt = require('bcrypt-nodejs');
 const passport = require('passport');
 require('./passport')(passport);
