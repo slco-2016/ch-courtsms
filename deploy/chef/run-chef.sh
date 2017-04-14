@@ -17,7 +17,7 @@ run_node() {
   SSH="ssh ubuntu@$ip"
 
   echo "Installing Chef on ${ip}..."
-  $SSH 'if [ ! $(which chef-solo) ]; then curl -L https://www.chef.io/chef/install.sh | sudo bash; fi'
+  $SSH 'if [ ! $(which chef-solo) ]; then curl -L https://www.chef.io/chef/install.sh | sudo bash -s -- -v 12.19.36; fi'
 
   echo "Installing /etc/chef/solo.rb"
   cookbooks_dir=/data/chef/cookbook
