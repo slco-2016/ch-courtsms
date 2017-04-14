@@ -8,5 +8,6 @@ newrelic_agent.log
 coverage/
 .terraform
 terraform.tfstate.backup
-.env
+.env*
 terraform-commands.log
+_scratch/
