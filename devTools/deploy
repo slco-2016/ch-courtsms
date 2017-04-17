@@ -7,11 +7,15 @@ repo=https://github.com/slco-2016/clientcomm
 api_base=https://api.github.com/repos/slco-2016/clientcomm
 
 # you will need the .env file from lastpass
-if [ ! -f "$deploy_dir/.env" ]; then
-  echo 'You will need the .env file from lastpass, store it in the deploy directory.'
+# if the name of the env file is something other than ".env", pass it to this
+# script as the only argument
+env_filename=${1-".env"}
+if [ ! -f "$deploy_dir/$env_filename" ]; then
+  echo "There is no '$env_filename' file in the deploy directory."
+  echo "Create it or pass the correct filename to this script."
   exit 1
 else
-  export $(cat "$deploy_dir/.env")
+  export $(cat "$deploy_dir/$env_filename")
 fi
 
 # let's give the deployer a bit of information about what they are about to do:

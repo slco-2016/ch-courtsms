@@ -1,6 +1,14 @@
 // This is a terraform definition for an AWS configuration of clientcomm.
 // See the README.md for more details on how to use this.
 
+terraform {
+  backend "s3"  {
+    bucket = "clientcomm-terraform"
+    key = "terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 provider "aws" {
   region = "us-west-2"
 }
@@ -19,7 +27,7 @@ provider "mailgun" {
 // /////////////////////////////////////////////////////////////////////////////
 
 variable "deploy_base_url" {
-  description = "The publicly-accessible URL base of this deploy (e.g. 'https://multnomah.clientcomm.org')"
+  description = "The publicly-accessible URL base of this deploy (e.g. 'https://secure.clientcomm.org')"
 }
 
 // Specify with TF_VAR_aws_ssl_certificate_arn
@@ -103,7 +111,7 @@ resource "aws_vpc" "clientcomm" {
 // until my open issue is resolved:
 // https://github.com/tulip/terraform-provider-twilio/issues/2
 resource "twilio_phonenumber" "clientcomm" {
-  name = "clientcomm multnomah"
+  name = "clientcomm ${terraform.env}"
 
   location {
     near_lat_long {
@@ -290,7 +298,7 @@ resource "aws_elb" "clientcomm" {
 
 // This requires the DNS zone to be created in the AWS console first.
 data "aws_route53_zone" "clientcomm" {
-  // transform 'https://multnomah.clientcomm.org' -> 'multnomah.clientcomm.org.'
+  // transform 'https://secure.clientcomm.org' -> 'secure.clientcomm.org.'
   name = "${replace(var.deploy_base_url, "/https:\\/\\//", "")}."
 }
 
@@ -354,10 +362,10 @@ resource "aws_db_instance" "clientcomm" {
 // STORAGE
 // ////////////////////////////////////////////////////////////////////////////
 resource "aws_s3_bucket" "clientcomm" {
-  bucket = "${var.s3_bucket_name}" // e.g. "clientcomm-multnomah-attachments"
+  bucket = "${var.s3_bucket_name}" // e.g. "clientcomm-secure-attachments"
   acl = "private"
   tags = {
-    Name = "Cientcomm Multnomah"
+    Name = "clientcomm ${terraform.env}"
   }
 }
 
