@@ -147,6 +147,8 @@ in every terminal window you have open.
 * `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
 * `TF_VAR_mailgun_api_key`
 * `TF_VAR_s3_bucket_name` (e.g. `clientcomm-multnomah-attachments`)
+* `TF_VAR_mixpanel_token`
+* `TF_VAR_mixpanel_secret`
 * `TF_VAR_keen_project_id`
 * `TF_VAR_keen_write_key`
 * `TF_VAR_keen_read_key`

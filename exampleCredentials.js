@@ -68,6 +68,11 @@ const baseProductionReadyCredentials = {
     bucketName: 'clientcomm-attachments',
   },
 
+  mixpanel: {
+    token: '**************************',
+    secret: '**************************',
+  },
+
   keenProjectId: '*****************************',
   keenWriteKey: '********** VERY LONG **********',
   keenReadKey: '********** VERY LONG **********',
