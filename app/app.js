@@ -52,6 +52,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.enable('trust proxy');
 
 // Middleware
 const middleware = require('./middleware');
