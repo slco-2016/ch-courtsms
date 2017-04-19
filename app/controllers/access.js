@@ -3,12 +3,15 @@ const uuid = require('node-uuid');
 
 const pass = require('../lib/pass');
 const emUtil = require('../lib/em-notify');
+const analyticsService = require('../lib/analytics-service');
 const hashPw = pass.hashPw;
 const isLoggedIn = pass.isLoggedIn;
 
 module.exports = {
 
   login(req, res) {
+    analyticsService.track(null, 'login_view', req, res.locals, {});
+
     if (req.hasOwnProperty('user')) {
       if (['owner',
         'supervisor',

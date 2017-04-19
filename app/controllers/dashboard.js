@@ -5,13 +5,15 @@ const Messages = require('../models/messages');
 
 // assistance libraries
 const libUser = require('../lib/users');
-
+const analyticsService = require('../lib/analytics-service');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
 module.exports = {
 
   org(req, res) {
+    analyticsService.track(null, 'org_view', req, res.locals, {});
+
     // originally we assume that the individual can see
     // all the departments (originally departmentFilter)
     let departmentFilter = null;
