@@ -9,22 +9,6 @@ const mixpanel = MixpanelFactory.init(credentials.mixpanel.token, {
   protocol: 'https',
 });
 
-function _get_instance_name(host) {
-  // get the instance of clientcomm running, based on the host
-  let instance_name = host.split('.')[0];
-
-  // special cases where a single instance can have multiple host names
-  if (['www', 'clientcomm'].indexOf(instance_name) > -1) {
-    instance_name = 'splash';
-  } else if (['secure', 'saltlake'].indexOf(instance_name) > -1) {
-    instance_name = 'saltlake';
-  } else if (instance_name === '127' || instance_name.match('localhost')) {
-    instance_name = 'development';
-  }
-
-  return instance_name;
-}
-
 function _extract_value(obj, key) {
   // extract a value from an object or return undefined if it doesn't exist
   return typeof obj[key] === undefined ? undefined : obj[key];
@@ -64,7 +48,7 @@ module.exports = {
     data.clientcomm_version = packageinfo.version;
 
     // from headers
-    data.clientcomm_instance = _get_instance_name(request.headers.host);
+    data.clientcomm_instance_name = credentials.clientcommInstanceName;
     data.source = _extract_source_from_referer(request.headers.referer);
     data.ip = _extract_value(request, 'ip');
     // from user-agent
@@ -95,7 +79,7 @@ module.exports = {
     }
 
     // save distinct_id in data; hash it with the instance name for uniqueness
-    let hasher = new Hashids(data.clientcomm_instance);
+    let hasher = new Hashids(data.clientcomm_instance_name);
     data.distinct_id = hasher.encode(distinct_id);
 
     console.log(distinct_id);

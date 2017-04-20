@@ -2,10 +2,11 @@ const baseProductionReadyCredentials = {
   CCENV: process.env.CCENV,
   RECEIVEBACKUPMODE: false,
   RUNSCHEDULED: !!process.env.RUNSCHEDULED,
+  baseUrl: process.env.BASE_URL,
+  clientcommInstanceName: process.env.CLIENTCOMM_INSTANCE_NAME,
   // Twilio-related
   accountSid: process.env.TWILIO_ACCOUNT_SID,
   authToken: process.env.TWILIO_AUTH_TOKEN,
-  baseUrl: process.env.BASE_URL,
   twilioNum: process.env.TWILIO_NUM, // e.g. '+12344564563'
   twilio: {
     // e.g. 'http://ecx-x-x-xx.us-xxx.compute.amazonaws.com'
