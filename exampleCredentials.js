@@ -7,7 +7,6 @@ const CCENV = process.env.CCENV || 'development';
 const RECEIVEBACKUPMODE = process.env.RECEIVEBACKUPMODE == 'on';
 
 const baseProductionReadyCredentials = {
-
   // Allow access to CCENV be consistent from credentials.js
   // TODO: Update all references to CCENV to be from here
   CCENV,
@@ -22,6 +21,9 @@ const baseProductionReadyCredentials = {
   //   e.g. 'https://multnomah.clientcomm.org'
   //   or 'http://localhost:4000' for local development
   baseUrl: 'http://localhost:4000',
+
+  // A unique name identifying this deploy of clientcomm
+  clientcommInstanceName: 'instancenameunique',
 
   // TODO: Move all twilio components into a single key
   twilio: {
@@ -74,8 +76,8 @@ const baseProductionReadyCredentials = {
   },
 
   keenProjectId: '*****************************',
-  keenWriteKey: '********** VERY LONG **********',
-  keenReadKey: '********** VERY LONG **********',
+  keenWriteKey: '*****************************',
+  keenReadKey: '*****************************',
 };
 
 if (CCENV == 'production') {
@@ -92,12 +94,16 @@ if (CCENV !== 'production') {
 
   // Update the outbound URL to whatever you are using in tests/development
   // (e.g. could be a Ngrok set up, another EC2 instance, etc.)
-  baseProductionReadyCredentials.twilio.outboundCallbackUrl = 'https://123abc.ngrok.io';
+  baseProductionReadyCredentials.twilio.outboundCallbackUrl =
+    'https://123abc.ngrok.io';
 }
 
-// Changes made when we are developing (e.g. staging server, different rootURL, etc.)
+// Changes made when we are developing
+// (e.g. staging server, different rootURL, etc.)
 if (CCENV == 'development') {
-  console.log('Development environment: Credentials have been modified.'.yellow);
+  console.log(
+    'Development environment: Credentials have been modified.'.yellow
+  );
   baseProductionReadyCredentials.db = {
     user: 'foobar',
     password: '**************************',

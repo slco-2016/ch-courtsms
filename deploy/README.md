@@ -7,7 +7,7 @@ easily. :rocket:
 
 ## Steps for creating a new deployment of Clientcomm from scratch
 1. Create an S3 bucket + IAM user for terraform state sharing (e.g.
-   `clientcomm-terraform-multnomah`). Put its access key and secret access key
+   `clientcomm-terraform-unique`). Put its access key and secret access key
    into lastpass with "terraform" in the name. Enable versioning on the bucket.
 2. Create an IAM user that can access the bucket and only the bucket.
    [Here's an example policy](example-iam-policy-terraform-state.json)
@@ -24,7 +24,7 @@ easily. :rocket:
 5. Create a TLS certificate for the instance (see "Setting Up TLS" below). Put
    its ARN into the .env file.
 6. Generate a RSA keypair for root-level access to the web servers. (e.g.
-   `ssh-keygen ~/.ssh/clientcomm-multnomah`). Upload the private key to
+   `ssh-keygen ~/.ssh/clientcomm-unique`). Upload the private key to
    lastpass as an attachment to the .env file.
 7. For the Twilio account, make sure that the "IBM Watson" add-ons are enabled
    in the "Programmable SMS Add-Ons" settings page.
@@ -64,7 +64,7 @@ ssh-add ~/.ssh/clientcomm
 # 4. configure terraform with remote state management
 terraform remote config \
   -backend=s3
-  -backend-config="bucket=clientcomm-terraform-multnomah" \
+  -backend-config="bucket=clientcomm-terraform" \
   -backend-config="key=terraform.tfstate" \
   -backend-config="region=us-west-2" \
   -backend-config="access_key=[...get from lastpass...]" \
@@ -135,6 +135,7 @@ in every terminal window you have open.
 
 * `AWS_ACCESS_KEY_ID`
 * `AWS_SECRET_ACCESS_KEY`
+* `TF_VAR_clientcomm_instance_name` (a unique name identifying this deploy)
 * `TF_VAR_ssh_public_key_path` (e.g. `~/.ssh/clientcomm.pub`)
     Make sure to add the SSH private key to your SSH agent
     (`ssh-add ~/.ssh/clientcomm`) before running Terraform.
@@ -146,7 +147,7 @@ in every terminal window you have open.
 * `TF_VAR_newrelic_app_name`
 * `TF_VAR_aws_ssl_certificate_arn` (see "Setting up TLS" below)
 * `TF_VAR_mailgun_api_key`
-* `TF_VAR_s3_bucket_name` (e.g. `clientcomm-multnomah-attachments`)
+* `TF_VAR_s3_bucket_name` (e.g. `clientcomm-unique-attachments`)
 * `TF_VAR_mixpanel_token`
 * `TF_VAR_mixpanel_secret`
 * `TF_VAR_keen_project_id`

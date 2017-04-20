@@ -30,6 +30,10 @@ variable "deploy_base_url" {
   description = "The publicly-accessible URL base of this deploy (e.g. 'https://secure.clientcomm.org')"
 }
 
+variable "clientcomm_instance_name" {
+  description = "A deploy-specific name to distinguish this build from others."
+}
+
 // Specify with TF_VAR_aws_ssl_certificate_arn
 variable "aws_ssl_certificate_arn" {
   description = "ARN of an SSL certificate in AWS Certificate Manager"
@@ -446,6 +450,7 @@ resource "aws_instance" "clientcomm_web" {
     content = <<ENV
 CCENV=production
 BASE_URL=${var.deploy_base_url}
+CLIENTCOMM_INSTANCE_NAME=${var.clientcomm_instance_name}
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
 TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
