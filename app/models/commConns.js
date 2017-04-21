@@ -151,8 +151,9 @@ class CommConns extends BaseModel {
               comm: communication.commid,
               name,
             })
-          .then((success) => {
-            fulfill();
+          .returning('*')
+          .then(commConns => {
+            this._getSingleResponse(commConns, fulfill);
           }).catch(reject);
         } else {
           Communications.create(type, name, value)
@@ -163,8 +164,9 @@ class CommConns extends BaseModel {
                 comm: communication.commid,
                 name,
               })
-            .then((success) => {
-              fulfill();
+            .returning('*')
+            .then(commConns => {
+              this._getSingleResponse(commConns, fulfill);
             }).catch(reject);
           }).catch(reject);
         }
