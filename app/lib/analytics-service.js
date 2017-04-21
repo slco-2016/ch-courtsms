@@ -39,19 +39,19 @@ function _get_major_version(version) {
 }
 
 module.exports = {
-  track(distinct_id, label, request, locals, data = {}) {
+  track(distinct_id, label, req, locals, data = {}) {
     // the user object is placed on the request by the passport auth library
-    user = typeof request.user === undefined ? undefined : request.user;
+    user = typeof req.user === undefined ? undefined : req.user;
 
     // from package.json (via locals)
     data.clientcomm_version = locals.CLIENTCOMM_APPLICATION.VERSION;
 
     // from headers
     data.clientcomm_instance_name = credentials.clientcommInstanceName;
-    data.source = _extract_source_from_referer(request.headers.referer);
-    data.ip = _extract_value(request, 'ip');
+    data.source = _extract_source_from_referer(req.headers.referer);
+    data.ip = _extract_value(req, 'ip');
     // from user-agent
-    let client = detector.parse(request.headers['user-agent']);
+    let client = detector.parse(req.headers['user-agent']);
     data.client_user_agent = client.userAgent;
     data.client_device_type = client.type;
     data.client_name = client.browser;
@@ -61,9 +61,9 @@ module.exports = {
     data.client_os_name = client.os;
 
     // from query
-    data.utm_source = _extract_value(request.query, 'utm_source');
-    data.utm_medium = _extract_value(request.query, 'utm_medium');
-    data.utm_campaign = _extract_value(request.query, 'utm_campaign');
+    data.utm_source = _extract_value(req.query, 'utm_source');
+    data.utm_medium = _extract_value(req.query, 'utm_medium');
+    data.utm_campaign = _extract_value(req.query, 'utm_campaign');
 
     // about the user
     data.user_logged_in = false;
@@ -81,8 +81,6 @@ module.exports = {
     let hasher = new Hashids(data.clientcomm_instance_name);
     data.distinct_id = hasher.encode(distinct_id);
 
-    console.log(distinct_id);
-    console.log(data.distinct_id);
 
     // send the data to mixpanel
     mixpanel.track(label, data);
