@@ -115,11 +115,14 @@ app.post('/webhook/email/status', EmailsController.status);
 // otherwise this is a user facing implementation
 
 app.get('/login', AccessController.login);
-app.post('/login', passport.authenticate('local-login', {
-  successRedirect: '/',
-  failureRedirect: '/login-fail',
-})
+app.post(
+  '/login',
+  passport.authenticate('local-login', {
+    successRedirect: '/login-success',
+    failureRedirect: '/login-fail',
+  })
 );
+app.get('/login-success', AccessController.loginSuccess);
 app.get('/login-fail', AccessController.loginFail);
 app.get('/login/reset', AccessController.reset);
 app.post('/login/reset', AccessController.resetSubmit);

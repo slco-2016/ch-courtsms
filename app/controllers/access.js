@@ -7,23 +7,27 @@ const analyticsService = require('../lib/analytics-service');
 const hashPw = pass.hashPw;
 const isLoggedIn = pass.isLoggedIn;
 
-module.exports = {
-
-  login(req, res) {
-    analyticsService.track(null, 'login_view', req, res.locals, {});
-
-    if (req.hasOwnProperty('user')) {
-      if (['owner',
-        'supervisor',
-        'support',
-      ].indexOf(req.user.class) > -1) {
-        res.redirect('/org');
-      } else {
-        res.redirect('/clients');
-      }
+function _redirectOrRenderByClass(req, res) {
+  if (req.hasOwnProperty('user')) {
+    if (['owner', 'supervisor', 'support',].indexOf(req.user.class) > -1) {
+      res.redirect('/org');
     } else {
-      res.render('access/login');
+      res.redirect('/clients');
     }
+  } else {
+    res.render('access/login');
+  }
+}
+
+module.exports = {
+  login(req, res) {
+    analyticsService.track(null, 'login_view', req, res.locals);
+    _redirectOrRenderByClass(req, res);
+  },
+
+  loginSuccess(req, res) {
+    analyticsService.track(null, 'login_success', req, res.locals);
+    _redirectOrRenderByClass(req, res);
   },
 
   loginFail(req, res) {
