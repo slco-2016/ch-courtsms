@@ -73,14 +73,16 @@ module.exports = {
       data.user_class = user.class;
       data.user_department_name = locals.department.name;
 
-      // use the user ID for the distinct_id if it wasn't sent
-      distinct_id = distinct_id === null ? user.cmid : distinct_id;
+      // use the user ID for the distinct_id if it's not set
+      distinct_id = !distinct_id ? user.cmid : distinct_id;
+      let hasher = new Hashids(data.clientcomm_instance_name);
+      distinct_id = hasher.encode(distinct_id);
     }
 
-    // save distinct_id in data; hash it with the instance name for uniqueness
-    let hasher = new Hashids(data.clientcomm_instance_name);
-    data.distinct_id = hasher.encode(distinct_id);
+    // use the visitor_id for the distinct_id if it's not set
+    distinct_id = !distinct_id ? req.session.visitor_id : distinct_id;
 
+    data.distinct_id = distinct_id;
 
     // send the data to mixpanel
     mixpanel.track(label, data);
