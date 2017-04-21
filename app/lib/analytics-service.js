@@ -10,7 +10,7 @@ const mixpanel = MixpanelFactory.init(credentials.mixpanel.token, {
 
 function _extract_value(obj, key) {
   // extract a value from an object or return undefined if it doesn't exist
-  return typeof obj[key] === undefined ? undefined : obj[key];
+  return obj.hasOwnProperty(key) ? obj[key] : undefined;
 }
 
 function _extract_source_from_referer(referer) {
