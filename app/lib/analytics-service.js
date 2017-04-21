@@ -1,5 +1,4 @@
 const credentials = require('../../credentials');
-const packageinfo = require('./package-info');
 const MixpanelFactory = require('mixpanel');
 const detector = require('device-detector');
 const Hashids = require('hashids');
@@ -44,8 +43,8 @@ module.exports = {
     // the user object is placed on the request by the passport auth library
     user = typeof request.user === undefined ? undefined : request.user;
 
-    // from package.json
-    data.clientcomm_version = packageinfo.version;
+    // from package.json (via locals)
+    data.clientcomm_version = locals.CLIENTCOMM_APPLICATION.VERSION;
 
     // from headers
     data.clientcomm_instance_name = credentials.clientcommInstanceName;

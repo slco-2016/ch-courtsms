@@ -8,6 +8,7 @@ const PhoneNumbers = require('./models/phoneNumbers');
 const Users = require('./models/users');
 
 const libUser = require('./lib/users');
+const packageInfo = require('./lib/package-info');
 
 function _capitalize (word) {
   return word.split(' ').map(function (name) {
@@ -76,7 +77,7 @@ module.exports = {
 
   setApplicationDetails(req, res, next) {
     res.locals.CLIENTCOMM_APPLICATION = {
-      VERSION: require('../package.json').version,
+      VERSION: packageInfo.version,
     };
 
     next();
