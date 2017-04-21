@@ -3,7 +3,7 @@ const Clients = require('../models/clients');
 const Communications = require('../models/communications');
 const CommConns = require('../models/commConns');
 const Templates = require('../models/templates');
-
+const analyticsService = require('../lib/analytics-service');
 
 module.exports = {
 
@@ -44,10 +44,11 @@ module.exports = {
     if (type == 'cell' || type == 'landline') {
       // make sure that value is a string (might have been submitted as integer)
       if (typeof value !== 'string') value = String(value);
-
+      // remove all non-number values in the string
       value = value.replace(/[^0-9.]/g, '');
 
-      // make sure lenght is 11
+      // prepend with a 1 if the number's too short
+      // TODO: do a more rigorous validation of the phone number
       if (value.length == 10) {
         value = `1${value}`;
       }
@@ -68,7 +69,7 @@ module.exports = {
     if (okayToCreate) {
       // First check if this client already has this commConn
       CommConns.findByClientIdWithCommMetaData(client)
-      .then((commConns) => {
+      .then(commConns => {
         commConns = commConns.filter(commConn => String(value) === String(commConn.value));
         if (commConns.length > 0) {
           const currentCommConn = commConns[0];
@@ -84,18 +85,24 @@ module.exports = {
           }
         } else {
           CommConns.create(client, type, description, value)
-          .then(() => {
+          .then(commConnsNew => {
             // Perform an "override" in that prior version of contact is removed
             // only do this if being directed from the edit view, and it is marked
             if (override) {
               CommConns.findByClientIdWithCommMetaData(client)
-              .then((commConns) => {
-                if (commConns.length > 1) {
+              .then(commConnsExisting => {
+                if (commConnsExisting.length > 1) {
                   Communications.removeOne(override)
                   .then(() => {}).catch();
                 }
               }).catch();
             }
+
+            analyticsService.track(
+              null, 'create_comm_success', req, res.locals, {
+                comm_id: commConnsNew.comm, comm_type: type,
+              }
+            );
 
             req.logActivity.client(client);
             req.flash('success', 'Created new communication method.');
