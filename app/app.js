@@ -67,6 +67,7 @@ app.use('/org/clients/:client', middleware.fetchClient);
 
 // These need to go after the client, dept, user, etc. have been acquired
 app.use(middleware.logging);
+app.use(middleware.setVisitorID);
 app.use(middleware.setApplicationDetails);
 app.use(middleware.setUserAndLevel);
 app.use(middleware.getUserPerformance);
