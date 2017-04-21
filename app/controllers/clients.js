@@ -9,6 +9,7 @@ const Users = require('../models/users');
 
 // assistance libraries
 const libUser = require('../lib/users');
+const analyticsService = require('../lib/analytics-service');
 
 const moment = require('moment');
 const momentTz = require('moment-timezone');
@@ -134,6 +135,7 @@ module.exports = {
   },
 
   new(req, res) {
+    analyticsService.track(null, 'create_client_start', req, res.locals);
     const userClass = req.user.class;
     const level = res.locals.level;
     const org = req.user.org;
@@ -167,6 +169,9 @@ module.exports = {
             otn,  // this one as well
             so  // note these should be renamed
     ).then((client) => {
+      analyticsService.track(null, 'create_client_success', req, res.locals, {
+        ccc_id: client.clid,
+      });
       if (req.user.cmid == client.cm) {
         res.redirect(`/clients/${client.clid}/messages`);
       } else {
