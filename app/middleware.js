@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 const Alerts = require('./models/alerts');
 const Clients = require('./models/clients');
 const Conversations = require('./models/conversations');
@@ -72,7 +74,6 @@ module.exports = {
     };
 
     next();
-
   },
 
   setApplicationDetails(req, res, next) {
@@ -363,6 +364,13 @@ module.exports = {
     } else {
       next();
     }
+  },
+
+  setVisitorID(req, res, next) {
+    if (!req.session.visitor_id) {
+      req.session.visitor_id = crypto.randomBytes(4).toString('hex');
+    }
+    next();
   },
 
 };
