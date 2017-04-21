@@ -16,7 +16,7 @@ const db = require('./db');
 
 // APP DEPENDENCIES
 const bodyParser = require('body-parser');
-const session = require('cookie-session');
+const cookieSession = require('cookie-session');
 const flash = require('connect-flash');
 const colors = require('colors');
 
@@ -43,13 +43,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(flash());
-app.use(session({
-  keys: [SESS_SECRET,],
+app.use(cookieSession({
   name: 'CC_session',
+  keys: [SESS_SECRET,],
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// enable trust proxy for access to the IP
 app.enable('trust proxy');
 
 // Middleware
