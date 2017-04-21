@@ -22,7 +22,7 @@ describe('Settings controller view', () => {
       .send({ email: client.email })
       .send({ pass: '123' })
       .expect(302)
-      .expect('Location', '/')
+      .expect('Location', '/login-success')
       .then(() => {
         // We need to add some clients here
         // so that this user has clients to update

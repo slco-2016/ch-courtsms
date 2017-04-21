@@ -23,7 +23,7 @@ describe('Capture Board view', () => {
       .send({ email: 'owner@test.com' })
       .send({ pass: '123' })
       .expect(302)
-      .expect('Location', '/')
+      .expect('Location', '/login-success')
       .end((err, res) => {
         if (err) {
           done(err);

@@ -29,7 +29,7 @@ const logInAsOwner = (done) => {
     .send({ email: 'owner@test.com' })
     .send({ pass: '123' })
     .expect(302)
-    .expect('Location', '/')
+    .expect('Location', '/login-success')
     .then(() => {
       done();
     });
@@ -40,7 +40,7 @@ const logInAsPrimary = (done) => {
     .send({ email: 'primary@test.com' })
     .send({ pass: '123' })
     .expect(302)
-    .expect('Location', '/')
+    .expect('Location', '/login-success')
     .then(() => {
       done();
     });

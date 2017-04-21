@@ -19,7 +19,7 @@ describe('Voice requirements', () => {
       .send({ email: 'primary@test.com' })
       .send({ pass: '123' })
       .expect(302)
-      .expect('Location', '/')
+      .expect('Location', '/login-success')
       .then(() => {
         // should be able to create a phone number cell type communication
         primary.post('/clients/2/communications/create')
