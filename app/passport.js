@@ -46,7 +46,8 @@ module.exports = function (passport) {
             if (validPw(password, acct.pass)) {
               db('cms').where('cmid', acct.cmid).limit(1)
               .update({ updated: db.fn.now() })
-              .then(success => done(null, acct)).catch(err => done(err));
+              .then(success => done(null, acct))
+              .catch(err => done(err));
 
             // fails because bad password
             } else { return done(null, false); }
@@ -56,4 +57,3 @@ module.exports = function (passport) {
     })
   );
 };
-
