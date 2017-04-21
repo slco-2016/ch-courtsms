@@ -49,7 +49,7 @@ module.exports = {
     // from headers
     data.clientcomm_instance_name = credentials.clientcommInstanceName;
     data.source = _extract_source_from_referer(req.headers.referer);
-    data.ip = _extract_value(req, 'ip');
+    data.ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     // from user-agent
     let client = detector.parse(req.headers['user-agent']);
     data.client_user_agent = client.userAgent;
