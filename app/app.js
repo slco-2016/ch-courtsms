@@ -16,7 +16,6 @@ const db = require('./db');
 
 // APP DEPENDENCIES
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
 const flash = require('connect-flash');
 const colors = require('colors');
@@ -32,7 +31,6 @@ app.set('views', `${__dirname}/views`);
 app.use('/static', express.static('public'));
 app.use('/components', express.static('bower_components'));
 app.use('/modules', express.static('node_modules'));
-app.use(cookieParser());
 
 // PASSPORT SESSIONS, USERS (authentication)
 const bcrypt = require('bcrypt-nodejs');
