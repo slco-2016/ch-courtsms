@@ -18,7 +18,7 @@ describe('Dashboard View', () => {
       .send({ email: 'owner@test.com' })
       .send({ pass: '123' })
       .expect(302)
-      .expect('Location', '/')
+      .expect('Location', '/login-success')
       .end((err, res) => {
         done(err);
       });
