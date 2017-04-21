@@ -203,6 +203,9 @@ module.exports = {
             otn,
             autoNotify
     ).then(() => {
+      analyticsService.track(null, 'edit_client_success', req, res.locals, {
+        ccc_id: client,
+      });
       req.logActivity.client(client);
       req.flash('success', 'Edited client.');
       res.levelSensitiveRedirect('/clients');
