@@ -1,10 +1,11 @@
 const PublicModel = require('../models/public');
+const analyticsService = require('../lib/analytics-service');
 
 module.exports = {
-
   index(req, res, next) {
     if (!req.hasOwnProperty('user')) {
       PublicModel.splashData().then((data) => {
+        analyticsService.track(null, 'home_view', req, res.locals);
         res.render('splash', data);
       }).catch(res.error500);
     } else if (['owner', 'supervisor',].indexOf(req.user.class) > -1) {
