@@ -121,7 +121,7 @@ module.exports = {
           return a;
         }, {});
 
-        analyticsService.track(null, 'client_view_list', req, res.locals, {
+        analyticsService.track(null, 'client_list_view', req, res.locals, {
           cccs_active: showActiveClients,
           cccs_count: clients.length,
         });
@@ -192,7 +192,7 @@ module.exports = {
   },
 
   update(req, res) {
-    const client = req.params.client;
+    const clientId = req.params.client;
     const first = req.body.first;
     const middle = req.body.middle;
     const last = req.body.last;
@@ -201,7 +201,7 @@ module.exports = {
     const otn = req.body.uniqueID2;
     const autoNotify = !!req.body.autoNotify;
     Clients.editOne(
-            client,
+            clientId,
             first,
             middle,
             last,
@@ -211,9 +211,9 @@ module.exports = {
             autoNotify
     ).then(() => {
       analyticsService.track(null, 'client_edit_success', req, res.locals, {
-        ccc_id: client,
+        ccc_id: clientId,
       });
-      req.logActivity.client(client);
+      req.logActivity.client(clientId);
       req.flash('success', 'Edited client.');
       res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
