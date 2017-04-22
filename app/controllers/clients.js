@@ -135,7 +135,7 @@ module.exports = {
   },
 
   new(req, res) {
-    analyticsService.track(null, 'create_client_start', req, res.locals);
+    analyticsService.track(null, 'client_create_start', req, res.locals);
     const userClass = req.user.class;
     const level = res.locals.level;
     const org = req.user.org;
@@ -169,7 +169,7 @@ module.exports = {
             otn,  // this one as well
             so  // note these should be renamed
     ).then((client) => {
-      analyticsService.track(null, 'create_client_success', req, res.locals, {
+      analyticsService.track(null, 'client_create_success', req, res.locals, {
         ccc_id: client.clid,
       });
       if (req.user.cmid == client.cm) {
@@ -203,7 +203,7 @@ module.exports = {
             otn,
             autoNotify
     ).then(() => {
-      analyticsService.track(null, 'edit_client_success', req, res.locals, {
+      analyticsService.track(null, 'client_edit_success', req, res.locals, {
         ccc_id: client,
       });
       req.logActivity.client(client);
