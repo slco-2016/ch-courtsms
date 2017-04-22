@@ -99,7 +99,7 @@ module.exports = {
             }
 
             analyticsService.track(
-              null, 'create_comm_success', req, res.locals, {
+              null, 'comm_create_success', req, res.locals, {
                 comm_id: commConnsNew.comm, comm_type: type,
               }
             );
