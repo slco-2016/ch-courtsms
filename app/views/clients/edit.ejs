@@ -38,7 +38,7 @@
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> Date of Birth <small>(YYYY-MM-DD)</small> <span class="opt">optional</span> </div>
+      <div class="formLabel"> Date of Birth <small>(MM/DD/YYYY)</small> <span class="opt">optional</span> </div>
       <% var defaultbday = moment(client.dob).format("YYYY-MM-DD"); %>
       <div class="formInput">
         <input type="date" name="dob" value="<%= defaultbday %>">

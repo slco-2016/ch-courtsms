@@ -157,32 +157,34 @@ module.exports = {
   },
 
   create(req, res) {
+    // Create a client
+
+    // default date of birth
+    const dob_default = '1900-01-01';
+
     const userId = req.body.targetUser || req.user.cmid; // Will this work consistently?
     const first = req.body.first;
     const middle = req.body.middle ? req.body.middle : '';
     const last = req.body.last;
-    const dob = req.body.dob || '01/01/1900';
+    const dob = req.body.dob || dob_default;
     const so = req.body.uniqueID1 ? req.body.uniqueID1 : null;
     const otn = req.body.uniqueID2 ? req.body.uniqueID2 : null;
 
-    Clients.create(
-            userId,
-            first,
-            middle,
-            last,
-            dob,
-            otn,  // this one as well
-            so  // note these should be renamed
-    ).then((client) => {
-      analyticsService.track(null, 'client_create_success', req, res.locals, {
-        ccc_id: client.clid,
-      });
-      if (req.user.cmid == client.cm) {
-        res.redirect(`/clients/${client.clid}/messages`);
-      } else {
-        res.levelSensitiveRedirect('/clients');
-      }
-    }).catch(res.error500);
+    Clients.create(userId, first, middle, last, dob, otn, so)
+      .then(client => {
+        analyticsService.track(null, 'client_create_success', req, res.locals, {
+          ccc_id: client.clid,
+          ccc_dob: Boolean(dob) && dob != dob_default,
+          ccc_so: Boolean(so),
+          ccc_otn: Boolean(otn),
+        });
+        if (req.user.cmid == client.cm) {
+          res.redirect(`/clients/${client.clid}/messages`);
+        } else {
+          res.levelSensitiveRedirect('/clients');
+        }
+      })
+      .catch(res.error500);
   },
 
   edit(req, res) {
