@@ -93,7 +93,7 @@ module.exports = {
     const user = req.body.targetUser || req.user.cmid;
     const limitByUser = req.query.user || null;
 
-    // Controls against a case where the owner would accidentally have a department
+    // Don't limit by department if the user's support or an owner
     if ((req.user.class == 'owner' || req.user.class == 'support') &&
           !req.query.department) {
       departmentID = null;
@@ -120,6 +120,11 @@ module.exports = {
           /* eslint-enable no-param-reassign */
           return a;
         }, {});
+
+        analyticsService.track(null, 'client_view_list', req, res.locals, {
+          cccs_active: showActiveClients,
+          cccs_count: clients.length,
+        });
 
         res.render('clients/index', {
           hub: {
