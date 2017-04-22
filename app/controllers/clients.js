@@ -394,13 +394,24 @@ module.exports = {
     Conversations.closeAllWithClient(userId, clientId)
     .then(() => Clients.alterCase(clientId, status)).then(() => {
       req.logActivity.client(clientId);
-      req.flash('success', 'Client case status changed.');
 
-      if (status) {
-        res.levelSensitiveRedirect('/clients');
+      let track_label;
+      let redirect_location;
+      if (!status) {
+        req.flash('success', 'Client archived.');
+        track_label = 'client_archive';
+        redirect_location = `/clients/${clientId}/closeoutsurvey`;
       } else {
-        res.levelSensitiveRedirect(`/clients/${clientId}/closeoutsurvey`);
+        req.flash('success', 'Client restored.');
+        track_label = 'client_unarchive';
+        redirect_location = '/clients';
       }
+
+      analyticsService.track(null, track_label, req, res.locals, {
+        ccc_id: clientId,
+      });
+
+      res.levelSensitiveRedirect(redirect_location);
     }).catch(res.error500);
   },
 
