@@ -685,6 +685,7 @@ module.exports = {
       }
       sinceLast = sinceLastOut > sinceLastIn ? sinceLastOut : sinceLastIn;
 
+      // track the profile view
       analyticsService.track(null, 'client_profile_view', req, res.locals, {
         ccc_id: clientId,
         ccc_active: res.locals.client.active,
