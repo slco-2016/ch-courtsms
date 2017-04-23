@@ -235,9 +235,9 @@
           </div>
           <div class="body">
             <svg height="100" width="335">
-              <circle cx="60"  cy="50" r="<%= Math.max(sentiment.negative/100*50, 5) %>" fill="#c15124" />
-              <circle cx="170" cy="50" r="<%= Math.max(sentiment.neutral/100*50, 5) %>" fill="#c19724" />
-              <circle cx="280" cy="50" r="<%= Math.max(sentiment.positive/100*50, 5) %>" fill="#24c175" />
+              <circle cx="60"  cy="50" r="<%= Math.max(messages.sentiment.negative/100*50, 5) %>" fill="#c15124" />
+              <circle cx="170" cy="50" r="<%= Math.max(messages.sentiment.neutral/100*50, 5) %>" fill="#c19724" />
+              <circle cx="280" cy="50" r="<%= Math.max(messages.sentiment.positive/100*50, 5) %>" fill="#24c175" />
             </svg>
 
             <div class="circlesSubtitles">
