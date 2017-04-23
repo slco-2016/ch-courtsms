@@ -25,24 +25,6 @@ const _average = (arr) => {
   return null;
 };
 
-function _addNewMessageEvent(arr, date) {
-  let added = false;
-  date = moment(date).format('YYYY-MM-DD');
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].date == date) {
-      arr[i].count += 1;
-      added = true;
-    }
-  }
-  if (!added) {
-    arr.push({
-      date,
-      count: 1,
-    });
-  }
-  return arr;
-}
-
 function _getDailyVolumes(messages) {
   const inbound = [];
   const outbound = [];
@@ -617,10 +599,7 @@ module.exports = {
           negative: 0,
           neutral: 0,
           positive: 0,
-        },
-        // counting by day
-        countsOutbound = [],
-        countsInbound = [];
+        };
 
       messages.forEach((msg, i) => {
         if (!msg.read) {
@@ -629,10 +608,8 @@ module.exports = {
 
         if (msg.inbound) {
           lastInbound = msg;
-          countsInbound = _addNewMessageEvent(countsInbound, msg.created);
         } else {
           lastOutbound = msg;
-          countsOutbound = _addNewMessageEvent(countsOutbound, msg.created);
         }
 
         if (msg.sentiment) {
