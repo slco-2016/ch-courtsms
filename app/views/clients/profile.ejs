@@ -124,7 +124,7 @@
                   <%= moment(moment().diff(messages.lastInbound.created)).format('MM/DD/YY hh:mm') %>
                 </div>
               <% } else { %>
-                <span class="text-align: left">No messages received yet.</span>
+                <div class="name">No messages received yet.</div>
               <% } %>
             </div>
             <div class="row">
@@ -134,7 +134,7 @@
                   <%= moment(moment().diff(messages.lastOutbound.created)).format('MM/DD/YY hh:mm') %>
                 </div>
               <% } else { %>
-                No messages sent yet.
+                <div class="name">No messages sent yet.</div>
               <% } %>
             </div>
             <div class="row">

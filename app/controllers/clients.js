@@ -281,7 +281,7 @@ module.exports = {
     }).then((resp) => {
       messages = resp.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == 'all') {
-          return msg.convo == convoFilter || convoFilter == null;
+          return msg.convo == convoFilter || convoFilter === null;
         }
         return false;
       });
@@ -298,7 +298,7 @@ module.exports = {
       let unclaimed = conversations.filter(conversation => !conversation.accepted && conversation.open);
 
       // prompt to create a comm method if none exists
-      if (communications.length == 0) {
+      if (communications.length === 0) {
         res.redirect(`/clients/${client.clid}/communications/create`);
 
       // if there are unclaimed messages that need to be viewed and this the client's main cm
@@ -588,8 +588,8 @@ module.exports = {
     }).then((communications) => {
       let unreadCount = 0,
         // getting the last messages
-        lastOutbound = {},
-        lastInbound = {},
+        lastOutbound = null,
+        lastInbound = null,
         // for measuring avg response times
         lastClientMsg = null,
         clientResponseTimes = [],
