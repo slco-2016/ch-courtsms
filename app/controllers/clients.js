@@ -586,7 +586,7 @@ module.exports = {
   },
 
   clientCard(req, res) {
-    const client = req.params.client;
+    const clientId = req.params.client;
     const user = req.getUser();
 
     let messages,
@@ -599,10 +599,10 @@ module.exports = {
       return Users.findByIds(userIds);
     }).then((users) => {
       otherPotentialManagers = users;
-      return Messages.findBetweenUserAndClient(user, client);
+      return Messages.findBetweenUserAndClient(user, clientId);
     }).then((resp) => {
       messages = resp;
-      return CommConns.findByClientIdWithCommMetaData(client);
+      return CommConns.findByClientIdWithCommMetaData(clientId);
     }).then((communications) => {
       let unreadCount = 0,
         // getting the last messages
@@ -610,9 +610,9 @@ module.exports = {
         lastInbound = {},
         // for measuring avg response times
         lastClientMsg = null,
-        clientResponseList = [],
+        clientResponseTimes = [],
         lastUserMsg = null,
-        userResponseList = [],
+        userResponseTimes = [],
         sentiment = {
           negative: 0,
           neutral: 0,
@@ -641,12 +641,13 @@ module.exports = {
           } catch (e) {}
         }
 
+        // calculate average response times
         if (msg.inbound) {
           if (lastUserMsg) {
             if (lastUserMsg.convo == msg.convo) {
               const a = new Date(msg.created);
               const b = new Date(lastUserMsg.created);
-              clientResponseList.push(a - b);
+              clientResponseTimes.push(a - b);
               lastUserMsg = null;
               lastClientMsg = msg;
             } else {
@@ -659,7 +660,7 @@ module.exports = {
           if (lastClientMsg.convo == msg.convo) {
             const a = new Date(msg.created);
             const b = new Date(lastClientMsg.created);
-            userResponseList.push(a - b);
+            userResponseTimes.push(a - b);
             lastClientMsg = null;
             lastUserMsg = msg;
           } else {
@@ -670,8 +671,8 @@ module.exports = {
         }
       });
 
-      const averageClientResponseTime = _average(clientResponseList);
-      const averageUserResponseTime = _average(userResponseList);
+      const averageClientResponseTime = _average(clientResponseTimes);
+      const averageUserResponseTime = _average(userResponseTimes);
 
       const totalSentimentCount = sentiment.negative + sentiment.neutral + sentiment.positive;
       sentiment.negative = Math.round((sentiment.negative / totalSentimentCount) * 100) || 0;
