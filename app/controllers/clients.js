@@ -673,6 +673,25 @@ module.exports = {
       // Get counts
       const dailyCounts = _getDailyVolumes(messages);
 
+      // how many hours ago was the last contact?
+      now = moment().utc();
+      sinceLastIn = 0;
+      sinceLastOut = 0;
+      if (lastInbound) {
+        sinceLastIn = now.diff(moment(lastInbound.created).utc(), 'hours');
+      }
+      if (lastOutbound) {
+        sinceLastOut = now.diff(moment(lastInbound.created).utc(), 'hours');
+      }
+      sinceLast = sinceLastOut > sinceLastIn ? sinceLastOut : sinceLastIn;
+
+      analyticsService.track(null, 'client_profile_view', req, res.locals, {
+        ccc_id: clientId,
+        ccc_active: res.locals.client.active,
+        unread_messages: unreadCount > 0,
+        hours_since_message: sinceLast,
+      });
+
       res.render('clients/profile', {
         hub: {
           tab: 'profile',
