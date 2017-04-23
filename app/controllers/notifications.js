@@ -79,7 +79,7 @@ module.exports = {
   create(req, res) {
     const user = req.getUser();
     const client = req.body.clientID;
-    const comm = req.body.commID == '' ? null : req.body.commID;
+    const comm = req.body.commID === '' ? null : req.body.commID;
     const subject = !req.body.subject ? '' : req.body.subject;
     const message = req.body.message;
     const send = moment(req.body.sendDate)
