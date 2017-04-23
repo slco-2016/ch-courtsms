@@ -551,6 +551,9 @@ module.exports = {
 
     Clients.findById(clientId)
     .then((client) => {
+      analyticsService.track(null, 'client_survey_view', req, res.locals, {
+        ccc_id: clientId,
+      });
       res.render('clients/closeoutSurvey', {
         client,
       });
