@@ -681,7 +681,7 @@ module.exports = {
         sinceLastIn = now.diff(moment(lastInbound.created).utc(), 'hours');
       }
       if (lastOutbound) {
-        sinceLastOut = now.diff(moment(lastInbound.created).utc(), 'hours');
+        sinceLastOut = now.diff(moment(lastOutbound.created).utc(), 'hours');
       }
       sinceLast = sinceLastOut > sinceLastIn ? sinceLastOut : sinceLastIn;
 
