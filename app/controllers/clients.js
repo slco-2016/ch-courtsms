@@ -605,22 +605,19 @@ module.exports = {
       return CommConns.findByClientIdWithCommMetaData(client);
     }).then((communications) => {
       let unreadCount = 0,
-
-          // getting the last messages
+        // getting the last messages
         lastOutbound = {},
         lastInbound = {},
-
-          // for measuring avg response times
+        // for measuring avg response times
         lastClientMsg = null,
-        clientResponseList = [];
-      lastUserMsg = null,
+        clientResponseList = [],
+        lastUserMsg = null,
         userResponseList = [],
         sentiment = {
           negative: 0,
           neutral: 0,
           positive: 0,
         },
-
         // counting by day
         countsOutbound = [],
         countsInbound = [];
