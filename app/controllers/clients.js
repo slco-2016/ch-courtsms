@@ -564,7 +564,7 @@ module.exports = {
     const clientId = req.params.client;
     const closeOutStatus = req.body.closeOutStatus;
     const mostCommonMethod = req.body.mostCommonMethod;
-    let likelihoodSuccessWithoutCC = req.body.likelihoodSuccessWithoutCC;
+    var likelihoodSuccessWithoutCC = req.body.likelihoodSuccessWithoutCC;
     const helpfulnessCC = req.body.helpfulnessCC;
     const mostOftenDiscussed = req.body.mostOftenDiscussed;
 
@@ -574,6 +574,12 @@ module.exports = {
                             mostCommonMethod, likelihoodSuccessWithoutCC,
                             helpfulnessCC, mostOftenDiscussed)
     .then(() => {
+      analyticsService.track(null, 'client_survey_complete', req, res.locals, {
+        ccc_id: clientId,
+        closeout_status: closeOutStatus,
+        success_likelihood: likelihoodSuccessWithoutCC,
+        clientcomm_helpfulness: helpfulnessCC,
+      });      
       req.flash('success', 'Thank you for submitting the survey.');
       res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
