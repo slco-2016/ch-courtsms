@@ -265,9 +265,8 @@ module.exports = {
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
 
-    let client,
-      conversations,
-      messages;
+    let client, conversations, messages, hasUnreadMessages;
+
     Clients.findById(clientId)
     .then((resp) => {
       client = resp;
@@ -287,13 +286,14 @@ module.exports = {
       });
 
       // determine if any messages need to be marked as read
-      let messageIds = messages.filter(msg => msg.read === false).map(msg => msg.msgid);
-
+      let unreadIds = messages.filter(msg => msg.read === false).map(msg => msg.msgid);
       // control to keep other people from "marking as read" someones messages
-      if (req.user.cmid !== client.cm) {
-        messageIds = [];
+      hasUnreadMessages = (unreadIds.length > 0 && req.user.cmid == client.cm);
+      if (!hasUnreadMessages) {
+        unreadIds = [];
       }
-      return Messages.markAsRead(messageIds);
+      return Messages.markAsRead(unreadIds);
+
     }).then(() => CommConns.findByClientIdWithCommMetaData(clientId)).then((communications) => {
       let unclaimed = conversations.filter(conversation => !conversation.accepted && conversation.open);
 
@@ -306,6 +306,39 @@ module.exports = {
         unclaimed = unclaimed[0];
         res.redirect(`/clients/${client.clid}/conversations/${unclaimed.convid}/claim`);
       } else {
+        // how many hours ago was the last contact?
+        let sinceLast = null;
+        if (messages.length) {
+          now = moment().utc();
+          sinceLast = now.diff(
+            moment(messages[messages.length - 1].created).utc(),
+            'hours'
+          );
+        }
+        // how many messages sent and received?
+        let allMessagesCount = messages.length;
+        let messagesSent = messages.filter(msg => msg.inbound === false);
+        let sentMessagesCount = messagesSent.length;
+        // how many cell and email messages sent?
+        let cellMessagesSentCount = messagesSent.filter(
+          msg => msg.comm_type == 'cell'
+        ).length;
+        let emailMessagesSentCount = messagesSent.filter(
+          msg => msg.comm_type == 'email'
+        ).length;
+
+        analyticsService.track(null, 'client_messages_view', req, res.locals, {
+          ccc_id: clientId,
+          ccc_active: client.active,
+          unread_messages: hasUnreadMessages,
+          hours_since_message: sinceLast,
+          messages_all_count: allMessagesCount,
+          messages_received_count: allMessagesCount - sentMessagesCount,
+          messages_sent_count: sentMessagesCount,
+          texts_sent_count: cellMessagesSentCount,
+          emails_sent_count: emailMessagesSentCount
+        });
+
         res.render('clients/messages', {
           hub: {
             tab: 'messages',
