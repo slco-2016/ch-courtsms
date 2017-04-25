@@ -1,6 +1,6 @@
 const credentials = require('../../credentials');
 const MixpanelFactory = require('mixpanel');
-const detector = require('device-detector');
+const detector = require('./cc-device-detector');
 const Hashids = require('hashids');
 
 // initialize mixpanel client configured to communicate over https
@@ -46,7 +46,7 @@ module.exports = {
     }
 
     // the user object is placed on the request by the passport auth library
-    let user = typeof req.user === undefined ? undefined : req.user;
+    const user = typeof req.user === undefined ? undefined : req.user;
 
     // from package.json (via locals)
     data.clientcomm_version = _extract_value(
