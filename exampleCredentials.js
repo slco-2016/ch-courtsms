@@ -54,6 +54,7 @@ const baseProductionReadyCredentials = {
   // New Relic monitoring information
   newrelic: {
     key: '**************************',
+    appName: 'unique_name',
   },
 
   mailgun: {
