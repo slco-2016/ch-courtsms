@@ -1,8 +1,8 @@
-const key = require('./credentials').newrelic.key;
+const credentials = require('./credentials');
 
 exports.config = {
-  app_name: ['clientcomm_userfacing'],
-  license_key: key,
+  app_name: [`clientcomm_${credentials.clientcommInstanceName}`],
+  license_key: credentials.newrelic.key,
   logging: {
     level: 'info',
   },
