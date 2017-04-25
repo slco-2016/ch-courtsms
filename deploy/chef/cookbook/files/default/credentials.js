@@ -26,6 +26,7 @@ const baseProductionReadyCredentials = {
   },
   newrelic: {
     key: process.env.NEWRELIC_KEY,
+    appName: process.env.NEWRELIC_APP_NAME,
   },
   mailgun: {
     apiKey: process.env.MAILGUN_API_KEY,
