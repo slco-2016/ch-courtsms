@@ -42,7 +42,7 @@ module.exports = {
   track(distinct_id, label, req, locals, data = {}) {
     // require label, req, locals
     if (!label || !req || !locals) {
-      return;
+      return data;
     }
 
     // the user object is placed on the request by the passport auth library
@@ -101,6 +101,11 @@ module.exports = {
       distinct_id = _extract_value(req.session, 'visitor_id');
     }
     data.distinct_id = distinct_id;
+
+    // don't track tests
+    if (process.env.CCENV === 'testing') {
+      return data;
+    }
 
     // send the data to mixpanel
     mixpanel.track(label, data);
