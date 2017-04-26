@@ -1,7 +1,6 @@
 const credentials = require('../../credentials');
 const ACCOUNT_SID = credentials.accountSid;
 const AUTH_TOKEN = credentials.authToken;
-const TWILIO_NUM = credentials.twilioNum;
 
 const db = require('../db');
 

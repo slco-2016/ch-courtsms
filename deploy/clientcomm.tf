@@ -453,7 +453,6 @@ BASE_URL=${var.deploy_base_url}
 CLIENTCOMM_INSTANCE_NAME=${var.clientcomm_instance_name}
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
-TWILIO_NUM=${twilio_phonenumber.clientcomm.phone_number}
 TWILIO_OUTBOUND_CALLBACK_URL=${var.deploy_base_url}
 # TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
