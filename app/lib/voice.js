@@ -18,6 +18,7 @@ const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages')
 const Recordings = resourceRequire('models', 'Recordings');
 const Departments = resourceRequire('models', 'Departments');
 const PhoneNumbers = resourceRequire('models', 'PhoneNumbers');
+const Users = resourceRequire('models', 'Users');
 
 module.exports = {
 
@@ -146,7 +147,7 @@ module.exports = {
     });
   },
 
-  processPendingOutboundVoiceMessages(ovm, domain) {
+  processPendingOutboundVoiceMessages(ovm, user_id, domain) {
     domain = domain || credentials.twilio.outboundCallbackUrl;
 
     let sentFromValue;
@@ -157,7 +158,10 @@ module.exports = {
       }
 
       // get the right 'from' phone number
-      Departments.findOneByAttribute('department_id', user.department)
+      Users.findOneByAttribute('cmid', user_id)
+        .then(user => {
+          return Departments.findOneByAttribute('department_id', user.department);
+        })
         .then(department => {
           return PhoneNumbers.findById(department.phone_number);
         })
