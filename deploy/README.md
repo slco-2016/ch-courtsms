@@ -142,6 +142,9 @@ in every terminal window you have open.
 * `TF_VAR_session_secret` (generate with `openssl rand -base64 80 | tr -d '\n'`)
 * `TF_VAR_twilio_account_sid`
 * `TF_VAR_twilio_auth_token`
+* `TF_VAR_twilio_number_count` (the number of phone numbers to provision)
+* `TF_VAR_twilio_latitude` (a latitude within the area where the number should be provisioned)
+* `TF_VAR_twilio_longitude` (a longitude within the area where the number should be provisioned)
 * `TF_VAR_database_password` (generate with `openssl rand -base64 24 | tr -d '\n/+='`)
 * `TF_VAR_newrelic_key`
 * `TF_VAR_newrelic_app_name`
