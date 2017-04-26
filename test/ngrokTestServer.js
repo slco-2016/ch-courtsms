@@ -2,7 +2,6 @@ const ngrok = require('ngrok');
 const credentials = require('../credentials');
 const ACCOUNT_SID = credentials.accountSid;
 const AUTH_TOKEN = credentials.authToken;
-const TWILIO_NUM = credentials.twilioNum;
 const twilio = require('twilio');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 

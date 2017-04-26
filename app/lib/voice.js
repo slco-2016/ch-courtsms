@@ -3,7 +3,6 @@ const Promise = require('bluebird');
 const credentials = require('../../credentials');
 const ACCOUNT_SID = credentials.accountSid;
 const AUTH_TOKEN = credentials.authToken;
-const TWILIO_NUM = credentials.twilioNum;
 
 // Twilio tools
 const twilio = require('twilio');
@@ -17,49 +16,58 @@ const Conversations = resourceRequire('models', 'Conversations');
 const Messages = resourceRequire('models', 'Messages');
 const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages');
 const Recordings = resourceRequire('models', 'Recordings');
+const Departments = resourceRequire('models', 'Departments');
+const PhoneNumbers = resourceRequire('models', 'PhoneNumbers');
 
 module.exports = {
 
-  // Makes the call from Twilio to get user (case manager)
-  // to record a voice message for a client to be sent
-  // at a later date (as a notification)
+  // Makes the call from Twilio to get the case manager to record a voice
+  // message for a client to be sent at a later date (as a notification)
   recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
-    // Concat parameters so that callback goes to recording
-    // endpoint with all data needed to know where to save
-    // that recording at
+    // Concat parameters so that callback goes to recording endpoint with all
+    // data needed to know where to save that recording at
     let params = `?userId=${user.cmid}&commId=`;
     params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
     params += `&clientId=${clientId}`;
     params += '&type=ovm';
 
     // TODO: The callback URL is set in credentials
-    // Problem: This requires the credentials.js file to be
-    // custom set for every deployment with regards to the Twilio
-    // address. Is there a way to programmatically grab the domain?
+    // Problem: This requires the credentials.js file to be custom set for
+    // every deployment with regards to the Twilio address. Is there a way
+    // to programmatically grab the domain?
     if (!domain) {
       domain = credentials.twilio.outboundCallbackUrl;
     }
 
-    const url = `${domain}/webhook/voice/record/${params}`;
-    const opts = {
-      url,
-      to: phoneNumber,
-      from: credentials.twilioNum,
-    };
-
-    // Execute the call with Twilio Node lib
     return new Promise((fulfill, reject) => {
-      twClient.calls
-      .create(opts, (err, call) => {
-        if (err) {
-          reject(err);
-        } else {
-          // Response is (so far) not used, we leave it to the user to
-          // click "Go to notifications" to proceed
-          fulfill(call);
-        }
-      });
+      // find the right 'from' phone number, via the department
+      Departments.findOneByAttribute('department_id', user.department)
+        .then(department => {
+          return PhoneNumbers.findById(department.phone_number);
+        })
+        .then(departmentPhoneNumber => {
+          const sentFromValue = departmentPhoneNumber.value;
+          const url = `${domain}/webhook/voice/record/${params}`;
+          const opts = {
+            url,
+            to: phoneNumber,
+            from: sentFromValue,
+          };
+
+          // Execute the call with Twilio Node lib
+          twClient.calls.create(opts, (err, call) => {
+            if (err) {
+              reject(err);
+            } else {
+              // Response is (so far) not used, we leave it to the user to
+              // click "Go to notifications" to proceed
+              fulfill(call);
+            }
+          });
+        })
+        .catch(reject);
     });
+
   },
 
   addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber) {
@@ -141,37 +149,51 @@ module.exports = {
   processPendingOutboundVoiceMessages(ovm, domain) {
     domain = domain || credentials.twilio.outboundCallbackUrl;
 
+    let sentFromValue;
     return new Promise((fulfill, reject) => {
-      ovmId = ovm.id;
+      // don't create the call if we're testing
+      if (credentials.CCENV === 'testing') {
+        return fulfill();
+      }
 
-      return Communications.findById(ovm.commid)
-      .then((communication) => {
-        // we should only create the call is not in testing mode
-        if (credentials.CCENV !== 'testing') {
-          twClient.calls.create({
-            url: `${domain}/webhook/voice/play-message/?ovmId=${ovmId}`,
-            to: communication.value,
-            from: credentials.twilioNum,
-            IfMachine: 'Continue',
-            record: true,
-            statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
-            StatusCallback: `${domain}/webhook/voice/status`,
-          }, (err, call) => {
-            if (err) {
-              reject(err);
-            } else {
-              // Update the OVM table row with the sid of the call that was just placed
-              // out to the client (so this is the SID of the "voicemail delivery call")
-              ovm.update({ call_sid: call.sid })
-              .then((ovm) => {
-                fulfill(ovm);
-              }).catch(reject);
+      // get the right 'from' phone number
+      Departments.findOneByAttribute('department_id', user.department)
+        .then(department => {
+          return PhoneNumbers.findById(department.phone_number);
+        })
+        .then(departmentPhoneNumber => {
+          sentFromValue = departmentPhoneNumber.value;
+          // get the right 'to' phone number
+          return Communications.findById(ovm.commid);
+        })
+        .then(comm => {
+          // create the call
+          twClient.calls.create(
+            {
+              url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
+              to: comm.value,
+              from: sentFromValue,
+              IfMachine: 'Continue',
+              record: true,
+              statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
+              StatusCallback: `${domain}/webhook/voice/status`,
+            },
+            (err, call) => {
+              if (err) {
+                reject(err);
+              } else {
+                // Update the OVM table row with the sid of the call that
+                // was just placed out to the client (this is the SID of
+                // the "voicemail delivery call")
+                ovm
+                  .update({ call_sid: call.sid })
+                  .then(ovm => {
+                    fulfill(ovm);
+                  }).catch(reject);
+              }
             }
-          });
-        } else {
-          fulfill();
-        }
-      }).catch(reject);
+          );
+        }).catch(reject);
     });
   },
 

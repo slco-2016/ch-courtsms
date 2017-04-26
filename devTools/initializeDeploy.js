@@ -7,11 +7,10 @@ const hashPw = require('../app/lib/pass').hashPw;
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
-let ORG_NAME, ORG_EMAIL, ORG_TZ, DEPT_NAME, CFA_FIRST_NAME,
-  CFA_LAST_NAME;
+let ORG_NAME, ORG_EMAIL, ORG_TZ, DEPT_NAME, CFA_FIRST_NAME, CFA_LAST_NAME;
 
 if (process.argv[2] === '--multnomah') {
   ORG_NAME = 'Multnomah County';
@@ -28,7 +27,9 @@ if (process.argv[2] === '--multnomah') {
   CFA_FIRST_NAME = 'Code for';
   CFA_LAST_NAME = 'America';
 } else {
-  throw new Error('No deploy information set! Call this script with an argument.');
+  throw new Error(
+    'No deploy information set! Call this script with an argument.'
+  );
 }
 
 // create an organization
@@ -61,34 +62,40 @@ const owner = {
   active: true,
   superuser: true,
   class: 'owner',
+  email: '',
+  pass: '',
 };
 
 // phone number
 const phoneNumber = {
-  value: credentials.twilioNum,
+  value: '',
   organization: 1,
 };
 
-rl.question(`Login email for superuser? `, (user) => {
-  rl.question(`Login password for ${user}? `, (pw) => {
-    owner.email = user;
-    owner.pass = hashPw(pw);
+rl.question(`Twilio phone number for ${org.name}? `, pvalue => {
+  rl.question(`Login email for superuser? `, user => {
+    rl.question(`Login password for ${user}? `, pw => {
+      owner.email = user;
+      owner.pass = hashPw(pw);
+      phoneNumber.value = pvalue;
 
-    // these need to be inserted in this order in order to satisfy foreign key
-    // constraints
-    db('orgs').insert(org)
-      .then(() => db('cms').insert(owner))
-      .then(() => db('phone_numbers').insert(phoneNumber))
-      .then(() => db('departments').insert(department))
-      .then(() => {
-        console.log('Created Org, Department, and User!');
-        rl.close();
-        process.exit(0);
-      })
-      .catch(err => {
-        console.error(err);
-        rl.close();
-        process.exit(1);
-      });
+      // these need to be inserted in this order in order to satisfy foreign key
+      // constraints
+      db('orgs')
+        .insert(org)
+        .then(() => db('cms').insert(owner))
+        .then(() => db('phone_numbers').insert(phoneNumber))
+        .then(() => db('departments').insert(department))
+        .then(() => {
+          console.log('Created Org, Department, and User!');
+          rl.close();
+          process.exit(0);
+        })
+        .catch(err => {
+          console.error(err);
+          rl.close();
+          process.exit(1);
+        });
+    });
   });
 });

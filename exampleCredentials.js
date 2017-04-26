@@ -15,7 +15,6 @@ const baseProductionReadyCredentials = {
   // Twilio-related
   accountSid: '**************************',
   authToken: '**************************',
-  twilioNum: '+12344564563',
 
   // URL base of the current deploy
   //   e.g. 'https://multnomah.clientcomm.org'
@@ -91,8 +90,6 @@ if (CCENV == 'production') {
 
 // Update the phone number for all non-production environments
 if (CCENV !== 'production') {
-  baseProductionReadyCredentials.twilioNum = '+18987327373';
-
   // Update the outbound URL to whatever you are using in tests/development
   // (e.g. could be a Ngrok set up, another EC2 instance, etc.)
   baseProductionReadyCredentials.twilio.outboundCallbackUrl =
