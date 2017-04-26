@@ -100,7 +100,7 @@ class Notifications extends BaseModel {
   static sendOVMNotification(notification) {
     return new Promise((fulfill, reject) => {
       OutboundVoiceMessages.findById(notification.ovm_id)
-      .then(ovm => voice.processPendingOutboundVoiceMessages(ovm)).then(() => {
+      .then(ovm => voice.processPendingOutboundVoiceMessages(ovm, notification.cm)).then(() => {
         fulfill(notification);
       }).catch(reject);
     });
