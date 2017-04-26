@@ -63,10 +63,8 @@ module.exports = {
       attachments = JSON.parse(req.body.attachments);
     }
 
-    let clients,
-      communication,
-      users,
-      email;
+    let clients, communication, users, email;
+
     Emails.create({
       raw: JSON.stringify(req.body),
       from: fromAddress.address,

@@ -1,5 +1,3 @@
-
-
 // Libraries
 const db = require('../../app/db');
 const Promise = require('bluebird');
@@ -24,12 +22,12 @@ class PhoneNumbers extends BaseModel {
     return new Promise((fulfill, reject) => {
       db('phone_numbers')
         .where('organization', orgID)
-      .then((numbers) => {
-        fulfill(numbers);
-      }).catch(reject);
+        .then(numbers => {
+          fulfill(numbers);
+        })
+        .catch(reject);
     });
   }
-
 }
 
 PhoneNumbers.primaryId = 'phone_number_id';
