@@ -55,6 +55,21 @@ variable "twilio_auth_token" {
   description = "Twilio auth token for the account/subaccount"
 }
 
+// The count of twilio numbers to provision
+variable "twilio_number_count" {
+  description = "Count of Twilio phone numbers to provision"
+}
+
+// A latitude within the area where the number should be provisioned
+variable "twilio_latitude" {
+  description = "Latitude for Twilio phone numbers"
+}
+
+// A longitude within the area where the number should be provisioned
+variable "twilio_longitude" {
+  description = "Longitude for Twilio phone numbers"
+}
+
 variable "session_secret" {
   description = "Cookie encryption key for end users"
 }
@@ -127,15 +142,16 @@ resource "twilio_phonenumber" "clientcomm" {
 
   location {
     near_lat_long {
-      latitude = 45.5231
-      longitude = -122.6765
+      latitude = "${var.twilio_latitude}"
+      longitude = "${var.twilio_longitude}"
     }
   }
 
-  // TODO: support fallback URLs as well, possibly with a secondary deploy URL
-  // variable
+  // TODO: support fallback URLs as well, possibly with a
+  // secondary deploy URL variable
   voice_url = "${var.deploy_base_url}/webhook/voice"
   sms_url = "${var.deploy_base_url}/webhook/sms"
+  count = "${var.twilio_number_count}"
 }
 
 resource "mailgun_domain" "clientcomm" {
@@ -453,6 +469,9 @@ BASE_URL=${var.deploy_base_url}
 CLIENTCOMM_INSTANCE_NAME=${var.clientcomm_instance_name}
 TWILIO_ACCOUNT_SID=${var.twilio_account_sid}
 TWILIO_AUTH_TOKEN=${var.twilio_auth_token}
+TWILIO_NUMBER_COUNT=${var.twilio_number_count}
+TWILIO_LATITUDE=${var.twilio_latitude}
+TWILIO_LONGITUDE=${var.twilio_longitude}
 TWILIO_OUTBOUND_CALLBACK_URL=${var.deploy_base_url}
 # TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
