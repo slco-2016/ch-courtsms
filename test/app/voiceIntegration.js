@@ -48,19 +48,5 @@ describe.skip('Voice lib checks', () => {
       }).catch(done);
   });
 
-  it('Should send messages that need to be sent', function (done) {
-    this.timeout(100000);
-    voice.sendPendingOutboundVoiceMessages(ngrokUrl)
-    .then((obvs) => {
-      const i = setInterval(() => {
-        OutboundVoiceMessages.findOneByAttribute('delivered', true)
-        .then((ovm) => {
-          if (ovm) {
-            done();
-            clearInterval(i);
-          }
-        });
-      }, 1000);
-    });
-  });
+  // TODO: it should send messages that need to be sent
 });
