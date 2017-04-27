@@ -198,17 +198,4 @@ module.exports = {
     });
   },
 
-  // TODO: Why do we have a special method just for tests
-  //       should be using "normal" methods
-  sendPendingOutboundVoiceMessages(domain) {
-    domain = domain || credentials.twilio.outboundCallbackUrl;
-
-    let ovmId;
-    return new Promise((fulfill, reject) => {
-      OutboundVoiceMessages.getNeedToBeSent()
-      .map(ovm => this.processPendingOutboundVoiceMessages(ovm, domain)).then((ovms) => {
-        fulfill(ovms);
-      }).catch(reject);
-    });
-  },
 };
