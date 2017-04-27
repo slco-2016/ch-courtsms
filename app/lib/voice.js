@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const querystring = require('querystring');
 
 const credentials = require('../../credentials');
 const ACCOUNT_SID = credentials.accountSid;
@@ -27,10 +28,13 @@ module.exports = {
   recordVoiceMessage(user, commId, clientId, deliveryDate, phoneNumber, domain) {
     // Concat parameters so that callback goes to recording endpoint with all
     // data needed to know where to save that recording at
-    let params = `?userId=${user.cmid}&commId=`;
-    params += `${commId}&deliveryDate=${deliveryDate.getTime()}`;
-    params += `&clientId=${clientId}`;
-    params += '&type=ovm';
+    const params = querystring.stringify({
+      userId: user.cmid,
+      commId: commId,
+      deliveryDate: deliveryDate.getTime(),
+      clientId: clientId,
+      type: 'ovm',
+    });
 
     // TODO: The callback URL is set in credentials
     // Problem: This requires the credentials.js file to be custom set for
@@ -48,7 +52,7 @@ module.exports = {
         })
         .then(departmentPhoneNumber => {
           const sentFromValue = departmentPhoneNumber.value;
-          const url = `${domain}/webhook/voice/record/${params}`;
+          const url = `${domain}/webhook/voice/record/?${params}`;
           const opts = {
             url,
             to: phoneNumber,
