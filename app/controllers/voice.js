@@ -1,6 +1,7 @@
 const twilio = require('twilio');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
+const querystring = require('querystring');
 
 const resourceRequire = require('../lib/resourceRequire');
 
@@ -42,9 +43,14 @@ module.exports = {
 
       if (communication) {
         twilioResponse.say(
-          { voice: 'woman' }, 'Hello. Please leave a message for your case manager after the beep.');
-        const params = `?type=message&commId=${communication.commid}`;
-        const url = `/webhook/voice/save-recording/${params}`;
+          {voice: 'woman'},
+          'Hello. Please leave a message for your case manager after the beep.'
+        );
+        const params = querystring.stringify({
+          type: 'message',
+          commId: communication.commid
+        });
+        const url = `/webhook/voice/save-recording/?${params}`;
         twilioResponse.record({
           action: url,
           transcribe: true,
@@ -189,12 +195,14 @@ module.exports = {
     const commId = req.query.commId;
     const clientId = req.query.clientId;
     const deliveryDateEpoch = req.query.deliveryDate;
-
-    const params = `?type=ovm&userId=${userId}&commId=${commId}` +
-      `&deliveryDate=${deliveryDateEpoch}` +
-      `&clientId=${clientId}`;
-
-    const url = `/webhook/voice/save-recording/${params}`;
+    const params = querystring.stringify({
+      type: 'ovm',
+      userId: userId,
+      commId: commId,
+      deliveryDate: deliveryDateEpoch,
+      clientId: clientId
+    });
+    const url = `/webhook/voice/save-recording/?${params}`;
 
     const resp = twilio.TwimlResponse();
     resp.say({ voice: 'woman' }, 'Hello! Please leave your message after the beep.');
