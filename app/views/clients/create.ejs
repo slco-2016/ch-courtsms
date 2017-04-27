@@ -72,8 +72,9 @@
 <script src="/components/typeahead.js/dist/typeahead.jquery.min.js"></script>
 <script type="text/javascript" class="JScreateClient">
   $(document).ready(function() {
-      $('form#createForm').trigger('reset');
+    $('form#createForm').trigger('reset');
   });
+
   <% if (users) { %>
     var users = <%- JSON.stringify(users); %>;
   <% } else { %>
