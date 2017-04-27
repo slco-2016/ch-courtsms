@@ -66,7 +66,7 @@ class Notifications extends BaseModel {
       // this is for each in the returned prior notifications basically
       // at this point we need to decide if that message is a voice or nonvoice message
       ).map((notification) => {
-        // Voice: if voice use the sendOVMNotification method
+        // Voice: if voice, send an outbound voice message notification
         if (notification.ovm_id) {
           return this.sendOVMNotification(notification);
 
@@ -99,10 +99,19 @@ class Notifications extends BaseModel {
 
   static sendOVMNotification(notification) {
     return new Promise((fulfill, reject) => {
-      OutboundVoiceMessages.findById(notification.ovm_id)
-      .then(ovm => voice.processPendingOutboundVoiceMessages(ovm, notification.cm)).then(() => {
-        fulfill(notification);
-      }).catch(reject);
+      let fromUser;
+      Users.findById(notification.cm)
+        .then(user => {
+          fromUser = user;
+          return OutboundVoiceMessages.findById(notification.ovm_id);
+        })
+        .then(ovm => {
+          return voice.processPendingOutboundVoiceMessages(ovm, fromUser);
+        })
+        .then(() => {
+          fulfill(notification);
+        })
+        .catch(reject);
     });
   }
 

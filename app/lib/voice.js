@@ -147,7 +147,7 @@ module.exports = {
     });
   },
 
-  processPendingOutboundVoiceMessages(ovm, user_id, domain) {
+  processPendingOutboundVoiceMessages(ovm, fromUser, domain) {
     domain = domain || credentials.twilio.outboundCallbackUrl;
 
     let sentFromValue;
@@ -158,10 +158,7 @@ module.exports = {
       }
 
       // get the right 'from' phone number
-      Users.findOneByAttribute('cmid', user_id)
-        .then(user => {
-          return Departments.findOneByAttribute('department_id', user.department);
-        })
+      Departments.findOneByAttribute('department_id', fromUser.department)
         .then(department => {
           return PhoneNumbers.findById(department.phone_number);
         })
