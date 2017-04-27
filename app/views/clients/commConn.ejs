@@ -1,9 +1,18 @@
 <% include ../partials/cardFrameTop %>
 
 <div class="cardHead">
-  <a href="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications`%>">
+  <a id="goBack" href="<%=`${level === "org" ? "/org/clients" : "/clients"}/`%>">
     <% include ../partials/cardExit %>
   </a>
+  <script type="text/javascript" class="JScreateClient">
+    $(document).ready(function() {
+      $('a#goBack').click(function(e) {
+        e.stopPropagation();
+        history.back();
+        return false;
+      });
+    });
+  </script>
   <div class="cardTitle">
     <% if (commConn.commconnid) { %>
       Edit
