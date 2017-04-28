@@ -29,6 +29,7 @@ module.exports = {
       if (limitByUser) {
         clients = clients.filter(client => Number(client.cm) === Number(limitByUser));
       }
+    })
     Messages.findUnreadsByUser(userId)
     .then((newMessages) => {
       res.json({ 'newMessages':newMessages, 'clients': clients });
