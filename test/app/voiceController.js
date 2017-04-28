@@ -1,6 +1,7 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
+const querystring = require('querystring');
 const resourceRequire = require('../../app/lib/resourceRequire');
 
 const APP = require('../../app/app');
@@ -10,7 +11,6 @@ const OutboundVoiceMessages = resourceRequire('models', 'OutboundVoiceMessages')
 const Recordings = resourceRequire('models', 'Recordings');
 const Messages = resourceRequire('models', 'Messages');
 const mock = resourceRequire('lib', 'mock');
-
 
 const twilioAgent = supertest.agent(APP);
 
@@ -23,16 +23,18 @@ const twilioStatusUpdate = require('../data/twilioStatusUpdate');
 const twilioRecordingRequest_2 = require('../data/twilioVoiceRecording_2');
 const twilioStatusUpdate_2 = require('../data/twilioStatusUpdate_2');
 
-
 const RecordingSid = 'REde2dd4be0e7a521f8296a7390a9ab21b';
 const emptyTwilioResponse = '<?xml version="1.0" encoding="UTF-8"?><Response></Response>';
 
 describe('Voice requests with voice controller', () => {
   it.skip('should accept a new voice recording', function (done) {
     this.timeout(6000);
-    let params = '?userId=2&clientId=1';
-    params += `&deliveryDate=${new Date().getTime()}`;
-    twilioAgent.post(`/webhook/voice/save-recording/${params}`)
+    const params = querystring.stringify({
+      userId: '2',
+      clientId: '1',
+      deliveryDate: new Date().getTime()
+    });
+    twilioAgent.post(`/webhook/voice/save-recording/?${params}`)
       .send(twilioRecordingRequest)
       .expect(200)
       .end((err, res) => {
@@ -51,12 +53,13 @@ describe('Voice requests with voice controller', () => {
     // When mock is enabled, libraries send fake responses instead of real ones
     // Example: mailgun library send back fake xml response
     mock.enable();
-
-    let params = '?userId=2&clientId=1';
-    params += `&deliveryDate=${new Date().getTime()}`;
-    params += '&type=ovm';
-
-    twilioAgent.post(`/webhook/voice/save-recording/${params}`)
+    const params = querystring.stringify({
+      userId: '2',
+      clientId: '1',
+      deliveryDate: new Date().getTime(),
+      type: 'ovm'
+    });
+    twilioAgent.post(`/webhook/voice/save-recording/?${params}`)
       .send(twilioRecordingRequest)
       .expect(200)
       .end((err, res) => {
@@ -201,8 +204,13 @@ describe('Voice requests with voice controller', () => {
   });
 
   it('should provide twiml for voice recording', (done) => {
-    const params = '?userId=HHH&commId=JJJ&deliveryDate=XXX&clientId=888';
-    twilioAgent.post(`/webhook/voice/record${params}`)
+    const params = querystring.stringify({
+      userId: 'HHH',
+      commId: 'JJJ',
+      deliveryDate: 'XXX',
+      clientId: '888'
+    });
+    twilioAgent.post(`/webhook/voice/record?${params}`)
       .expect(200)
       .end((err, resp) => {
         if (err) { return done(err); }
@@ -252,12 +260,13 @@ describe('Voice requests with voice controller', () => {
     // When mock is enabled, libraries send fake responses instead of real ones
     // Example: mailgun library send back fake xml response
     mock.enable();
-
-    let params = '?userId=2&clientId=1';
-    params += `&deliveryDate=${new Date().getTime()}`;
-    params += '&type=ovm';
-
-    twilioAgent.post(`/webhook/voice/save-recording/${params}`)
+    const params = querystring.stringify({
+      userId: '2',
+      clientId: '1',
+      deliveryDate: new Date().getTime(),
+      type: 'ovm'
+    });
+    twilioAgent.post(`/webhook/voice/save-recording/?${params}`)
       .send(twilioRecordingRequest_2)
       .expect(200)
       .end((err, res) => {
@@ -350,11 +359,8 @@ describe('Voice requests with voice controller', () => {
 
   it('should accept a new inbound voice recording (mocked)', (done) => {
     mock.enable();
-
-    let params = '?commId=2';
-    params += '&type=message';
-
-    twilioAgent.post(`/webhook/voice/save-recording/${params}`)
+    const params = querystring.stringify({commId: '2', type: 'message'});
+    twilioAgent.post(`/webhook/voice/save-recording/?${params}`)
       .send(twilioRecordingRequest_2)
       .expect(200)
       .end((err, res) => {
