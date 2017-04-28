@@ -1,5 +1,6 @@
 const Alerts = require('../models/alerts');
 const Messages = require('../models/messages');
+const Clients = require('../models/clients');
 
 module.exports = {
 
@@ -29,7 +30,7 @@ module.exports = {
       if (limitByUser) {
         clients = clients.filter(client => Number(client.cm) === Number(limitByUser));
       }
-    })
+    });
     Messages.findUnreadsByUser(userId)
     .then((newMessages) => {
       res.json({ 'newMessages':newMessages, 'clients': clients });
