@@ -73,9 +73,19 @@ var checkingForNewMessages = setInterval(() => {
             number = 0;
           }
           number += 1;
-
-          // append the new alert to the alerts list
-          const hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=archived">';
+          let clients = res.clients;
+          let unread_clients = [];
+          for (let client in clients) {
+            if (client.unread > 0) {
+              unread_clients.push(client);
+            }
+          }
+          if(unread_clients.length > 1) {
+            // append the new alert to the alerts list
+            const hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=archived">';
+          } else {
+            const hrefLink = '<a href="/clients/' + unread_clients[0].clid  + '/messages/';
+          }
           $('.numberRemaining').text(number);
           $('.alerts').fadeIn();
           $('.receivesNewAlertsHere').prepend(`${'<div class="alertRow">' +

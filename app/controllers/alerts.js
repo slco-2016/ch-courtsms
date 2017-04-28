@@ -5,10 +5,33 @@ module.exports = {
 
   checkForNewMessages(req, res) {
     const userId = req.user.cmid;
+    const showActiveClients = req.query.status !== 'archived';
+    let departmentID = req.user.department || req.query.department;
+    const user = req.body.targetUser || req.user.cmid;
+    const limitByUser = req.query.user || null;
 
+    // Don't limit by department if the user's support or an owner
+    if ((req.user.class == 'owner' || req.user.class == 'support') &&
+          !req.query.department) {
+      departmentID = null;
+    }
+
+    let method;
+    if (res.locals.level == 'user') {
+      method = Clients.findByUsers(user, showActiveClients);
+    } else if (departmentID) {
+      method = Clients.findManyByDepartmentAndStatus(departmentID, showActiveClients);
+    } else {
+      method = Clients.findByOrg(req.user.org, showActiveClients);
+    }
+
+    method.then((clients) => {
+      if (limitByUser) {
+        clients = clients.filter(client => Number(client.cm) === Number(limitByUser));
+      }
     Messages.findUnreadsByUser(userId)
     .then((newMessages) => {
-      res.json({ newMessages });
+      res.json({ 'newMessages':newMessages, 'clients': clients });
     }).catch(res.error500);
   },
 
