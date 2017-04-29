@@ -1,5 +1,3 @@
-const colors = require('colors');
-
 // Environment is set with the CCENV process environment variable
 // This can be set in the command line before commands
 // (e.g. CCENV=development npm start)
@@ -110,6 +108,6 @@ if (CCENV == 'development') {
 }
 
 const hostName = baseProductionReadyCredentials.db.host.split('.')[0];
-console.log(`Database being used: ${hostName}'`.yellow);
+console.log(`Database being used: ${hostName}`);
 
 module.exports = baseProductionReadyCredentials;

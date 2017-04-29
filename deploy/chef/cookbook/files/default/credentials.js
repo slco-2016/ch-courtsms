@@ -48,6 +48,6 @@ const baseProductionReadyCredentials = {
 
 const colors = require('colors');
 const hostName = baseProductionReadyCredentials.db.host.split('.')[0];
-console.log(`Database being used: ${hostName}'`.yellow);
+console.log(`Database being used: ${hostName}`);
 
 module.exports = baseProductionReadyCredentials;
