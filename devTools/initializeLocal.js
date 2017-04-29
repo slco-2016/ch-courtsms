@@ -64,7 +64,7 @@ const supervisor = {
   position: 'Officer',
   admin: true,
   active: true,
-  superuser: true,
+  superuser: false,
   class: 'supervisor',
   email: '',
   pass: '',
@@ -79,9 +79,9 @@ const phoneNumber = {
 rl.question(`Twilio phone number for ${org.name}? `, org_phone => {
   rl.question(`Base account email? (i.e. user@example.com) `, base_email => {
 
-    at_index = base_email.indexOf('@');
-    email_a = base_email.substr(0, at_index);
-    email_b = base_email.substr(at_index);
+    let at_index = base_email.indexOf('@');
+    let email_a = base_email.substr(0, at_index);
+    let email_b = base_email.substr(at_index);
     let su_email = email_a + '+superuser' + email_b;
     let sv_email = email_a + '+supervisor' + email_b;
 
