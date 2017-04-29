@@ -1,5 +1,5 @@
 const db = require('../db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v1');
 
 const pass = require('../lib/pass');
 const emUtil = require('../lib/em-notify');
@@ -61,7 +61,7 @@ module.exports = {
       // There is an account with this email in the system
       } else {
         const cm = cms[0];
-        const uid = uuid.v1();
+        const uid = uuid();
 
         // Remove all prior requests for password reset
         db('pwresets')
