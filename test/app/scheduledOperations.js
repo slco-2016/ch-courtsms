@@ -37,20 +37,6 @@ describe('Scheduled operations checks', () => {
     .then(done).catch(done);
   });
 
-  it('Check uncleared messages', (done) => {
-    Messages.findNotClearedMessages()
-    .then((messages) => {
-      // We should have at least one message in there from the seed data
-      messages.length.should.be.greaterThan(0);
+  // TODO: test checking uncleared messages
 
-      const smsStatusCheck = require('../../app/lib/sms-status-check');
-      if (!messages.length) done();
-      messages.forEach((message, i) => {
-        smsStatusCheck.checkMsgAgainstTwilio(message);
-        if (i == messages.length - 1) {
-          setTimeout(() => { done(); }, 1000);
-        }
-      });
-    }).catch(done);
-  });
 });
