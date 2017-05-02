@@ -11,10 +11,6 @@ const Promise = require('bluebird');
 const moment = require('moment');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
-// Don't send to junk number in production
-// TODO: just use CCENV instead, or better yet specify via config
-const TESTENV = CCENV !== 'production';
-
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
 
@@ -545,15 +541,13 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
+              // TODO: Remove when we're stubbing twilio methods
               if (CCENV === 'testing') {
                 return fulfill();
               }
 
               twClient.sendMessage({
-                // TODO: Remove use of testenv
-                //       it was used to reroute all outbound messages to a
-                //       testing number instead of just not sending
-                to: TESTENV ? '+18589057365' : communication.value,
+                to: communication.value,
                 from: sentFromValue,
                 body: content,
               }, (err, msg) => {
@@ -601,32 +595,34 @@ class Messages extends BaseModel {
           const sentFromValue = messages[0].sent_to;
 
           contentArray.forEach((contentPortion, contentIndex) => {
-            if (CCENV !== 'testing') {
-              twClient.sendMessage({
-                to: TESTENV ? '+18589057365' : communication.value,
-                from: sentFromValue,
-                body: content,
-              }, (err, msg) => {
-                if (err) {
-                  reject(err);
-                } else {
-                  const MessageSid = msg.sid;
-                  const MessageStatus = msg.status;
-                  Messages.create(conversationId,
-                                  commId,
-                                  contentPortion,
-                                  MessageSid,
-                                  MessageStatus)
-                  .then(() => {
-                    if (contentIndex == contentArray.length - 1) fulfill();
-                  }).catch((e) => {
-                    reject(e);
-                  });
-                }
-              });
-            } else {
-              fulfill();
+            // TODO: Remove when we're stubbing twilio methods
+            if (CCENV === 'testing') {
+              return fulfill();
             }
+
+            twClient.sendMessage({
+              to: communication.value,
+              from: sentFromValue,
+              body: content,
+            }, (err, msg) => {
+              if (err) {
+                reject(err);
+              } else {
+                const MessageSid = msg.sid;
+                const MessageStatus = msg.status;
+                Messages.create(conversationId,
+                                commId,
+                                contentPortion,
+                                MessageSid,
+                                MessageStatus)
+                .then(() => {
+                  if (contentIndex == contentArray.length - 1) fulfill();
+                }).catch((e) => {
+                  reject(e);
+                });
+              }
+            });
+
           });
         } else {
           reject(new Error(`No messages found for that conversation id (${conversationId}). Messages: ${JSON.stringify(messages)}`));
