@@ -305,25 +305,30 @@ class Messages extends BaseModel {
     */
     return new Promise((fulfill, reject) => {
       db('msgs')
+        .select(db.raw('clients.clid, clients.active, COUNT(clients.clid) AS msg_count'))
         .leftJoin('convos', 'msgs.convo', 'convos.convid')
         .leftJoin('clients', 'clients.clid', 'convos.client')
         .where('msgs.read', false)
         .andWhere('convos.cm', user)
+        .groupBy('clients.clid', 'clients.active')
         .then(clients => {
           // See if there are any new messages in any of the conversations
           let activeMessageCount = 0;
           let activeUserIds = new Set();
-          // TODO: is it really possible to have an inactive message count?
+          // A client may be archived with unread messages
           let inactiveMessageCount = 0;
           let inactiveUserIds = new Set();
+          let totalUnreadMessages = 0;
           clients.forEach(ea => {
+            ea.msg_count = Number(ea.msg_count);
             if (ea.active) {
-              activeMessageCount += 1;
+              activeMessageCount += ea.msg_count;
               activeUserIds.add(ea.clid);
             } else {
-              inactiveMessageCount += 1;
+              inactiveMessageCount += ea.msg_count;
               inactiveUserIds.add(ea.clid);
             }
+            totalUnreadMessages += ea.msg_count;
           });
 
           fulfill({
@@ -337,6 +342,7 @@ class Messages extends BaseModel {
               userCount: inactiveUserIds.size,
               userIds: Array.from(inactiveUserIds),
             },
+            totalUnread: totalUnreadMessages,
           });
         })
         .catch(reject);

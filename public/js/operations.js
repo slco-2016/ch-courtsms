@@ -88,11 +88,13 @@ var checkingForNewMessages = setInterval(() => {
           } else {
             hrefLink = `<a href="/clients/${alertSummary.userIds[0]}/messages/">`;
           }
+
+          var msgsPlural = (summary.totalUnread === 1) ? "message" : "messages";
           $('.numberRemaining').text(number);
           $('.alerts').fadeIn();
           $('.receivesNewAlertsHere').prepend(`${'<div class="alertRow">' +
                                     '<div class="message">'}${hrefLink
-                                        }You have new unread messages. ` +
+                                        }You have ${summary.totalUnread} unread ${msgsPlural}. ` +
                                         'Click to view.' +
                                       '</a>' +
                                     '</div>' +
