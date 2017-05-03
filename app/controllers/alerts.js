@@ -1,12 +1,10 @@
 const Alerts = require('../models/alerts');
 const Messages = require('../models/messages');
-const Clients = require('../models/clients');
 
 module.exports = {
 
   checkForNewMessages(req, res) {
     const userId = req.user.cmid;
-    let clientIDs = new Set();
     Messages.findUnreadsByUser(userId)
     .then((newMessageSummary) => {
       res.json({'newMessageSummary': newMessageSummary});
