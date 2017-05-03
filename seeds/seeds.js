@@ -113,19 +113,19 @@ const clientFour = {
 const contactMethodCellOne = {
   description: 'cell one',
   type: 'cell',
-  value: '15553133609',
+  value: '12433133609',
 };
 
 const contactMethodCellTwo = {
   description: 'cell two',
   type: 'cell',
-  value: '15558384828',
+  value: '12438384828',
 };
 
 const contactMethodCellThree = {
   description: 'cell three',
   type: 'cell',
-  value: '15559562548',
+  value: '12439562548',
 };
 
 const contactMethodEmail = {
