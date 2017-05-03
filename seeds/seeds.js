@@ -37,7 +37,7 @@ const dep = {
   active: true,
 };
 
-const primary = {
+const primaryOne = {
   org: 1,
   first: 'Test Account',
   last: 'To Remove',
@@ -51,7 +51,7 @@ const primary = {
   department: 1,
 };
 
-const secondPrimary = {
+const primaryTwo = {
   org: 1,
   first: 'Other',
   last: 'Fellah',
@@ -65,7 +65,7 @@ const secondPrimary = {
   department: 1,
 };
 
-const client = {
+const clientOne = {
   cm: 2,
   first: 'Sandra',
   middle: 'M',
@@ -76,7 +76,7 @@ const client = {
   active: true,
 };
 
-const secondClient = {
+const clientTwo = {
   cm: 2,
   first: 'Harry',
   middle: 'K',
@@ -87,58 +87,135 @@ const secondClient = {
   active: true,
 };
 
-const contactMethod = {
-  description: 'DummyFoo2',
-  type: 'cell',
-  value: '12033133609',
+const clientThree = {
+  cm: 2,
+  first: 'Flavie',
+  middle: 'Q',
+  last: 'Cooper',
+  dob: '1972-02-22',
+  so: 942,
+  otn: 834671,
+  active: true,
 };
 
-const secondContactMethod = {
-  description: 'HurtLocker',
-  type: 'cell',
-  value: '12048384828',
+// an inactive client
+const clientFour = {
+  cm: 2,
+  first: 'Sofia',
+  middle: 'D',
+  last: 'Jolly',
+  dob: '1957-12-30',
+  so: 952,
+  otn: 472936,
+  active: false,
 };
 
-const emailContactMethod = {
-  description: 'HurtLocker',
+const contactMethodCellOne = {
+  description: 'cell one',
+  type: 'cell',
+  value: '15553133609',
+};
+
+const contactMethodCellTwo = {
+  description: 'cell two',
+  type: 'cell',
+  value: '15558384828',
+};
+
+const contactMethodCellThree = {
+  description: 'cell three',
+  type: 'cell',
+  value: '15559562548',
+};
+
+const contactMethodEmail = {
+  description: 'email one',
   type: 'email',
   value: 'max.t.mcdonnell@gmail.com',
 };
 
-const commConn = {
+// connecting the same cell to two different clients will create a
+// conversation assignment conflict which is tested for in smsController
+const commConnCellOneClientOne = {
   client: 1,
   comm: 1,
-  name: 'Example',
+  name: 'commconn cell one for client one',
   retired: null,
 };
 
-const secondCommConn = {
+const commConnCellOneClientTwo = {
   client: 2,
   comm: 1,
-  name: 'RedundantMaybe',
+  name: 'commconn cell one for client two',
   retired: null,
 };
 
-const emailCommConn = {
+const commConnEmailClientTwo = {
   client: 2,
   comm: 3,
-  name: 'hmm',
+  name: 'commconn email and client two',
   retired: null,
 };
 
-const conversation = {
+const commConnCellTwoClientThree = {
+  client: 3,
+  comm: 2,
+  name: 'cell two for client three',
+  retired: null,
+};
+
+const commConnCellThreeClientFour = {
+  client: 4,
+  comm: 3,
+  name: 'cell three for client four',
+  retired: null,
+};
+
+const convoOne = {
   cm: 2,
   client: 2,
-  subject: 'primary and secondClient conversation',
+  subject: 'primary and client two conversation',
   open: true,
   accepted: true,
 };
 
-const outboundEmailMessage = {
+const convoTwo = {
+  cm: 2,
+  client: 3,
+  subject: 'primary and client three conversation',
+  open: true,
+  accepted: true,
+};
+
+const convoThree = {
+  cm: 2,
+  client: 4,
+  subject: 'primary and client four conversation',
+  open: true,
+  accepted: true,
+};
+
+const messageEmailConvoOne = {
   convo: 1,
   comm: 3,
   content: 'this is a seeds email message',
   tw_sid: '<2013FAKE82626.18666.16540@clientcomm.org>',
+  tw_status: 'queued',
+};
+
+const MessageSmsConvoTwo = {
+  convo: 2,
+  comm: 2,
+  content: 'this is an sms message from client 3 to cm 2',
+  tw_sid: 'SM6e5577f912e8c2bb137011375ac6a91e',
+  tw_status: 'queued',
+};
+
+const MessageSmsConvoThree = {
+  convo: 3,
+  comm: 3,
+  content: 'this is an sms message from client 4 to cm 2',
+  tw_sid: 'SM6e5577f695f8c2bb137011375ac6a91e',
   tw_status: 'queued',
 };
 
@@ -156,7 +233,7 @@ const notificationSmartSend = {
   client: 1,
   comm: null,
   subject: 'Reminder',
-  message: 'Bursh teeth',
+  message: 'Brush teeth',
   send: '2016-09-29 17:07:11.726-04',
   repeat: null,
   frequency: null,
@@ -171,7 +248,7 @@ const notification = {
   client: 1,
   comm: 1,
   subject: 'Reminder2',
-  message: 'Bursh teeth again',
+  message: 'Brush teeth again',
   send: '2016-09-29 17:07:11.726-04',
   repeat: null,
   frequency: null,
@@ -183,7 +260,7 @@ const notification = {
 
 // SECOND ORGANIZATION
 
-const secondOrg = {
+const orgTwo = {
   name: 'Second CJS',
   phone: 2,
   email: 'secondcjs@example.com',
@@ -193,16 +270,16 @@ const secondOrg = {
   tz: 'America/Denver',
 };
 
-const secondPhoneNumber = {
+const phoneNumberOrgTwo = {
   organization: 2,
   value: 13425678910,
 };
 
-const secondOwner = {
+const ownerOrgTwo = {
   org: 2,
   first: 'Second Test Account',
   last: 'To Remove',
-  email: 'secondOwner@example.com',
+  email: 'owner@example.com',
   pass: '$2a$08$LU2c2G3e1L/57JSP3q/Ukuz1av2DXmj6oDUgmNWmAdxTPG5aA/gti', // 123
   position: 'Officer',
   department: 2,
@@ -212,7 +289,7 @@ const secondOwner = {
   class: 'owner',
 };
 
-const secondDep = {
+const departmentOrgTwo = {
   organization: 2,
   name: 'Pretrial JEOFBAUnique',
   phone_number: 2,
@@ -220,7 +297,7 @@ const secondDep = {
   active: true,
 };
 
-const secondSupervisor = {
+const supervisorOrgTwo = {
   org: 2,
   first: 'Supervisor Test Account',
   last: 'To Remove',
@@ -234,13 +311,13 @@ const secondSupervisor = {
   department: 2,
 };
 
-const secondDepartmentSupervisorLink = {
+const DepSupOrgTwo = {
   department: 2,
   supervisor: 4,
   active: true,
 };
 
-const secondOrgClient = {
+const clientOrgTwo = {
   cm: 4,
   first: 'Delilah',
   middle: 'X',
@@ -251,22 +328,22 @@ const secondOrgClient = {
   active: true,
 };
 
-const secondOrgClientCommunicationMethod = {
+const commOrgTwo = {
   description: 'second org comm device',
   type: 'cell',
   value: '10900848392',
 };
 
-const secondOrgClientCommunicationConnection = {
+const commconnOrgTwo = {
   client: 3,
   comm: 4,
-  name: 'jim\'s cell phone',
+  name: "jim's cell phone",
   retired: null,
 };
 
-const notificationToBeSentOnBehalfOfSecondSupervisor = {
-  cm: 4,     // secondDepartmentSupervisorLink's id
-  client: 3, // secondOrgClient's id
+const notificationOrgTwo = {
+  cm: 4, // secondDepartmentSupervisorLink's id
+  client: 3, // clientOrgTwo's id
   comm: 4,
   subject: 'test',
   message: 'ship shap shaloop',
@@ -275,53 +352,64 @@ const notificationToBeSentOnBehalfOfSecondSupervisor = {
   // frequency ignored
 };
 
-exports.seed = (knex) => {
+exports.seed = knex => {
   console.log('Running seeds.js'.yellow);
   console.log('Deleting all tables'.yellow);
 
   if (process.env.CCENV === 'testing') {
-    return knex.raw(
-      `DROP SCHEMA public CASCADE;
+    return knex
+      .raw(
+        `DROP SCHEMA public CASCADE;
       CREATE SCHEMA public;`
-    ).then(() => {
-      console.log('Knex DB: migrate latest');
-      return knex.migrate.latest();
-    }).then(() => {
-      console.log('Inserting seed data'.yellow);
-      return knex('orgs').insert(org);
-    })
+      )
+      .then(() => {
+        console.log('Knex DB: migrate latest');
+        return knex.migrate.latest();
+      })
+      .then(() => {
+        console.log('Inserting seed data'.yellow);
+        return knex('orgs').insert(org);
+      })
       .then(() => knex('phone_numbers').insert(phoneNumber))
       .then(() => knex('cms').insert(owner))
       .then(() => knex('departments').insert(dep))
-      .then(() => knex('cms').insert(primary))
-      .then(() => knex('clients').insert(client))
-      .then(() => knex('comms').insert(contactMethod))
-      .then(() => knex('commconns').insert(commConn))
-      .then(() => knex('cms').insert(secondPrimary))
-      .then(() => knex('clients').insert(secondClient))
-      .then(() => knex('comms').insert(secondContactMethod))
-      .then(() => knex('commconns').insert(secondCommConn))
-      .then(() => knex('comms').insert(emailContactMethod))
-      .then(() => knex('commconns').insert(emailCommConn))
-      .then(() => knex('convos').insert(conversation))
-      .then(() => knex('msgs').insert(outboundEmailMessage))
+      .then(() => knex('cms').insert(primaryOne))
+      .then(() => knex('cms').insert(primaryTwo))
+      .then(() => knex('clients').insert(clientOne))
+      .then(() => knex('clients').insert(clientTwo))
+      .then(() => knex('clients').insert(clientThree))
+      .then(() => knex('clients').insert(clientFour))
+      .then(() => knex('comms').insert(contactMethodCellOne))
+      .then(() => knex('comms').insert(contactMethodEmail))
+      .then(() => knex('comms').insert(contactMethodCellTwo))
+      .then(() => knex('comms').insert(contactMethodCellThree))
+      .then(() => knex('commconns').insert(commConnCellOneClientOne))
+      .then(() => knex('commconns').insert(commConnCellOneClientTwo))
+      .then(() => knex('commconns').insert(commConnEmailClientTwo))
+      .then(() => knex('commconns').insert(commConnCellTwoClientThree))
+      .then(() => knex('commconns').insert(commConnCellThreeClientFour))
+      .then(() => knex('convos').insert(convoOne))
+      .then(() => knex('convos').insert(convoTwo))
+      .then(() => knex('convos').insert(convoThree))
+      .then(() => knex('msgs').insert(messageEmailConvoOne))
+      .then(() => knex('msgs').insert(MessageSmsConvoTwo))
+      .then(() => knex('msgs').insert(MessageSmsConvoThree))
       .then(() => knex('outbound_voice_messages').insert(outboundVoiceMessage))
       .then(() => knex('notifications').insert(notificationSmartSend))
       .then(() => knex('notifications').insert(notification))
-      .then(() => knex('orgs').insert(secondOrg))
-      .then(() => knex('phone_numbers').insert(secondPhoneNumber))
-      .then(() => knex('departments').insert(secondDep))
-      .then(() => knex('cms').insert(secondOwner))
-      .then(() => knex('cms').insert(secondSupervisor))
-      .then(() => knex('department_supervisors').insert(secondDepartmentSupervisorLink))
-      .then(() => knex('clients').insert(secondOrgClient))
-      .then(() => knex('comms').insert(secondOrgClientCommunicationMethod))
-      .then(() => knex('commconns').insert(secondOrgClientCommunicationConnection))
-      .then(() => knex('notifications').insert(notificationToBeSentOnBehalfOfSecondSupervisor))
-      .catch((err) => {
+      .then(() => knex('orgs').insert(orgTwo))
+      .then(() => knex('phone_numbers').insert(phoneNumberOrgTwo))
+      .then(() => knex('departments').insert(departmentOrgTwo))
+      .then(() => knex('cms').insert(ownerOrgTwo))
+      .then(() => knex('cms').insert(supervisorOrgTwo))
+      .then(() => knex('department_supervisors').insert(DepSupOrgTwo))
+      .then(() => knex('clients').insert(clientOrgTwo))
+      .then(() => knex('comms').insert(commOrgTwo))
+      .then(() => knex('commconns').insert(commconnOrgTwo))
+      .then(() => knex('notifications').insert(notificationOrgTwo))
+      .catch(err => {
         throw err;
       });
   }
   throw new Error('Not the testing db!!'.red);
 };
-
