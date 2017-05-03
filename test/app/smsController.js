@@ -1,9 +1,7 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
-
 const APP = require('../../app/app');
-
 const Emails = require('../../app/models/emails');
 const Capture = require('../../app/models/capture');
 const CommConns = require('../../app/models/commConns');
@@ -69,7 +67,7 @@ describe('Sms inbound message endpoint', () => {
 
   it('twilio sends an an sms to an existing number', (done) => {
     const newSmsBody = smsData;
-    newSmsBody.From = '12033133609';
+    newSmsBody.From = '12433133609';
 
     // this is the number that is assoc. with main department in seed
     newSmsBody.To = '12435678910';
@@ -99,7 +97,7 @@ describe('Sms inbound message endpoint', () => {
 
   it('claim the conversation with one case manager so it closes for all others', (done) => {
     const newSmsBody = smsData;
-    newSmsBody.From = '12033133609';
+    newSmsBody.From = '12433133609';
 
     // this is the number that is assoc. with main department in seed
     newSmsBody.To = '12435678910';
