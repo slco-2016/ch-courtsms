@@ -300,29 +300,46 @@ class Messages extends BaseModel {
   }
 
   static findUnreadsByUser(user) {
+    /* Return a summary of unread messages for the passed user. Used to
+       generate alerts.
+    */
     return new Promise((fulfill, reject) => {
       db('msgs')
         .leftJoin('convos', 'msgs.convo', 'convos.convid')
         .leftJoin('clients', 'clients.clid', 'convos.client')
         .where('msgs.read', false)
         .andWhere('convos.cm', user)
-      .then((clients) => {
-        // See if there are any new messages in any of the conversations
-        let totalNewMessages = 0;
-        let totalNewMessagesInactive = 0;
-        clients.forEach((ea) => {
-          if (ea.active) {
-            totalNewMessages += 1;
-          } else {
-            totalNewMessagesInactive += 1;
-          }
-        });
+        .then(clients => {
+          // See if there are any new messages in any of the conversations
+          let activeMessageCount = 0;
+          let activeUserIds = new Set();
+          // TODO: is it really possible to have an inactive message count?
+          let inactiveMessageCount = 0;
+          let inactiveUserIds = new Set();
+          clients.forEach(ea => {
+            if (ea.active) {
+              activeMessageCount += 1;
+              activeUserIds.add(ea.clid);
+            } else {
+              inactiveMessageCount += 1;
+              inactiveUserIds.add(ea.clid);
+            }
+          });
 
-        fulfill({
-          active: totalNewMessages > 0,
-          inactive: totalNewMessagesInactive > 0,
-        });
-      }).catch(reject);
+          fulfill({
+            active: {
+              messageCount: activeMessageCount,
+              userCount: activeUserIds.size,
+              userIds: Array.from(activeUserIds),
+            },
+            inactive: {
+              messageCount: inactiveMessageCount,
+              userCount: inactiveUserIds.size,
+              userIds: Array.from(inactiveUserIds),
+            },
+          });
+        })
+        .catch(reject);
     });
   }
 

@@ -23,7 +23,7 @@ function removeAlert(altThis) {
   $(that).parent().remove();
   const nr = $('.numberRemaining');
   nr.text(Number(nr.text()) - 1); // reduce the remaining alerts by one
-  if ($('.hiddenAlerts .alertRow').length == 0) $('.alerts').remove();
+  if ($('.hiddenAlerts .alertRow').length === 0) $('.alerts').remove();
 }
 
 function clearAllAlerts() {
@@ -65,26 +65,28 @@ function sortBy(dataLabel) {
 var checkingForNewMessages = setInterval(() => {
   $.get('/alerts')
     .then((res) => {
-      if (res && res.newMessages) {
-        if (res.newMessages.active || res.newMessages.inactive) {
+      if (res && res.newMessageSummary) {
+        const summary = res.newMessageSummary;
+        if (summary.active.messageCount || summary.inactive.messageCount) {
           // increment the number of alerts
-          let number = Number($('.numberRemaining').text());
+          var number = Number($('.numberRemaining').text());
           if (isNaN(number)) {
             number = 0;
           }
           number += 1;
-          let clients = res.clients;
-          let unread_clients = [];
-          for (let client in clients) {
-            if (client.unread > 0) {
-              unread_clients.push(client);
-            }
-          }
-          if(unread_clients.length > 1) {
-            // append the new alert to the alerts list
-            const hrefLink = res.newMessages.active ? '<a href="/clients">' : '<a href="/clients?status=archived">';
+
+          // prefer to alert about active messages
+          const alertSource = summary.active.messageCount ? 'active' : 'inactive';
+          const alertSummary = summary[alertSource];
+
+          // if there are messages from more than one client
+          var hrefLink;
+          if (alertSummary.userCount > 1) {
+            hrefLink = (alertSource === "active") ? '<a href="/clients">' : '<a href="/clients?status=archived">';
+
+          // if there's only a message from one client
           } else {
-            const hrefLink = '<a href="/clients/' + unread_clients[0].clid  + '/messages/';
+            hrefLink = `<a href="/clients/${alertSummary.userIds[0]}/messages/">`;
           }
           $('.numberRemaining').text(number);
           $('.alerts').fadeIn();
