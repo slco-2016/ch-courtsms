@@ -1,14 +1,12 @@
 const assert = require('assert');
-
 const Clients = require('../../app/models/clients');
 const CommConns = require('../../app/models/commConns');
-
-require('colors');
 const should = require('should');
+require('colors');
 
 let phoneId;
 const phone = '12345678906';
-describe('Clients checks', () => {
+describe('Clients model', () => {
   it('Should be able to create client', (done) => {
     Clients.create(2, 'Joe', 'F', 'Someone', '1988-04-02', 12321, 1234567)
     .then((client) => {
@@ -62,12 +60,22 @@ describe('Clients checks', () => {
     }).catch(done);
   });
 
-  it('Should be able to find many by department and status', (done) => {
+  it('finds active clients in a department', (done) => {
     Clients.findManyByDepartmentAndStatus(1, true)
     .then((clients) => {
-      // there are five active clients in department 1 in the test data
-      // at this point
-      clients.length.should.be.exactly(5);
+      // TODO: there are three active clients in department one in the seed
+      // data plus the one added in the test above, and two added in tests
+      // run prior to this one.
+      clients.length.should.be.exactly(6);
+      done();
+    }).catch(done);
+  });
+
+  it('finds archived clients in a department', (done) => {
+    Clients.findManyByDepartmentAndStatus(1, false)
+    .then((clients) => {
+      // there is one archived client in department one in the seed data
+      clients.length.should.be.exactly(1);
       done();
     }).catch(done);
   });
