@@ -11,10 +11,6 @@ const Promise = require('bluebird');
 const moment = require('moment');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
-// Don't send to junk number in production
-// TODO: just use CCENV instead, or better yet specify via config
-const TESTENV = CCENV !== 'production';
-
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
 
@@ -304,29 +300,52 @@ class Messages extends BaseModel {
   }
 
   static findUnreadsByUser(user) {
+    /* Return a summary of unread messages for the passed user. Used to
+       generate alerts.
+    */
     return new Promise((fulfill, reject) => {
       db('msgs')
+        .select(db.raw('clients.clid, clients.active, COUNT(clients.clid) AS msg_count'))
         .leftJoin('convos', 'msgs.convo', 'convos.convid')
         .leftJoin('clients', 'clients.clid', 'convos.client')
         .where('msgs.read', false)
         .andWhere('convos.cm', user)
-      .then((clients) => {
-        // See if there are any new messages in any of the conversations
-        let totalNewMessages = 0;
-        let totalNewMessagesInactive = 0;
-        clients.forEach((ea) => {
-          if (ea.active) {
-            totalNewMessages += 1;
-          } else {
-            totalNewMessagesInactive += 1;
-          }
-        });
+        .groupBy('clients.clid', 'clients.active')
+        .then(clients => {
+          // See if there are any new messages in any of the conversations
+          let activeMessageCount = 0;
+          let activeUserIds = new Set();
+          // A client may be archived with unread messages
+          let inactiveMessageCount = 0;
+          let inactiveUserIds = new Set();
+          let totalUnreadMessages = 0;
+          clients.forEach(ea => {
+            ea.msg_count = Number(ea.msg_count);
+            if (ea.active) {
+              activeMessageCount += ea.msg_count;
+              activeUserIds.add(ea.clid);
+            } else {
+              inactiveMessageCount += ea.msg_count;
+              inactiveUserIds.add(ea.clid);
+            }
+            totalUnreadMessages += ea.msg_count;
+          });
 
-        fulfill({
-          active: totalNewMessages > 0,
-          inactive: totalNewMessagesInactive > 0,
-        });
-      }).catch(reject);
+          fulfill({
+            active: {
+              messageCount: activeMessageCount,
+              userCount: activeUserIds.size,
+              userIds: Array.from(activeUserIds),
+            },
+            inactive: {
+              messageCount: inactiveMessageCount,
+              userCount: inactiveUserIds.size,
+              userIds: Array.from(inactiveUserIds),
+            },
+            totalUnread: totalUnreadMessages,
+          });
+        })
+        .catch(reject);
     });
   }
 
@@ -545,15 +564,13 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
+              // TODO: Remove when we're stubbing twilio methods
               if (CCENV === 'testing') {
                 return fulfill();
               }
 
               twClient.sendMessage({
-                // TODO: Remove use of testenv
-                //       it was used to reroute all outbound messages to a
-                //       testing number instead of just not sending
-                to: TESTENV ? '+18589057365' : communication.value,
+                to: communication.value,
                 from: sentFromValue,
                 body: content,
               }, (err, msg) => {
@@ -601,32 +618,34 @@ class Messages extends BaseModel {
           const sentFromValue = messages[0].sent_to;
 
           contentArray.forEach((contentPortion, contentIndex) => {
-            if (CCENV !== 'testing') {
-              twClient.sendMessage({
-                to: TESTENV ? '+18589057365' : communication.value,
-                from: sentFromValue,
-                body: content,
-              }, (err, msg) => {
-                if (err) {
-                  reject(err);
-                } else {
-                  const MessageSid = msg.sid;
-                  const MessageStatus = msg.status;
-                  Messages.create(conversationId,
-                                  commId,
-                                  contentPortion,
-                                  MessageSid,
-                                  MessageStatus)
-                  .then(() => {
-                    if (contentIndex == contentArray.length - 1) fulfill();
-                  }).catch((e) => {
-                    reject(e);
-                  });
-                }
-              });
-            } else {
-              fulfill();
+            // TODO: Remove when we're stubbing twilio methods
+            if (CCENV === 'testing') {
+              return fulfill();
             }
+
+            twClient.sendMessage({
+              to: communication.value,
+              from: sentFromValue,
+              body: content,
+            }, (err, msg) => {
+              if (err) {
+                reject(err);
+              } else {
+                const MessageSid = msg.sid;
+                const MessageStatus = msg.status;
+                Messages.create(conversationId,
+                                commId,
+                                contentPortion,
+                                MessageSid,
+                                MessageStatus)
+                .then(() => {
+                  if (contentIndex == contentArray.length - 1) fulfill();
+                }).catch((e) => {
+                  reject(e);
+                });
+              }
+            });
+
           });
         } else {
           reject(new Error(`No messages found for that conversation id (${conversationId}). Messages: ${JSON.stringify(messages)}`));
