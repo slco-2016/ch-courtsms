@@ -5,10 +5,9 @@ module.exports = {
 
   checkForNewMessages(req, res) {
     const userId = req.user.cmid;
-
     Messages.findUnreadsByUser(userId)
-    .then((newMessages) => {
-      res.json({ newMessages });
+    .then((messageSummary) => {
+      res.json({newMessageSummary: messageSummary});
     }).catch(res.error500);
   },
 

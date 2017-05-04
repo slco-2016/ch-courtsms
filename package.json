@@ -33,14 +33,14 @@
     "moment": "~2.13.0",
     "moment-timezone": "~0.5.4",
     "newrelic": "~1.28.0",
-    "ngrok": "^2.2.3",
-    "node-uuid": "~1.4.7",
+    "ngrok": "^2.2.7",
     "nodemon": "~1.9.1",
     "passport": "~0.3.2",
     "passport-local": "~1.0.0",
     "pg": "~4.5.5",
     "pkginfo": "^0.4.0",
-    "twilio": "~3.3.0-edge"
+    "twilio": "~3.3.0-edge",
+    "uuid": "^3.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
