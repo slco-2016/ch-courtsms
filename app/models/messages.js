@@ -1,7 +1,5 @@
 // SECRET STUFF
 const {
-  accountSid: ACCOUNT_SID,
-  authToken: AUTH_TOKEN,
   CCENV,
 } = require('../../credentials');
 
@@ -9,7 +7,7 @@ const {
 const db = require('../../app/db');
 const Promise = require('bluebird');
 const moment = require('moment');
-const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
+const twClient = require('../lib/twClient');
 
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
@@ -564,11 +562,6 @@ class Messages extends BaseModel {
             const sentFromValue = departmentPhoneNumber.value;
 
             contentArray.forEach((contentPortion, contentIndex) => {
-              // TODO: Remove when we're stubbing twilio methods
-              if (CCENV === 'testing') {
-                return fulfill();
-              }
-
               twClient.sendMessage({
                 to: communication.value,
                 from: sentFromValue,
