@@ -1,14 +1,25 @@
 const Alerts = require('../models/alerts');
 const Messages = require('../models/messages');
+const analyticsService = require('../lib/analytics-service');
 
 module.exports = {
 
   checkForNewMessages(req, res) {
     const userId = req.user.cmid;
     Messages.findUnreadsByUser(userId)
-    .then((messageSummary) => {
-      res.json({newMessageSummary: messageSummary});
-    }).catch(res.error500);
+      .then(summary => {
+        if (summary.totalUnread > 0) {
+          userIds = summary.active.userIds.concat(summary.inactive.userIds);
+          analyticsService.track(null, 'message_alert', req, res.locals, {
+            messages_unread_count: summary.totalUnread,
+            messages_user_count: summary.active.userCount +
+              summary.inactive.userCount,
+            messages_user_ids: userIds.join(','),
+          });
+        }
+        res.json({ newMessageSummary: summary });
+      })
+      .catch(res.error500);
   },
 
   close(req, res) {
