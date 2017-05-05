@@ -529,7 +529,6 @@ class Messages extends BaseModel {
       // reference variables
       let user;
       let communication;
-      const contentArray = content.match(/.{1,1599}/g);
 
       Communications.findById(commId)
       .then((resp) => {
@@ -561,30 +560,25 @@ class Messages extends BaseModel {
           }).then((departmentPhoneNumber) => {
             const sentFromValue = departmentPhoneNumber.value;
 
-            contentArray.forEach((contentPortion, contentIndex) => {
-              twClient.sendMessage({
-                to: communication.value,
-                from: sentFromValue,
-                body: content,
-              }, (err, msg) => {
-                if (err) {
-                  return reject(err);
-                }
-
-                const MessageSid = msg.sid;
-                const MessageStatus = msg.status;
-                Messages.create(
-                  conversation.convid,
-                  commId,
-                  contentPortion,
-                  MessageSid,
-                  MessageStatus
-                ).then(() => {
-                  if (contentIndex == contentArray.length - 1) {
-                    fulfill();
-                  }
-                }).catch(reject);
-              });
+            twClient.sendMessage({
+              to: communication.value,
+              from: sentFromValue,
+              body: content,
+            }, (err, msg) => {
+              if (err) {
+                return reject(err);
+              }
+              const MessageSid = msg.sid;
+              const MessageStatus = msg.status;
+              Messages.create(
+                conversation.convid,
+                commId,
+                content,
+                MessageSid,
+                MessageStatus
+              ).then(() => {
+                fulfill();
+              }).catch(reject);
             });
           }).catch(reject);
         }
