@@ -540,6 +540,12 @@ module.exports = {
     }).then((resp) => {
       messages = resp;
 
+      analyticsService.track(null, 'transcript_download', req, res.locals, {
+        ccc_id: client.clid,
+        ccc_active: res.locals.client.active,
+        messages_all_count: messages.length,
+      });
+
       // get org time zone
       return Organizations.findById(req.user.org);
     }).then((organization) => {
