@@ -70,4 +70,29 @@ describe('Messages model', () => {
         .catch(err => done(err));
     });
   });
+
+  it('sends a multi-line sms message', done => {
+    simple.mock(twClient, 'sendMessage')
+      .callbackWith(null, { sid: 123, status: 'Success!' });
+
+    Promise.all([
+      Communications.findById(3),
+      Conversations.findById(3),
+    ]).then(([comm, conversation]) => {
+      const body = 'This is a test message.\n\nWith more than one line.';
+
+      Messages.sendOne(comm.commid, body, conversation)
+        .then(messages => {
+          twClient.sendMessage.calls.length.should.be.exactly(1);
+          twClient.sendMessage.lastCall.arg.body.should.equal(body);
+          twClient.sendMessage.lastCall.arg.to.should.equal(comm.value);
+
+          simple.restore();
+          done();
+        })
+        .catch(err => done(err));
+    });
+  });
+
+
 });
