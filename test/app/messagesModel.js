@@ -88,4 +88,29 @@ describe('Messages model', () => {
         .catch(err => done(err));
     });
   });
+
+  it('sends an sms message longer than 160 characters', done => {
+    simple
+      .mock(twClient, 'sendMessage')
+      .callbackWith(null, { sid: 123, status: 'Success!' });
+
+    Promise.all([
+      Communications.findById(3),
+      Conversations.findById(3),
+    ]).then(([comm, conversation]) => {
+      const body = 'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, supn out, dragged out, seemingly endless, lingering, interminable test message, not a consise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
+
+      Messages.sendOne(comm.commid, body, conversation)
+        .then(messages => {
+          should(twClient.sendMessage.calls.length).be.exactly(1);
+          should(twClient.sendMessage.lastCall.arg.body).equal(body);
+          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
+
+          simple.restore();
+          done();
+        })
+        .catch(err => done(err));
+    });
+  });
+
 });
