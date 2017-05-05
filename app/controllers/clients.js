@@ -202,6 +202,13 @@ module.exports = {
   },
 
   addressCraft(req, res) {
+    const clientId = req.params.client;
+    analyticsService.track(null, 'message_create_view', req, res.locals, {
+      ccc_id: clientId,
+      ccc_active: res.locals.client.active,
+      template_use: (req.query.templateid) ? true : false,
+    });
+
     res.render('clients/address', {
       template: req.query,
     });
