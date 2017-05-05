@@ -98,7 +98,7 @@ describe('Messages model', () => {
       Communications.findById(3),
       Conversations.findById(3),
     ]).then(([comm, conversation]) => {
-      const body = 'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, supn out, dragged out, seemingly endless, lingering, interminable test message, not a consise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
+      const body = 'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, spun out, dragged out, seemingly endless, lingering, interminable test message, not a concise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
