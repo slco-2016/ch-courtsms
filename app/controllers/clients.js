@@ -227,7 +227,7 @@ module.exports = {
   },
 
   addressSubmit(req, res) {
-    const template_use = (req.body.templateid) ? true : false;
+    const templateUse = (req.body.templateid) ? true : false;
     const userId = req.getUser();
     const clientId = req.params.client;
     const subject = req.body.subject;
@@ -240,7 +240,7 @@ module.exports = {
       ccc_active: res.locals.client.active,
       message_length: content.length,
       submitted_from: 'card_form',
-      template_use: template_use,
+      template_use: templateUse,
     });
 
     if (commID) {
@@ -251,7 +251,7 @@ module.exports = {
 
     method.then(() => {
       // log the use of a template if it was used
-      if (template_use) {
+      if (templateUse) {
         Templates.logUse(req.body.templateid, userId, clientId).then().catch();
       }
 
