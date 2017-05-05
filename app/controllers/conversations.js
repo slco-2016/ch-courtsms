@@ -4,30 +4,48 @@ const Conversations = require('../models/conversations');
 const Messages = require('../models/messages');
 const Templates = require('../models/templates');
 const Users = require('../models/users');
-
+const analyticsService = require('../lib/analytics-service');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
 module.exports = {
-
   claimOption(req, res) {
     const conversationId = req.params.conversation;
     const clientId = req.params.client;
+
     Conversations.findByIdsIncludeMessages(conversationId)
-    .then((conversations) => {
-      conversation = conversations[0];
-      if (conversation &&
+      .then(conversations => {
+        conversation = conversations[0];
+        if (
+          conversation &&
           conversation.client == Number(clientId) &&
           conversation.cm == req.user.cmid &&
           !conversation.accepted &&
-          conversation.open) {
-        res.render('capture/conversationClaim', {
-          conversation,
-        });
-      } else {
-        res.notFound();
-      }
-    }).catch(res.error_500);
+          conversation.open
+        ) {
+          analyticsService.track(
+            null,
+            'convo_conflict_alert',
+            req,
+            res.locals,
+            {
+              ccc_id: clientId,
+              ccc_active: res.locals.client.active,
+              messages_all_count: conversation.messages.length,
+              messages_all_ids: conversation.messages
+                .map(m => m.msgid)
+                .join(','),
+            }
+          );
+
+          res.render('capture/conversationClaim', {
+            conversation,
+          });
+        } else {
+          res.notFound();
+        }
+      })
+      .catch(res.error_500);
   },
 
   claim(req, res) {
@@ -37,9 +55,9 @@ module.exports = {
     const accepted = !!req.body.accept;
 
     Conversations.makeClaimDecision(conversationId, userId, clientId, accepted)
-    .then((conversations) => {
-      res.redirect(`/clients/${clientId}/messages`);
-    }).catch(res.error_500);
+      .then(conversations => {
+        res.redirect(`/clients/${clientId}/messages`);
+      })
+      .catch(res.error_500);
   },
-
 };
