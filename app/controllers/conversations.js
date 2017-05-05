@@ -53,9 +53,15 @@ module.exports = {
     const userId = req.user.cmid;
     const clientId = req.params.client;
     const accepted = !!req.body.accept;
+    const label = accepted ? 'convo_conflict_accept' : 'convo_conflict_reject';
 
     Conversations.makeClaimDecision(conversationId, userId, clientId, accepted)
-      .then(conversations => {
+      .then(conversation => {
+        analyticsService.track(null, label, req, res.locals, {
+          ccc_id: clientId,
+          ccc_active: res.locals.client.active,
+        });
+
         res.redirect(`/clients/${clientId}/messages`);
       })
       .catch(res.error_500);

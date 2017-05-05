@@ -393,7 +393,7 @@ class Conversations extends BaseModel {
     if (typeof accepted === 'undefined') {
       accepted = true;
     }
-    accepted = accepted == true;
+    accepted = accepted === true;
 
     return new Promise((fulfill, reject) => {
       db('convos')
