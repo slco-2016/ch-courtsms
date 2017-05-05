@@ -5,17 +5,21 @@ const should = require('should');
 const simple = require('simple-mock');
 
 const twClient = require('../../app/lib/twClient');
+const mailgun = require('../../app/lib/mailgun');
 
 const resourceRequire = require('../../app/lib/resourceRequire');
 const Messages = resourceRequire('models', 'Messages');
 const Communications = resourceRequire('models', 'Communications');
 const Conversations = resourceRequire('models', 'Conversations');
 
-const mock = resourceRequire('lib', 'mock');
-
 describe('Messages model', () => {
+  // the sid is set in seeds.js
   it('sends an email', done => {
-    mock.enable();
+    simple.mock(mailgun, 'sendEmail').resolveWith({
+      id: '<2013FAKE82626.18666.16540@clientcomm.org>',
+      message: 'queued',
+    });
+
     Promise.all([
       Communications.findOneByAttribute('type', 'email'),
       Conversations.findById(1),
@@ -31,13 +35,13 @@ describe('Messages model', () => {
       })
       .then(messages => {
         should.exist(messages[0]);
-        mock.disable();
+        simple.restore();
         done();
       })
       .catch(done);
   });
 
-  it('sends a sms message', done => {
+  it('sends an sms message', done => {
     simple
       .mock(twClient, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });

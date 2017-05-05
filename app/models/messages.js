@@ -539,7 +539,6 @@ class Messages extends BaseModel {
         user = resp;
 
         if (communication.type === 'email') {
-          // TODO: Are we testing this?
           mailgun.sendEmail(
             communication.value,
             user.getClientCommEmail(),
