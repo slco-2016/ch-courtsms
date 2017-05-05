@@ -14,32 +14,21 @@ const Conversations = resourceRequire('models', 'Conversations');
 const mock = resourceRequire('lib', 'mock');
 
 describe('Messages model', () => {
-  // it('Should be able to create client', function(done) {
-  //   Messages.findByUserAndClient()
-  //   .then((client) => {
-  //     client.cm.should.be.exactly(2);
-  //     client.first.should.be.exactly('Joe');
-  //     done();
-  //   }).catch(done);
-  // });
-
-  it('sends a Messages.sendOne email', done => {
+  it('sends an email', done => {
     mock.enable();
-    let communication, conversation;
-    Communications.findOneByAttribute('type', 'email')
-      .then(resp => {
-        communication = resp;
-        return Conversations.findById(1);
+    Promise.all([
+      Communications.findOneByAttribute('type', 'email'),
+      Conversations.findById(1),
+    ])
+      .then(([communication, conversation]) => {
+        return Messages.sendOne(communication.commid, 'hi', conversation);
       })
-      .then(conversation =>
-        Messages.sendOne(communication.commid, 'hi', conversation)
-      )
-      .then(messages =>
-        Messages.where({
+      .then(messages => {
+        return Messages.where({
           content: 'hi',
           tw_sid: '<2013FAKE82626.18666.16540@clientcomm.org>',
-        })
-      )
+        });
+      })
       .then(messages => {
         should.exist(messages[0]);
         mock.disable();
@@ -49,7 +38,8 @@ describe('Messages model', () => {
   });
 
   it('sends a sms message', done => {
-    simple.mock(twClient, 'sendMessage')
+    simple
+      .mock(twClient, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });
 
     Promise.all([
@@ -60,9 +50,9 @@ describe('Messages model', () => {
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
-          twClient.sendMessage.calls.length.should.be.exactly(1);
-          twClient.sendMessage.lastCall.arg.body.should.equal(body);
-          twClient.sendMessage.lastCall.arg.to.should.equal(comm.value);
+          should(twClient.sendMessage.calls.length).be.exactly(1);
+          should(twClient.sendMessage.lastCall.arg.body).equal(body);
+          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
 
           simple.restore();
           done();
@@ -72,7 +62,8 @@ describe('Messages model', () => {
   });
 
   it('sends a multi-line sms message', done => {
-    simple.mock(twClient, 'sendMessage')
+    simple
+      .mock(twClient, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });
 
     Promise.all([
@@ -83,9 +74,9 @@ describe('Messages model', () => {
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
-          twClient.sendMessage.calls.length.should.be.exactly(1);
-          twClient.sendMessage.lastCall.arg.body.should.equal(body);
-          twClient.sendMessage.lastCall.arg.to.should.equal(comm.value);
+          should(twClient.sendMessage.calls.length).be.exactly(1);
+          should(twClient.sendMessage.lastCall.arg.body).equal(body);
+          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
 
           simple.restore();
           done();
@@ -93,6 +84,4 @@ describe('Messages model', () => {
         .catch(err => done(err));
     });
   });
-
-
 });
