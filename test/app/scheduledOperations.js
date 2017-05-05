@@ -3,6 +3,8 @@ const supertest = require('supertest');
 const request = require('request');
 
 const APP = require('../../app/app');
+const simple = require('simple-mock');
+const twClient = require('../../app/lib/twClient');
 
 const Attachments = require('../../app/models/attachments');
 const Messages = require('../../app/models/messages');
@@ -33,8 +35,14 @@ describe('Scheduled operations checks', () => {
 
 
   it('See if there are any planned notifications to be sent', (done) => {
+    simple.mock(twClient, 'sendMessage')
+      .callbackWith(null, { sid: 123, status: 'Success!' });
+
     Notifications.checkAndSendNotifications()
-    .then(done).catch(done);
+    .then(() => {
+      simple.restore();
+      done();
+    }).catch(done);
   });
 
   // TODO: test checking uncleared messages
