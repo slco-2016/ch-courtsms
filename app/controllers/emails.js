@@ -14,10 +14,13 @@ const sms = require('../lib/sms');
 
 const Promise = require('bluebird');
 
-const _updateMessages = (messageId, status, res) => Messages.findManyByTwSid(messageId)
-  .map(message => message.update({ tw_status: status })).then((messages) => {
-    res.send('ok');
-  }).catch(res.error500);
+const _updateMessages = (messageId, status, res) =>
+  Messages.findManyByTwSid(messageId)
+    .map(message => message.update({ tw_status: status }))
+    .then(messages => {
+      res.send('ok');
+    })
+    .catch(res.error500);
 
 module.exports = {
   status(req, res) {
@@ -71,23 +74,29 @@ module.exports = {
       to: JSON.stringify(toAddresses),
       cleanBody,
       messageId,
-    }).then((resp) => {
-      email = resp;
-      return new Promise((fulfill, reject) => {
-        fulfill(attachments);
-      });
-    }).map(attachment => Attachments.createFromMailgunObject(attachment, email)).then(attachments => Communications.getOrCreateFromValue(
-        fromAddress.address,
-        'email'
-      )).then((resp) => {
+    })
+      .then(resp => {
+        email = resp;
+        return new Promise((fulfill, reject) => {
+          fulfill(attachments);
+        });
+      })
+      .map(attachment => Attachments.createFromMailgunObject(attachment, email))
+      .then(attachments =>
+        Communications.getOrCreateFromValue(fromAddress.address, 'email')
+      )
+      .then(resp => {
         communication = resp;
         return Clients.findByCommId(communication.commid);
-      }).then((resp) => {
+      })
+      .then(resp => {
         clients = resp;
         return new Promise((fulfill, reject) => {
           fulfill(toAddresses);
         });
-      }).map(address => Users.findByClientCommEmail(address.address)).then((resp) => {
+      })
+      .map(address => Users.findByClientCommEmail(address.address))
+      .then(resp => {
         users = resp;
 
         users = users.filter(user => user);
@@ -95,35 +104,44 @@ module.exports = {
         return new Promise((fulfill, reject) => {
           fulfill(users);
         });
-      }).map((user) => {
-        const clientsForUser = clients.filter(client => client.cm === user.cmid);
+      })
+      .map(user => {
+        const clientsForUser = clients.filter(
+          client => client.cm === user.cmid
+        );
         return Conversations.retrieveByClientsAndCommunication(
-        clientsForUser,
-        communication
-      );
-      // TODO: I mean, like, maybe?
-      // ).then((conversations) => {
-      //   return Conversations.closeAllWithClientExcept(client, conversationId);
-      // })
-      }).then((listOfListOfConversations) => {
+          clientsForUser,
+          communication
+        );
+        // TODO: I mean, like, maybe?
+        // ).then((conversations) => {
+        //   return Conversations.closeAllWithClientExcept(client, conversationId);
+        // })
+      })
+      .then(listOfListOfConversations => {
         let conversations = [];
-        listOfListOfConversations.forEach((conversationList) => {
+        listOfListOfConversations.forEach(conversationList => {
           conversations = conversations.concat(conversationList);
         });
-        const conversationIds = conversations.map(conversation => conversation.convid);
+        const conversationIds = conversations.map(
+          conversation => conversation.convid
+        );
 
         sentTo = toAddresses.map(address => address.address).join(', ');
 
-        return Messages.insertIntoManyConversations(conversationIds,
-                                                  communication.commid,
-                                                  cleanBody,
-                                                  messageId,
-                                                  'received',
-                                                  sentTo,
-                                                  { emailId: email.id });
-      }).then((messages) => {
+        return Messages.insertIntoManyConversations(
+          conversationIds,
+          communication.commid,
+          cleanBody,
+          messageId,
+          'received',
+          sentTo,
+          { emailId: email.id }
+        );
+      })
+      .then(messages => {
         res.send('ok, thanks');
-      }).catch(res.error500);
+      })
+      .catch(res.error500);
   },
 };
-
