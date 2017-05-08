@@ -76,7 +76,7 @@ module.exports = {
 
   },
 
-  addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber) {
+  addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber, req, locals) {
     return new Promise((fulfill, reject) => {
       let recording, conversations, clients;
 
@@ -99,7 +99,7 @@ module.exports = {
         // track the message
         conversations.forEach(conversation => {
           const methodExisted = (conversation.client) ? true : false;
-          analyticsService.track(null, 'message_receive', req, res.locals, {
+          analyticsService.track(null, 'message_receive', req, locals, {
             ccc_id: conversation.client,
             message_type: 'voice',
             contact_method_description: communication.description,
