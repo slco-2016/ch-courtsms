@@ -37,12 +37,8 @@ module.exports = {
       opts
     );
 
-    // TODO: This should be removed once we are sure receive.clientcomm.org
-    //       is working as expected
-    if (
-      !validationPasses &&
-      (credentials.RECEIVEBACKUPMODE || credentials.CCENV == 'testing')
-    ) {
+    // TODO: should mock validation passing in tests instead of doing this here
+    if (!validationPasses && credentials.CCENV == 'testing') {
       validationPasses = true;
       console.log('Letting tests pass even though validation has failed!'.red);
     }
