@@ -98,14 +98,9 @@ module.exports = {
 
         // track the message
         conversations.forEach(conversation => {
-          let cccId = null;
-          let methodExisted = false;
-          if (conversation.client) {
-            cccId = conversation.client;
-            methodExisted = true;
-          }
+          const methodExisted = (conversation.client) ? true : false;
           analyticsService.track(null, 'message_receive', req, res.locals, {
-            ccc_id: cccId,
+            ccc_id: conversation.client,
             message_type: 'voice',
             contact_method_description: communication.description,
             contact_method_existed: methodExisted,
