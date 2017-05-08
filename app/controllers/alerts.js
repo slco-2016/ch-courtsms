@@ -12,9 +12,9 @@ module.exports = {
           userIds = summary.active.userIds.concat(summary.inactive.userIds);
           analyticsService.track(null, 'message_alert', req, res.locals, {
             messages_unread_count: summary.totalUnread,
-            messages_user_count: summary.active.userCount +
+            messages_ccc_count: summary.active.userCount +
               summary.inactive.userCount,
-            messages_user_ids: userIds.join(','),
+            messages_ccc_ids: userIds.join(','),
           });
         }
         res.json({ newMessageSummary: summary });
