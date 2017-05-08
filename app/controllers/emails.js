@@ -11,6 +11,7 @@ const Messages = require('../models/messages');
 const Users = require('../models/users');
 
 const sms = require('../lib/sms');
+const analyticsService = require('../lib/analytics-service');
 
 const Promise = require('bluebird');
 
@@ -36,14 +37,13 @@ module.exports = {
       res.send('ok, thanks');
     }
   },
+
   webhook(req, res) {
     // mailgun's philosophy here seems to be that if they can populate a
     // section, they will, or they will omit it. This can be very confusing.
     // eg: if there is one recipient they will populate "recipient", but they
     // will populate "reciepients" if there are multiple.
     // would keep this in mind when trusing these values.
-
-    // console.log(req.body)
 
     const domain = req.body.domain;
     const headers = req.body['message-headers'];
@@ -123,12 +123,20 @@ module.exports = {
         listOfListOfConversations.forEach(conversationList => {
           conversations = conversations.concat(conversationList);
         });
-        const conversationIds = conversations.map(
-          conversation => conversation.convid
-        );
 
+        // track the message
+        conversations.forEach(conversation => {
+          const methodExisted = conversation.client ? true : false;
+          analyticsService.track(null, 'message_receive', req, res.locals, {
+            ccc_id: conversation.client,
+            message_type: 'email',
+            contact_method_description: communication.description,
+            contact_method_existed: methodExisted,
+          });
+        });
+
+        const conversationIds = conversations.map(convo => convo.convid);
         sentTo = toAddresses.map(address => address.address).join(', ');
-
         return Messages.insertIntoManyConversations(
           conversationIds,
           communication.commid,
