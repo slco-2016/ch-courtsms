@@ -10,7 +10,8 @@ const twilio = require('twilio');
 const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
 const sms = require('./sms');
-const resourceRequire = require('../lib/resourceRequire');
+const analyticsService = require('./analytics-service');
+const resourceRequire = require('./resourceRequire');
 
 const Communications = resourceRequire('models', 'Communications');
 const Conversations = resourceRequire('models', 'Conversations');
@@ -77,9 +78,7 @@ module.exports = {
 
   addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber) {
     return new Promise((fulfill, reject) => {
-      let recording,
-        conversations,
-        clients;
+      let recording, conversations, clients;
 
       return Recordings.create({
         comm_id: communication.commid,
@@ -96,6 +95,22 @@ module.exports = {
         return Conversations.retrieveByClientsAndCommunication(clients, communication);
       }).then((resp) => {
         conversations = resp;
+
+        // track the message
+        conversations.forEach(conversation => {
+          let cccId = null;
+          let methodExisted = false;
+          if (conversation.client) {
+            cccId = conversation.client;
+            methodExisted = true;
+          }
+          analyticsService.track(null, 'message_receive', req, res.locals, {
+            ccc_id: cccId,
+            message_type: 'voice',
+            contact_method_description: communication.description,
+            contact_method_existed: methodExisted,
+          });
+        });
 
         const conversationIds = conversations.map(conversation => conversation.convid);
 
