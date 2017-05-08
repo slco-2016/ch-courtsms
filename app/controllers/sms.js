@@ -8,6 +8,7 @@ const Users = require('../models/users');
 const colors = require('colors');
 
 const sms = require('../lib/sms');
+const analyticsService = require('../lib/analytics-service');
 
 const credentials = require('../../credentials');
 
@@ -130,6 +131,21 @@ module.exports = {
 
             req.logActivity.client(conversation.client);
             req.logActivity.conversation(conversation.convid);
+
+            // track the message
+            let cccId = null;
+            let methodExisted = false;
+            if (conversation.client) {
+              cccId = conversation.client;
+              methodExisted = true;
+            }
+            analyticsService.track(null, 'message_receive', req, res.locals, {
+              ccc_id: cccId,
+              message_type: 'text',
+              message_length: text.length,
+              contact_method_description: communication.description,
+              contact_method_existed: methodExisted,
+            });
           });
 
           // Send a blank response
