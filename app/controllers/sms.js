@@ -133,14 +133,9 @@ module.exports = {
             req.logActivity.conversation(conversation.convid);
 
             // track the message
-            let cccId = null;
-            let methodExisted = false;
-            if (conversation.client) {
-              cccId = conversation.client;
-              methodExisted = true;
-            }
+            const methodExisted = (conversation.client) ? true : false;
             analyticsService.track(null, 'message_receive', req, res.locals, {
-              ccc_id: cccId,
+              ccc_id: conversation.client,
               message_type: 'text',
               message_length: text.length,
               contact_method_description: communication.description,
