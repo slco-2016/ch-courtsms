@@ -136,7 +136,7 @@ module.exports = {
             const methodExisted = (conversation.client) ? true : false;
             analyticsService.track(null, 'message_receive', req, res.locals, {
               ccc_id: conversation.client,
-              message_type: 'text',
+              message_medium: 'text',
               message_length: text.length,
               contact_method_description: communication.description,
               contact_method_existed: methodExisted,
