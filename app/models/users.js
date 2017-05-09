@@ -1,5 +1,4 @@
-
-
+const credentials = require('../../credentials');
 // Libraries
 const db = require('../../app/db');
 const Promise = require('bluebird');
@@ -7,7 +6,7 @@ const Promise = require('bluebird');
 // Utilities
 const BaseModel = require('../lib/models').BaseModel;
 const bcrypt = require('bcrypt-nodejs');
-
+const url = require('url');
 
 const CommConns = require('./commConns');
 
@@ -40,15 +39,18 @@ class Users extends BaseModel {
   }
 
   static clientCommEmail(email) {
+    /* Construct an email alias that can be mapped back to this user.
+
+       Example: bob@example.com => bob.example@staging.clientcomm.org
+    */
     const parts = email.split('@');
-
     const emailName = parts[0];
-
-    const domainParts = parts[1].split('.');
+    const domainParts = parts[1].split('.'); // ['good', 'example', 'com']
     domainParts.pop();
-    const emailOrg = domainParts.join('.'); // foo.bar.com
+    const emailOrg = domainParts.join('.'); // 'good.example'
+    const domain = url.parse(credentials.baseUrl).hostname;
 
-    return `${emailName}.${emailOrg}@clientcomm.org`;
+    return `${emailName}.${emailOrg}@${domain}`;
   }
 
   static getClients() {
@@ -82,7 +84,7 @@ class Users extends BaseModel {
 
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
-      // Example: joanne@slco.org => joanne.slco@clientcomm.org
+      // Example: bob@example.com => bob.example@clientcomm.org
       const usernameParts = email.split('@')[0].split('.');
       const host = usernameParts.pop();
       const username = usernameParts.join('.');
