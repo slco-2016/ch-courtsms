@@ -58,7 +58,7 @@ describe('User model', () => {
   });
 
   it('gets user when clientcomm email includes instance name', (done) => {
-    const email = 'Owner.test+instancename@clientcomm.org';
+    const email = 'Owner.test@instancename.clientcomm.org';
     Users.findByClientCommEmail(email)
     .then((user) => {
       user.cmid.should.be.exactly(1);

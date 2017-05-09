@@ -40,7 +40,7 @@ class Users extends BaseModel {
   static clientCommEmail(email) {
     /* Construct an email alias that can be mapped back to this user.
 
-       Example: bob@example.com => bob.example+staging@clientcomm.org
+       Example: bob@example.com => bob.example@staging.clientcomm.org
     */
     const parts = email.split('@');
     const emailName = parts[0];
@@ -49,7 +49,7 @@ class Users extends BaseModel {
     const emailOrg = domainParts.join('.'); // 'good.example'
     const instanceName = credentials.clientcommInstanceName;
 
-    return `${emailName}.${emailOrg}+${instanceName}@clientcomm.org`;
+    return `${emailName}.${emailOrg}@${instanceName}.clientcomm.org`;
   }
 
   static getClients() {
@@ -84,10 +84,7 @@ class Users extends BaseModel {
   static findByClientCommEmail(email) {
     return new Promise((fulfill, reject) => {
       // Example: bob@example.com => bob.example@clientcomm.org
-      // if an instance name is part of the address, discard it
-      // Example: bob.example+name@clientcomm.org => bob.example@clientcomm.org
-      const stripped = email.replace(/\+[a-z]+@/, "@");
-      const usernameParts = stripped.split('@')[0].split('.');
+      const usernameParts = email.split('@')[0].split('.');
       const host = usernameParts.pop();
       const username = usernameParts.join('.');
       let addressPart = `${username}@${host}`;
