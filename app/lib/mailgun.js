@@ -2,12 +2,13 @@ const resourceRequire = require('./resourceRequire');
 
 const request = require('request');
 const Promise = require('bluebird');
+const url = require('url');
 
 const credentials = require('../../credentials');
 
 const mailgun = require('mailgun-js')({
   apiKey: credentials.mailgun.apiKey,
-  domain: (process.env.CCMAILGUNDOMAIN || 'clientcomm.org'),
+  domain: url.parse(credentials.baseUrl).hostname,
 });
 
 const mock = resourceRequire('lib', 'mock');

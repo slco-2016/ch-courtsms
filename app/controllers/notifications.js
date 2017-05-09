@@ -1,7 +1,7 @@
 const Notifications = require('../models/notifications');
 const Clients = require('../models/clients');
 const Templates = require('../models/templates');
-
+const analyticsService = require('../lib/analytics-service');
 const moment = require('moment');
 const momentTz = require('moment-timezone');
 
@@ -77,35 +77,47 @@ module.exports = {
   },
 
   create(req, res) {
-    const user = req.getUser();
-    const client = req.body.clientID;
-    const comm = req.body.commID === '' ? null : req.body.commID;
+    const userId = req.getUser();
+    const clientId = req.body.clientID;
+    const commId = req.body.commID === '' ? null : req.body.commID;
     const subject = !req.body.subject ? '' : req.body.subject;
     const message = req.body.message;
+    const templateUse = req.body.templateid ? true : false;
     const send = moment(req.body.sendDate)
-                    .startOf('day')
-                    .add(Number(req.body.sendHour), 'hours')
-                    .add(6, 'hours') // temp hack to ensure MST (TODO: Fix this!!)
-                    // .tz(res.locals.organization.tz)
-                    .format('YYYY-MM-DD HH:mm:ss');
+      .startOf('day')
+      .add(Number(req.body.sendHour), 'hours')
+      .add(6, 'hours') // temp hack to ensure MST (TODO: Fix this!!)
+      // .tz(res.locals.organization.tz)
+      .format('YYYY-MM-DD HH:mm:ss');
 
-    Notifications.create(
-                    user,
-                    client,
-                    comm,
-                    subject,
-                    message,
-                    send
-    ).then(() => {
-      // log the use of a template if it exists
-      const templateId = req.body.templateid;
-      if (templateId) {
-        Templates.logUse(templateId, user, client).then().catch();
-      }
+    Promise.all([
+      Clients.findById(clientId),
+      Notifications.create(userId, clientId, commId, subject, message, send),
+    ])
+      .then(([client, notification]) => {
 
-      req.flash('success', 'Created new notification.');
-      res.redirect('/notifications');
-    }).catch(res.error500);
+        analyticsService.track(null, 'notification_create', req, res.locals, {
+          ccc_id: clientId,
+          ccc_active: client.active,
+          template_use: templateUse,
+          notification: true,
+          notification_id: notification.notificationid,
+          notification_subject_length: subject.length,
+          notification_message_length: message.length,
+          notification_date_scheduled: send,
+        });
+
+        // log the use of a template if it exists
+        if (templateUse) {
+          Templates.logUse(req.body.templateid, userId, clientId)
+            .then()
+            .catch();
+        }
+
+        req.flash('success', 'Created new notification.');
+        res.redirect('/notifications');
+      })
+      .catch(res.error500);
   },
 
   edit(req, res) {

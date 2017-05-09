@@ -1,6 +1,7 @@
 // DEPENDENCIES
 const bcrypt = require('bcrypt-nodejs');
 const credentials = require('../../credentials');
+const analyticsService = require('./analytics-service');
 
 module.exports = {
 
@@ -9,6 +10,9 @@ module.exports = {
     if (req.isAuthenticated() || realsuper) {
       return next();
     }
+
+    analyticsService.track(null, 'login_error', req, res.locals, {});
+
     req.flash('warning', 'Please log in for access.');
     res.redirect('/login');
   },

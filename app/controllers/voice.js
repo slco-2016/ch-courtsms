@@ -30,8 +30,7 @@ module.exports = {
       fromNumber = `1${fromNumber}`;
     }
     const twilioResponse = new twilio.TwimlResponse();
-    let communication,
-      organizationNumber;
+    let communication, organizationNumber;
 
     Organizations.findOneByPhone(toNumber)
     .then((resp) => {
@@ -109,13 +108,14 @@ module.exports = {
         ovm = resp;
 
         // If we have an OVM, then we should get its notification and
-        // set it's status to sent as well as create a recording object
+        // set its status to sent as well as create a recording object
         // and new message + conversation for that client-user pairing.
 
         // if we do not have an ovm, then it does not exist in the database
         // TODO: Would this ever happen? Should we keep it?
 
-        // We also need to make sure that 2 tries or 30 (1800000 milliseconds) minutes have passed
+        // We also need to make sure that 2 tries or 30 (1800000 milliseconds)
+        // minutes have passed
         const rightNow = new Date().getTime();
         const ovmDeliveryDate = new Date(ovm.delivery_date).getTime();
         const enoughTimeHasPassed = rightNow - 1800000 > ovmDeliveryDate;
@@ -211,8 +211,6 @@ module.exports = {
   },
 
   save(req, res) {
-    // console.log('Recording save req.body from Twilio\n', req.body);
-
     const type = req.query.type;
     if (!type) {
       return res.error500(new Error('save-recording needs a recording type'));
@@ -259,12 +257,15 @@ module.exports = {
             const recordingKey = key;
             const communicationObj = communication;
 
-            // Needed to proceed
-            // communication obj
-            // key (recording_key)
-            // RecordingSid
-            // toNumber (10 digit)
-            return voice.addInboundRecordingAndMessage(communicationObj, recordingKey, recordingSid, toNumber);
+            // passing req & res.locals so we can track with detail
+            return voice.addInboundRecordingAndMessage(
+                communicationObj,
+                recordingKey,
+                recordingSid,
+                toNumber,
+                req,
+                res.locals
+              );
           }
         });
       }
