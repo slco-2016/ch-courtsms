@@ -46,7 +46,9 @@
         <div class="message <% if (showWarning) { %>warning<% } %> <%= message.inbound ? 'inbound' : 'outbound' %>"
               <% if (messageIndex == messages.length - 1) { %>id="lastMessage"<% } %>>
           <div class="content">
-            <%= message.content %>
+            <% message.content.split('\n').forEach((line) => { %>
+              <%= line %><br/>
+            <% }) %>
 
             <% message.attachments.forEach((attachment) => { %>
               <div class="viewAttachment">
