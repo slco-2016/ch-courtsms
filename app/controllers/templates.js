@@ -1,4 +1,5 @@
 const Templates = require('../models/templates');
+const analyticsService = require('../lib/analytics-service');
 
 module.exports = {
 
@@ -24,6 +25,13 @@ module.exports = {
     const userID = req.user.cmid;
     const title = req.body.title;
     const content = req.body.content;
+
+    analyticsService.track(null, 'template_create', req, res.locals, {
+      template_subject_length: title.length,
+      template_message_length: content.length,
+      template_use: true,
+    });
+
     Templates.insertNew(orgID, userID, title, content)
     .then(() => {
       req.flash('success', 'Created new template.');

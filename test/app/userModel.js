@@ -9,8 +9,8 @@ const should = require('should');
 
 // http://mherman.org/blog/2016/04/28/test-driven-development-with-node/
 
-describe('User checks', () => {
-  it('Should be able to get user by Id', (done) => {
+describe('User model', () => {
+  it('gets user by Id', (done) => {
     Users.findByID(1).then((user) => {
       user.cmid.should.be.exactly(1);
       user.email.should.be.exactly('owner@test.com');
@@ -31,7 +31,7 @@ describe('User checks', () => {
     }).catch(done);
   });
 
-  it('Should be able to query for multiple users at once', (done) => {
+  it('queries for multiple users at once', (done) => {
     Users.findByIds([1, 2, 3])
     .then((users) => {
       users.length.should.be.exactly(3);
@@ -39,7 +39,7 @@ describe('User checks', () => {
     }).catch(done);
   });
 
-  it('Should be able to get user by Email', (done) => {
+  it('gets user by Email', (done) => {
     Users.findByEmail('owner@test.com').then((user) => {
       user.cmid.should.be.exactly(1);
       done();
@@ -48,7 +48,7 @@ describe('User checks', () => {
     });
   });
 
-  it('Should be able to get user by clientcomm email', (done) => {
+  it('gets user by clientcomm email', (done) => {
     const email = 'Owner.test@clientcomm.org';
     Users.findByClientCommEmail(email)
     .then((user) => {
@@ -57,7 +57,16 @@ describe('User checks', () => {
     }).catch(done);
   });
 
-  it('Should return null for user that doesn\'t exist', (done) => {
+  it('gets user when clientcomm email includes instance name', (done) => {
+    const email = 'Owner.test@instancename.clientcomm.org';
+    Users.findByClientCommEmail(email)
+    .then((user) => {
+      user.cmid.should.be.exactly(1);
+      done();
+    }).catch(done);
+  });
+
+  it('returns null for user that does not exist', (done) => {
     Users.findByID(80085).then((user) => {
       should.not.exist(user);
       done();
