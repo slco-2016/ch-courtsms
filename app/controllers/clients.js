@@ -202,6 +202,13 @@ module.exports = {
   },
 
   addressCraft(req, res) {
+    const clientId = req.params.client;
+    analyticsService.track(null, 'message_create_view', req, res.locals, {
+      ccc_id: clientId,
+      ccc_active: res.locals.client.active,
+      template_use: (req.query.templateid) ? true : false,
+    });
+
     res.render('clients/address', {
       template: req.query,
     });
@@ -220,28 +227,35 @@ module.exports = {
   },
 
   addressSubmit(req, res) {
-    const user = req.getUser();
-
-    const client = req.params.client;
+    const templateUse = (req.body.templateid) ? true : false;
+    const userId = req.getUser();
+    const clientId = req.params.client;
     const subject = req.body.subject;
     const content = req.body.content;
     const commID = req.body.commID == 'null' ? null : req.body.commID;
     let method;
 
+    analyticsService.track(null, 'message_submit', req, res.locals, {
+      ccc_id: clientId,
+      ccc_active: res.locals.client.active,
+      message_length: content.length,
+      submitted_from: 'card_form',
+      template_use: templateUse,
+    });
+
     if (commID) {
-      method = Messages.startNewConversation(user, client, subject, content, commID);
+      method = Messages.startNewConversation(userId, clientId, subject, content, commID);
     } else {
-      method = Messages.smartSend(user, client, subject, content);
+      method = Messages.smartSend(userId, clientId, subject, content);
     }
 
     method.then(() => {
-      // log the use of a template if it exists
-      const templateId = req.body.templateid;
-      if (templateId) {
-        Templates.logUse(templateId, user, client).then().catch();
+      // log the use of a template if it was used
+      if (templateUse) {
+        Templates.logUse(req.body.templateid, userId, clientId).then().catch();
       }
 
-      req.logActivity.client(client);
+      req.logActivity.client(clientId);
       req.flash('success', 'Message to client sent.');
       res.levelSensitiveRedirect('/clients');
     }).catch(res.error500);
@@ -354,19 +368,27 @@ module.exports = {
   },
 
   messagesSubmit(req, res) {
-    const user = req.getUser();
-    const client = req.params.client;
+    const userId = req.getUser();
+    const clientId = req.params.client;
     const subject = 'New Conversation';
     const content = req.body.content;
     const commID = req.body.commID;
     let conversation;
 
-    Conversations.getMostRecentConversation(user, client)
+    analyticsService.track(null, 'message_submit', req, res.locals, {
+      ccc_id: clientId,
+      ccc_active: res.locals.client.active,
+      message_length: content.length,
+      submitted_from: 'footer_form',
+      template_use: false,
+    });
+
+    Conversations.getMostRecentConversation(userId, clientId)
     .then((resp) => {
       conversation = resp;
       if (conversation) {
         const conversationId = conversation.convid;
-        return Conversations.closeAllWithClientExcept(client, conversationId);
+        return Conversations.closeAllWithClientExcept(clientId, conversationId);
       }
       return new Promise((fulfill, reject) => {
         fulfill();
@@ -385,17 +407,17 @@ module.exports = {
       if (conversation && recentOkay) {
         Messages.sendOne(commID, content, conversation)
         .then(() => {
-          req.logActivity.client(client);
+          req.logActivity.client(clientId);
           req.logActivity.conversation(conversation.convid);
-          res.levelSensitiveRedirect(`/clients/${client}/messages`);
+          res.levelSensitiveRedirect(`/clients/${clientId}/messages`);
         }).catch(res.error500);
 
       // Otherwise create a new conversation
       } else {
-        Conversations.create(user, client, subject, true)
+        Conversations.create(userId, clientId, subject, true)
         .then(conversation => Messages.sendOne(commID, content, conversation)).then(() => {
-          req.logActivity.client(client);
-          res.levelSensitiveRedirect(`/clients/${client}/messages`);
+          req.logActivity.client(clientId);
+          res.levelSensitiveRedirect(`/clients/${clientId}/messages`);
         }).catch(res.error500);
       }
     }).catch(res.error500);
@@ -517,6 +539,12 @@ module.exports = {
       return Messages.findTranscriptBetweenUserAndClient(user.cmid, req.params.client);
     }).then((resp) => {
       messages = resp;
+
+      analyticsService.track(null, 'transcript_download', req, res.locals, {
+        ccc_id: client.clid,
+        ccc_active: res.locals.client.active,
+        messages_all_count: messages.length,
+      });
 
       // get org time zone
       return Organizations.findById(req.user.org);
