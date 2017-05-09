@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 // Utilities
 const BaseModel = require('../lib/models').BaseModel;
 const bcrypt = require('bcrypt-nodejs');
+const url = require('url');
 
 const CommConns = require('./commConns');
 
@@ -47,9 +48,9 @@ class Users extends BaseModel {
     const domainParts = parts[1].split('.'); // ['good', 'example', 'com']
     domainParts.pop();
     const emailOrg = domainParts.join('.'); // 'good.example'
-    const instanceName = credentials.clientcommInstanceName;
+    const domain = url.parse(credentials.baseUrl).hostname;
 
-    return `${emailName}.${emailOrg}@${instanceName}.clientcomm.org`;
+    return `${emailName}.${emailOrg}@${domain}`;
   }
 
   static getClients() {
