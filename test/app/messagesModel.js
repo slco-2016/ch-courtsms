@@ -15,8 +15,10 @@ const Conversations = resourceRequire('models', 'Conversations');
 describe('Messages model', () => {
   // the sid is set in seeds.js
   it('sends an email', done => {
+    const testSid = '<2013FAKE82626.18666.16540@clientcomm.org>';
+    const testContent = 'hello world';
     simple.mock(mailgun, 'sendEmail').resolveWith({
-      id: '<2013FAKE82626.18666.16540@clientcomm.org>',
+      id: testSid,
       message: 'queued',
     });
 
@@ -25,16 +27,22 @@ describe('Messages model', () => {
       Conversations.findById(1),
     ])
       .then(([communication, conversation]) => {
-        return Messages.sendOne(communication.commid, 'hi', conversation);
+        return Messages.sendOne(
+          communication.commid,
+          testContent,
+          conversation
+        );
       })
-      .then(messages => {
+      .then(() => {
         return Messages.where({
-          content: 'hi',
-          tw_sid: '<2013FAKE82626.18666.16540@clientcomm.org>',
+          content: testContent,
+          tw_sid: testSid,
         });
       })
       .then(messages => {
         should.exist(messages[0]);
+        should(mailgun.sendEmail.calls.length).be.exactly(1);
+        should(mailgun.sendEmail.lastCall.args).containEql(testContent);
         simple.restore();
         done();
       })
@@ -98,7 +106,8 @@ describe('Messages model', () => {
       Communications.findById(3),
       Conversations.findById(3),
     ]).then(([comm, conversation]) => {
-      const body = 'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, spun out, dragged out, seemingly endless, lingering, interminable test message, not a concise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
+      const body =
+        'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, spun out, dragged out, seemingly endless, lingering, interminable test message, not a concise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
@@ -112,5 +121,4 @@ describe('Messages model', () => {
         .catch(err => done(err));
     });
   });
-
 });
