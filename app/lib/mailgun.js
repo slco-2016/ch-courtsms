@@ -27,32 +27,26 @@ mailgunWebhookUpdate = (name, url, callback) => {
 module.exports = {
   sendEmail(to, from, subject, content) {
     return new Promise((fulfill, reject) => {
-      if (mock.isEnabled()) {
-        fulfill({
-          id: '<2013FAKE82626.18666.16540@clientcomm.org>',
-          message: 'queued',
-        });
-      } else {
-        mailgun.messages().send({
-          from,
-          to,
-          subject,
-          html: content,
-          'o:tracking-opens': 1,
-        }, (error, body) => {
-          if (error) {
-            reject(error);
-          } else {
-            console.log(body);
-            if (body.message === 'Queued. Thank you.') {
-              body.message = 'queued';
-            }
-            fulfill(body);
+      mailgun.messages().send({
+        from,
+        to,
+        subject,
+        html: content,
+        'o:tracking-opens': 1,
+      }, (error, body) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log(body);
+          if (body.message === 'Queued. Thank you.') {
+            body.message = 'queued';
           }
-        });
-      }
+          fulfill(body);
+        }
+      });
     });
   },
+
   updateWebhooks(hostUrl) {
     return new Promise((fulfill, reject) => {
       mailgunWebhookUpdate(

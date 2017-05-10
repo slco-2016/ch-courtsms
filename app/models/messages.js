@@ -1,7 +1,5 @@
 // SECRET STUFF
 const {
-  accountSid: ACCOUNT_SID,
-  authToken: AUTH_TOKEN,
   CCENV,
 } = require('../../credentials');
 
@@ -9,7 +7,7 @@ const {
 const db = require('../../app/db');
 const Promise = require('bluebird');
 const moment = require('moment');
-const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
+const twClient = require('../lib/twClient');
 
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
@@ -531,7 +529,6 @@ class Messages extends BaseModel {
       // reference variables
       let user;
       let communication;
-      const contentArray = content.match(/.{1,1599}/g);
 
       Communications.findById(commId)
       .then((resp) => {
@@ -542,7 +539,6 @@ class Messages extends BaseModel {
         user = resp;
 
         if (communication.type === 'email') {
-          // TODO: Are we testing this?
           mailgun.sendEmail(
             communication.value,
             user.getClientCommEmail(),
@@ -563,35 +559,25 @@ class Messages extends BaseModel {
           }).then((departmentPhoneNumber) => {
             const sentFromValue = departmentPhoneNumber.value;
 
-            contentArray.forEach((contentPortion, contentIndex) => {
-              // TODO: Remove when we're stubbing twilio methods
-              if (CCENV === 'testing') {
-                return fulfill();
+            twClient.sendMessage({
+              to: communication.value,
+              from: sentFromValue,
+              body: content,
+            }, (err, msg) => {
+              if (err) {
+                return reject(err);
               }
-
-              twClient.sendMessage({
-                to: communication.value,
-                from: sentFromValue,
-                body: content,
-              }, (err, msg) => {
-                if (err) {
-                  return reject(err);
-                }
-
-                const MessageSid = msg.sid;
-                const MessageStatus = msg.status;
-                Messages.create(
-                  conversation.convid,
-                  commId,
-                  contentPortion,
-                  MessageSid,
-                  MessageStatus
-                ).then(() => {
-                  if (contentIndex == contentArray.length - 1) {
-                    fulfill();
-                  }
-                }).catch(reject);
-              });
+              const MessageSid = msg.sid;
+              const MessageStatus = msg.status;
+              Messages.create(
+                conversation.convid,
+                commId,
+                content,
+                MessageSid,
+                MessageStatus
+              ).then(() => {
+                fulfill();
+              }).catch(reject);
             });
           }).catch(reject);
         }
