@@ -33,7 +33,7 @@
         action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications/create`%>">
 
     <div class="formRow">
-      <div class="formLabel"> Title </div>
+      <div class="formLabel"> Name (ex: cell, sister's phone)</div>
       <div class="formInput">
         <input type="text" name="description" value="<%= commConn.name %>" maxlength="30" required>
       </div>
