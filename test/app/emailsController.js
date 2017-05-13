@@ -11,7 +11,7 @@ const Communications = require('../../app/models/communications');
 
 const mailgun = require('../../app/lib/mailgun');
 
-const mailgunAgent = supertest.agent(APP);
+const testClient = supertest.agent(APP);
 
 const emailData = require('../data/testEmailData');
 const mailgunWebhookDelivered = require('../data/mailgunWebhookDelivered');
@@ -22,7 +22,7 @@ const mailgunWebhookOpen = require('../data/mailgunWebhookOpen');
 
 describe('Email endpoint', () => {
   it('should accept a new email', (done) => {
-    mailgunAgent.post('/webhook/email')
+    testClient.post('/webhook/email')
       .send(emailData)
       .expect(200)
       .end((err, res) => {
@@ -52,7 +52,7 @@ describe('Email endpoint', () => {
   });
 
   it('should be able to update email status to opened', (done) => {
-    mailgunAgent.post('/webhook/email/status')
+    testClient.post('/webhook/email/status')
       .send(mailgunWebhookOpen)
       .expect(200)
       .end((err, res) => {
@@ -69,7 +69,7 @@ describe('Email endpoint', () => {
   });
 
   it('should be able to update email status to delivered', (done) => {
-    mailgunAgent.post('/webhook/email/status')
+    testClient.post('/webhook/email/status')
       .send(mailgunWebhookDelivered)
       .expect(200)
       .end((err, res) => {
