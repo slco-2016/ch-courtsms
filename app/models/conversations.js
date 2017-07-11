@@ -62,8 +62,8 @@ class Conversations extends BaseModel {
       Conversations.findByCommunicationValue(value)
       .then((conversations) => {
         conversations = conversations.filter((conversation) => {
-          const notAccepted = conversation.accepted == false;
-          const stillOpen = conversation.open == true;
+          const notAccepted = conversation.accepted === false;
+          const stillOpen = conversation.open === true;
           return stillOpen && notAccepted;
         });
         const conversationIds = conversations.map(conversation => conversation.convid);
@@ -283,9 +283,9 @@ class Conversations extends BaseModel {
     });
   }
 
-  static findByClientAndUserInvolvingSpecificCommId(clients, communication) {
+  static findByClientAndUserInvolvingSpecificComm(clients, communication) {
     // clients is an array of client objects
-    // communicatiosn is an object representing a single communication row
+    // communication is an object representing a single communication row
     const clientIds = clients.map(client => client.clid);
     const userIds = clients.map(client => client.cm);
     const commId = communication.commid;
@@ -418,7 +418,7 @@ class Conversations extends BaseModel {
     return new Promise((fulfill, reject) => {
       let conversations;
       // Get the conversations that are possible candidates
-      this.findByClientAndUserInvolvingSpecificCommId(
+      this.findByClientAndUserInvolvingSpecificComm(
         clients, communication
       ).then((resp) => {
         conversations = resp;

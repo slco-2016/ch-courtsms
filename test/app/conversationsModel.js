@@ -2,6 +2,7 @@ const assert = require('assert');
 
 const Conversations = require('../../app/models/conversations');
 const Clients = require('../../app/models/clients');
+const Communications = require('../../app/models/communications');
 
 require('colors');
 const should = require('should');
@@ -26,9 +27,15 @@ describe('Conversations checks', () => {
   });
 
   it('entering clients and commid should return a list of conversations on search', (done) => {
-    Clients.findAllByUsers(2)
-    .then(clients => Conversations.findByClientAndUserInvolvingSpecificCommId(clients, 1)).then((conversations) => {
-      conversations.forEach((conversation) => {
+    let communication;
+    Communications.findById(1)
+    .then(resp => {
+      communication = resp;
+      return Clients.findAllByUsers(2);
+    }).then(clients => {
+      return Conversations.findByClientAndUserInvolvingSpecificComm(clients, communication);
+    }).then(conversations => {
+      conversations.forEach(conversation => {
         conversation.cm.should.be.exactly(2);
       });
       done();
