@@ -144,9 +144,9 @@ module.exports = {
           });
 
           // Send a blank response
-          const twilioResponse = new twilio.TwimlResponse();
-          res.send(twilioResponse.toString());
-        });
+          const emptyResponse = new twilio.twiml.MessagingResponse().toString();
+          res.send(emptyResponse);
+        }).catch(res.error500);
     } else {
       res.status(403).send('You are not Twilio. Buzz off.');
     }
