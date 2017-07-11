@@ -21,7 +21,6 @@ describe('Conversations checks', () => {
     Clients.findAllByUsers(2)
     .then((clients) => {
       // no idea what we should do at this point
-      // console.log(clients.length);
       done();
     }).catch(done);
   });
@@ -55,8 +54,10 @@ describe('Conversations checks', () => {
 
   it('create a new conversation if older than preset time', (done) => {
     const currentDate = new Date();
-    Conversations.createNewIfOlderThanSetHours([1], 24)
-    .then((conversations) => {
+    Conversations.findById(1)
+    .then(convo => {
+      return Conversations.createNewIfOlderThanSetHours([convo], 24);
+    }).then(conversations => {
       conversations.forEach((conversation) => {
         const conversationDate = new Date(conversation.updated);
         const difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours
@@ -70,8 +71,10 @@ describe('Conversations checks', () => {
 
   it('create new if older than should work even if hours is not set, should default to 24 hrs', (done) => {
     const currentDate = new Date();
-    Conversations.createNewIfOlderThanSetHours([1])
-    .then((conversations) => {
+    Conversations.findById(1)
+    .then(convo => {
+      return Conversations.createNewIfOlderThanSetHours([convo]);
+    }).then((conversations) => {
       conversations.forEach((conversation) => {
         const conversationDate = new Date(conversation.updated);
         const difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours

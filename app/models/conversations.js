@@ -175,7 +175,7 @@ class Conversations extends BaseModel {
           const recentlyActive = timeLapsed < Number(hourThreshold); // active conversations are less than a day olf
 
           if (recentlyActive) {
-            fulfill(conversation);
+            fulfill([conversation]);
           } else {
             const userId = conversation.cm;
             const clientId = conversation.client;
