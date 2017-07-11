@@ -113,7 +113,7 @@ class Conversations extends BaseModel {
       open = true;
     }
     return new Promise((fulfill, reject) => {
-      Conversations.closeAllBetweenClientAndUser(userId)
+      Conversations.closeAllBetweenClientAndUser(userId, clientId)
       .then(() => db('convos')
           .insert({
             cm: userId,

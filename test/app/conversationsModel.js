@@ -10,7 +10,7 @@ const should = require('should');
 describe('Conversations checks', () => {
   it('Should be able to create conversation', (done) => {
     Conversations.create(2, 1, 'Foobar', true)
-    .then((conversation) => {
+    .then(conversation => {
       conversation.cm.should.be.exactly(2);
       conversation.accepted.should.be.exactly(true);
       done();
@@ -42,7 +42,7 @@ describe('Conversations checks', () => {
     }).catch(done);
   });
 
-  it('user findById should return single result with key columns as obj keys', (done) => {
+  it('conversation findById should return single result with key columns as obj keys', (done) => {
     Conversations.findById(1)
     .then((conversation) => {
       conversation.hasOwnProperty('client').should.be.exactly(true);
