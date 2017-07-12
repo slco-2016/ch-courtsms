@@ -39,16 +39,13 @@
     "passport-local": "~1.0.0",
     "pg": "~4.5.5",
     "pkginfo": "^0.4.0",
-    "snyk": "^1.36.2",
     "twilio": "^3.4.0",
     "uuid": "^3.0.1"
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
     "coverage": "CCENV=testing istanbul cover _mocha test/app/",
-    "test": "snyk test && CCENV=testing mocha test/app/",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "test": "CCENV=testing mocha test/app/"
   },
   "devDependencies": {
     "eslint": "^3.7.1",
@@ -75,6 +72,5 @@
     "twilio",
     "case management",
     "communications"
-  ],
-  "snyk": true
+  ]
 }
