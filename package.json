@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
-    "test": "CCENV=testing mocha ./test/app/_init.js ./test/app/"
+    "test": "CCENV=testing mocha -C ./test/app/_init.js ./test/app/"
   },
   "devDependencies": {
     "eslint": "^3.7.1",
@@ -50,7 +50,6 @@
     "eslint-plugin-import": "^2.2.0",
     "gulp": "3.9.1",
     "gulp-sass": "2.3.2",
-    "istanbul": "^0.4.5",
     "knex-seed-file": "^0.1.4",
     "mocha": "^3.0.2",
     "ngrok": "^2.2.7",
