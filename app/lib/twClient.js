@@ -2,8 +2,8 @@ const {
   accountSid: ACCOUNT_SID,
   authToken: AUTH_TOKEN,
 } = require('../../credentials');
-
-const twilio = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
+const twilio = require('twilio');
+const twClient = new twilio(ACCOUNT_SID, AUTH_TOKEN);
 
 /*
  This module wraps twilio for the purpose of allowing the underlying methods to be stubbed in test.
@@ -12,7 +12,9 @@ const twilio = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
 
    const simple = require('simple-mock');
    simple.mock(twClient, 'sendMessage')
-*/
+ */
+
+
 module.exports = {
-  sendMessage: twilio.sendMessage,
+  sendMessage: twClient.sendMessage,
 };
