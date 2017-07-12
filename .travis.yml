@@ -1,19 +1,26 @@
 language: node_js
 node_js:
-- '6'
+  - '6'
+env:
+  - CXX=g++-4.8
 addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
   postgresql: '9.4'
 install:
-- npm install -g codecov istanbul
-- npm install
+  - npm install -g codecov istanbul
+  - npm install
 before_script:
-- mv exampleCredentials.js credentials.js
-- createdb cctest
+  - mv exampleCredentials.js credentials.js
+  - createdb cctest
 script:
-- CCENV=testing istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly test/app/
-- codecov
+  - CCENV=testing istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly test/app/
+  - codecov
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
 notifications:
   slack:
     secure: xJ3K6pTRE7xHNOovP7mG1Q/dU3D0lX6gkLA562vAo4FHBKJoX5BFdNt6pkm0oS0Zt2WybR6G2A+FGSN8nCgt/nB/frGaIjIitYuXw8agIv/sZ0mhof6D61gFFrkqKPJ/NEA//VSFlBK5FSiWVUacxistSStjsmBlZPLerzPwf1kI3DYG/DV8pFtMUHf0A+iC9vSc5uZCiv3VCKQw4x1C46aNRAEhGqucxlIBBaXleOGJQ+LjHhaHBZwamAw3JpM9rqHESpiVPXgOwCRBmt71KVyfhQ7O2gGM35tmLycr0ewKpTjbm9SZx2wZACXfKnhTufbFaG7G8K8TA9sNX1JLasZfOunZQ7I+yqMBqimlj7SmoOVmTmonSppE9QAmAf8+qZd+dmdbw9vIuXNC32q5qowcaYjFUKVzIbfGywzO+RYRSV/kIPzqQkEtP2o9w9abp9Rgbyo7qYoMK7wb0ysJswmdVypT9sGHTDTxtqUS1GlHLRylNpt7rjyYsOrW58EjjL1CWEgdvRLttc55f/pzc2xKGs3d+H/zPRjWq1LAkS8vDfk1vhDM59OMtQj2/vli/satYI6kAy067dqe5z3r1/VhLzKkcQqGwKk0z6psenAcu5zS8S8AITmp/nYMsquz6v+lU0il1AgtklX9AiMYMe7VhWKuksdiF/IMvDJT0y8=
