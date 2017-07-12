@@ -5,19 +5,20 @@ ignore:
   'npm:concat-stream:20160901':
     - newrelic > concat-stream:
         reason: no patch available
-        expires: '2017-08-10T20:19:14.128Z'
+        expires: '2017-08-11T06:15:31.747Z'
   'npm:ip:20170304':
     - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
         reason: no patch available
-        expires: '2017-08-10T20:19:14.128Z'
+        expires: '2017-08-11T06:15:31.747Z'
   'npm:qs:20170213':
     - keen-js > superagent > qs:
         reason: no patch available
-        expires: '2017-08-10T20:19:14.128Z'
-# patches apply the minimum changes required to fix a vulnerability
-patch:
+        expires: '2017-08-11T06:15:31.747Z'
   'npm:ms:20170412':
-    - twilio > jsonwebtoken > ms:
-        patched: '2017-07-11T20:17:49.704Z'
     - newrelic > https-proxy-agent > debug > ms:
-        patched: '2017-07-11T20:17:49.704Z'
+        reason: no update available
+        expires: '2017-08-11T06:15:31.747Z'
+    - twilio > jsonwebtoken > ms:
+        reason: no update available
+        expires: '2017-08-11T06:15:31.747Z'
+patch: {}
