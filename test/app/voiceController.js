@@ -24,7 +24,7 @@ const twilioRecordingRequest_2 = require('../data/twilioVoiceRecording_2');
 const twilioStatusUpdate_2 = require('../data/twilioStatusUpdate_2');
 
 const RecordingSid = 'REde2dd4be0e7a521f8296a7390a9ab21b';
-const emptyTwilioResponse = '<?xml version="1.0" encoding="UTF-8"?><Response></Response>';
+const emptyTwilioResponse = '<?xml version="1.0" encoding="UTF-8"?><Response/>';
 
 describe('Voice requests with voice controller', () => {
   it.skip('should accept a new voice recording', function (done) {
@@ -237,7 +237,7 @@ describe('Voice requests with voice controller', () => {
       });
   });
 
-  it('should provide twiml to play ovm', (done) => {
+  it('should provide twiml when ovm is not found', (done) => {
     twilioAgent.post('/webhook/voice/play-message')
       .expect(200)
       .end((err, resp) => {
