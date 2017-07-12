@@ -1,5 +1,3 @@
-
-
 const db = require('../../app/db');
 const Promise = require('bluebird');
 

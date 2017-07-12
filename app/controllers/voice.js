@@ -86,7 +86,7 @@ module.exports = {
         .then(recording => Messages.where({ recording_id: recording.id })).map(message => message.update({ content: req.body.TranscriptionText }));
       }
     }).then((messages) => {
-      const emptyResponse = twilio.twiml.VoiceResponse().toString();
+      const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
       res.send(emptyResponse);
     }).catch(res.error500);
   },
@@ -97,7 +97,7 @@ module.exports = {
       conversations,
       notification,
       ovm;
-    const emptyResponse = twilio.twiml.VoiceResponse().toString();
+    const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
 
     // we need to have an additional capture if callStatus 'failed'
     const callStatus = req.body.CallStatus;
@@ -242,7 +242,7 @@ module.exports = {
             userId, clientId,
             commId, 'Outbound Voice Message', '',
             deliveryDate, ovm.id
-          )).then(notification => notification);
+        )).then(notification => notification);
       } else if (type === 'message') {
         const commId = req.query.commId;
         let toNumber = req.body.To.replace(/\D+/g, '');
@@ -275,7 +275,7 @@ module.exports = {
         });
       }
     }).then(() => {
-      const emptyResponse = twilio.twiml.VoiceResponse().toString();
+      const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
       res.send(emptyResponse);
     }).catch(res.error500);
   },

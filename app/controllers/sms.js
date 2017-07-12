@@ -144,7 +144,7 @@ module.exports = {
           });
 
           // Send a blank response
-          const emptyResponse = new twilio.twiml.MessagingResponse().toString();
+          const emptyResponse = (new twilio.twiml.MessagingResponse()).toString();
           res.send(emptyResponse);
         }).catch(res.error500);
     } else {
