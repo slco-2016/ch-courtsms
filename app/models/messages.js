@@ -574,7 +574,7 @@ class Messages extends BaseModel {
               ).then(() => {
                 fulfill();
               }).catch(reject);
-            }).catch(reject);
+            }).catch(err => reject(err));
           }).catch(reject);
         }
       }).catch(reject);

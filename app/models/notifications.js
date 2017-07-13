@@ -70,12 +70,12 @@ class Notifications extends BaseModel {
       }).map((notification) => {
         // Voice: if voice, send an outbound voice message notification
         if (notification.ovm_id) {
-          console.log(` -- sending a voice notification ${notification.notificationid}`);
+          console.log(` -- sending a scheduled voice message (${notification.notificationid})`);
           return this.sendOVMNotification(notification);
 
         // Email or Text: otherwise proceed with the text/sms/email message method
         }
-        console.log(` -- sending a text notification`);
+        console.log(` -- sending a scheduled text message (${notification.notificationid})`);
         return this.sendTextorEmailNotification(notification);
 
       // it will then return an array of resulting notifications that have been sent
@@ -102,6 +102,7 @@ class Notifications extends BaseModel {
   }
 
   static sendOVMNotification(notification) {
+    console.log('-> sendOVMNotification');
     return new Promise((fulfill, reject) => {
       let fromUser;
       Users.findById(notification.cm)

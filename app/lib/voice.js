@@ -57,19 +57,14 @@ module.exports = {
             from: sentFromValue,
           };
 
-          smsService.createCall(opts, (err, call) => {
-            if (err) {
-              reject(err);
-            } else {
+          smsService.createCall(opts)
+            .then(call => {
               // Response is (so far) not used, we leave it to the user to
               // click "Go to notifications" to proceed
               fulfill(call);
-            }
-          });
-        })
-        .catch(reject);
-    });
-
+            }).catch(err => { reject(err); })
+        }).catch(reject);
+      }).catch(reject);
   },
 
   addInboundRecordingAndMessage(communication, recordingKey, recordingSid, toNumber, req, locals) {
@@ -158,8 +153,8 @@ module.exports = {
   },
 
   processPendingOutboundVoiceMessages(ovm, fromUser, domain) {
+    console.log('-> processPendingOutboundVoiceMessages');
     domain = domain || credentials.twilio.outboundCallbackUrl;
-
     let sentFromValue;
     return new Promise((fulfill, reject) => {
       // don't create the call if we're testing
@@ -178,32 +173,26 @@ module.exports = {
           return Communications.findById(ovm.commid);
         })
         .then(comm => {
+          const opts = {
+            url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
+            to: comm.value,
+            from: sentFromValue,
+            IfMachine: 'Continue',
+            record: true,
+            statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
+            StatusCallback: `${domain}/webhook/voice/status`,
+          };
           // create the call
-          smsService.createCall(
-            {
-              url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
-              to: comm.value,
-              from: sentFromValue,
-              IfMachine: 'Continue',
-              record: true,
-              statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
-              StatusCallback: `${domain}/webhook/voice/status`,
-            },
-            (err, call) => {
-              if (err) {
-                reject(err);
-              } else {
-                // Update the OVM table row with the sid of the call that
-                // was just placed out to the client (this is the SID of
-                // the "voicemail delivery call")
-                ovm
-                  .update({ call_sid: call.sid })
-                  .then(ovm => {
-                    fulfill(ovm);
-                  }).catch(reject);
-              }
-            }
-          );
+          smsService.createCall(opts)
+            .then(call => {
+              // Update the OVM table row with the sid of the call
+              // (the SID of the "voicemail delivery call")
+              ovm
+                .update({ call_sid: call.sid })
+                .then(ovm => {
+                  fulfill(ovm);
+                }).catch(reject);
+            }).catch(err => { reject(err); })
         }).catch(reject);
     });
   },
