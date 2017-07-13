@@ -1,5 +1,3 @@
-
-
 if (process.env.CCENV && process.env.CCENV == 'production') {
   console.log('Production env. New Relic running.');
   require('newrelic');

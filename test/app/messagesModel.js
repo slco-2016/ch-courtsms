@@ -4,7 +4,7 @@ require('colors');
 const should = require('should');
 const simple = require('simple-mock');
 
-const twClient = require('../../app/lib/twClient');
+const smsService = require('../../app/lib/sms-service');
 const mailgun = require('../../app/lib/mailgun');
 
 const resourceRequire = require('../../app/lib/resourceRequire');
@@ -49,9 +49,9 @@ describe('Messages model', () => {
       .catch(done);
   });
 
-  it('sends an sms message', done => {
+  it('sends a short sms message', done => {
     simple
-      .mock(twClient, 'sendMessage')
+      .mock(smsService, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });
 
     Promise.all([
@@ -62,9 +62,9 @@ describe('Messages model', () => {
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
-          should(twClient.sendMessage.calls.length).be.exactly(1);
-          should(twClient.sendMessage.lastCall.arg.body).equal(body);
-          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.calls.length).be.exactly(1);
+          should(smsService.sendMessage.lastCall.arg.body).equal(body);
+          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
 
           simple.restore();
           done();
@@ -75,7 +75,7 @@ describe('Messages model', () => {
 
   it('sends a multi-line sms message', done => {
     simple
-      .mock(twClient, 'sendMessage')
+      .mock(smsService, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });
 
     Promise.all([
@@ -86,9 +86,9 @@ describe('Messages model', () => {
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
-          should(twClient.sendMessage.calls.length).be.exactly(1);
-          should(twClient.sendMessage.lastCall.arg.body).equal(body);
-          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.calls.length).be.exactly(1);
+          should(smsService.sendMessage.lastCall.arg.body).equal(body);
+          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
 
           simple.restore();
           done();
@@ -99,7 +99,7 @@ describe('Messages model', () => {
 
   it('sends an sms message longer than 160 characters', done => {
     simple
-      .mock(twClient, 'sendMessage')
+      .mock(smsService, 'sendMessage')
       .callbackWith(null, { sid: 123, status: 'Success!' });
 
     Promise.all([
@@ -111,9 +111,9 @@ describe('Messages model', () => {
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
-          should(twClient.sendMessage.calls.length).be.exactly(1);
-          should(twClient.sendMessage.lastCall.arg.body).equal(body);
-          should(twClient.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.calls.length).be.exactly(1);
+          should(smsService.sendMessage.lastCall.arg.body).equal(body);
+          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
 
           simple.restore();
           done();

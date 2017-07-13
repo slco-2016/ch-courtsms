@@ -2,12 +2,9 @@ const Promise = require('bluebird');
 const querystring = require('querystring');
 
 const credentials = require('../../credentials');
-const ACCOUNT_SID = credentials.accountSid;
-const AUTH_TOKEN = credentials.authToken;
 
 // Twilio tools
-const twilio = require('twilio');
-const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
+const smsService = require('./sms-service');
 
 const sms = require('./sms');
 const analyticsService = require('./analytics-service');
@@ -60,8 +57,7 @@ module.exports = {
             from: sentFromValue,
           };
 
-          // Execute the call with Twilio Node lib
-          twClient.calls.create(opts, (err, call) => {
+          smsService.createCall(opts, (err, call) => {
             if (err) {
               reject(err);
             } else {
@@ -183,7 +179,7 @@ module.exports = {
         })
         .then(comm => {
           // create the call
-          twClient.calls.create(
+          smsService.createCall(
             {
               url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
               to: comm.value,

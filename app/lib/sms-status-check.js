@@ -1,12 +1,5 @@
-const credentials = require('../../credentials');
-const ACCOUNT_SID = credentials.accountSid;
-const AUTH_TOKEN = credentials.authToken;
-
 const db = require('../db');
-
-// Twilio tools
-const twilio = require('twilio');
-const twClient = require('twilio')(ACCOUNT_SID, AUTH_TOKEN);
+const smsService = require('./sms-service');
 
 // Email tools
 const emNotify = require('./em-notify');
@@ -33,20 +26,14 @@ module.exports = {
   },
 
   checkMsgAgainstTwilio(msg) {
-    // Hit up Twilio API for the
-    twClient.sms.messages(msg.tw_sid)
-    .get((err, sms) => {
-      if (err) {
-        console.log('Twilio error: ');
-        console.log(err);
-        console.log('-- \n');
-
-      // Handling for messages sent from client to Twilio
-      } else if (sms.direction == 'inbound') {
+    // Get the message status from the Twilio API
+    smsService.getMessageInfo(msg.tw_sid)
+    .then(msg_info => {
+      if (msg_info.direction == 'inbound') {
         // If no change occured over msg prior status
-        if (msg.tw_status == sms.status) {
+        if (msg.tw_status == msg_info.status) {
           // We can close out cleared messages
-          if (sms.status == 'received') {
+          if (msg_info.status == 'received') {
             db('msgs')
             .where('msgid', msg.msgid)
             .update({ status_cleared: true })
@@ -58,7 +45,7 @@ module.exports = {
         // There was a change
         } else {
           // The message changed to a value we accept as closed
-          if (sms.status == 'received') {
+          if (msg_info.status == 'received') {
             db('msgs')
             .where('msgid', msg.msgid)
             .update({ status_cleared: true })
@@ -71,9 +58,9 @@ module.exports = {
       // Handling for messages sent from case manager to Twilio
       } else {
         // If no change occured over msg prior status
-        if (msg.tw_status == sms.status) {
+        if (msg.tw_status == msg_info.status) {
           // We can close out cleared messages
-          if (sms.status == 'sent' || sms.status == 'delivered' || sms.status == 'failed') {
+          if (msg_info.status == 'sent' || msg_info.status == 'delivered' || msg_info.status == 'failed') {
             db('msgs')
             .where('msgid', msg.msgid)
             .update({ status_cleared: true })
@@ -123,10 +110,10 @@ module.exports = {
         // There was a change
         } else {
           // Results indicate msg can also be closed
-          if (sms.status == 'sent' || sms.status == 'failed') {
+          if (msg_info.status == 'sent' || msg_info.status == 'failed') {
             db('msgs')
             .where('msgid', msg.msgid)
-            .update({ tw_status: sms.status, status_cleared: true })
+            .update({ tw_status: msg_info.status, status_cleared: true })
             .then((success) => {
               console.log(`Cleared msg ${msg.msgid}`);
             }).catch((err) => { console.log(err); });
@@ -135,13 +122,17 @@ module.exports = {
           } else {
             db('msgs')
             .where('msgid', msg.msgid)
-            .update({ tw_status: sms.status })
+            .update({ tw_status: msg_info.status })
             .then((success) => {
               console.log(`Cleared msg ${msg.msgid}`);
             }).catch((err) => { console.log(err); });
           }
         }
       }
+    }).catch(err => {
+      console.log('Twilio error: ');
+      console.log(err);
+      console.log('-- \n');
     });
   },
 

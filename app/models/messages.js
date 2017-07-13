@@ -7,7 +7,7 @@ const {
 const db = require('../../app/db');
 const Promise = require('bluebird');
 const moment = require('moment');
-const twClient = require('../lib/twClient');
+const smsService = require('../lib/sms-service');
 
 const BaseModel = require('../lib/models').BaseModel;
 const mailgun = require('../lib/mailgun');
@@ -557,16 +557,12 @@ class Messages extends BaseModel {
             const phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
           }).then((departmentPhoneNumber) => {
-            const sentFromValue = departmentPhoneNumber.value;
-
-            twClient.sendMessage({
-              to: communication.value,
-              from: sentFromValue,
-              body: content,
-            }, (err, msg) => {
-              if (err) {
-                return reject(err);
-              }
+            smsService.sendMessage(
+              communication.value,
+              departmentPhoneNumber.value,
+              content
+            ).then(msg => {
+              // the message was sent, persist it to the database
               const MessageSid = msg.sid;
               const MessageStatus = msg.status;
               Messages.create(
@@ -578,7 +574,7 @@ class Messages extends BaseModel {
               ).then(() => {
                 fulfill();
               }).catch(reject);
-            });
+            }).catch(reject);
           }).catch(reject);
         }
       }).catch(reject);
@@ -601,37 +597,32 @@ class Messages extends BaseModel {
         // we only want inbound messages
         messages = messages.filter(ea => ea.inbound);
         if (messages.length) {
-          const sentFromValue = messages[0].sent_to;
-
           contentArray.forEach((contentPortion, contentIndex) => {
             // TODO: Remove when we're stubbing twilio methods
             if (CCENV === 'testing') {
               return fulfill();
             }
 
-            twClient.sendMessage({
-              to: communication.value,
-              from: sentFromValue,
-              body: content,
-            }, (err, msg) => {
-              if (err) {
-                reject(err);
-              } else {
-                const MessageSid = msg.sid;
-                const MessageStatus = msg.status;
-                Messages.create(conversationId,
-                                commId,
-                                contentPortion,
-                                MessageSid,
-                                MessageStatus)
-                .then(() => {
-                  if (contentIndex == contentArray.length - 1) fulfill();
-                }).catch((e) => {
-                  reject(e);
-                });
-              }
-            });
-
+            smsService.sendMessage(
+              communication.value,
+              messages[0].sent_to,
+              content
+            ).then(msg => {
+              // the message was sent, persist it to the database
+              const MessageSid = msg.sid;
+              const MessageStatus = msg.status;
+              Messages.create(
+                conversationId,
+                commId,
+                contentPortion,
+                MessageSid,
+                MessageStatus
+              ).then(() => {
+                if (contentIndex == contentArray.length - 1) {
+                  fulfill();
+                }
+              }).catch(err => reject(err));
+            }).catch(reject);
           });
         } else {
           reject(new Error(`No messages found for that conversation id (${conversationId}). Messages: ${JSON.stringify(messages)}`));
