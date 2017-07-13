@@ -19,6 +19,11 @@ module.exports = {
   },
 
   createCall(opts) {
+    console.log('-> createCall');
+    console.log('vvv with opts vvv');
+    console.log(opts);
+    console.log('^^^ with opts ^^^');
+
     const call = twilioClient.calls.create(opts);
     return Promise.resolve(call);
   },

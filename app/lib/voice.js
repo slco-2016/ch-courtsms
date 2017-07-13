@@ -187,6 +187,7 @@ module.exports = {
             .then(call => {
               // Update the OVM table row with the sid of the call
               // (the SID of the "voicemail delivery call")
+              console.log(' - writing call to database');
               ovm
                 .update({ call_sid: call.sid })
                 .then(ovm => {
