@@ -1,0 +1,24 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.7.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:concat-stream:20160901':
+    - newrelic > concat-stream:
+        reason: no patch available
+        expires: '2017-08-11T06:15:31.747Z'
+  'npm:ip:20170304':
+    - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
+        reason: no patch available
+        expires: '2017-08-11T06:15:31.747Z'
+  'npm:qs:20170213':
+    - keen-js > superagent > qs:
+        reason: no patch available
+        expires: '2017-08-11T06:15:31.747Z'
+  'npm:ms:20170412':
+    - newrelic > https-proxy-agent > debug > ms:
+        reason: no update available
+        expires: '2017-08-11T06:15:31.747Z'
+    - twilio > jsonwebtoken > ms:
+        reason: no update available
+        expires: '2017-08-11T06:15:31.747Z'
+patch: {}

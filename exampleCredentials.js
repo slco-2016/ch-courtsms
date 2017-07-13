@@ -11,8 +11,9 @@ const baseProductionReadyCredentials = {
   RECEIVEBACKUPMODE,
 
   // Twilio-related
-  accountSid: '**************************',
-  authToken: '**************************',
+  // (must start with 'AC')
+  accountSid: 'ACTWILIOACCOUNTSIDTWILIOAC',
+  authToken: 'TWILIOAUTHTOKENTWILIOAUTHT',
 
   // URL base of the current deploy
   //   e.g. 'https://multnomah.clientcomm.org'

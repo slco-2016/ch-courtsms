@@ -126,6 +126,8 @@ class BaseModel {
   }
 
   static findById(id) {
+    // undefined will error, null will not
+    id = (id === undefined) ? null : id;
     this._checkModelValidity();
     return new Promise((fulfill, reject) => {
       db(this.tableName)

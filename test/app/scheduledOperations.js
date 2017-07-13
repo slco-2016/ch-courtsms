@@ -4,7 +4,7 @@ const request = require('request');
 
 const APP = require('../../app/app');
 const simple = require('simple-mock');
-const twClient = require('../../app/lib/twClient');
+const smsService = require('../../app/lib/sms-service');
 
 const Attachments = require('../../app/models/attachments');
 const Messages = require('../../app/models/messages');
@@ -35,8 +35,8 @@ describe('Scheduled operations checks', () => {
 
 
   it('See if there are any planned notifications to be sent', (done) => {
-    simple.mock(twClient, 'sendMessage')
-      .callbackWith(null, { sid: 123, status: 'Success!' });
+    simple.mock(smsService, 'sendMessage')
+      .resolveWith({ sid: 123, status: 'Success!' });
 
     Notifications.checkAndSendNotifications()
     .then(() => {

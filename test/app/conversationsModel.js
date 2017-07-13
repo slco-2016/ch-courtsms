@@ -2,6 +2,7 @@ const assert = require('assert');
 
 const Conversations = require('../../app/models/conversations');
 const Clients = require('../../app/models/clients');
+const Communications = require('../../app/models/communications');
 
 require('colors');
 const should = require('should');
@@ -9,7 +10,7 @@ const should = require('should');
 describe('Conversations checks', () => {
   it('Should be able to create conversation', (done) => {
     Conversations.create(2, 1, 'Foobar', true)
-    .then((conversation) => {
+    .then(conversation => {
       conversation.cm.should.be.exactly(2);
       conversation.accepted.should.be.exactly(true);
       done();
@@ -20,22 +21,27 @@ describe('Conversations checks', () => {
     Clients.findAllByUsers(2)
     .then((clients) => {
       // no idea what we should do at this point
-      // console.log(clients.length);
       done();
     }).catch(done);
   });
 
   it('entering clients and commid should return a list of conversations on search', (done) => {
-    Clients.findAllByUsers(2)
-    .then(clients => Conversations.findByClientAndUserInvolvingSpecificCommId(clients, 1)).then((conversations) => {
-      conversations.forEach((conversation) => {
+    let communication;
+    Communications.findById(1)
+    .then(resp => {
+      communication = resp;
+      return Clients.findAllByUsers(2);
+    }).then(clients => {
+      return Conversations.findByClientAndUserInvolvingSpecificComm(clients, communication);
+    }).then(conversations => {
+      conversations.forEach(conversation => {
         conversation.cm.should.be.exactly(2);
       });
       done();
     }).catch(done);
   });
 
-  it('user findById should return single result with key columns as obj keys', (done) => {
+  it('conversation findById should return single result with key columns as obj keys', (done) => {
     Conversations.findById(1)
     .then((conversation) => {
       conversation.hasOwnProperty('client').should.be.exactly(true);
@@ -48,8 +54,10 @@ describe('Conversations checks', () => {
 
   it('create a new conversation if older than preset time', (done) => {
     const currentDate = new Date();
-    Conversations.createNewIfOlderThanSetHours([1], 24)
-    .then((conversations) => {
+    Conversations.findById(1)
+    .then(convo => {
+      return Conversations.createNewIfOlderThanSetHours([convo], 24);
+    }).then(conversations => {
       conversations.forEach((conversation) => {
         const conversationDate = new Date(conversation.updated);
         const difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours
@@ -63,8 +71,10 @@ describe('Conversations checks', () => {
 
   it('create new if older than should work even if hours is not set, should default to 24 hrs', (done) => {
     const currentDate = new Date();
-    Conversations.createNewIfOlderThanSetHours([1])
-    .then((conversations) => {
+    Conversations.findById(1)
+    .then(convo => {
+      return Conversations.createNewIfOlderThanSetHours([convo]);
+    }).then((conversations) => {
       conversations.forEach((conversation) => {
         const conversationDate = new Date(conversation.updated);
         const difference = conversationDate.getTime() - (currentDate.getTime() - 86400000); // 86400000 is 24 hours

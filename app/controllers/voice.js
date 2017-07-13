@@ -29,7 +29,7 @@ module.exports = {
     if (fromNumber.length == 10) {
       fromNumber = `1${fromNumber}`;
     }
-    const twilioResponse = new twilio.TwimlResponse();
+    const twilioResponse = new twilio.twiml.VoiceResponse();
     let communication, organizationNumber;
 
     Organizations.findOneByPhone(toNumber)
@@ -69,7 +69,9 @@ module.exports = {
 
         // TODO: Make this component modular by organization(s)
         twilioResponse.say({ voice: 'woman' },
-          `Sorry, we were unable to connect you with Criminal Justice Services. Please call the front or support desk ${organizationNumber}.`);
+          `Sorry, we were unable to connect you with Criminal Justice ` +
+          `Services. Please call the front or support ` +
+          `desk ${organizationNumber}.`);
         res.send(twilioResponse.toString());
       }
     });
@@ -84,7 +86,7 @@ module.exports = {
         .then(recording => Messages.where({ recording_id: recording.id })).map(message => message.update({ content: req.body.TranscriptionText }));
       }
     }).then((messages) => {
-      const emptyResponse = twilio.TwimlResponse().toString();
+      const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
       res.send(emptyResponse);
     }).catch(res.error500);
   },
@@ -95,7 +97,7 @@ module.exports = {
       conversations,
       notification,
       ovm;
-    const emptyResponse = twilio.TwimlResponse().toString();
+    const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
 
     // we need to have an additional capture if callStatus 'failed'
     const callStatus = req.body.CallStatus;
@@ -167,26 +169,26 @@ module.exports = {
 
   playMessage(req, res) {
     const ovmId = req.query.ovmId;
-    const resp = new twilio.TwimlResponse();
+    const twilioResponse = new twilio.twiml.VoiceResponse();
 
     OutboundVoiceMessages.findById(ovmId)
     .then((ovm) => {
       if (ovm) {
         const url = ovm.getTemporaryRecordingUrl();
-        resp.say(
+        twilioResponse.say(
           { voice: 'woman' },
           'Hello. You have a new message from your case manager.');
-        resp.play(url);
-        resp.say(
+        twilioResponse.play(url);
+        twilioResponse.say(
           { voice: 'woman' },
           'Thank you.');
       } else {
-        resp.say(
+        twilioResponse.say(
           { voice: 'woman' },
           'Sorry, we can\'t find a recording with that Id'
         );
       }
-      res.send(resp.toString());
+      res.send(twilioResponse.toString());
     });
   },
 
@@ -204,10 +206,13 @@ module.exports = {
     });
     const url = `/webhook/voice/save-recording/?${params}`;
 
-    const resp = twilio.TwimlResponse();
-    resp.say({ voice: 'woman' }, 'Hello! Please leave your message after the beep.');
-    resp.record({ action: url });
-    res.send(resp.toString());
+    const twilioResponse = new twilio.twiml.VoiceResponse();
+    twilioResponse.say(
+      {voice: 'woman'},
+      'Hello! Please leave your message after the beep.'
+    );
+    twilioResponse.record({ action: url });
+    res.send(twilioResponse.toString());
   },
 
   save(req, res) {
@@ -237,7 +242,7 @@ module.exports = {
             userId, clientId,
             commId, 'Outbound Voice Message', '',
             deliveryDate, ovm.id
-          )).then(notification => notification);
+        )).then(notification => notification);
       } else if (type === 'message') {
         const commId = req.query.commId;
         let toNumber = req.body.To.replace(/\D+/g, '');
@@ -270,7 +275,7 @@ module.exports = {
         });
       }
     }).then(() => {
-      const emptyResponse = twilio.TwimlResponse().toString();
+      const emptyResponse = (new twilio.twiml.VoiceResponse()).toString();
       res.send(emptyResponse);
     }).catch(res.error500);
   },
