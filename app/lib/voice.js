@@ -52,9 +52,9 @@ module.exports = {
           const sentFromValue = departmentPhoneNumber.value;
           const url = `${domain}/webhook/voice/record/?${params}`;
           const opts = {
-            url,
-            to: phoneNumber,
             from: sentFromValue,
+            to: phoneNumber,
+            url,
           };
 
           smsService.createCall(opts)
@@ -174,13 +174,13 @@ module.exports = {
         })
         .then(comm => {
           const opts = {
-            url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
-            to: comm.value,
             from: sentFromValue,
-            IfMachine: 'Continue',
-            record: true,
+            machineDetection: 'DetectMessageEnd',
+            record: 'true',
+            statusCallback: `${domain}/webhook/voice/status`,
             statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
-            StatusCallback: `${domain}/webhook/voice/status`,
+            to: comm.value,
+            url: `${domain}/webhook/voice/play-message/?ovmId=${ovm.id}`,
           };
           // create the call
           smsService.createCall(opts)
