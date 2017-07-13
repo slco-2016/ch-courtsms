@@ -284,7 +284,7 @@ if (credentials.RUNSCHEDULED) {
     const Notifications = require('./models/notifications');
     Notifications.checkAndSendNotifications()
     .then().catch();
-  }, 15 * minute);
+  }, 2 * minute);
 
   // sms status check - 30 seconds
   setInterval(() => {
