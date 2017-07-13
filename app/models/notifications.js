@@ -57,7 +57,7 @@ class Notifications extends BaseModel {
         .where('send', '<', db.fn.now())
         .andWhere('notifications.sent', false)
         .andWhere('notifications.closed', false)
-      .then(notifications =>
+      .then(notifications => {
 
         console.log(` -- found ${notifications.length} eligible notifications`);
         // creating a promise map
@@ -67,7 +67,7 @@ class Notifications extends BaseModel {
 
       // this is for each in the returned prior notifications basically
       // at this point we need to decide if that message is a voice or nonvoice message
-      ).map((notification) => {
+      }).map((notification) => {
         // Voice: if voice, send an outbound voice message notification
         if (notification.ovm_id) {
           console.log(` -- sending a voice notification ${notification.notificationid}`);
