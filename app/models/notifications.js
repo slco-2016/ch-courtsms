@@ -48,6 +48,7 @@ class Notifications extends BaseModel {
   // TODO: this is presently a model function
   //       but probably should be in a lib on its own
   static checkAndSendNotifications() {
+    console.log('-> checkAndSendNotifications');
     return new Promise((fulfill, reject) => {
       // look for all notifications that are planned
       // but have not been sent and have NOT been closed
@@ -58,6 +59,7 @@ class Notifications extends BaseModel {
         .andWhere('notifications.closed', false)
       .then(notifications =>
 
+        console.log(` -- found ${notifications.length} eligible notifications`);
         // creating a promise map
          new Promise((fulfill, reject) => {
            fulfill(notifications);
@@ -68,12 +70,13 @@ class Notifications extends BaseModel {
       ).map((notification) => {
         // Voice: if voice, send an outbound voice message notification
         if (notification.ovm_id) {
+          console.log(` -- sending a voice notification ${notification.notificationid}`);
           return this.sendOVMNotification(notification);
 
         // Email or Text: otherwise proceed with the text/sms/email message method
         }
+        console.log(` -- sending a text notification`);
         return this.sendTextorEmailNotification(notification);
-
 
       // it will then return an array of resulting notifications that have been sent
       }).then(notifications =>
@@ -86,6 +89,7 @@ class Notifications extends BaseModel {
       // and create an in-app alert for the case manager/user
       // so that they know their message was sent
       ).map((notification) => {
+        console.log(` -- creating a notification alert`);
         const targetUserId = notification.cm;
         const createdByUserId = notification.cm;
         const subject = 'Notification Sent';
