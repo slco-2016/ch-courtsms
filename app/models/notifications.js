@@ -61,7 +61,7 @@ class Notifications extends BaseModel {
 
         console.log(` -- found ${notifications.length} eligible notifications`);
         // creating a promise map
-         new Promise((fulfill, reject) => {
+         return new Promise((fulfill, reject) => {
            fulfill(notifications);
          })
 
