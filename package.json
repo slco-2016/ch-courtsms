@@ -43,7 +43,7 @@
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon ./app/server.js --ignore node_modules/",
-    "test": "snyk test && CENV=testing mocha -C ./test/app/_init.js ./test/app/",
+    "test": "snyk test && CCENV=testing mocha -C ./test/app/_init.js ./test/app/",
     "snyk-protect": "snyk protect",
     "prepublish": "npm run snyk-protect"
   },
