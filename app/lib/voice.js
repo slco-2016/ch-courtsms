@@ -153,7 +153,6 @@ module.exports = {
   },
 
   processPendingOutboundVoiceMessages(ovm, fromUser, domain) {
-    console.log('-> processPendingOutboundVoiceMessages');
     domain = domain || credentials.twilio.outboundCallbackUrl;
     let sentFromValue;
     return new Promise((fulfill, reject) => {
@@ -187,7 +186,6 @@ module.exports = {
             .then(call => {
               // Update the OVM table row with the sid of the call
               // (the SID of the "voicemail delivery call")
-              console.log(' - writing call to database');
               ovm
                 .update({ call_sid: call.sid })
                 .then(ovm => {
