@@ -176,7 +176,7 @@ module.exports = {
           const opts = {
             from: sentFromValue,
             machineDetection: 'DetectMessageEnd',
-            record: 'true',
+            machineDetectionTimeout: '3',
             statusCallback: `${domain}/webhook/voice/status`,
             statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed',],
             to: comm.value,
