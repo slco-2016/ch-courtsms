@@ -36,7 +36,7 @@ describe('Scheduled operations checks', () => {
 
   it('See if there are any planned notifications to be sent', (done) => {
     simple.mock(smsService, 'sendMessage')
-      .callbackWith(null, { sid: 123, status: 'Success!' });
+      .resolveWith({ sid: 123, status: 'Success!' });
 
     Notifications.checkAndSendNotifications()
     .then(() => {

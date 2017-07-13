@@ -52,7 +52,7 @@ describe('Messages model', () => {
   it('sends a short sms message', done => {
     simple
       .mock(smsService, 'sendMessage')
-      .callbackWith(null, { sid: 123, status: 'Success!' });
+      .resolveWith({ sid: 123, status: 'Success!' });
 
     Promise.all([
       Communications.findById(3),
@@ -63,8 +63,8 @@ describe('Messages model', () => {
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
           should(smsService.sendMessage.calls.length).be.exactly(1);
-          should(smsService.sendMessage.lastCall.arg.body).equal(body);
-          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[0]).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[2]).equal(body);
 
           simple.restore();
           done();
@@ -76,7 +76,7 @@ describe('Messages model', () => {
   it('sends a multi-line sms message', done => {
     simple
       .mock(smsService, 'sendMessage')
-      .callbackWith(null, { sid: 123, status: 'Success!' });
+      .resolveWith({ sid: 123, status: 'Success!' });
 
     Promise.all([
       Communications.findById(3),
@@ -87,8 +87,8 @@ describe('Messages model', () => {
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
           should(smsService.sendMessage.calls.length).be.exactly(1);
-          should(smsService.sendMessage.lastCall.arg.body).equal(body);
-          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[0]).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[2]).equal(body);
 
           simple.restore();
           done();
@@ -100,20 +100,24 @@ describe('Messages model', () => {
   it('sends an sms message longer than 160 characters', done => {
     simple
       .mock(smsService, 'sendMessage')
-      .callbackWith(null, { sid: 123, status: 'Success!' });
+      .resolveWith({ sid: 123, status: 'Success!' });
 
     Promise.all([
       Communications.findById(3),
       Conversations.findById(3),
     ]).then(([comm, conversation]) => {
-      const body =
-        'This is a lengthy, extended, prolonged, extensive, protracted, long-lasting, long-drawn-out, drawn-out, spun out, dragged out, seemingly endless, lingering, interminable test message, not a concise, brief, succinct, compact, summary, economical, crisp, pithy, epigrammatic, laconic, thumbnail, capsule, abridged, abbreviated, condensed one.';
+      const body = `This is a lengthy, extended, prolonged, extensive, ` +
+        `protracted, long-lasting, long-drawn-out, drawn-out, spun out, ` +
+        `dragged out, seemingly endless, lingering, interminable test ` +
+        `message, not a concise, brief, succinct, compact, summary, ` +
+        `economical, crisp, pithy, epigrammatic, laconic, thumbnail, ` +
+        `capsule, abridged, abbreviated, condensed one.`;
 
       Messages.sendOne(comm.commid, body, conversation)
         .then(messages => {
           should(smsService.sendMessage.calls.length).be.exactly(1);
-          should(smsService.sendMessage.lastCall.arg.body).equal(body);
-          should(smsService.sendMessage.lastCall.arg.to).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[0]).equal(comm.value);
+          should(smsService.sendMessage.lastCall.args[2]).equal(body);
 
           simple.restore();
           done();

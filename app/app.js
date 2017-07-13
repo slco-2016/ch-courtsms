@@ -98,8 +98,6 @@ const VoiceController = require('./controllers/voice');
 
 app.get('/', RootController.index);
 
-// only on instance dedicated to receive, operations
-
 app.post('/webhook/sms', SmsController.webhook);
 app.post('/webhook/voice', VoiceController.webhook);
 app.post('/webhook/voice/status', VoiceController.status);
@@ -109,8 +107,6 @@ app.post('/webhook/voice/save-recording', VoiceController.save);
 app.post('/webhook/voice/play-message', VoiceController.playMessage);
 app.post('/webhook/email', EmailsController.webhook);
 app.post('/webhook/email/status', EmailsController.status);
-
-// otherwise this is a user facing implementation
 
 app.get('/login', AccessController.login);
 app.post('/login', passport.authenticate('local-login', {

@@ -553,10 +553,10 @@ class Messages extends BaseModel {
             )).then(fulfill).catch(reject);
         } else if (communication.type === 'cell') {
           return Departments.findOneByAttribute('department_id', user.department)
-          .then((department) => {
+          .then(department => {
             const phoneNumberId = department.phone_number;
             return PhoneNumbers.findById(phoneNumberId);
-          }).then((departmentPhoneNumber) => {
+          }).then(departmentPhoneNumber => {
             smsService.sendMessage(
               communication.value,
               departmentPhoneNumber.value,
