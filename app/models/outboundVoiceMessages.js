@@ -28,7 +28,7 @@ class OutboundVoiceMessages extends BaseModel {
     return new Promise((fulfill, reject) => {
       db(this.tableName)
         .where('delivered', false)
-        .where(db.raw(`delivery_date < ${db.fn.now()}`))
+        .whereRaw(`delivery_date < ?`, [db.fn.now()])
         .then(ovms => this._getMultiResponse(ovms, fulfill)).catch(reject);
     });
   }

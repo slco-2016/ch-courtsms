@@ -19,7 +19,7 @@ class Groups {
         .where('user', userID)
         .andWhere('active', active)
         .orderBy(
-          db.raw('upper(left(name, 1)), (substring(name from 2) || \'\')::varchar'),
+          db.raw(`upper(left(??, 1)), (substring(?? from 2) || '')::varchar`, ['name', 'name']),
           'asc')
       .then((groups) => {
         groupsComplete = groups;

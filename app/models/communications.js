@@ -55,7 +55,7 @@ class Communications extends BaseModel {
   static findByValue(value) {
     return new Promise((fulfill, reject) => {
       db('comms')
-        .whereRaw(`LOWER(value) = LOWER('${String(value)}')`)
+        .whereRaw(`LOWER(??) = LOWER(?)`, ['value', String(value)])
         .limit(1)
       .then((comms) => {
         this._getSingleResponse(comms, fulfill);

@@ -165,7 +165,7 @@ class Notifications extends BaseModel {
       db('notifications')
         .leftJoin(
           db('clients')
-            .select(db.raw('first, middle, last, clid'))
+            .select(db.raw('??, ??, ??, clid', ['first', 'middle', 'last']))
             .as('clients'),
           'clients.clid', 'notifications.client')
         .where('cm', userID)
@@ -186,17 +186,17 @@ class Notifications extends BaseModel {
       db('notifications')
         .leftJoin(
           db('clients')
-            .select(db.raw('first as first, middle as middle, last as last, clid'))
+            .select(db.raw('?? as first, ?? as middle, ?? as last, clid', ['first', 'middle', 'last']))
             .as('clients'),
           'clients.clid', 'notifications.client')
         .leftJoin(
           db('cms')
-            .select(db.raw('first as creator_first, last as creator_last, department as creator_department, cmid as creator_id'))
+            .select(db.raw('?? as creator_first, ?? as creator_last, department as creator_department, cmid as creator_id', ['first', 'last']))
             .as('cms'),
           'cms.creator_id', 'notifications.cm')
         .leftJoin(
           db('commconns')
-            .select(db.raw('name as communication_name, comm, commconnid'))
+            .select(db.raw('?? as communication_name, comm, commconnid', ['name']))
             .where('client', clientId)
             .as('commconns'),
             'commconns.comm', 'notifications.comm')

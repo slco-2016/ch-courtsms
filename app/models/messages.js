@@ -77,14 +77,14 @@ class Messages extends BaseModel {
   static countsByDepartment(departmentID, timeframe) {
     return new Promise((fulfill, reject) => {
       db('msgs')
-        .select(db.raw(`date_trunc('${timeframe}', created) AS time_period , count(*) AS message_count`))
+        .select(db.raw(`date_trunc(?, created) AS time_period , count(*) AS message_count`, timeframe))
         .leftJoin(
           db('convos')
             .select('convos.convid', 'cms.org', 'cms.department')
             .leftJoin('cms', 'cms.cmid', 'convos.cm')
             .as('convos'),
           'convos.convid', 'msgs.convo')
-        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .whereRaw(`msgs.created > now() - INTERVAL '12 months'`)
         .andWhere('convos.department', departmentID)
         .groupBy(db.raw('1'))
         .orderBy(db.raw('1'))
@@ -101,14 +101,14 @@ class Messages extends BaseModel {
   static countsByOrg(orgID, timeframe) {
     return new Promise((fulfill, reject) => {
       db('msgs')
-        .select(db.raw(`date_trunc('${timeframe}', created) AS time_period , count(*) AS message_count`))
+        .select(db.raw(`date_trunc(?, created) AS time_period , count(*) AS message_count`, timeframe))
         .leftJoin(
           db('convos')
             .select('convos.convid', 'cms.org')
             .leftJoin('cms', 'cms.cmid', 'convos.cm')
             .as('convos'),
           'convos.convid', 'msgs.convo')
-        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .whereRaw(`msgs.created > now() - INTERVAL '12 months'`)
         .andWhere('convos.org', orgID)
         .groupBy(db.raw('1'))
         .orderBy(db.raw('1'))
@@ -125,14 +125,14 @@ class Messages extends BaseModel {
   static countsByUser(userID, timeframe) {
     return new Promise((fulfill, reject) => {
       db('msgs')
-        .select(db.raw(`date_trunc('${timeframe}', created) AS time_period , count(*) AS message_count`))
+        .select(db.raw(`date_trunc(?, created) AS time_period , count(*) AS message_count`, timeframe))
         .leftJoin(
           db('convos')
             .select('convos.convid', 'cms.org', 'cms.cmid', 'cms.department')
             .leftJoin('cms', 'cms.cmid', 'convos.cm')
             .as('convos'),
           'convos.convid', 'msgs.convo')
-        .whereRaw('msgs.created > now() - INTERVAL \'12 months\'')
+        .whereRaw(`msgs.created > now() - INTERVAL '12 months'`)
         .andWhere('convos.cmid', userID)
         .groupBy(db.raw('1'))
         .orderBy(db.raw('1'))
