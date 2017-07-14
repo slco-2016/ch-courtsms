@@ -16,6 +16,24 @@ describe('Clients model', () => {
     }).catch(done);
   });
 
+  it(`Should not find clients with the same name when there aren't any`, (done) => {
+    Clients.findOneByAttribute('last', 'Someone')
+      .then(client => Clients.findBySameName(client))
+      .then(clients => {
+        clients.length.should.be.exactly(1);
+        done();
+      }).catch(done);
+  });
+
+  it('Should find a client with the same name when there is one', (done) => {
+    Clients.create(2, 'Joe', 'P', 'Someone', '1988-05-02', 12421, 1234561)
+      .then(client => Clients.findBySameName(client))
+      .then(clients => {
+        clients.length.should.be.exactly(2);
+        done();
+      }).catch(done);
+  });
+
   it('clients should be able to be found by attribute type, single query', (done) => {
     Clients.findOneByAttribute('clid', 1, baseDbCall => baseDbCall.where('active', true))
     .then((client) => {
@@ -64,9 +82,9 @@ describe('Clients model', () => {
     Clients.findManyByDepartmentAndStatus(1, true)
     .then((clients) => {
       // TODO: there are three active clients in department one in the seed
-      // data plus the one added in the test above, and two added in tests
+      // data plus the two added in the test above, and two added in tests
       // run prior to this one.
-      clients.length.should.be.exactly(6);
+      clients.length.should.be.exactly(7);
       done();
     }).catch(done);
   });
