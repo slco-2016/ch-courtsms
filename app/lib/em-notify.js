@@ -37,8 +37,6 @@ module.exports = {
         interval = 175;
       }
 
-      // TODO: Do not execute raw queries here, either move to a lib or user Model Classes
-      // We jsut want to query for the users who qualify for this runs email update process
       db('cms')
         .where('email_alert_frequency', '<', interval)
         .andWhere('active', true)
@@ -47,30 +45,18 @@ module.exports = {
         userIds = resp.map(user => user.cmid);
 
         // want a sum total and only of unreads
-        const rawQuery = `SELECT ` +
-                         `count(msgid), ` +
-                         `MAX(msgs.created) AS made, ` +
-                         `cms.cmid, ` +
-                         `cms.first, ` +
-                         `cms.last, ` +
-                         `cms.email ` +
-                         `FROM msgs ` +
-                         // left joins allow us to a link a message to a 
-                         // conversation, then to a user (from client to user)
-                         `LEFT JOIN (SELECT convos.convid, convos.cm FROM convos) AS convos ` +
-                         `ON (convos.convid = msgs.convo) ` +
-                         `LEFT JOIN (SELECT cms.cmid, cms.first, cms.last, cms.email FROM cms) AS cms ` +
-                         `ON (cms.cmid = convos.cm) ` +
-                         // within this bracketed period of time (only of unreads)
-                         `WHERE msgs.read = FALSE ` +
-                         `AND msgs.created > CURRENT_TIMESTAMP - INTERVAL '1 day' ` +
-                         `AND msgs.created < CURRENT_TIMESTAMP ` +
-                         // group them by unique users
-                         `GROUP BY cms.cmid, cms.first, cms.last, cms.email ` +
-                         `ORDER BY made DESC;`;
+        const rawQuery =
+          `SELECT count(msgid), MAX(msgs.created) AS made, cms.cmid, :first:, :last:, :email: ` +
+          `FROM msgs ` +
+          `LEFT JOIN (SELECT convos.convid, convos.cm FROM convos) AS convos ON (convos.convid = msgs.convo) ` +
+          `LEFT JOIN (SELECT cms.cmid, :first:, :last:, :email: FROM cms) AS cms ON (cms.cmid = convos.cm) ` +
+          `WHERE msgs.read = FALSE ` +
+          `AND msgs.created > CURRENT_TIMESTAMP - INTERVAL '1 day' ` +
+          `AND msgs.created < CURRENT_TIMESTAMP ` +
+          `GROUP BY cms.cmid, :first:, :last:, :email: ` +
+          `ORDER BY made DESC;`;
 
-        // executes the above query
-        return db.raw(rawQuery);
+        return db.raw(rawQuery, {first: 'cms.first', last: 'cms.last', email: 'cms.email'});
       }).then((resp) => {
         // if you run a raw query, then you have to extract the rows
         // from the resp object hence resp.rows

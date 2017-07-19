@@ -20,7 +20,7 @@ module.exports = {
           .select(db.raw('COUNT(msgid) AS count, cms.cmid'))
           .leftJoin('convos', 'convos.convid', 'msgs.convo')
           .leftJoin('cms', 'cms.cmid', 'convos.cm')
-          .whereRaw('msgs.created > date_trunc(\'week\', CURRENT_DATE)')
+          .whereRaw(`msgs.created > date_trunc('week', CURRENT_DATE)`)
           .and.where('org', user.org)
           .groupBy('cms.cmid')
           .orderBy('count', 'desc');

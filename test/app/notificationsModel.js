@@ -9,14 +9,19 @@ const Notifications = resourceRequire('models', 'Notifications');
 const mock = resourceRequire('lib', 'mock');
 
 describe('Notifications checks', () => {
+  it('finds notifications associated with a given user', (done) => {
+    Notifications.findByUser(2)
+      .then((notifications) => {
+        notifications.length.should.equal(2);
+        done();
+      }).catch(done);
+  });
 
-  // We moved this to scheduled operations tests
-  // becuase this should be a lib, not a model method
-  // it('checkAndSendNotifications should not error', function(done) {
-  // 	Notifications.checkAndSendNotifications()
-  // 	.then((resp) => {
-  //     done();
-  // 	}).catch(done);
-
-  // });
+  it('finds notifications associated with a given client', (done) => {
+    Notifications.findByClientID(1)
+      .then((notifications) => {
+        notifications.length.should.equal(2);
+        done();
+      }).catch(done);
+  });
 });

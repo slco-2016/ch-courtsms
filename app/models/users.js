@@ -91,7 +91,7 @@ class Users extends BaseModel {
       let addressPart = `${username}@${host}`;
       addressPart = addressPart.toLowerCase();
       db('cms')
-        .where(db.raw('LOWER(email)'), 'like', `${addressPart}%`)
+        .whereRaw('LOWER(??) like ?', ['email', `${addressPart}%`])
         .limit(1)
       .then((users) => {
         this._getSingleResponse(users, fulfill);

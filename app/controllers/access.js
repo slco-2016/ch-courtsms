@@ -50,7 +50,7 @@ module.exports = {
 
     // See if this email is even in the system
     db('cms')
-    .whereRaw(`LOWER(email) = LOWER('${em}')`)
+    .whereRaw(`LOWER(??) = LOWER(?)`, ['email', em])
     .limit(1)
     .then((cms) => {
       // This email is not in the system, they need to try again

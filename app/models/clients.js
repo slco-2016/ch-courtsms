@@ -229,7 +229,7 @@ class Clients extends BaseModel {
       .then(user => db('clients')
         .select('clients.*')
         .leftJoin('cms', 'cms.cmid', 'clients.cm')
-        .whereRaw(`LOWER(clients.first) LIKE LOWER('%${client.first}%') AND LOWER(clients.last) LIKE LOWER('%${client.last}%')`)
+        .whereRaw(`LOWER(??) LIKE LOWER(?) AND LOWER(??) LIKE LOWER(?)`, ['clients.first', `%${client.first}%`, 'clients.last', `%${client.last}%`])
         .andWhere('cms.org', user.org)).then((resp) => {
           clients = resp;
           return fulfill(clients);
@@ -277,7 +277,7 @@ class Clients extends BaseModel {
         .whereIn('clients.cm', userIDs)
         .andWhere('clients.active', activeStatus)
         .orderBy(
-          db.raw('upper(left(clients.last, 1)), (substring(clients.last from 2) || \'\')::varchar'),
+          db.raw(`upper(left(??, 1)), (substring(?? from 2) || '')::varchar`, ['clients.last', 'clients.last']),
           'asc')
       .then((clients) => {
         // Need to make sure there is a default color_tag color

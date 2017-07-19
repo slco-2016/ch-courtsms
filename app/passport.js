@@ -37,7 +37,7 @@ module.exports = function (passport) {
     (req, email, password, done) => {
       process.nextTick(() => {
         db('cms')
-        .whereRaw(`LOWER(email) = LOWER('${String(email)}')`)
+        .whereRaw(`LOWER(??) = LOWER(?)`, ['email', String(email)])
         .andWhere('active', true)
         .limit(1)
         .then((acct) => {
