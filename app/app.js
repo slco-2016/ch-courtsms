@@ -15,6 +15,7 @@ const db = require('./db');
 // APP DEPENDENCIES
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
+const csrf = require('csurf');
 const flash = require('connect-flash');
 const colors = require('colors');
 
@@ -45,6 +46,8 @@ app.use(cookieSession({
   name: 'CC_session',
   keys: [SESS_SECRET,],
 }));
+
+app.use(csrf());
 
 app.use(passport.initialize());
 app.use(passport.session());
