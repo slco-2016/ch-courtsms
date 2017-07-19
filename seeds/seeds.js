@@ -258,6 +258,21 @@ const notification = {
   ovm_id: null,
 };
 
+const group = {
+  name: 'my cool group',
+  user: 2,
+}
+
+const groupMemberOne = {
+  group: 1,
+  client: 1,
+}
+
+const groupMemberTwo = {
+  group: 1,
+  client: 2,
+}
+
 // SECOND ORGANIZATION
 
 const orgTwo = {
@@ -397,6 +412,9 @@ exports.seed = knex => {
       .then(() => knex('outbound_voice_messages').insert(outboundVoiceMessage))
       .then(() => knex('notifications').insert(notificationSmartSend))
       .then(() => knex('notifications').insert(notification))
+      .then(() => knex('groups').insert(group))
+      .then(() => knex('group_members').insert(groupMemberOne))
+      .then(() => knex('group_members').insert(groupMemberTwo))
       .then(() => knex('orgs').insert(orgTwo))
       .then(() => knex('phone_numbers').insert(phoneNumberOrgTwo))
       .then(() => knex('departments').insert(departmentOrgTwo))
