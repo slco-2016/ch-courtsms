@@ -8,17 +8,10 @@
 </div>
 
 <div class="cardBody">
-  
   <% if (templates.length) { %>
     <div class="scrollListBox">
       <% for (var i=0; i < templates.length; i++) { %>
-        <div 
-          class="scrollListRow" 
-          data-template-id="<%= templates[i].template_id %>"
-          data-title="<%= templates[i].title %>"
-          data-content="<%= templates[i].content %>"
-          >
-          
+        <div class="scrollListRow" data-template-id="<%= templates[i].template_id %>" data-title="<%= templates[i].title %>" data-content="<%= templates[i].content %>" >
           <div class="useCount">
             <%= templates[i].times_used %>
           </div>
@@ -35,7 +28,7 @@
               <%= templates[i].content %>
             </div>
             <div class="tags">
-              
+
             </div>
           </div>
         </div>
@@ -43,13 +36,13 @@
     </div>
 
     <form method="post" action="/notifications/create/compose">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
-      <input type="hidden" name="commID" value="<%= parameters.commID %>" > 
+      <input type="hidden" name="commID" value="<%= parameters.commID %>" >
       <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
-      <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" >     
-      
-      <input type="hidden" name="title"      id="templateTitle">    
-      <input type="hidden" name="content"    id="templateContent">
+      <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" >
+      <input type="hidden" name="title" id="templateTitle">
+      <input type="hidden" name="content" id="templateContent">
       <input type="hidden" name="templateid" id="templateId">
 
       <div class="formRow">

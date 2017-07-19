@@ -88,10 +88,9 @@
             <%= message.inbound ? 'Received via' : 'Sent to' %>
             <%= client.first + "'s" %> <%= message.commconn_name %>
 
-            
             <span class="state <% if (showWarning) { %>warning<% } %>">
-              <%= message.tw_status %> on 
-              <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at 
+              <%= message.tw_status %> on
+              <%= moment.tz(message.created, organization.tz).format("MM/DD"); %> at
               <%= moment.tz(message.created, organization.tz).format("hh:mm A"); %>
             </span>
           </div>
@@ -102,9 +101,8 @@
 </div>
 
 <div class="responseBox">
-  <form method="post"
-        id="newMessage" 
-        action="<%=`/clients/${client.clid}/messages`%>">
+  <form method="post" id="newMessage" action="<%=`/clients/${client.clid}/messages`%>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <% if (userOwnsClient) { %>
       <div class="mini" id="typeBox">
 

@@ -14,24 +14,20 @@
 
 <div class="cardBody">
 
-    <form method="post" 
-          action="/templates/edit/<%=template.template_id%>">
+    <form method="post" action="/templates/edit/<%=template.template_id%>">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
       <div class="formRow">
         <div class="formLabel">
           Template Title
         </div>
         <div class="formInput">
-          <input  type="text"
-                  name="title" 
-                  maxlength="30" 
-                  value="<%=template.title%>"
-                  required>
+          <input type="text" name="title" maxlength="30" value="<%=template.title%>" required>
         </div>
       </div>
 
       <div class="formRow">
-        <div class="formLabel"> 
+        <div class="formLabel">
           Enter your templated phrase or message below.
         </div>
         <div class="formInput">
@@ -41,9 +37,7 @@
       </div>
 
       <center>
-      <input  type="submit" 
-              class="formSubmit padTop" 
-              value="Submit">
+      <input type="submit" class="formSubmit padTop" value="Submit">
       </center>
 
     </form>

@@ -16,16 +16,15 @@
 </div>
 
 <div class="cardBody">
-  
   <div class="scrollListBox">
 
     <% if (templates.length == 0) { %>
       <div class="noTemplates">
-        
+
         <div class="formRow" style="text-align:center">
           <h2>No templates available.</h2>
         </div>
-        
+
         <div class="formRow">
           <a href="/templates/create">
             <input type="submit" class="formSubmit padTop" value="Create new">
@@ -39,7 +38,6 @@
         data-template-id="<%= templates[i].template_id %>"
         data-title="<%= templates[i].title %>"
         data-content="<%= templates[i].content %>">
-        
         <div class="useCount">
           <%= templates[i].times_used %>
         </div>
@@ -56,7 +54,7 @@
             <%= templates[i].content %>
           </div>
           <div class="tags">
-            
+
           </div>
         </div>
       </div>
@@ -65,8 +63,9 @@
 
   <% if (templates.length > 0) { %>
     <form method="get" action="<%=`${level=="org"?"/org":""}/clients/${client.clid}/address`%>">
-      <input type="hidden" name="title"      id="templateTitle">    
-      <input type="hidden" name="content"    id="templateContent">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="title" id="templateTitle">
+      <input type="hidden" name="content" id="templateContent">
       <input type="hidden" name="templateid" id="templateId">
 
       <div class="formRow">

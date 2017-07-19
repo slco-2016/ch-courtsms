@@ -9,7 +9,7 @@
     Message Group
   </div>
   <div class="cardSubtitle">
-    This will create a new conversation with each client in the group. 
+    This will create a new conversation with each client in the group.
     <br>
     Message will be sent to each client in this group using Smart Select, which determines the best contact method for each client.
   </div>
@@ -17,17 +17,13 @@
 
 <div class="cardBody">
 
-  <form method="post"
-        action="/groups/address/<%= parameters.groupID || parameters.group %>">
+  <form method="post" action="/groups/address/<%= parameters.groupID || parameters.group %>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow smallBottomPad">
       <div class="formLabel"> Subject <small>(only visible to clients via email)</small></div>
       <div class="formInput">
-        <input  type="text" 
-                name="title" 
-                value="" 
-                placeholder="" 
-                maxlength="100">
+        <input type="text" name="title" value="" placeholder="" maxlength="100">
       </div>
     </div>
 
@@ -38,9 +34,7 @@
       </div>
     </div>
 
-    <input  type="submit" 
-            class="formSubmit padTop" 
-            value="Send">
+    <input type="submit" class="formSubmit padTop" value="Send">
   </form>
 
 </div>

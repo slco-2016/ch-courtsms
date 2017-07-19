@@ -23,6 +23,7 @@
 <div class="cardBody">
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" name="orgId" value="<%= orgId %>" required>
     <input type="hidden" name="departmentId" value="<%= departmentId %>" required>
     <input type="hidden" name="targetUserId" value="<%= targetUserId %>" required>

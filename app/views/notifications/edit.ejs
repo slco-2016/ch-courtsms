@@ -16,16 +16,14 @@
 <div class="cardBody">
 
   <form method = "post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="formRow">
       <div class="formLabel"> Which client to notify  </div>
-      <select class="blueSelect" 
-              id="clientID" 
-              name="clientID" 
-              required>
+      <select class="blueSelect" id="clientID" name="clientID" required>
         <option value="" disabled selected> Client </option>
         <% clients.forEach(function (client) { %>
           <option value="<%= client.clid %>" <% if (client.clid == notification.client) { %>selected<% } %>>
-            <%= client.last + ', ' + client.first + ' ' + client.middle %> 
+            <%= client.last + ', ' + client.first + ' ' + client.middle %>
           </option>
         <% }); %>
       </select>
@@ -33,10 +31,7 @@
 
     <div class="formRow">
       <div class="formLabel"> Which device to send to </div>
-      <select class="blueSelect" 
-              id="commConn" 
-              name="commID" 
-              required>
+      <select class="blueSelect" id="commConn" name="commID" required>
         <option value="" disabled selected> Contact Options </option>
       </select>
     </div>
@@ -44,11 +39,7 @@
     <div class="formRow">
       <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
       <div class="formInput">
-        <input  type="date" 
-                id="sendDate" 
-                name="sendDate" 
-                value="<%= moment(notification.send).format('YYYY-MM-DD') %>" 
-                required>
+        <input type="date" id="sendDate" name="sendDate" value="<%= moment(notification.send).format('YYYY-MM-DD') %>" required>
         </div>
     </div>
 

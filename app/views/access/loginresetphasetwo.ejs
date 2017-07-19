@@ -8,6 +8,7 @@
 <div class="cardBody">
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <input type="hidden" name="pwresid" value="<%= reset.pwresid %>">
     <input type="hidden" name="cmid" value="<%= reset.cmid %>">
