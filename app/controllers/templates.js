@@ -17,7 +17,7 @@ module.exports = {
   },
 
   new(req, res) {
-    res.render('templates/create');
+    res.render('templates/create', { csrfToken: req.csrfToken(), });
   },
 
   create(req, res) {
@@ -52,7 +52,8 @@ module.exports = {
     .then((template) => {
       if (template) {
         res.render('templates/edit', {
-          template,
+          template: template,
+          csrfToken: req.csrfToken(),
         });
       } else {
         notFound(res);

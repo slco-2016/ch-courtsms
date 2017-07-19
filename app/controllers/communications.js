@@ -28,6 +28,7 @@ module.exports = {
   new(req, res) {
     res.render('clients/commConn', {
       commConn: {},
+      csrfToken: req.csrfToken(),
     });
   },
 
@@ -123,7 +124,8 @@ module.exports = {
     CommConns.findById(req.params.communication)
     .then((commConn) => {
       res.render('clients/commConn', {
-        commConn,
+        commConn: commConn,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },

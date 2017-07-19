@@ -297,7 +297,8 @@ module.exports = {
       // left after filtering through all communications
       if (communications.length) {
         res.render('voice/create', {
-          communications,
+          communications: communications,
+          csrfToken: req.csrfToken(),
         });
 
       // If no cell or landline options exist, then do not allow record

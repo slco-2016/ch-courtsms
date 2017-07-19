@@ -39,7 +39,8 @@ module.exports = {
           );
 
           res.render('capture/conversationClaim', {
-            conversation,
+            conversation: conversation,
+            csrfToken: req.csrfToken(),
           });
         } else {
           res.notFound();

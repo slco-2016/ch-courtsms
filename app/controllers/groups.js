@@ -22,7 +22,8 @@ module.exports = {
     Clients.findByUser(Number(req.user.cmid), true)
     .then((clients) => {
       res.render('groups/create', {
-        clients,
+        clients: clients,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -45,8 +46,9 @@ module.exports = {
         Clients.findByUser(Number(req.user.cmid), true)
         .then((clients) => {
           res.render('groups/edit', {
-            group,
-            clients,
+            group: group,
+            clients: clients,
+            csrfToken: req.csrfToken(),
           });
         }).catch(res.error500);
       } else {
@@ -96,6 +98,7 @@ module.exports = {
   address(req, res) {
     res.render('groups/address', {
       parameters: req.params,
+      csrfToken: req.csrfToken(),
     });
   },
 

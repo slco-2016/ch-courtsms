@@ -46,8 +46,9 @@ module.exports = {
       }
 
       res.render('notifications/create', {
-        clients,
-        preSelect,
+        clients: clients,
+        preSelect: preSelect,
+        csrfToken: req.csrfToken()
       });
     }).catch(res.error500);
   },
@@ -55,12 +56,14 @@ module.exports = {
   compose(req, res) {
     res.render('notifications/compose', {
       parameters: req.query,
+      csrfToken: req.csrfToken(),
     });
   },
 
   composeCreate(req, res) {
     res.render('notifications/compose', {
       parameters: req.body,
+      csrfToken: req.csrfToken(),
     });
   },
 
@@ -70,8 +73,9 @@ module.exports = {
     Templates.findByUser(user)
     .then((templates) => {
       res.render('notifications/templates', {
-        templates,
+        templates: templates,
         parameters: req.query,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -136,7 +140,8 @@ module.exports = {
 
         res.render('notifications/edit', {
           notification: n,
-          clients,
+          clients: clients,
+          csrfToken: req.csrfToken(),
         });
       } else {
         notFound(res);

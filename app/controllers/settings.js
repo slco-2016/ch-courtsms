@@ -21,8 +21,9 @@ module.exports = {
       });
 
       res.render('settings', {
-        user,
-        clientNotifications,
+        user: user,
+        clientNotifications: clientNotifications,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },

@@ -46,8 +46,9 @@ module.exports = {
         PhoneNumbers.findByOrgID(orgId)
         .then((phoneNumbers) => {
           res.render('departments/edit', {
-            department,
-            phoneNumbers,
+            department: department,
+            phoneNumbers: phoneNumbers,
+            csrfToken: req.csrfToken(),
           });
         }).catch(res.error500);
       } else {
@@ -75,7 +76,8 @@ module.exports = {
     PhoneNumbers.findByOrgID(req.user.org)
     .then((phoneNumbers) => {
       res.render('departments/create', {
-        phoneNumbers,
+        phoneNumbers: phoneNumbers,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -99,8 +101,9 @@ module.exports = {
 
       res.render('departments/supervisors', {
         departmentId: req.params.department,
-        supervisors,
-        members,
+        supervisors: supervisors,
+        members: members,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
