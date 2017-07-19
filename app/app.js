@@ -47,10 +47,10 @@ app.use(cookieSession({
   keys: [SESS_SECRET,],
 }));
 
-app.use(csrf());
-
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(csrf());
 
 // enable trust proxy for access to the IP
 app.enable('trust proxy');
