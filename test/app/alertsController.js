@@ -1,22 +1,32 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
-
+const cheerio = require('cheerio');
 const APP = require('../../app/app');
 const testClient = supertest.agent(APP);
 
 describe('Alerts controller', () => {
   // login as the primary account
   before(done => {
-    testClient
-      .post('/login')
-      .type('form')
-      .send({ email: 'primary@test.com' })
-      .send({ pass: '123' })
-      .expect(302)
-      .expect('Location', '/login-success')
-      .end((err, res) => {
-        done(err);
+    testClient.get('/login')
+      .end(function(err, res) {
+        if (res.status == '302') {
+          done();
+        } else {
+          const $html = cheerio.load(res.text);
+          const csrf = $html('input[name=_csrf]').val();
+
+          testClient.post('/login')
+            .type('form')
+            .send({ _csrf: csrf })
+            .send({ email: 'primary@test.com' })
+            .send({ pass: '123' })
+            .expect(302)
+            .expect('Location', '/login-success')
+            .end((err, res) => {
+              done(err);
+            });
+        }
       });
   });
 
