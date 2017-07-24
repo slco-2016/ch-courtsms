@@ -1,6 +1,7 @@
 const assert = require('assert');
 const supertest = require('supertest');
 const should = require('should');
+const cheerio = require('cheerio');
 
 const APP = require('../../app/app');
 
@@ -33,38 +34,53 @@ describe('Basic http req tests', () => {
   });
 
   it('should redirect from root', (done) => {
-    anonymous.post('/login')
-      .field('email', 'af@sadf')
-      .field('pass', 'pass')
-      .expect(302)
-      .expect('Location', '/login-fail')
-      .end((err, res) => {
-        done(err);
-      });
+    anonymous.get('/login').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      anonymous.post('/login')
+        .send({ _csrf: csrf })
+        .send({ email: 'af@sadf' })
+        .send({ pass: 'pass' })
+        .expect(302)
+        .expect('Location', '/login-fail')
+        .end((err, res) => {
+          done(err);
+        }); // end post login
+    }); // end get login
   });
 
   it('owner should login with real creds', (done) => {
-    owner.post('/login')
-      .type('form')
-      .send({ email: 'owner@test.com' })
-      .send({ pass: '123' })
-      .expect(302)
-      .expect('Location', '/login-success')
-      .end((err, res) => {
-        done(err);
-      });
+    owner.get('/login').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      owner.post('/login')
+        .send({ _csrf: csrf })
+        .type('form')
+        .send({ email: 'owner@test.com' })
+        .send({ pass: '123' })
+        .expect(302)
+        .expect('Location', '/login-success')
+        .end((err, res) => {
+          done(err);
+        }); // end post login
+    }); // end get login
   });
 
   it('primary user should login with real creds', (done) => {
-    primary.post('/login')
-      .type('form')
-      .send({ email: 'primary@test.com' })
-      .send({ pass: '123' })
-      .expect(302)
-      .expect('Location', '/login-success')
-      .end((err, res) => {
-        done(err);
-      });
+    primary.get('/login').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      primary.post('/login')
+        .type('form')
+        .send({ _csrf: csrf })
+        .send({ email: 'primary@test.com' })
+        .send({ pass: '123' })
+        .expect(302)
+        .expect('Location', '/login-success')
+        .end((err, res) => {
+          done(err);
+        }); // end post login
+    }); // end get login
   });
 
   it('logged in owner user should redirect to org', (done) => {
@@ -85,62 +101,70 @@ describe('Basic http req tests', () => {
       });
   });
 
-
-  // TODO: make this pass
-  // it ('logged in primary shoud not be able to create client', function(done) {
-  //   primary.post('/org/clients/create')
-  //     .expect(302)
-  //     .expect('Location', '/login')
-  //     .end(function(err, res) {
-  //       done(err);
-  //     })
-  // });
-
-  it('owner should be able to create user', (done) => {
-    owner.post('/org/users/create')
-      .send({
-        first: 'kuan',
-        last: 'butts',
-        email: 'kuan@butt.s',
-        position: 'captain',
-        className: 'name of class',
-      })
+  it ('logged in primary should not be able to see client create form', function(done) {
+    primary.get('/org/clients/create')
       .expect(302)
-      .end((err, res) => {
-        if (err) throw err;
-        Users.findByEmail('kuan@butt.s')
-        .then((user) => {
-          should.exist(user);
-          user.first.should.be.exactly('kuan');
-          done();
-        }).catch(done);
-      });
+      .expect('Location', '/login')
+      .end(function(err, res) {
+        done(err);
+    }); // end get create
   });
 
-  it('primary user should have option to load templates on quick message', (done) => {
-    owner.post('/org/clients/create')
-      .send({
-        targetUser: 2,
-        first: 'Jim',
-        middle: 'K',
-        last: 'Halpert',
-        dob: '1990-02-03',
-        uniqueID1: 324,
-        uniqueID2: 23234,
-      })
-      .expect(302)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          primary.get('/clients/2/address')
-            .expect(200)
-            .end((err, res) => {
-              res.text.should.match(/Load template/);
-              done(err);
-            });
-        }
-      });
+  it('owner should be able to create user', (done) => {
+    owner.get('/org/users/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      owner.post('/org/users/create')
+        .send({ _csrf: csrf })
+        .send({
+          first: 'kuan',
+          last: 'butts',
+          email: 'kuan@butt.s',
+          position: 'captain',
+          className: 'name of class',
+        })
+        .expect(302)
+        .end((err, res) => {
+          if (err) throw err;
+          Users.findByEmail('kuan@butt.s')
+          .then((user) => {
+            should.exist(user);
+            user.first.should.be.exactly('kuan');
+            done();
+          }).catch(done);
+        }); // end post create
+    }); // end get create
+  });
+
+  it('owner user should have option to load templates on quick message', (done) => {
+    owner.get('/org/clients/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      owner.post('/org/clients/create')
+        .send({ _csrf: csrf })
+        .send({
+          targetUser: 2,
+          first: 'Jim',
+          middle: 'K',
+          last: 'Halpert',
+          dob: '1990-02-03',
+          uniqueID1: 324,
+          uniqueID2: 23234,
+        })
+        .expect(302)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            primary.get('/clients/2/address')
+              .expect(200)
+              .end((err, res) => {
+                res.text.should.match(/Load template/);
+                done(err);
+              });
+          }
+        }); // end post create
+    }); // end get create
   });
 
   it('owner should not see captured board on clients view', (done) => {
@@ -153,36 +177,41 @@ describe('Basic http req tests', () => {
 
   it('client without contact methods should reroute to create comm method', (done) => {
     lastNameUnique = 'Orin';
-    owner.post('/org/clients/create')
-      .send({
-        targetUser: 2,
-        first: 'Sandro',
-        middle: 'N',
-        last: lastNameUnique,
-        dob: '1990-02-03',
-        uniqueID1: 32334,
-        uniqueID2: 2327534,
-      })
-      .expect(302)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          Clients.findOneByAttribute('last', lastNameUnique)
-          .then((client) => {
-            if (client) {
-              primary.get(`/clients/${client.clid}/communications`)
-                .expect(302)
-                .expect('Location', `/clients/${client.clid}/communications/create`)
-                .end((err, res) => {
-                  done(err);
-                });
-            } else {
-              done(new Error('Could not find client just created'));
-            }
-          }).catch(done);
-        }
-      });
+    owner.get('/org/clients/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      owner.post('/org/clients/create')
+        .send({ _csrf: csrf })
+        .send({
+          targetUser: 2,
+          first: 'Sandro',
+          middle: 'N',
+          last: lastNameUnique,
+          dob: '1990-02-03',
+          uniqueID1: 32334,
+          uniqueID2: 2327534,
+        })
+        .expect(302)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            Clients.findOneByAttribute('last', lastNameUnique)
+            .then((client) => {
+              if (client) {
+                primary.get(`/clients/${client.clid}/communications`)
+                  .expect(302)
+                  .expect('Location', `/clients/${client.clid}/communications/create`)
+                  .end((err, res) => {
+                    done(err);
+                  });
+              } else {
+                done(new Error('Could not find client just created'));
+              }
+            }).catch(done);
+          }
+        }); // end post create
+    }); // end get create
   });
 
   it('owner user should not have option to load templates on quick message', (done) => {
@@ -225,82 +254,100 @@ describe('Basic http req tests', () => {
   });
 
   it('primary can add their own client', (done) => {
-    primary.post('/clients/create')
-      .send({
-        first: 'Harroldnewss',
-        middle: 'E',
-        last: 'Kroner',
-        dob: '1927-10-12',
-        uniqueID1: 3333,
-        uniqueID2: 9238,
-      })
-    .expect(302)
-      .end((err, res) => {
-        done(err);
-      });
+    primary.get('/clients/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      primary.post('/clients/create')
+        .send({ _csrf: csrf })
+        .send({
+          first: 'Harroldnewss',
+          middle: 'E',
+          last: 'Kroner',
+          dob: '1927-10-12',
+          uniqueID1: 3333,
+          uniqueID2: 9238,
+        })
+      .expect(302)
+        .end((err, res) => {
+          done(err);
+        }); // end post create
+    }); // end get create
   });
 
   it('should be able to add a comm method to a client', (done) => {
-    primary.post('/clients/1/communications/create')
-      .field('description', 'DummyFoo176')
-      .field('type', 'cell')
-      .field('value', '18280384828')
-    .expect(302)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          primary.get('/clients/1/communications')
-          .expect(200)
-            .end((err, res) => {
-              res.text.should.match(/Created new communication method/);
-              done(err);
-            });
-        }
-      });
+    primary.get('/clients/1/communications/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      primary.post('/clients/1/communications/create')
+        .send({ _csrf: csrf })
+        .send({ description: 'DummyFoo176' })
+        .send({ type: 'cell' })
+        .send({ value: '18280384828' })
+      .expect(302)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            primary.get('/clients/1/communications')
+            .expect(200)
+              .end((err, res) => {
+                res.text.should.match(/Created new communication method/);
+                done(err);
+              }); // end get communications
+          }
+        }); // end post create
+    }); // end get create
   });
 
   it('should not be able to add the same communication method two times if first is still active', (done) => {
-    owner.post('/clients/1/communications/create')
-      .send({
-        description: 'DummyFoo2',
-        type: 'cell',
-        value: '4444444444',
-      })
-    .expect(302)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          owner.get('/clients/1/communications')
-          .expect(200)
-            .end((err, res) => {
-              if (err) {
-                done(err);
-              } else {
-                owner.post('/clients/1/communications/create')
-                  .send({
-                    description: 'DummyFoo2',
-                    type: 'cell',
-                    value: '4444444444',
-                  })
-                .expect(302)
-                  .end((err, res) => {
-                    if (err) {
-                      done(err);
-                    } else {
-                      owner.get('/clients/1/communications')
-                      .expect(200)
-                        .end((err, res) => {
-                          res.text.should.match(/Client already has that method/);
-                          done(err);
-                        });
-                    }
-                  });
-              }
-            });
-        }
-      });
+    owner.get('/clients/1/communications/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf_one = $html('input[name=_csrf]').val();
+      owner.post('/clients/1/communications/create')
+        .send({ _csrf: csrf_one })
+        .send({
+          description: 'DummyFoo2',
+          type: 'cell',
+          value: '4444444444',
+        })
+      .expect(302)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            owner.get('/clients/1/communications/create')
+            .expect(200)
+              .end((err, res) => {
+                if (err) {
+                  done(err);
+                } else {
+                  const $html = cheerio.load(res.text);
+                  const csrf_two = $html('input[name=_csrf]').val();
+                  owner.post('/clients/1/communications/create')
+                    .send({ _csrf: csrf_two })
+                    .send({
+                      description: 'DummyFoo2',
+                      type: 'cell',
+                      value: '4444444444',
+                    })
+                  .expect(302)
+                    .end((err, res) => {
+                      if (err) {
+                        done(err);
+                      } else {
+                        owner.get('/clients/1/communications')
+                        .expect(200)
+                          .end((err, res) => {
+                            res.text.should.match(/Client already has that method/);
+                            done(err);
+                          });
+                      }
+                    }); // end post create
+                }
+              }); // end get communications
+          }
+        }); // end post create
+    }); // end get create
   });
 
   it('primary user should be able to view settings', (done) => {
@@ -312,26 +359,31 @@ describe('Basic http req tests', () => {
   });
 
   it('primary user settings updates should propogate', (done) => {
-    primary.post('/settings')
-      .send({
-        first: 'Jim',
-        middle: 'L',
-        last: 'Primary',
-        email: 'uniqueJimPrimary@foobar.org',
-        alertFrequency: 48,
-        isAway: 'true',
-        awayMessage: 'Lorem ipsum dolores ipset.',
-      })
-      .expect(302)
-      .end((err, res) => {
-        primary.get('/settings')
-          .expect(200)
-          .end((err, res) => {
-            res.text.should.match(/Lorem ipsum dolores ipset/);
-            res.text.should.match(/<input type="radio" value="48" name="alertFrequency" checked>/);
-            done(err);
-          });
-      });
+    primary.get('/settings').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      primary.post('/settings')
+        .send({ _csrf: csrf })
+        .send({
+          first: 'Jim',
+          middle: 'L',
+          last: 'Primary',
+          email: 'uniqueJimPrimary@foobar.org',
+          alertFrequency: 48,
+          isAway: 'true',
+          awayMessage: 'Lorem ipsum dolores ipset.',
+        })
+        .expect(302)
+        .end((err, res) => {
+          primary.get('/settings')
+            .expect(200)
+            .end((err, res) => {
+              res.text.should.match(/Lorem ipsum dolores ipset/);
+              res.text.should.match(/<input type="radio" value="48" name="alertFrequency" checked>/);
+              done(err);
+            });
+        }); // end post settings
+    }); // end get settings
   });
 
   it('first time user goes to colors for client, should be routed to color manager', (done) => {
@@ -361,21 +413,26 @@ describe('Basic http req tests', () => {
   });
 
   it('creating a new color should have it populate', (done) => {
-    primary.post('/colors')
-      .send({
-        color: 'rgb(33,20,200)',
-        name: 'Strawberry Red Team',
-      })
-      .expect(302)
-      .expect('Location', '/colors')
-      .end((err, res) => {
-        primary.get('/colors')
-          .expect(200)
-          .end((err, res) => {
-            res.text.should.match(/Strawberry Red Team/);
-            done(err);
-          });
-      });
+    primary.get('/colors').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      primary.post('/colors')
+        .send({ _csrf: csrf })
+        .send({
+          color: 'rgb(33,20,200)',
+          name: 'Strawberry Red Team',
+        })
+        .expect(302)
+        .expect('Location', '/colors')
+        .end((err, res) => {
+          primary.get('/colors')
+            .expect(200)
+            .end((err, res) => {
+              res.text.should.match(/Strawberry Red Team/);
+              done(err);
+            });
+        }); // end post colors
+    }); // end get colors
   });
 
   it('primary should not be able to view request new number page', (done) => {
@@ -445,22 +502,27 @@ describe('Basic http req tests', () => {
   });
 
   it('alert subject length must be greater than 0', (done) => {
-    owner.post('/org/alerts/create?department=1')
-      .send({
-        orgId: '',
-        departmentId: '1',
-        targetUserId: '',
-        subject: '',
-        message: '',
-      })
-      .redirects(1)
-      .end((err, res) => {
-        res.redirect.should.be.exactly(false);
-        // TODO: @maxmcd this error should flash but i am having trouble getting
-        // it to render on text, although it does consistently in app
-        // res.text.should.match(/subject needs to be at least 1 character long/);
-        done(err);
-      });
+    owner.get('/org/alerts/create').end(function(err, res) {
+      const $html = cheerio.load(res.text);
+      const csrf = $html('input[name=_csrf]').val();
+      owner.post('/org/alerts/create?department=1')
+        .send({ _csrf: csrf })
+        .send({
+          orgId: '',
+          departmentId: '1',
+          targetUserId: '',
+          subject: '',
+          message: '',
+        })
+        .redirects(1)
+        .end((err, res) => {
+          res.redirect.should.be.exactly(false);
+          // TODO: @maxmcd this error should flash but i am having trouble getting
+          // it to render on text, although it does consistently in app
+          // res.text.should.match(/subject needs to be at least 1 character long/);
+          done(err);
+        }); // end post create
+    }); // end get create
   });
 
   it('submitting a bad number for voice message should error correctly', (done) => {
@@ -469,18 +531,23 @@ describe('Basic http req tests', () => {
       // assume here that there is at least one client from seeds
       const client = clients[0];
 
-      primary.post(`/clients/${client.clid}/voicemessage`)
-        .send({
-          commId: '1',
-          sendDate: '2016-10-20',
-          sendHour: 10,
-          value: '123',
-        })
-        .expect(302)
-        .expect('Location', `/clients/${client.clid}/voicemessage`)
-        .end((err, res) => {
-          done(err);
-        });
+      primary.get(`/clients/${client.clid}/voicemessage`).end(function(err, res) {
+        const $html = cheerio.load(res.text);
+        const csrf = $html('input[name=_csrf]').val();
+        primary.post(`/clients/${client.clid}/voicemessage`)
+          .send({ _csrf: csrf })
+          .send({
+            commId: '1',
+            sendDate: '2016-10-20',
+            sendHour: 10,
+            value: '123',
+          })
+          .expect(302)
+          .expect('Location', `/clients/${client.clid}/voicemessage`)
+          .end((err, res) => {
+            done(err);
+          }); // end post voicemessage
+      }); // end get voicemessage
     }).catch(done);
   });
 });
