@@ -50,8 +50,6 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(csrf());
-
 // enable trust proxy for access to the IP
 app.enable('trust proxy');
 
@@ -110,6 +108,9 @@ app.post('/webhook/voice/save-recording', VoiceController.save);
 app.post('/webhook/voice/play-message', VoiceController.playMessage);
 app.post('/webhook/email', EmailsController.webhook);
 app.post('/webhook/email/status', EmailsController.status);
+
+// Everything below this requires a csrf token
+app.use(csrf());
 
 app.get('/login', AccessController.login);
 app.post('/login', passport.authenticate('local-login', {
