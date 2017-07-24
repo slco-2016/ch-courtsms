@@ -15,7 +15,7 @@ function _redirectOrRenderByClass(req, res) {
       res.redirect('/clients');
     }
   } else {
-    res.render('access/login');
+    res.render('access/login', { csrfToken: req.csrfToken(), });
   }
 }
 
@@ -42,7 +42,7 @@ module.exports = {
   },
 
   reset(req, res) {
-    res.render('access/loginreset');
+    res.render('access/loginreset', { csrfToken: req.csrfToken(), });
   },
 
   resetSubmit(req, res) {
@@ -80,7 +80,7 @@ module.exports = {
               .then(() => {
                 // Render direction to check email card
                 req.flash('success', `Reset password email was sent to ${cm.email}`);
-                res.render('access/loginresetsent', { cm });
+                res.render('access/loginresetsent', { cm: cm, csrfToken: req.csrfToken(), });
               })
               .catch((err) => {
                 console.error('Error sending password reset email: ', err);
@@ -102,7 +102,7 @@ module.exports = {
         res.redirect('/login/reset');
       } else {
         const reset = rows[0];
-        res.render('access/loginresetphasetwo', { reset });
+        res.render('access/loginresetphasetwo', { reset: reset, csrfToken: req.csrfToken(), });
       }
     }).catch(res.error500);
   },

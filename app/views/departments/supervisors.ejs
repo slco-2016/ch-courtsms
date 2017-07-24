@@ -12,12 +12,10 @@
 
   <% if (members.length) { %>
     <form method="post" id="updateSupervisors">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="scrollListBox">
         <% members.forEach(function (m) { %>
-          <div class="scrollListRow 
-              <% if (supervisorIds.indexOf(m.cmid) > -1) { %>selected<% } %>" 
-              data-supervisorId="<%= m.cmid %>">
-
+          <div class="scrollListRow <% if (supervisorIds.indexOf(m.cmid) > -1) { %>selected<% } %>" data-supervisorId="<%= m.cmid %>">
             <div class="scrollListContent">
               <div class="clientName"><%=`${m.last}, ${m.first} ${m.middle}`%></div>
             </div>
@@ -36,9 +34,7 @@
         </select>
       </div>
 
-      <input  type="submit" 
-              class="formSubmit padTop" 
-              value="Save Department">
+      <input type="submit" class="formSubmit padTop" value="Save Department">
     </form>
   <% } else { %>
     <div class="formRow">

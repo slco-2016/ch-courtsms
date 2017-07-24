@@ -9,66 +9,46 @@
 <div class="cardBody">
 
   <form method = "post" id="createNewUser">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> First Name </div>
       <div class="formInput">
-        <input  type="text" 
-                name="first" 
-                value=""
-                maxlength="160"
-                required>
+        <input type="text" name="first" value="" maxlength="160" required>
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Middle Name </div>
       <div class="formInput">
-        <input  type="text" 
-                name="middle" 
-                value=""
-                maxlength="160">
+        <input type="text" name="middle" value="" maxlength="160">
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Last Name </div>
       <div class="formInput">
-        <input  type="text" 
-                name="last" 
-                value=""
-                maxlength="160"
-                required>
+        <input type="text" name="last" value="" maxlength="160" required>
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Email Address </div>
       <div class="formInput">
-        <input  type="email" 
-                name="email" 
-                value=""
-                maxlength="160"
-                required>
+        <input type="email" name="email" value="" maxlength="160" required>
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Position </div>
       <div class="formInput">
-        <input  type="text" 
-                name="position" 
-                value=""
-                maxlength="160"
-                required>
+        <input type="text" name="position" value="" maxlength="160" required>
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Department </div>
-      <select class="blueSelect" 
-              name="department" 
-              required>
+      <select class="blueSelect" name="department" required>
         <% departments.forEach(function (department) { %>
             <option value="<%= department.department_id %>">
               <%= department.name %>
@@ -79,16 +59,14 @@
 
     <div class="formRow">
       <div class="formLabel"> User type </div>
-      <select class="blueSelect" 
-              name="className" 
-              required>
+      <select class="blueSelect" name="className" required>
         <% let listOfClassOptions = ["supervisor", "primary", "support"]; %>
         <% if (user.class == 'owner') { listOfClassOptions.push('owner'); } %>
 
         <% listOfClassOptions.forEach(function (className) { %>
             <option value="<%= className %>" <% if (className == "primary") { %>selected<% } %>>
-              <%= className.charAt(0).toUpperCase() + className.slice(1) %> 
-              User 
+              <%= className.charAt(0).toUpperCase() + className.slice(1) %>
+              User
               <%= className == 'primary' ? '(e.g. case manager, therapist)' : '' %>
               <%= className == 'support' ? '(e.g. front office staff)' : '' %>
             </option>
@@ -96,19 +74,16 @@
       </select>
     </div>
 
-    <input  type="submit" 
-            class="formSubmit padTop" 
-            value="Submit New User">
+    <input type="submit" class="formSubmit padTop" value="Submit New User">
   </form>
 
-  <div class="formRow"> 
+  <div class="formRow">
     <div class="formLabel">
       <small>
         New user will get an email in their inbox in 2-5 minutes with a temporary password.
       </small>
     </div>
   </div>
-  
 </div>
 
 <script type="text/javascript" class="JSusersCreate"></script>

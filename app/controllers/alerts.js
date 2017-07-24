@@ -49,10 +49,11 @@ module.exports = {
     if (targetUserId) { scope = 'organization'; }
 
     res.render('alerts/create', {
-      orgId,
-      departmentId,
-      targetUserId,
-      scope,
+      orgId: orgId,
+      departmentId: departmentId,
+      targetUserId: targetUserId,
+      scope: scope,
+      csrfToken: req.csrfToken(),
     });
   },
 

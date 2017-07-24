@@ -42,7 +42,8 @@ module.exports = {
         departments = departments.filter(department => department.department_id == req.user.department);
       }
       res.render('users/create', {
-        departments,
+        departments: departments,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -115,8 +116,9 @@ module.exports = {
     }).then((targetUser) => {
       if (targetUser) {
         res.render('users/edit', {
-          targetUser,
-          departments,
+          targetUser: targetUser,
+          departments: departments,
+          csrfToken: req.csrfToken(),
         });
       } else {
         notFound(res);
@@ -155,7 +157,8 @@ module.exports = {
       if (u) {
         res.render('users/transfer', {
           targetUser: u,
-          departments,
+          departments: departments,
+          csrfToken: req.csrfToken(),
         });
       } else {
         notFound(res);

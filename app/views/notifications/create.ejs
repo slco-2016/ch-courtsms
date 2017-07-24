@@ -8,25 +8,22 @@
     Schedule Notification
   </div>
   <div class="cardSubtitle">
-    
+
   </div>
 </div>
 
 <div class="cardBody">
 
-  <form method="post" 
-        action="/notifications/create/compose">
+  <form method="post" action="/notifications/create/compose">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> Select client  </div>
-      <select class="blueSelect" 
-              id="clientID" 
-              name="clientID" 
-              required>
+      <select class="blueSelect" id="clientID" name="clientID" required>
         <option value="" disabled selected> Client </option>
         <% clients.forEach(function (client) { %>
           <option value="<%= client.clid %>" <%if (preSelect == client.clid) {%>selected<%}%>>
-            <%= client.last + ', ' + client.first + ' ' + client.middle %> 
+            <%= client.last + ', ' + client.first + ' ' + client.middle %>
           </option>
         <% }); %>
       </select>
@@ -35,10 +32,7 @@
     <div id="textParametersCompose" style="display: none;">
       <div class="formRow">
         <div class="formLabel"> Select contact method </div>
-        <select class="blueSelect" 
-                id="commConn" 
-                name="commConn" 
-                required>
+        <select class="blueSelect" id="commConn" name="commConn" required>
           <option value="" disabled selected> Contact Options </option>
         </select>
       </div>
@@ -46,11 +40,7 @@
       <div class="formRow">
         <div class="formLabel"> Date to send <small>(YYYY-MM-DD)</small></div>
         <div class="formInput">
-          <input  type="date" 
-                  id="sendDate" 
-                  name="sendDate" 
-                  value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" 
-                  required>
+          <input type="date" id="sendDate" name="sendDate" value="<%= moment().add(1, 'weeks').format('YYYY-MM-DD') %>" required>
           </div>
       </div>
 

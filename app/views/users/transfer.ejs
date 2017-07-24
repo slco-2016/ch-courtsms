@@ -11,11 +11,10 @@
 <div class="cardBody">
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="formRow">
       <div class="formLabel"> Transfer <%= targetUser.first %> to </div>
-      <select class="blueSelect" 
-              name="department" 
-              required>
+      <select class="blueSelect" name="department" required>
         <% departments.forEach(function (department) { %>
             <option value="<%= department.department_id %>"
                     <% if (targetUser.department == department.department_id) { %>selected<% } %>>
@@ -25,9 +24,7 @@
       </select>
     </div>
 
-    <input  type="submit" 
-            class="formSubmit padTop" 
-            value="Transfer User">
+    <input type="submit" class="formSubmit padTop" value="Transfer User">
     </form>
 </div>
 

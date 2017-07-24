@@ -23,9 +23,8 @@
 </div>
 
 <div class="cardBody">
-  <form method = "post" 
-        id="userSearch" 
-        action="<%=`/org/captured/attach/${conversation.convo}`%>">
+  <form method = "post" id="userSearch" action="<%=`/org/captured/attach/${conversation.convo}`%>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel">

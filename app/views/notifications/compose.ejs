@@ -9,14 +9,14 @@
     Notification Message
   </div>
   <div class="cardSubtitle">
-    
+
   </div>
 </div>
 
 <div class="cardBody">
-  
   <div class="formRow">
     <form action="/notifications/create/templates">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <!-- Hidden components hold the send information from previous card view -->
       <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
       <input type="hidden" name="commID"   value="<%= parameters.commID %>" > 
@@ -35,19 +35,16 @@
   <br>
 
   <form method="post" action="/notifications/create">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" name="templateid" value="<%= parameters.templateid -%>">
-    <input type="hidden" name="clientID" value="<%= parameters.clientID %>" > 
-    <input type="hidden" name="commID"   value="<%= parameters.commID %>" > 
-    <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" > 
-    <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" > 
+    <input type="hidden" name="clientID" value="<%= parameters.clientID %>" >
+    <input type="hidden" name="commID"   value="<%= parameters.commID %>" >
+    <input type="hidden" name="sendDate" value="<%= parameters.sendDate %>" >
+    <input type="hidden" name="sendHour" value="<%= parameters.sendHour %>" >
     <div class="formRow smallBottomPad">
       <div class="formLabel"> Subject <small>(only visible to client via emails)</small></div>
       <div class="formInput">
-        <input  type="text" 
-                name="subject" 
-                value="<%= parameters.title || `New Message from ${user.first} ${user.last}` %>" 
-                placeholder="" 
-                maxlength="100">
+        <input type="text" name="subject" value="<%= parameters.title || `New Message from ${user.first} ${user.last}` %>" placeholder="" maxlength="100">
       </div>
     </div>
 

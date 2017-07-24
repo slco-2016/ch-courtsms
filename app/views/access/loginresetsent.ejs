@@ -2,12 +2,13 @@
 
 <div class="cardHead">
   <div class="cardTitle">Email Sent</div>
-    <div class="cardSubtitle">An email has been sent. Please check your email to reset your password. Enter your address to resent the message, if needed.</div>
+    <div class="cardSubtitle">An email has been sent. Please check your email to reset your password. Enter your address to resend the message, if needed.</div>
 </div>
 
 <div class="cardBody">
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> Resend to Email Address </div>

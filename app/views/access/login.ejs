@@ -52,6 +52,7 @@
   <!-- end of temporary chrome suggestion/warning block -->
 
   <form method="post" action="/login">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> Email </div>

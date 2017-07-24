@@ -29,8 +29,8 @@
 
 
 <div class="cardBody">
-  <form method="post"
-        action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications/create`%>">
+  <form method="post" action="<%=`${level === "org" ? "/org/clients" : "/clients"}/${client.clid}/communications/create`%>">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> Name (ex: cell, sister's phone)</div>

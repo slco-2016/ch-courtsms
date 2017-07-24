@@ -14,25 +14,19 @@
     </a>
   </div>
 
-  <form method = "post">
+  <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel"> Name of department </div>
       <div class="formInput">
-        <input  type="text" 
-                name="name" 
-                value="<%=department.name%>"
-                placeholder="Enter a name of the group" 
-                maxlength="160"
-                required="">
+        <input  type="text" name="name" value="<%=department.name%>" placeholder="Enter a name of the group" maxlength="160" required="">
       </div>
     </div>
 
     <div class="formRow">
       <div class="formLabel"> Which phone number to pair </div>
-      <select class="blueSelect" 
-              name="number" 
-              required>
+      <select class="blueSelect" name="number" required>
         <% phoneNumbers.forEach(function (phoneNumber) { %>
             <option value="<%= phoneNumber.phone_number_id %>"
                     <% if (department.phone_number == phoneNumber.phone_number_id) { %>selected<% } %>>
@@ -42,9 +36,7 @@
       </select>
     </div>
 
-    <input  type="submit" 
-            class="formSubmit padTop" 
-            value="Save Department">
+    <input type="submit" class="formSubmit padTop" value="Save Department">
   </form>
 </div>
 

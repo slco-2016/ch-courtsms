@@ -9,15 +9,14 @@
     Group Client by Color
   </div>
   <div class="cardSubtitle">
-    
+
   </div>
 </div>
 
 <div class="cardBody">
 
   <div class="coloredClientFrame">
-    <div  class="clientNameBox" 
-          style="background-color:<%=client.color_tag%>">
+    <div class="clientNameBox" style="background-color:<%=client.color_tag%>">
       <%= client.first + ' ' + client.last %>
     </div>
     <div class="clientColorNameSelected">
@@ -34,10 +33,7 @@
 
 
   <div class="colorList">
-    <div  class="colorTag" 
-          data-colorID=""
-          data-colorTagName="None"
-          style="background-color:#898989"></div>
+    <div class="colorTag" data-colorID="" data-colorTagName="None" style="background-color:#898989"></div>
     <div class="colorName">
       None
     </div>
@@ -45,10 +41,7 @@
 
   <% colors.forEach(function (tag) { %>
     <div class="colorList">
-      <div  class="colorTag" 
-            data-colorID="<%= tag.color_tag_id %>"
-            data-colorTagName="<%= tag.name %>"
-            style="background-color:<%= tag.color %>"></div>
+      <div class="colorTag" data-colorID="<%= tag.color_tag_id %>" data-colorTagName="<%= tag.name %>" style="background-color:<%= tag.color %>"></div>
       <div class="colorName">
         <%= tag.name %>
       </div>
@@ -56,15 +49,10 @@
   <% }) %>
 
   <center>
-    <form method="post" 
-          action="<%=`/clients/${client.clid}/edit/color`%>">
-      <input  type="hidden" 
-              id="chosenColorID"
-              name="colorID"
-              value="">
-      <input  type="submit" 
-              class="formSubmit padTop" 
-              value="Save">
+    <form method="post" action="<%=`/clients/${client.clid}/edit/color`%>">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" id="chosenColorID" name="colorID" value="">
+      <input type="submit" class="formSubmit padTop" value="Save">
     </form>
   </center>
 

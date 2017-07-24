@@ -2,7 +2,7 @@
 const should = require('should');
 const simple = require('simple-mock');
 const supertest = require('supertest');
-
+const cheerio = require('cheerio');
 const APP = require('../../app/app');
 const Clients = require('../../app/models/clients');
 const Messages = require('../../app/models/messages');
@@ -25,24 +25,46 @@ const reqBody = {
 };
 
 const logInAsOwner = (done) => {
-  supervisor.post('/login')
-    .send({ email: 'owner@test.com' })
-    .send({ pass: '123' })
-    .expect(302)
-    .expect('Location', '/login-success')
-    .then(() => {
-      done();
+  supervisor.get('/login')
+    .end(function(err, res) {
+      if (res.status == '302') {
+        done();
+      } else {
+        const $html = cheerio.load(res.text);
+        const csrf = $html('input[name=_csrf]').val();
+
+        supervisor.post('/login')
+          .send({ _csrf: csrf })
+          .send({ email: 'owner@test.com' })
+          .send({ pass: '123' })
+          .expect(302)
+          .expect('Location', '/login-success')
+          .then(() => {
+            done();
+          });
+      }
     });
 };
 
 const logInAsPrimary = (done) => {
-  primary.post('/login')
-    .send({ email: 'primary@test.com' })
-    .send({ pass: '123' })
-    .expect(302)
-    .expect('Location', '/login-success')
-    .then(() => {
-      done();
+  primary.get('/login')
+    .end(function(err, res) {
+      if (res.status == '302') {
+        done();
+      } else {
+        const $html = cheerio.load(res.text);
+        const csrf = $html('input[name=_csrf]').val();
+
+        primary.post('/login')
+          .send({ _csrf: csrf })
+          .send({ email: 'primary@test.com' })
+          .send({ pass: '123' })
+          .expect(302)
+          .expect('Location', '/login-success')
+          .then(() => {
+            done();
+          });
+      }
     });
 };
 
@@ -171,24 +193,35 @@ describe('POST /org/clients/:id/transfer', () => {
     simple.mock(Messages, 'smartSend')
       .resolveWith('Success!');
 
-    supervisor.post(`/org/clients/${this.client.clid}/transfer`)
-      .send({
-        user: this.user2.cmid,
-        bundleConversations: true,
-      })
-      .expect(302)
-      .end((err) => {
-        // assert that the proper message was sent, one that includes the new
-        // case manager's name
-        const sentMessage = Messages.smartSend.lastCall.args[3];
-        const user2Name = `${this.user2.first} ${this.user2.last}`;
+    const clid = this.client.clid;
+    const cmid = this.user2.cmid;
+    const cmname = `${this.user2.first} ${this.user2.last}`;
+    supervisor.get(`/org/clients/${clid}/transfer`)
+      .end(function(err, res) {
+        const $html = cheerio.load(res.text);
+        const csrf = $html('input[name=_csrf]').val();
 
-        sentMessage.should.match(new RegExp(user2Name));
+        supervisor.post(`/org/clients/${clid}/transfer`)
+          .send({ _csrf: csrf })
+          .send({
+            user: cmid,
+            bundleConversations: true,
+          })
+          .expect(302)
+          .end((err) => {
+            // assert that the proper message was sent, one that includes the new
+            // case manager's name
+            const sentMessage = Messages.smartSend.lastCall.args[3];
+            const user2Name = cmname;
 
-        simple.restore();
-        done(err);
+            sentMessage.should.match(new RegExp(user2Name));
+
+            simple.restore();
+            done(err);
+          });
       });
   });
+
 });
 
 describe('Clients primary controller view', () => {
@@ -211,18 +244,25 @@ describe('Clients primary controller view', () => {
   });
 
   it('should be able to create a new client', (done) => {
-    primary.post('/clients/create')
-      .send(reqBody)
-      .expect(302)
-      .end((err, res) => {
-        // TODO: The client attribute uniqueID1 is still
-        //       referered to as "so" in the database
-        Clients.findOneByAttribute('so', uniqueID1)
-        .then((client) => {
-          should.equal(reqBody.first, client.first);
-          should.equal(reqBody.last, client.last);
-          done();
-        }).catch(done);
+    primary.get('/clients/create')
+      .end(function(err, res) {
+        const $html = cheerio.load(res.text);
+        const csrf = $html('input[name=_csrf]').val();
+
+        primary.post('/clients/create')
+          .send({ _csrf: csrf })
+          .send(reqBody)
+          .expect(302)
+          .end((err, res) => {
+            // TODO: The client attribute uniqueID1 is still
+            //       referered to as "so" in the database
+            Clients.findOneByAttribute('so', uniqueID1)
+            .then((client) => {
+              should.equal(reqBody.first, client.first);
+              should.equal(reqBody.last, client.last);
+              done();
+            }).catch(done);
+          });
       });
   });
 
@@ -233,16 +273,23 @@ describe('Clients primary controller view', () => {
       reqBody.autoNotify = false;
       delete reqBody.targetUser;
 
-      primary.post(`/clients/${client.clid}/edit`)
-        .send(reqBody)
-        .expect(302)
-        .end((err, res) => {
-          Clients.findOneByAttribute('so', uniqueID1)
-          .then((client) => {
-            client.allow_automated_notifications.should.be.exactly(false);
-            done();
-          }).catch(done);
-        });
+      primary.get(`/clients/${client.clid}/edit`)
+        .end(function(err, res) {
+          const $html = cheerio.load(res.text);
+          const csrf = $html('input[name=_csrf]').val();
+
+          primary.post(`/clients/${client.clid}/edit`)
+            .send({ _csrf: csrf })
+            .send(reqBody)
+            .expect(302)
+            .end((err, res) => {
+              Clients.findOneByAttribute('so', uniqueID1)
+              .then((client) => {
+                client.allow_automated_notifications.should.be.exactly(false);
+                done();
+              }).catch(done);
+            });
+      });
     }).catch(done);
   });
 });

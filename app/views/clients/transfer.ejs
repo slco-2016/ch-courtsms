@@ -27,8 +27,8 @@
     <% } %>
   </div>
 
-  <form method = "post"
-        id="userSearch">
+  <form method = "post" id="userSearch">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
       <div class="formLabel">

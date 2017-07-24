@@ -27,7 +27,8 @@ module.exports = {
     .then((conversation) => {
       if (conversation) {
         res.render('capture/respond', {
-          conversation,
+          conversation: conversation,
+          csrfToken: req.csrfToken(),
         });
       } else {
         res.notFound();
@@ -80,8 +81,9 @@ module.exports = {
           }
 
           res.render('capture/attachUser', {
-            conversation,
-            users,
+            conversation: conversation,
+            users: users,
+            csrfToken: req.csrfToken(),
           });
         }).catch(res.error500);
       } else {
@@ -112,8 +114,9 @@ module.exports = {
         .then((clients) => {
           if (clients.length) {
             res.render('capture/attachClient', {
-              conversation,
-              clients,
+              conversation: conversation,
+              clients: clients,
+              csrfToken: req.csrfToken(),
             });
           } else {
             req.flash('warning', 'That user has no active clients in their case load.');
@@ -158,7 +161,8 @@ module.exports = {
     .then((conversation) => {
       if (conversation) {
         res.render('capture/removeConfirm', {
-          conversation,
+          conversation: conversation,
+          csrfToken: req.csrfToken(),
         });
       } else {
         res.notFound();

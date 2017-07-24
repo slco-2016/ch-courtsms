@@ -15,6 +15,7 @@ const db = require('./db');
 // APP DEPENDENCIES
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
+const csrf = require('csurf');
 const flash = require('connect-flash');
 const colors = require('colors');
 
@@ -107,6 +108,9 @@ app.post('/webhook/voice/save-recording', VoiceController.save);
 app.post('/webhook/voice/play-message', VoiceController.playMessage);
 app.post('/webhook/email', EmailsController.webhook);
 app.post('/webhook/email/status', EmailsController.status);
+
+// Everything below this requires a csrf token
+app.use(csrf());
 
 app.get('/login', AccessController.login);
 app.post('/login', passport.authenticate('local-login', {

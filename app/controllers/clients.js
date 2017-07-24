@@ -128,12 +128,12 @@ module.exports = {
     const org = req.user.org;
     // don't render the 'Attach to case manager' field if this is a case manager
     if (level === 'user') {
-      res.render('clients/create', { users: null });
+      res.render('clients/create', { users: null, csrfToken: req.csrfToken(), });
     } else {
       Users.where({ org, active: true })
       .then((users) => {
         // if we want to filter by department, we could do it here
-        res.render('clients/create', { users });
+        res.render('clients/create', { users: users, csrfToken: req.csrfToken(), });
       }).catch(res.error500);
     }
   },
@@ -170,7 +170,7 @@ module.exports = {
   },
 
   edit(req, res) {
-    res.render('clients/edit');
+    res.render('clients/edit', { csrfToken: req.csrfToken(), });
   },
 
   update(req, res) {
@@ -211,6 +211,7 @@ module.exports = {
 
     res.render('clients/address', {
       template: req.query,
+      csrfToken: req.csrfToken(),
     });
   },
 
@@ -220,8 +221,9 @@ module.exports = {
     Templates.findByUser(user)
     .then((templates) => {
       res.render('clients/templates', {
-        templates,
+        templates: templates,
         parameters: req.query,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -358,10 +360,11 @@ module.exports = {
             tab: 'messages',
             sel: method || 'all',
           },
-          conversations,
-          messages,
-          communications,
-          convoFilter,
+          conversations: conversations,
+          messages: messages,
+          communications: communications,
+          convoFilter: convoFilter,
+          csrfToken: req.csrfToken(),
         });
       }
     }).catch(res.error500);
@@ -469,8 +472,9 @@ module.exports = {
       }
 
       res.render('clients/transfer', {
-        users,
+        users: users,
         allDepartments: allDep,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },
@@ -598,7 +602,8 @@ module.exports = {
         ccc_id: clientId,
       });
       res.render('clients/closeoutSurvey', {
-        client,
+        client: client,
+        csrfToken: req.csrfToken(),
       });
     }).catch(res.error500);
   },

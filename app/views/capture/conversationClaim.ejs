@@ -24,6 +24,7 @@
 
 <div class="cardBody">
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" value="1" name="accept">
     <input type="submit" class="formSubmit green" value="Accept Conversation">
   </form>
@@ -31,6 +32,7 @@
   <center>-or-<br><br></center>
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="hidden" value="1" name="reject">
     <input type="submit" class="formSubmit red" value="Reject Conversation">
   </form>

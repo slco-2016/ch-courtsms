@@ -9,6 +9,7 @@
 <div class="cardBody">
 
   <form method="post" id="createForm">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <% if (level === "org") { %>
       <div class="formRow">

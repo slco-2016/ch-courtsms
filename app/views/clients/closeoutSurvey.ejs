@@ -25,18 +25,19 @@
     </div>
 
   <form method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <div class="formRow">
-      <div class="formLabel"> 
-        Is <%= client.first %> a successful or unsuccessful close out? 
+      <div class="formLabel">
+        Is <%= client.first %> a successful or unsuccessful close out?
       </div>
       <div class="formInput">
         <div class="input-option">
-          <input type="radio" name="closeOutStatus" value="success" required> 
+          <input type="radio" name="closeOutStatus" value="success" required>
           Successful
         </div>
         <div class="input-option">
-          <input type="radio" name="closeOutStatus" value="failure" required> 
+          <input type="radio" name="closeOutStatus" value="failure" required>
           Unsuccessful
         </div>
         <div class="input-option">
@@ -48,30 +49,30 @@
 
     <div class="formRow">
       <div class="formLabel"> 
-        How did you most often communicate with <%= client.first %>? 
+        How did you most often communicate with <%= client.first %>?
       </div>
       <div class="formInput">
         <div class="input-option">
-          <input type="radio" name="mostCommonMethod" value="inPerson" required> 
+          <input type="radio" name="mostCommonMethod" value="inPerson" required>
           In-person
         </div>
         <div class="input-option">
-          <input type="radio" name="mostCommonMethod" value="phone" required> 
+          <input type="radio" name="mostCommonMethod" value="phone" required>
           Phone
         </div>
         <div class="input-option">
-          <input type="radio" name="mostCommonMethod" value="text" required> 
+          <input type="radio" name="mostCommonMethod" value="text" required>
           ClientComm
         </div>
         <div class="input-option">
-          <input type="radio" name="mostCommonMethod" value="email" required> 
+          <input type="radio" name="mostCommonMethod" value="email" required>
           Email
         </div>
       </div>
     </div>
 
     <div class="formRow">
-      <div class="formLabel"> 
+      <div class="formLabel">
         How likely would <%= client.first %> have been to succeed without ClientComm?
         <small>
           Scale: 1 = very unlikely, 3 = neutral, 5 = very likey
@@ -79,27 +80,27 @@
       </div>
       <div class="formInput">
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="1" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="1" required>
           1
         </div>
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="2" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="2" required>
           2
         </div>
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="3" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="3" required>
           3
         </div>
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="4" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="4" required>
           4
         </div>
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="5" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="5" required>
           5
         </div>
         <div class="input-option">
-          <input type="radio" name="likelihoodSuccessWithoutCC" value="NA" required> 
+          <input type="radio" name="likelihoodSuccessWithoutCC" value="NA" required>
           N/A
         </div>
       </div>
@@ -111,19 +112,19 @@
       </div>
       <div class="formInput">
         <div class="input-option">
-          <input type="radio" name="helpfulnessCC" value="unhelpful" required> 
+          <input type="radio" name="helpfulnessCC" value="unhelpful" required>
           Unhelpful
         </div>
         <div class="input-option">
-          <input type="radio" name="helpfulnessCC" value="neutral" required> 
+          <input type="radio" name="helpfulnessCC" value="neutral" required>
           Neutral
         </div>
         <div class="input-option">
-          <input type="radio" name="helpfulnessCC" value="helpful" required> 
+          <input type="radio" name="helpfulnessCC" value="helpful" required>
           Helpful
         </div>
         <div class="input-option">
-          <input type="radio" name="helpfulnessCC" value="critical" required> 
+          <input type="radio" name="helpfulnessCC" value="critical" required>
           Critical
         </div>
       </div>

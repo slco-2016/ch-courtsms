@@ -15,23 +15,20 @@
 
 <div class="cardBody">
 
-    <form method="post" 
-          action="/templates/create">
+    <form method="post" action="/templates/create">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
       <div class="formRow">
         <div class="formLabel">
           Subject <small>(only visible to clients via emails)</small>
         </div>
         <div class="formInput">
-          <input  type="text"
-                  name="title" 
-                  maxlength="30" 
-                  required>
+          <input type="text" name="title" maxlength="30" required>
         </div>
       </div>
 
       <div class="formRow">
-        <div class="formLabel"> 
+        <div class="formLabel">
           Message
         </div>
         <div class="formInput">
@@ -41,9 +38,7 @@
       </div>
 
       <center>
-      <input  type="submit" 
-              class="formSubmit padTop" 
-              value="Submit">
+      <input type="submit" class="formSubmit padTop" value="Submit">
       </center>
 
     </form>

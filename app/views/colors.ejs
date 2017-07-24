@@ -11,16 +11,15 @@
     Add / Remove Colors
   </div>
   <div class="cardSubtitle">
-    
+
   </div>
 </div>
 
 <div class="cardBody">
 
   <div class="formRow createNewColor">
-    <form id="addNewColorTagForm"
-          method="post" 
-          action="/colors">
+    <form id="addNewColorTagForm" method="post" action="/colors">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
       <center>
 
@@ -29,15 +28,9 @@
         </button>
 
         <div class="formInput">
-          <input  type="text" 
-                  class="colorTagName" 
-                  name="name" 
-                  value=""
-                  placeholder="Color tag name"
-                  required>
+          <input type="text" class="colorTagName" name="name" value="" placeholder="Color tag name" required>
           </input>
         </div>
-        
         <div class="colorTagAdd">
           <input type="submit" class="formSubmit padTop" value="Save Color">
         </div>
