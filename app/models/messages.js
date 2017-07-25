@@ -353,19 +353,22 @@ class Messages extends BaseModel {
     return new Promise((fulfill, reject) => {
       let messages = [];
       Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds)
-      .then((resp) => {
-        messages = resp.map(message => ({
-          id: `${message.msgid} (from conversation #${message.convo})`,
-          content: message.content,
-          communication: `${message.commconn_name}, ${message.comm_value} (device type: ${message.comm_type})`,
-          read_by_user: message.read,
-          sent_by_client: message.inbound ? 'TRUE' : 'FALSE - Sent by user.',
-          communication_with: `${message.user_first} ${message.user_middle} ${message.user_last}`,
-          status: `${message.tw_status}`,
-          created: message.created,
-        }));
+        .then((resp) => {
+          messages = resp.map(message => {
+            let content = message.content;
+            let speaker = `${message.user_first} ${message.user_last}`;
+            let direction = 'to';
+            if (message.inbound) {
+              speaker = `${message.client_first} ${message.client_last}`;
+              direction = 'from';
+            }
+            return {
+              content: `${speaker}: ${content}`,
+              communication: `${message.tw_status} ${direction} ${message.commconn_name} (${message.comm_value})`,
+            }
+          });
 
-        fulfill(messages);
+          fulfill(messages);
       }).catch(reject);
     });
   }
@@ -384,10 +387,13 @@ class Messages extends BaseModel {
                 'comms.type as comm_type',
                 'cms.first as user_first',
                 'cms.middle as user_middle',
-                'cms.last as user_last')
+                'cms.last as user_last',
+                'clients.first as client_first',
+                'clients.last as client_last')
         .leftJoin('comms', 'comms.commid', 'msgs.comm')
         .leftJoin('convos', 'convos.convid', 'msgs.convo')
         .leftJoin('cms', 'convos.cm', 'cms.cmid')
+        .leftJoin('clients', 'convos.client', 'clients.clid')
         .leftJoin('commconns', function () {
           this
               .on('commconns.comm', 'msgs.comm')

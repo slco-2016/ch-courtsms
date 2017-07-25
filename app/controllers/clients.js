@@ -556,16 +556,21 @@ module.exports = {
       // update to org local timezone
       messages = messages.map((message) => {
         const tz = organization.tz || 'America/Denver';
-        message.local_date_time = moment(message.date_time).tz(tz).format('MMMM Do YYYY, h:mm:ss a');
-        message.local_timezone_used = tz;
+        message.local_date_time = `on ${moment(message.date_time).tz(tz).format('MMMM Do YYYY, h:mm:ss a')}`;
         return message;
       });
 
       // Format into a text string
+      let msgcount = 1;
       messages = messages.map((message) => {
         let stringVersionOfMessageObject = '';
         Object.keys(message).forEach((key) => {
-          stringVersionOfMessageObject += `\n${key}: ${message[key]}`;
+          let leader = '-- ';
+          if (key == 'content') {
+            leader = `${msgcount}. `;
+            msgcount++;
+          }
+          stringVersionOfMessageObject += `\n${leader}${message[key]}`;
         });
         return stringVersionOfMessageObject;
       }).join('\n');
