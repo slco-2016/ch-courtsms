@@ -473,7 +473,6 @@ TWILIO_NUMBER_COUNT=${var.twilio_number_count}
 TWILIO_LATITUDE=${var.twilio_latitude}
 TWILIO_LONGITUDE=${var.twilio_longitude}
 TWILIO_OUTBOUND_CALLBACK_URL=${var.deploy_base_url}
-# TWILIO_OUTBOUND_CALLBACK_URL_BACKUP=https://${var.deploy_base_url}
 SESSION_SECRET=${var.session_secret}
 LOCAL_DATABASE_USER=clientcomm
 DATABASE_USER=${aws_db_instance.clientcomm.username}
