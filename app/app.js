@@ -69,7 +69,7 @@ app.use(middleware.logging);
 app.use(middleware.setVisitorID);
 app.use(middleware.setApplicationDetails);
 app.use(middleware.setUserAndLevel);
-app.use(middleware.getUserPerformance);
+// app.use(middleware.getUserPerformance);
 
 app.use(middleware.attachLoggingTools);
 app.use(middleware.attachRoutingTools);

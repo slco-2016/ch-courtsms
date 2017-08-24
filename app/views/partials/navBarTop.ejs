@@ -5,8 +5,6 @@
   <% levelSelectOptions = true; %>
 <% } %>
 
-<% const performancePercentage = String(user.performanceThisWeek); %>
-
 <!-- Load in addition CSS -->
 <link rel="stylesheet" type="text/css" href="/static/css/v4_navBarTop.css">
 
@@ -60,12 +58,6 @@
           </span>
         </a>
 
-        <a href="#">
-          <span class="button adminPerformance" style="font-size: 12px">
-            <%= performancePercentage %>% 
-            <i class="fa fa-bar-chart" aria-hidden="true"></i>
-          </span>
-        </a>
       <% } %>
 
       <a href="/settings">
@@ -87,29 +79,6 @@
           <i class="fa fa-close"></i>
           <span class="hidden">Logout </span></span>
       </a>
-    </div>
-
-    <div class="performance <% if (levelSelectOptions) { %>adminVersion<% } %>">
-      <div class="performanceBar">
-        <span style="width: <%=performancePercentage%>%"></span>
-      </div>
-      <div class="performanceBarValue">
-        <%=performancePercentage%>%
-      </div>
-      <div class="performanceBarAlert">
-        <div class="arrowTop"></div>
-        <div class="alertsBody">
-          <div class="alertRow">
-            <div class="message">
-              <% if (performancePercentage > 95) { %>
-                Congratulations! You're a top user this week - Don’t forget to brag about it to your friends! 😉
-              <% } else { %>
-                You are <%=performancePercentage%>% to being the top user this week! Keep it up!
-              <% } %>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
   </div>
