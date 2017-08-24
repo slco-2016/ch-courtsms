@@ -16,6 +16,8 @@ class PublicView {
         responseData.baseUrl = 'https://secure.clientcomm.org';
       }
 
+      fulfill(responseData);
+
       const rawQuery0 =
         `SELECT count(msgid), date_trunc('week', created) AS week ` +
         `FROM msgs GROUP BY week ORDER BY week ASC;`;

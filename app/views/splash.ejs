@@ -403,7 +403,7 @@
       </div>
     </div>
 
-    <div class="block">
+    <!-- <div class="block">
       <div class="inside" style="margin-top: 30px; margin-bottom: 50px;">
 
       <center style="font-size: 28px; padding: 20px; padding-bottom: 5px; font-weight: 700">
@@ -440,7 +440,7 @@
       <center style="margin-top: -25px; color: #898989; font-size: 18px">Cumulative Usage Growth</center>
 
       </div>
-    </div>
+    </div> -->
 
     <div class="block grey">
       <div class="bottom">
@@ -489,7 +489,7 @@
 
   <script type="text/javascript">
    
-  window.msgs = "<%= JSON.stringify(msgs) %>";
+  window.msgs = null;
   window.msgsReduced = null;
   // UTILS: Function utilities called in the above "try" statement
   // Returns the ISO week of the date
@@ -651,15 +651,15 @@
   // Attempt first to parse content
   try {
     // Clean up EJS string output
-    msgs = JSON.parse(msgs.replace(/&#34;/g, '"'));
-    msgsReduced = reduceAllMsgHistories(msgs);
-    peakDay = getPeakDay(msgsReduced);
+    //msgs = JSON.parse(msgs.replace(/&#34;/g, '"'));
+    //msgsReduced = reduceAllMsgHistories(msgs);
+    //peakDay = getPeakDay(msgsReduced);
     // Add Peak Day to Number Stats
     // $("#peakDayValue").text(peakDay.value);
     // Make the cumulative, organization-wide top chart
-    makeTopOrgWideChart(msgsReduced);
+    //makeTopOrgWideChart(msgsReduced);
     // Draw gauge chart in top card right
-    drawGaugeChart(msgsReduced);
+    //drawGaugeChart(msgsReduced);
   // If parse fails, we don't execute any of the chart drawing
   } catch (e) { console.log(e) }
   // SIGN UP
