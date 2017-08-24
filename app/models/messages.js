@@ -400,8 +400,7 @@ class Messages extends BaseModel {
               .andOn('commconns.client', 'convos.client');
         })
         .leftJoin('ibm_sentiment_analysis as sentiment', 'sentiment.tw_sid', 'msgs.tw_sid')
-        .where('msgs.created', '>', moment().subtract('months', 6))
-        .andWhere('convo', 'in', conversationIds)
+        .whereIn('convo', conversationIds)
         .orderBy('created', 'asc')
       .then((resp) => {
         messages = clearDuplicateMessages(resp);
