@@ -292,7 +292,8 @@ module.exports = {
 
       const conversationIds = conversations.filter(conversation => conversation.client == client.clid).map(conversation => conversation.convid);
 
-      return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
+      // return Messages.findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds);
+      return Messages.findWithSentimentAnalysisAndCommConnMetaByUserAndClient(user, clientId);
     }).then((resp) => {
       messages = resp.filter((msg) => {
         if (msg.comm_type == methodFilter || methodFilter == 'all') {

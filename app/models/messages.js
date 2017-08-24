@@ -373,6 +373,71 @@ class Messages extends BaseModel {
     });
   }
 
+  static findWithSentimentAnalysisAndCommConnMetaByUserAndClient(userId, clientId) {
+    return new Promise((fulfill, reject) => {
+      let messages;
+      db('msgs')
+        .select('msgs.*',
+                'sentiment.sentiment',
+                'commconns.client',
+                'commconns.name as commconn_name',
+                'comms.value as comm_value',
+                'comms.type as comm_type',
+                'cms.first as user_first',
+                'cms.middle as user_middle',
+                'cms.last as user_last',
+                'clients.first as client_first',
+                'clients.last as client_last')
+        .leftJoin('comms', 'comms.commid', 'msgs.comm')
+        .leftJoin('convos', 'convos.convid', 'msgs.convo')
+        .leftJoin('cms', 'convos.cm', 'cms.cmid')
+        .leftJoin('clients', 'convos.client', 'clients.clid')
+        .leftJoin('commconns', function () {
+          this
+              .on('commconns.comm', 'msgs.comm')
+              .andOn('commconns.client', 'convos.client');
+        })
+        .leftJoin('ibm_sentiment_analysis as sentiment', 'sentiment.tw_sid', 'msgs.tw_sid')
+        .where('convos.client', clientId)
+        .andWhere('convos.cm', userId)
+        .orderBy('created', 'asc')
+      .then((resp) => {
+        messages = clearDuplicateMessages(resp);
+
+        const emailIds = messages.map(msg => msg.email_id);
+
+        return db('emails')
+          .select('attachments.*')
+          .whereIn('emails.id', emailIds)
+          .join('attachments', 'emails.id', 'attachments.email_id');
+      }).then((attachments) => {
+        attachments = attachments.map(attachment => new Attachments(attachment));
+
+        messages = messages.map((message) => {
+          message.attachments = [];
+          for (let i = 0; i < attachments.length; i++) {
+            if (attachments[i].email_id == message.email_id) {
+              message.attachments.push(attachments[i]);
+            }
+          }
+          return message;
+        });
+        const recordingIds = messages.map(msg => msg.recording_id);
+        return Recordings.findByIds(recordingIds);
+      }).then((recordings) => {
+        messages = messages.map((message) => {
+          for (let i = 0; i < recordings.length; i++) {
+            if (recordings[i].id == message.recording_id) {
+              message.recording = recordings[i];
+            }
+          }
+          return message;
+        });
+        fulfill(messages);
+      }).catch(reject);
+    });
+  }
+
   static findWithSentimentAnalysisAndCommConnMetaByConversationIds(conversationIds) {
     if (!Array.isArray(conversationIds)) conversationIds = [conversationIds,];
 
