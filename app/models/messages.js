@@ -716,6 +716,7 @@ class Messages extends BaseModel {
   }
 
   static smartSend(userID, clientID, title, content) {
+    console.log('-> smartSend');
     return new Promise((fulfill, reject) => {
       Messages.getLatestNumber(userID, clientID)
       .then((commID) => {
@@ -733,6 +734,7 @@ class Messages extends BaseModel {
   }
 
   static startNewConversation(userID, clientID, subject, content, commID) {
+    console.log('-> startNewConversation');
     return new Promise((fulfill, reject) => {
       let conversation;
 

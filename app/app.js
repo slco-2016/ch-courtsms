@@ -283,7 +283,7 @@ if (credentials.RUNSCHEDULED) {
     require('./lib/em-notify').runEmailUpdates().then().catch();
   }, 24 * hour);
 
-  // notifications - 15 minutes
+  // notifications - 2 minutes
   setInterval(() => {
     const Notifications = require('./models/notifications');
     Notifications.checkAndSendNotifications()

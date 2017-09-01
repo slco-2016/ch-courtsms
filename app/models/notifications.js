@@ -122,10 +122,10 @@ class Notifications extends BaseModel {
   }
 
   static sendTextorEmailNotification(notification) {
+    console.log('-> sendTextorEmailNotification');
     return new Promise((fulfill, reject) => {
       Users.findById(notification.cm)
       .then((user) => {
-        const client = notification.client;
         const userId = notification.cm;
         const clientId = notification.client;
         const subject = notification.subject || `New Message from ${user.first} ${user.last}`;
@@ -138,6 +138,7 @@ class Notifications extends BaseModel {
         } else {
           sendMethod = Messages.smartSend(userId, clientId, subject, content);
         }
+        console.log(` -- sending to client ${clientId} from user ${userId}`);
 
         sendMethod.then(() => this.markAsSent(notification.notificationid)).then(() => {
           fulfill(notification);
