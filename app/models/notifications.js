@@ -57,6 +57,7 @@ class Notifications extends BaseModel {
         .where('send', '<', db.fn.now())
         .andWhere('notifications.sent', false)
         .andWhere('notifications.closed', false)
+        .limit(5)
       .then(notifications => {
 
         console.log(` -- found ${notifications.length} eligible notifications`);
