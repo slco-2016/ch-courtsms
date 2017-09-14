@@ -204,10 +204,7 @@ $(() => {
 
         function scrollLast() {
           if ($('#lastMessage').length) {
-            $('#lastMessage')[0].scrollIntoView({
-              block: 'end',
-              behavior: 'smooth',
-            });
+            $('.rightContent').scrollTop($('.messageStream').prop('scrollHeight'));
           }
         }
 
