@@ -28,7 +28,7 @@
     "jquery": "^3.0.0",
     "keen-js": "^3.4.1",
     "knex": "^0.11.0",
-    "mailgun-js": "^0.10.1",
+    "mailgun-js": "^0.11.3",
     "mimelib": "^0.3.0",
     "mixpanel": "^0.7.0",
     "moment": "^2.15.2",
