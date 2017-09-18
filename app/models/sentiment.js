@@ -16,7 +16,7 @@ class SentimentAnalysis {
       }
 
       const status = message.AddOns.status;
-      if (status && status == 'successful') {
+      if (status && status === 'successful') {
         const results = message.AddOns.results;
         if (results && results.hasOwnProperty('ibm_watson_sentiment')) {
           ibm = results.ibm_watson_sentiment;
@@ -24,10 +24,7 @@ class SentimentAnalysis {
       }
     }
 
-    if (ibm && ibm.status == 'successful') {
-      const requestSID = null;
-      const docSentiment = null;
-
+    if (ibm && ibm.status === 'successful' && ibm.result.status !== 'ERROR') {
       // Use a try statement because we are relying on a very
       // particular object structure for type, request, etc.
       try {
@@ -45,7 +42,7 @@ class SentimentAnalysis {
         .insert(insertObj)
         .then((success) => {
         }).catch((error) => {
-          console.log('Error when isnerting on ibm_sentiment_analysis: ', error);
+          console.log('Error when inserting on ibm_sentiment_analysis: ', error);
         });
       } catch (e) { console.log(e); }
     }
