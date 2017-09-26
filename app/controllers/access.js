@@ -9,8 +9,10 @@ const isLoggedIn = pass.isLoggedIn;
 
 function _redirectOrRenderByClass(req, res) {
   if (req.hasOwnProperty('user')) {
-    if (['owner', 'supervisor', 'support',].indexOf(req.user.class) > -1) {
+    if (['owner', 'supervisor',].indexOf(req.user.class) > -1) {
       res.redirect('/org');
+    } else if (req.user.class = 'support') {
+      res.redirect('/org/captured');
     } else {
       res.redirect('/clients');
     }
