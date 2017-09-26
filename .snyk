@@ -5,7 +5,7 @@ ignore:
   'npm:concat-stream:20160901':
     - newrelic > concat-stream:
         reason: no patch available
-        expires: '2017-10-14T23:22:17.069Z'
+        expires: '2017-10-26T22:14:03.652Z'
   'npm:ip:20170304':
     - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
         reason: no patch available
@@ -13,12 +13,22 @@ ignore:
   'npm:qs:20170213':
     - keen-js > superagent > qs:
         reason: no patch available
-        expires: '2017-10-14T23:22:17.069Z'
+        expires: '2017-10-26T22:14:03.651Z'
   'npm:ms:20170412':
     - newrelic > https-proxy-agent > debug > ms:
         reason: no update available
-        expires: '2017-10-14T23:22:17.069Z'
+        expires: '2017-10-26T22:14:03.651Z'
     - twilio > jsonwebtoken > ms:
         reason: no update available
         expires: '2017-08-11T06:15:31.747Z'
+  'npm:debug:20170905':
+    - keen-js > superagent > debug:
+        reason: no patch available
+        expires: '2017-10-26T22:14:03.651Z'
+    - cookie-session > debug:
+        reason: None given
+        expires: '2017-10-26T22:14:03.651Z'
+    - newrelic > https-proxy-agent > debug:
+        reason: None given
+        expires: '2017-10-26T22:14:03.651Z'
 patch: {}
