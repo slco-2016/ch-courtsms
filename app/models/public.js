@@ -81,7 +81,7 @@ class PublicView {
 
           // Get number of currently active convos
           const rawQuery4 =
-            'SELECT count(convid) FROM convos WHERE convos.open = TRUE;';
+            'SELECT count(convid) FROM convos WHERE convos.open IS TRUE;';
           return db.raw(rawQuery4);
         })
         .then(convosct => {
