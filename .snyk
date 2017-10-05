@@ -25,10 +25,103 @@ ignore:
     - keen-js > superagent > debug:
         reason: no patch available
         expires: '2017-10-26T22:14:03.651Z'
+      knex > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
     - cookie-session > debug:
         reason: None given
         expires: '2017-10-26T22:14:03.651Z'
+      knex > pool2 > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
     - newrelic > https-proxy-agent > debug:
         reason: None given
         expires: '2017-10-26T22:14:03.651Z'
+      mailgun-js > proxy-agent > pac-proxy-agent > https-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > pac-proxy-agent > get-uri > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > http-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > https-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > pac-proxy-agent > http-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mixpanel > https-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-try-require > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-policy > snyk-module > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-policy > snyk-resolve > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-policy > snyk-try-require > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-config > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-resolve-deps > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-resolve-deps > snyk-module > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-resolve-deps > snyk-resolve > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - snyk > snyk-resolve-deps > snyk-try-require > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+    - snyk > snyk-resolve-deps > clite > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+    - snyk > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+    - snyk > snyk-module > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+    - snyk > snyk-resolve > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+    - snyk > snyk-policy > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+  'npm:mime:20170907':
+    - express > send > mime:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - express > serve-static > send > mime:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - keen-js > superagent > mime:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+  'npm:tough-cookie:20170905':
+    - snyk > request > tough-cookie:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - twilio > request > tough-cookie:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
+  'npm:superagent:20170807':
+    - keen-js > superagent:
+        reason: None given
+        expires: '2017-11-04T20:04:18.267Z'
 patch: {}
