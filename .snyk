@@ -25,21 +25,12 @@ ignore:
     - keen-js > superagent > debug:
         reason: no patch available
         expires: '2017-10-26T22:14:03.651Z'
-      knex > debug:
-        reason: None given
-        expires: '2017-11-04T20:04:18.266Z'
     - cookie-session > debug:
         reason: None given
         expires: '2017-10-26T22:14:03.651Z'
-      knex > pool2 > debug:
-        reason: None given
-        expires: '2017-11-04T20:04:18.266Z'
     - newrelic > https-proxy-agent > debug:
         reason: None given
         expires: '2017-10-26T22:14:03.651Z'
-      mailgun-js > proxy-agent > pac-proxy-agent > https-proxy-agent > debug:
-        reason: None given
-        expires: '2017-11-04T20:04:18.266Z'
     - mailgun-js > proxy-agent > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -103,6 +94,15 @@ ignore:
     - snyk > snyk-policy > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.267Z'
+    - knex > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - knex > pool2 > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
+    - mailgun-js > proxy-agent > pac-proxy-agent > https-proxy-agent > debug:
+        reason: None given
+        expires: '2017-11-04T20:04:18.266Z'
   'npm:mime:20170907':
     - express > send > mime:
         reason: None given
