@@ -1,36 +1,36 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.7.1
+version: v1.10.1
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:concat-stream:20160901':
     - newrelic > concat-stream:
-        reason: no patch available
-        expires: '2017-10-26T22:14:03.652Z'
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
   'npm:ip:20170304':
     - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
         reason: no patch available
         expires: '2017-09-14T22:32:09.244Z'
   'npm:qs:20170213':
     - keen-js > superagent > qs:
-        reason: no patch available
-        expires: '2017-10-26T22:14:03.651Z'
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
   'npm:ms:20170412':
     - newrelic > https-proxy-agent > debug > ms:
-        reason: no update available
-        expires: '2017-10-26T22:14:03.651Z'
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
     - twilio > jsonwebtoken > ms:
         reason: no update available
         expires: '2017-08-11T06:15:31.747Z'
   'npm:debug:20170905':
     - keen-js > superagent > debug:
-        reason: no patch available
-        expires: '2017-10-26T22:14:03.651Z'
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
     - cookie-session > debug:
         reason: None given
-        expires: '2017-10-26T22:14:03.651Z'
+        expires: '2018-02-11T04:00:12.922Z'
     - newrelic > https-proxy-agent > debug:
         reason: None given
-        expires: '2017-10-26T22:14:03.651Z'
+        expires: '2018-02-11T04:00:12.922Z'
     - mailgun-js > proxy-agent > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -113,6 +113,9 @@ ignore:
     - keen-js > superagent > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
+    - keen-js > superagent > mime:
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
   'npm:tough-cookie:20170905':
     - snyk > request > tough-cookie:
         reason: None given
@@ -123,5 +126,9 @@ ignore:
   'npm:superagent:20170807':
     - keen-js > superagent:
         reason: None given
-        expires: '2017-11-04T20:04:18.267Z'
+        expires: '2018-02-11T04:00:12.921Z'
+  'npm:moment:20170905':
+    - twilio > moment:
+        reason: None given
+        expires: '2018-02-11T04:00:12.922Z'
 patch: {}
