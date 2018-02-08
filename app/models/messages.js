@@ -365,7 +365,8 @@ class Messages extends BaseModel {
             return {
               content: `${speaker}: ${content}`,
               communication: `${message.tw_status} ${direction} ${message.commconn_name} (${message.comm_value})`,
-            }
+              created: message.created,
+            };
           });
 
           fulfill(messages);

@@ -275,8 +275,8 @@ module.exports = {
 
     // determine if we should filter by type
     let methodFilter = 'all';
-    if (req.query.method == 'texts') methodFilter = 'cell';
-    if (req.query.method == 'emails') methodFilter = 'email';
+    if (req.query.method === 'texts') methodFilter = 'cell';
+    if (req.query.method === 'emails') methodFilter = 'email';
 
     let convoFilter = Number(req.query.conversation);
     if (isNaN(convoFilter)) convoFilter = null;
@@ -557,7 +557,7 @@ module.exports = {
       // update to org local timezone
       messages = messages.map((message) => {
         const tz = organization.tz || 'America/Denver';
-        message.local_date_time = `on ${moment(message.date_time).tz(tz).format('MMMM Do YYYY, h:mm:ss a')}`;
+        message.created = `on ${moment(message.created).tz(tz).format('MMMM Do YYYY, h:mm:ss a')}`;
         return message;
       });
 
