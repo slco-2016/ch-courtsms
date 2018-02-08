@@ -5,7 +5,7 @@ ignore:
   'npm:concat-stream:20160901':
     - newrelic > concat-stream:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
   'npm:ip:20170304':
     - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
         reason: no patch available
@@ -13,24 +13,24 @@ ignore:
   'npm:qs:20170213':
     - keen-js > superagent > qs:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
   'npm:ms:20170412':
     - newrelic > https-proxy-agent > debug > ms:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
     - twilio > jsonwebtoken > ms:
         reason: no update available
         expires: '2017-08-11T06:15:31.747Z'
   'npm:debug:20170905':
     - keen-js > superagent > debug:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
     - cookie-session > debug:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
     - newrelic > https-proxy-agent > debug:
         reason: None given
-        expires: '2018-02-11T04:00:12.922Z'
+        expires: '2018-03-10T23:14:50.282Z'
     - mailgun-js > proxy-agent > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -107,6 +107,9 @@ ignore:
     - express > send > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
+      keen-js > superagent > mime:
+        reason: None given
+        expires: '2018-03-10T23:14:50.282Z'
     - express > serve-static > send > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -126,7 +129,7 @@ ignore:
   'npm:superagent:20170807':
     - keen-js > superagent:
         reason: None given
-        expires: '2018-02-11T04:00:12.921Z'
+        expires: '2018-03-10T23:14:50.282Z'
   'npm:moment:20170905':
     - twilio > moment:
         reason: None given
