@@ -107,9 +107,6 @@ ignore:
     - express > send > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
-      keen-js > superagent > mime:
-        reason: None given
-        expires: '2018-03-10T23:14:50.282Z'
     - express > serve-static > send > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -119,6 +116,9 @@ ignore:
     - keen-js > superagent > mime:
         reason: None given
         expires: '2018-02-11T04:00:12.922Z'
+    - keen-js > superagent > mime:
+        reason: None given
+        expires: '2018-03-10T23:14:50.282Z'
   'npm:tough-cookie:20170905':
     - snyk > request > tough-cookie:
         reason: None given
