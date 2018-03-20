@@ -12,3 +12,5 @@ terraform.tfstate.backup
 .env*
 terraform-commands.log
 _scratch/
+.jshintrc
+tags
