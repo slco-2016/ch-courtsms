@@ -5,7 +5,7 @@ ignore:
   'npm:concat-stream:20160901':
     - newrelic > concat-stream:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
   'npm:ip:20170304':
     - mailgun-js > proxy-agent > pac-proxy-agent > pac-resolver > ip:
         reason: no patch available
@@ -13,27 +13,33 @@ ignore:
   'npm:qs:20170213':
     - keen-js > superagent > qs:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
   'npm:ms:20170412':
     - newrelic > https-proxy-agent > debug > ms:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
     - twilio > jsonwebtoken > ms:
         reason: no update available
         expires: '2017-08-11T06:15:31.747Z'
   'npm:debug:20170905':
     - keen-js > superagent > debug:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
     - cookie-session > debug:
         reason: None given
         expires: '2018-04-19T22:06:14.500Z'
+      mixpanel > https-proxy-agent > debug:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
     - newrelic > https-proxy-agent > debug:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
     - mailgun-js > proxy-agent > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
+      cookie-session > debug:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
     - mailgun-js > proxy-agent > pac-proxy-agent > get-uri > debug:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -109,7 +115,7 @@ ignore:
         expires: '2017-11-04T20:04:18.266Z'
       keen-js > superagent > mime:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
     - express > serve-static > send > mime:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
@@ -125,17 +131,23 @@ ignore:
     - keen-js > superagent > mime:
         reason: None given
         expires: '2018-04-19T22:01:33.254Z'
+    - keen-js > superagent > mime:
+        reason: None given
+        expires: '2018-04-19T22:06:14.500Z'
   'npm:tough-cookie:20170905':
     - snyk > request > tough-cookie:
         reason: None given
         expires: '2017-11-04T20:04:18.266Z'
+      ngrok > request > tough-cookie:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
     - twilio > request > tough-cookie:
         reason: None given
         expires: '2017-11-04T20:04:18.267Z'
   'npm:superagent:20170807':
     - keen-js > superagent:
         reason: None given
-        expires: '2018-04-19T22:06:14.500Z'
+        expires: '2018-05-12T19:24:35.838Z'
   'npm:moment:20170905':
     - twilio > moment:
         reason: None given
@@ -144,4 +156,41 @@ ignore:
     - twilio > lodash:
         reason: None given
         expires: '2018-04-19T22:06:14.500Z'
+      ngrok > async > lodash:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - twilio > lodash:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+  'npm:https-proxy-agent:20180402':
+    - mixpanel > https-proxy-agent:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - newrelic > https-proxy-agent:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - mailgun-js > proxy-agent > https-proxy-agent:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+  'npm:hoek:20180212':
+    - ngrok > request > hawk > hoek:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - ngrok > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - ngrok > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+    - ngrok > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+  'npm:http-proxy-agent:20180406':
+    - mailgun-js > proxy-agent > http-proxy-agent:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
+  'npm:sshpk:20180409':
+    - ngrok > request > http-signature > sshpk:
+        reason: None given
+        expires: '2018-05-12T19:24:35.838Z'
 patch: {}
