@@ -22,7 +22,8 @@ class DepartmentSupervisors {
         .andWhere('department_supervisors.active', active)
       .then((supervisors) => {
         fulfill(supervisors);
-      }).catch(reject);
+      })
+      .catch(reject);
     });
   }
 
@@ -91,7 +92,7 @@ class DepartmentSupervisors {
 
   static createSupervisor(departmentID, supervisorID) {
     return new Promise((fulfill, reject) => {
-      DepartmentSupervisors.createSupervisors(departmentID, [supervisorID,])
+      DepartmentSupervisors.createSupervisors(departmentID, [supervisorID])
       .then(() => {
         fulfill();
       }).catch(reject);
@@ -116,4 +117,3 @@ class DepartmentSupervisors {
 }
 
 module.exports = DepartmentSupervisors;
-

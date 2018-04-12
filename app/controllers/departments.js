@@ -85,7 +85,7 @@ module.exports = {
   supervisorsIndex(req, res) {
     let supervisors;
     console.log('--> 0 <--');
-    DepartmentSupervisors.findByDepartmentIDs(req.params.department)
+    DepartmentSupervisors.findByDepartmentIDs([req.params.department])
     .then((resp) => {
       console.log('--> 1 <--');
       supervisors = resp;
