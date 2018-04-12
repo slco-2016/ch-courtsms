@@ -201,6 +201,22 @@ module.exports = {
       `;
     };
 
+    res.locals.disabledRightTab = (name, fa, label) => {
+      if (!label) {
+        label = name;
+      }
+      label = _capitalize(label);
+
+      return `
+        <div class="rightActions disabled">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-${fa} fa-stack-1x fa-inverse"></i>
+          </span>
+        </div>
+      `;
+    };
+
     next();
   },
 

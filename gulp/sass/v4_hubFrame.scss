@@ -222,6 +222,19 @@ $darkblue:    #344289;
             }
           }
         }
+
+        .rightActions.disabled {
+          .fa.fa-circle {
+            color: #bbbbbb;
+          }
+
+          &:hover {
+            background: none;
+            .fa.fa-inverse {
+              color: $lightblue;
+            }
+          }
+        }
       }
     }
 

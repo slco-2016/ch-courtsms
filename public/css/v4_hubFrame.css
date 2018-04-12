@@ -123,6 +123,12 @@
             color: #3F69B6; }
           .applicationFrame .navSub .allRightParent .allRight .rightActions:hover .text {
             display: inline; }
+      .applicationFrame .navSub .allRightParent .allRight .rightActions.disabled .fa.fa-circle {
+        color: #bbbbbb; }
+      .applicationFrame .navSub .allRightParent .allRight .rightActions.disabled:hover {
+        background: none; }
+        .applicationFrame .navSub .allRightParent .allRight .rightActions.disabled:hover .fa.fa-inverse {
+          color: #4A90E2; }
 
 .applicationFrame .coreContent {
   padding-top: 97px;
