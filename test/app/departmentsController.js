@@ -75,11 +75,15 @@ describe('Departments View', () => {
       users = resp;
 
       should.exist(users);
-      owner.get(`/org/departments/${department.department_id}/supervisors`)
+      const supervisorsUrl = `/org/departments/${department.department_id}/supervisors`;
+      console.log(`--> loading ${supervisorsUrl}`);
+      owner.get(supervisorsUrl)
         .expect(200)
         .end((err, res) => {
           users.forEach((user) => {
-            res.text.should.match(RegExp(`${user.last}(.*)${user.first}`));
+            const lastFirst = `${user.last}, ${user.first}`;
+            console.log(`--> checking ${lastFirst}`);
+            res.text.should.match(RegExp(lastFirst));
           });
           done(err);
         });
