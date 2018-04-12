@@ -60,20 +60,21 @@ describe('Departments View', () => {
     }).catch(done);
   });
 
-  it('we should be able to view a single department\'s edit card', (done) => {
-    // ref variables for the test
-    let department,
-      users;
+  it('we should be able to view a single department\'s supervisors index', (done) => {
+    let department;
+    let users;
 
     // find the department with that unique name (same as before)
     Departments.findOneByAttribute('name', seededDeptName)
     .then((resp) => {
       department = resp;
 
+      should.exist(department);
       return Users.findManyByAttribute('department', department.department_id);
     }).then((resp) => {
       users = resp;
 
+      should.exist(users);
       owner.get(`/org/departments/${department.department_id}/supervisors`)
         .expect(200)
         .end((err, res) => {
