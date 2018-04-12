@@ -12,16 +12,13 @@ const Users = require('./models/users');
 const libUser = require('./lib/users');
 const packageInfo = require('./lib/package-info');
 
-function _capitalize (word) {
-  return word.split(' ').map(function (name) {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  }).join(' ');
+function _capitalize(word) {
+  return word.split(' ').map(name => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()).join(' ');
 }
 
 module.exports = {
 
   attachLoggingTools(req, res, next) {
-
     req.logActivity = {
       client: (client) => {
         Clients.logActivity(client)
@@ -34,10 +31,7 @@ module.exports = {
 
       conversation: (conversation) => {
         Conversations.logActivity(conversation)
-        .then(() => {
-          // Log conversation activity success...
-          return null;
-        }).catch((err) => {
+        .then(() => null).catch((err) => {
           console.log(err.yellow);
           return null;
         });
@@ -48,13 +42,12 @@ module.exports = {
   },
 
   attachRoutingTools(req, res, next) {
-
     req.getUser = () => {
       let id = req.user.cmid;
       try {
         id = res.locals.client.cm;
         return id;
-      } catch(e) {
+      } catch (e) {
         return id;
       }
     };
@@ -63,11 +56,11 @@ module.exports = {
       let endPath = '';
       try {
         let base = '';
-        if (res.locals.level == 'org') {
+        if (res.locals.level === 'org') {
           base = '/org';
         }
         endPath = `${base}${path}`;
-      } catch(e) {
+      } catch (e) {
         endPath = '/';
       }
       res.redirect(endPath);
@@ -87,8 +80,8 @@ module.exports = {
   attachTemplateLibraries(req, res, next) {
     res.locals.moment = require('moment');
     res.locals.momentTz = require('moment-timezone');
-    
-    if (process.env.CCENV && process.env.CCENV == 'production') {
+
+    if (process.env.CCENV && process.env.CCENV === 'production') {
       res.locals.newrelic = require('newrelic');
     } else {
       res.locals.newrelic = null;
@@ -98,24 +91,17 @@ module.exports = {
   },
 
   attachErrorHandlers(req, res, next) {
-
     res.error500 = (err) => {
       // Clean up error if one is provided
       if (typeof err !== 'undefined') {
-
         // Log the error if passed in
         console.log(`\n Error occured. \n Timestamp: ${new Date()}`.yellow);
         console.log(err.stack);
         console.log('--- \n');
-
-      // If there is no error, provide a generic phrase
-      } else {
-        stringErr = 'Internal Error 500 Something happened.';
       }
 
       // Produce a response to the client
-      res.set({'content-type':'text/plain',}).status(500).send(err.stack);
-      
+      res.set({ 'content-type': 'text/plain' }).status(500).send(err.stack);
     };
 
     res.notFound = () => {
@@ -139,14 +125,9 @@ module.exports = {
         const userAgent = req.headers['user-agent'];
 
         if (path !== '/alerts') {
-          console.log(
-            `${ip} -- [${timestamp}] ` +
-            `${method} ${path} ${statusCode} `.magenta +
-            `${contentLength} ${milliseconds}ms `.cyan +
-            `"${userAgent}"`
-          );
+          console.log(`${ip} -- [${timestamp}] ${method} ${path} ${statusCode} ${contentLength} ${milliseconds}ms "${userAgent}"`);
         } else {
-          console.log(`${ip} -- [${timestamp}] ` + `${method} ${path} ${statusCode} `.magenta);
+          console.log(`${ip} -- [${timestamp}] ${method} ${path} ${statusCode}`);
         }
       });
     }
@@ -154,11 +135,11 @@ module.exports = {
   },
 
   templateHelpers(req, res, next) {
-    res.locals.leftTab = (name, hub, level, optionsList, path, action, clientID, paramName='status') => {
+    res.locals.leftTab = (name, hub, level, optionsList, path, action, clientID, paramName = 'status') => {
       let capitalized = _capitalize(name);
 
-      let url = `/${path||name}`;
-      if (level == 'org' && !clientID) {
+      let url = `/${path || name}`;
+      if (level === 'org' && !clientID) {
         url = `/org${url}`;
       } else if (clientID) {
         url = `/clients/${clientID}${url}`;
@@ -180,26 +161,25 @@ module.exports = {
         });
       }
 
-      if (level == 'org') {
-        if (capitalized == 'Clients') {
+      if (level === 'org') {
+        if (capitalized === 'Clients') {
           capitalized = 'All Clients';
-        } else if (capitalized == 'Captured') {
+        } else if (capitalized === 'Captured') {
           capitalized = 'Unclaimed';
         }
       }
 
       return `
-        <div class="leftTab ${hub.tab == name ? 'open' : 'closed'}">
+        <div class="leftTab ${hub.tab === name ? 'open' : 'closed'}">
           <div class="title"><a href="${url}">${capitalized}</a></div>
           ${options}
         </div>
       `;
     };
 
-    res.locals.rightTab = (name, fa, level, label, action='create') => {
-      
+    res.locals.rightTab = (name, fa, level, label, action = 'create') => {
       let url = `/${name}`;
-      if (level == 'org') {
+      if (level === 'org') {
         url = `/org${url}`;
       }
 
@@ -268,20 +248,19 @@ module.exports = {
         // if no department, provide some dummy attributes
         if (!department) {
           department = {
-            name:          'Unassigned',
-            organization:  req.user.org,
-            phone_number:  null,
+            name: 'Unassigned',
+            organization: req.user.org,
+            phone_number: null,
             department_id: null,
           };
         }
 
         if (department.phone_number) {
           return PhoneNumbers.findById(department.phone_number);
-        } else {
-          return new Promise((fulfill, reject) => {
-            fulfill(null);
-          });
         }
+        return new Promise((fulfill, reject) => {
+          fulfill(null);
+        });
       }).then((phoneNumber) => {
         if (phoneNumber) {
           department.phone_number_value = phoneNumber.value;
@@ -290,9 +269,8 @@ module.exports = {
         next();
         return null;
       }).catch(res.error500);
-    } else {
-      next();
     }
+    next();
   },
 
   fetchClient(req, res, next) {
@@ -304,7 +282,7 @@ module.exports = {
 
       const client = p.client || p.clientId || p.clientID || null;
       const isNumber = !isNaN(client);
-      
+
       if (client && isNumber) {
         Clients.findByID(client)
         .then((c) => {
@@ -316,7 +294,7 @@ module.exports = {
             res.locals.client = c;
 
             // If client is under user, then update user flag
-            if (c.cm == req.user.cmid) {
+            if (c.cm === req.user.cmid) {
               res.locals.userOwnsClient = true;
             }
 

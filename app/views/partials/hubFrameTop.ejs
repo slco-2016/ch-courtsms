@@ -3,7 +3,7 @@
 <link rel="stylesheet" type="text/css" href="/static/css/v4_hubFrame.css">
 
   <div class="navSub <% if (level == "org") { %>orgLevel<% } %>">
-  
+
     <div class="allLeftParent">
       <div class="allLeft">
         <% if (level == "org") { %>
@@ -50,21 +50,21 @@
         <!-- primary -->
         <% if (level == "user") { %>
           <%- rightTab('groups', 'users', level) %>
-          <%- rightTab('templates', 'clipboard', level) %> 
+          <%- rightTab('templates', 'clipboard', level) %>
           <%- rightTab('notifications', 'bell', level) %>
         <% } %>
 
         <%- rightTab('clients', 'user', level) %>
       </div>
     </div>
-      
+
   </div>
 
   <div class="coreContent">
 
   <% if (typeof viewingAsOther !== "undefined" && viewingAsOther) { %>
     <div class="viewingAsOtherBanner">
-      You are viewing 
+      You are viewing
       <b><%= viewingAsOther.first + ' ' + viewingAsOther.last %>'s</b>
       clients dashboard.
     </div>
