@@ -84,8 +84,10 @@ module.exports = {
 
   supervisorsIndex(req, res) {
     let supervisors;
+    console.log('--> 0 <--');
     DepartmentSupervisors.findByDepartmentIDs(req.params.department)
     .then((resp) => {
+      console.log('--> 1 <--');
       supervisors = resp;
 
       // Limit options to only users already added to the department
@@ -96,6 +98,7 @@ module.exports = {
         active: true,
       });
     }).then((users) => {
+      console.log('--> 2 <--');
       // Just sorting by last name here
       const members = users.sort((a, b) => a.last > b.last);
 
