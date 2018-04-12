@@ -34,7 +34,7 @@ describe('Basic http req tests', () => {
   });
 
   it('should redirect from root', (done) => {
-    anonymous.get('/login').end(function(err, res) {
+    anonymous.get('/login').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       anonymous.post('/login')
@@ -50,7 +50,7 @@ describe('Basic http req tests', () => {
   });
 
   it('owner should login with real creds', (done) => {
-    owner.get('/login').end(function(err, res) {
+    owner.get('/login').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       owner.post('/login')
@@ -67,7 +67,7 @@ describe('Basic http req tests', () => {
   });
 
   it('primary user should login with real creds', (done) => {
-    primary.get('/login').end(function(err, res) {
+    primary.get('/login').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       primary.post('/login')
@@ -101,17 +101,17 @@ describe('Basic http req tests', () => {
       });
   });
 
-  it ('logged in primary should not be able to see client create form', function(done) {
+  it('logged in primary should not be able to see client create form', (done) => {
     primary.get('/org/clients/create')
       .expect(302)
       .expect('Location', '/login')
-      .end(function(err, res) {
+      .end((err, res) => {
         done(err);
-    }); // end get create
+      }); // end get create
   });
 
   it('owner should be able to create user', (done) => {
-    owner.get('/org/users/create').end(function(err, res) {
+    owner.get('/org/users/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       owner.post('/org/users/create')
@@ -137,7 +137,7 @@ describe('Basic http req tests', () => {
   });
 
   it('owner user should have option to load templates on quick message', (done) => {
-    owner.get('/org/clients/create').end(function(err, res) {
+    owner.get('/org/clients/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       owner.post('/org/clients/create')
@@ -177,7 +177,7 @@ describe('Basic http req tests', () => {
 
   it('client without contact methods should reroute to create comm method', (done) => {
     lastNameUnique = 'Orin';
-    owner.get('/org/clients/create').end(function(err, res) {
+    owner.get('/org/clients/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       owner.post('/org/clients/create')
@@ -254,7 +254,7 @@ describe('Basic http req tests', () => {
   });
 
   it('primary can add their own client', (done) => {
-    primary.get('/clients/create').end(function(err, res) {
+    primary.get('/clients/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       primary.post('/clients/create')
@@ -275,7 +275,7 @@ describe('Basic http req tests', () => {
   });
 
   it('should be able to add a comm method to a client', (done) => {
-    primary.get('/clients/1/communications/create').end(function(err, res) {
+    primary.get('/clients/1/communications/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       primary.post('/clients/1/communications/create')
@@ -300,7 +300,7 @@ describe('Basic http req tests', () => {
   });
 
   it('should not be able to add the same communication method two times if first is still active', (done) => {
-    owner.get('/clients/1/communications/create').end(function(err, res) {
+    owner.get('/clients/1/communications/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf_one = $html('input[name=_csrf]').val();
       owner.post('/clients/1/communications/create')
@@ -359,7 +359,7 @@ describe('Basic http req tests', () => {
   });
 
   it('primary user settings updates should propogate', (done) => {
-    primary.get('/settings').end(function(err, res) {
+    primary.get('/settings').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       primary.post('/settings')
@@ -413,7 +413,7 @@ describe('Basic http req tests', () => {
   });
 
   it('creating a new color should have it populate', (done) => {
-    primary.get('/colors').end(function(err, res) {
+    primary.get('/colors').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       primary.post('/colors')
@@ -502,7 +502,7 @@ describe('Basic http req tests', () => {
   });
 
   it('alert subject length must be greater than 0', (done) => {
-    owner.get('/org/alerts/create').end(function(err, res) {
+    owner.get('/org/alerts/create').end((err, res) => {
       const $html = cheerio.load(res.text);
       const csrf = $html('input[name=_csrf]').val();
       owner.post('/org/alerts/create?department=1')
@@ -531,7 +531,7 @@ describe('Basic http req tests', () => {
       // assume here that there is at least one client from seeds
       const client = clients[0];
 
-      primary.get(`/clients/${client.clid}/voicemessage`).end(function(err, res) {
+      primary.get(`/clients/${client.clid}/voicemessage`).end((err, res) => {
         const $html = cheerio.load(res.text);
         const csrf = $html('input[name=_csrf]').val();
         primary.post(`/clients/${client.clid}/voicemessage`)
@@ -544,8 +544,8 @@ describe('Basic http req tests', () => {
           })
           .expect(302)
           .expect('Location', `/clients/${client.clid}/voicemessage`)
-          .end((err, res) => {
-            done(err);
+          .end((errb, resb) => {
+            done(errb);
           }); // end post voicemessage
       }); // end get voicemessage
     }).catch(done);

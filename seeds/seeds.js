@@ -261,17 +261,17 @@ const notification = {
 const group = {
   name: 'my cool group',
   user: 2,
-}
+};
 
 const groupMemberOne = {
   group: 1,
   client: 1,
-}
+};
 
 const groupMemberTwo = {
   group: 1,
   client: 2,
-}
+};
 
 // SECOND ORGANIZATION
 
@@ -367,7 +367,7 @@ const notificationOrgTwo = {
   // frequency ignored
 };
 
-exports.seed = knex => {
+exports.seed = (knex) => {
   console.log('Running seeds.js'.yellow);
   console.log('Deleting all tables'.yellow);
 
@@ -425,7 +425,7 @@ exports.seed = knex => {
       .then(() => knex('comms').insert(commOrgTwo))
       .then(() => knex('commconns').insert(commconnOrgTwo))
       .then(() => knex('notifications').insert(notificationOrgTwo))
-      .catch(err => {
+      .catch((err) => {
         throw err;
       });
   }

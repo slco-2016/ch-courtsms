@@ -15,7 +15,7 @@ const seededDeptName = 'Pretrial LKJKLJUnique';
 describe('Departments View', () => {
   // login as the owner account
   before((done) => {
-    owner.get('/login').end(function(err, res) {
+    owner.get('/login').end((err, res) => {
       if (res.status == '302') {
         done();
       } else {
