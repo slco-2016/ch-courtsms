@@ -176,27 +176,6 @@ $(() => {
           toggleSubjectView('off');
         });
 
-        // currently the function just works one way (you can only open it)
-        // you need to refresh the page to have it back down
-        function toggleTypeBox(hide) {
-          if (hide == 'close') {
-            // $(".full").hide();
-            // $("textarea[name='content']").hide();
-            // $(".name").hide();
-            // // $(".actionButton").css("margin-top", "20px");
-            // $("#placeHolderTypeBox").show();
-            // $(".messageStream").css("margin-bottom", 150);
-          } else {
-            $('.full').show();
-            $('#actualTypeBox').show();
-            $('.name').show();
-            $('.actionButton').css('margin-top', '20px');
-            $('#placeHolderTypeBox').hide();
-            $('.messageStream').css('margin-bottom', '200px');
-            scrollLast();
-          }
-        }
-
         function adjustDivs() {
           $('.leftBar').height($(window).height() - 97);
           $('.rightContent').height($(window).height() - 97);
@@ -212,22 +191,10 @@ $(() => {
           let ok = true;
           if ($('select[name=commID]').val() == null) ok = false;
           if ($('textarea[name=content]').val().length == 0) ok = false;
-          // if (ok) {
-          //   $(".submit").removeClass("disabled");
-          // } else {
-          //   $(".submit").addClass("disabled");
-          // }
           return ok;
         }
 
         $(window).resize(adjustDivs);
-
-        // $(".rightContent").scroll(function() {
-        //   if ($(".rightContent").scrollTop() >= 50) {
-        //   toggleTypeBox("close")
-        //   }
-        // });
-        $('#placeHolderTypeBox').click(toggleTypeBox);
 
         $('textarea[name=content]').keyup(checkSubmitValid);
         $('select[name=commID]').change(checkSubmitValid);
@@ -447,7 +414,7 @@ $(() => {
         let topAndBottomThreshold = usersSortedByMessagingVolume.length / 2;
         // let everyone be in the top if less than 5 in department
         if (topAndBottomThreshold < 5) topAndBottomThreshold = 1000000;
-        for (var i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
           const top = usersSortedByMessagingVolume[i];
           const oneMore = i + 1;
           const bottom = usersSortedByMessagingVolume[usersSortedByMessagingVolume.length - oneMore];
@@ -969,7 +936,7 @@ $(() => {
   ];
 
   // Run JS if the class exists on page
-  for (var i = 0; i < executors.length; i++) {
+  for (let i = 0; i < executors.length; i++) {
     const obj = executors[i];
     try {
       if ($(`.${obj.cssClass}`).length) {

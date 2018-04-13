@@ -101,104 +101,35 @@
 </div>
 
 <div class="responseBox">
-  <form method="post" id="newMessage" action="<%=`/clients/${client.clid}/messages`%>">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <% if (userOwnsClient) { %>
-      <div class="mini" id="typeBox">
-
+  <% if (userOwnsClient) { %>
+    <div class="mini" id="typeBox">
       <div class="mainVisibleRow">
-          <div class="actionButtons">
-            <a href="<%=`/clients/${client.clid}/transcript`%>">
-              <div class="actionButton">
-                <div class="icon">
-                  <i class="ss ss-download"></i>
-                </div>
-                <div class="name">
-                  download transcript
-                </div>
+        <div class="actionButtons">
+          <a href="<%=`/clients/${client.clid}/transcript`%>">
+            <div class="actionButton">
+              <div class="icon">
+                <i class="ss ss-download"></i>
               </div>
-            </a>
+              <div class="name">
+                download transcript
+              </div>
+            </div>
+          </a>
+        </div> <!-- /actionButtons -->
 
-            <a href="<%=`${clientBaseURL}/address/templates`%>">
-              <div class="actionButton">
-                <div class="icon">
-                  <i class="ss ss-clipboard"></i>
-                </div>
-                <div class="name">
-                  load template
-                </div>
-              </div>
-            </a>
-
-            <a href="<%=`${clientBaseURL}/voicemessage`%>">
-              <div class="actionButton">
-                <div class="icon">
-                  <i class="ss ss-phone"></i>
-                </div>
-                <div class="name">
-                  record voice
-                </div>
-              </div>
-            </a>
-
-            <!-- functionality not built yet -->
-            <a href="<%=`${clientBaseURL}/mediamessage`%>">
-              <div class="actionButton" style="color: #3c5065">
-                <div class="icon">
-                  <i class="ss ss-picture"></i>
-                </div>
-                <div class="name">
-                  attach media
-                </div>
-              </div>
-            </a>
+        <div class="full blocky">
+        <div class="bottomRow">
+        <a href="https://slco.clientcomm.org/">
+          <div class="submit">
+            Please use the new ClientComm site &rarr;
           </div>
-
-          <div class="messageInput" id="placeHolderTypeBox">
-            <div class="left">Start typing message...</div>
-          </div>
-
-          <div id="actualTypeBox">
-            <textarea name="content" rows="5"></textarea>
-          </div>
+        </a>
+        </div>
         </div>
 
-        <div class="full">
-          <div class="bottomRow">
-
-            <div class="submit">
-              <i class="ss ss-send" aria-hidden="true"></i>
-              Send Now
-            </div>
-
-            <a href="<%=`/notifications/create?client=${client.clid}&user=${user.cmid}`%>">
-              <div class="submit">
-                <i class="ss ss-clock" aria-hidden="true"></i>
-                Send Later
-              </div>
-            </a>
-
-            <% let lastInboundComm = null; %>
-            <% try { lastInboundComm = messages.filter((m) => { return m.inbound; }).slice(-1).pop().comm } catch (err) { } %>
-            <% try { if (communications.length == 1) { lastInboundComm = communications[0].comm } } catch (err) { } %>
-
-            <div class="contactSelect">
-              <select name="commID" required>
-                <option value="" selected disabled>Comm Method</option>
-
-                <% communications.forEach(function (communication) { %>
-                  <option value="<%= communication.commid %>" <%= communication.commid == lastInboundComm ? 'selected' : '' %>><%= communication.name + ' (' + communication.value + ')' %></option>
-                <% }) %>
-              </select>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    <% } %>
-
-  </form>
+      </div> <!-- /mainVisibleRow -->
+    </div>
+  <% } %>
 </div>
 
 <script type="text/javascript" class="JSmessagesStream"></script>

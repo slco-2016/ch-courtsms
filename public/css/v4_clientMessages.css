@@ -223,11 +223,14 @@
   .responseBox .full {
     display: none;
     width: inherit; }
+    .responseBox .full.blocky {
+      display: block; }
     .responseBox .full .bottomRow {
       display: block;
       height: 32px;
       margin-top: 10px;
-      margin-bottom: 0px; }
+      margin-bottom: 0px;
+      text-align: center; }
       .responseBox .full .bottomRow .optionButton {
         text-align: center;
         height: 31px;
@@ -272,19 +275,19 @@
             background-color: #FFF;
             color: #3F69B6; }
       .responseBox .full .bottomRow .submit {
-        float: right;
+        background-color: #FFF;
+        border-radius: 25px;
+        border: 2px solid #344289;
+        color: #3F69B6;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 700;
         height: 32px;
         line-height: 32px;
-        border: 2px solid #344289;
-        border-radius: 25px;
-        background-color: #FFF;
-        padding-right: 15px;
+        margin-left: 100px;
         padding-left: 15px;
-        font-size: 14px;
-        color: #3F69B6;
-        font-weight: 700;
-        cursor: pointer;
-        margin-left: 25px; }
+        padding-right: 15px; }
         .responseBox .full .bottomRow .submit .ss {
           margin-right: 5px; }
         .responseBox .full .bottomRow .submit:hover {

@@ -211,7 +211,7 @@ $width_row5:  5%;
         }
 
         .bottomRow {
-          margin-top: 15px; 
+          margin-top: 15px;
           font-size: 12px;
           line-height: 18px;
 
@@ -252,7 +252,7 @@ $width_row5:  5%;
   .miniAlt {
     .messageInput {
       color: $white;
-    } 
+    }
   }
 
   .mini {
@@ -371,11 +371,16 @@ $width_row5:  5%;
     display: none;
     width: inherit;
 
+    &.blocky {
+      display: block;
+    }
+
     .bottomRow {
       display: block;
       height: 32px;
       margin-top: 10px;
       margin-bottom: 0px;
+      text-align: center;
 
       .optionButton {
         text-align: center;
@@ -409,12 +414,11 @@ $width_row5:  5%;
           text-align: center;
           font-size: 16px;
           color: $white;
-          
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
 
-          -webkit-user-select: none; /* Chrome/Safari */        
+          -webkit-user-select: none; /* Chrome/Safari */
           -moz-user-select: none; /* Firefox */
           -ms-user-select: none; /* IE10+ */
           /* Rules below not implemented in browsers yet */
@@ -429,19 +433,19 @@ $width_row5:  5%;
       }
 
       .submit {
-        float: right;
+        background-color: $white;
+        border-radius: 25px;
+        border: 2px solid $darkblue;
+        color: $blue;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 700;
         height: 32px;
         line-height: 32px;
-        border: 2px solid $darkblue;
-        border-radius: 25px;
-        background-color: $white;
-        padding-right: 15px;
+        margin-left: 100px;
         padding-left: 15px;
-        font-size: 14px;
-        color: $blue;
-        font-weight: 700;
-        cursor: pointer;
-        margin-left: 25px;
+        padding-right: 15px;
 
         .ss {
           margin-right: 5px;
@@ -466,8 +470,5 @@ $width_row5:  5%;
       display:block;
       clear:both;
     }
-  }
+  } // full
 }
-
-
-
