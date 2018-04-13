@@ -293,6 +293,14 @@ body {
       .card .cardBody .formSubmit:hover {
         background-color: #4A90E2;
         color: #FFF; }
+      .card .cardBody .formSubmit.disabled {
+        margin-top: 20px;
+        background-color: #bbbbbb;
+        border: 2px solid #bbbbbb;
+        color: #D3D3D3; }
+        .card .cardBody .formSubmit.disabled:hover {
+          background-color: #bbbbbb;
+          color: #D3D3D3; }
       .card .cardBody .formSubmit.inverse {
         background-color: #4A90E2;
         color: #FFF; }

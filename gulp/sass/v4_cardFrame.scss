@@ -423,7 +423,6 @@ body {
       display: block;
       border: 0px;
       border-radius: 20px;
-      
       height: 35px;
       font-size: 14px;
       font-weight: 700;
@@ -448,6 +447,17 @@ body {
         color: $white;
       }
 
+      &.disabled {
+        margin-top: 20px;
+        background-color: #bbbbbb;
+        border: 2px solid #bbbbbb;
+        color: $lightgrey;
+        &:hover {
+          background-color: #bbbbbb;
+          color: $lightgrey;
+        }
+      }
+
       &.inverse {
         background-color: $lightblue;
         color: $white;
@@ -465,7 +475,6 @@ body {
         margin-top: 20px;
         border: 2px solid $darkblue;
         color: $darkblue;
-        // width: 200px;
 
         &:hover {
           background-color: $darkblue;

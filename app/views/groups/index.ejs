@@ -7,7 +7,7 @@
   <div class="column">group name</div>
   <div class="column">last used</div>
   <div class="column">clients</div>
-  <div class="column">message</div>
+  <div class="column">&nbsp;</div>
   <div class="column">edit</div>
   <div class="column">delete</div>
 </div>
@@ -17,7 +17,7 @@
 <% groups.forEach(function (group) { %>
   <div class="groupRow">
     <div class="column">
-      <a href="/groups/address/<%=group.group_id%>">
+      <a href="/groups/edit/<%=group.group_id%>">
         <span class="groupName">
           <%= group.name %>
         </span>
@@ -37,11 +37,7 @@
     </div>
 
     <div class="column">
-      <% if (group.active) { %>
-        <a href="/groups/address/<%=group.group_id%>">
-          <i class="fa highlight fa-send" aria-hidden="true"></i>
-        </a>
-      <% } else { %>&nbsp;<% } %>
+      &nbsp;
     </div>
 
     <div class="column">

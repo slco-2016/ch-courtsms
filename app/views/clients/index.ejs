@@ -43,17 +43,9 @@
     <div class="column">
       auto-notifiations
     </div>
-  <% } %>  
-
-  <% if (hub.sel == "archived") { %>
-    <div class="column">&nbsp;</div>
-  <% } else { %>
-    <% if (user.class !== "primary") { %>
-      <div class="column">message</div>
-    <% } else { %>
-      <div class="column">&nbsp;</div>
-    <% } %>
   <% } %>
+
+    <div class="column">&nbsp;</div>
 
   <% if (hub.sel == "archived") { %>
     <div class="column">&nbsp;</div>
@@ -150,11 +142,7 @@
     </div>
 
     <div class="column">
-      <% if (client.active && user.class !== "primary") { %>
-        <a href="<%=`${clientBaseURL}/address`%>">
-          <i class="fa highlight fa-send" aria-hidden="true"></i>
-        </a>
-      <% } else { %>&nbsp;<% } %>
+      &nbsp;
     </div>
 
     <div class="column">
