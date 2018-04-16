@@ -86,7 +86,7 @@
         margin-right: 15px; }
   .rightContent .messageStream {
     padding: 5px 15px 5px 15px;
-    margin-bottom: 85px; }
+    margin-bottom: 115px; }
     .rightContent .messageStream .messageDiv .message {
       padding: 15px 20px 10px 20px;
       margin-top: 10px;
@@ -160,8 +160,7 @@
           line-height: 38px; }
         .responseBox .mini .actionButtons .actionButton .name {
           line-height: 16px;
-          font-size: 12px;
-          display: none; }
+          font-size: 12px; }
         .responseBox .mini .actionButtons .actionButton:hover {
           color: #344289; }
     .responseBox .mini .messageInput {
@@ -227,7 +226,7 @@
       display: block; }
     .responseBox .full .bottomRow {
       display: block;
-      height: 32px;
+      height: 70px;
       margin-top: 10px;
       margin-bottom: 0px;
       text-align: center; }
@@ -298,6 +297,10 @@
           background-color: #D3D3D3;
           color: #898989;
           border: 2px solid #898989; }
+      .responseBox .full .bottomRow p.notice {
+        color: #FFF;
+        margin-left: 140px;
+        margin-top: 7px; }
     .responseBox .full::after {
       content: "";
       display: block;

@@ -120,7 +120,6 @@ $width_row5:  5%;
     border-left: 1px solid $offwhite;
     border-right: 1px solid $offwhite;
     border-bottom: 1px solid $offwhite;
-    // box-shadow: 0px 1px 5px $lightgrey;
 
     .title {
       display: inline;
@@ -151,10 +150,10 @@ $width_row5:  5%;
       }
     }
   }
-  
+
   .messageStream {
     padding: 5px 15px 5px 15px;
-    margin-bottom: 85px;
+    margin-bottom: 115px;
 
     .messageDiv {
 
@@ -168,7 +167,7 @@ $width_row5:  5%;
         margin-top: 10px;
         border-radius: 5px;
         width: 695px;
-        
+
         &.warning {
           border: 1px solid $red;
         }
@@ -176,8 +175,8 @@ $width_row5:  5%;
         &.outbound {
           border: 1px solid $white;
           color: $darkgrey;
-        } 
-        
+        }
+
         &.inbound {
           background-color: $white;
           color: $darkgrey;
@@ -278,7 +277,6 @@ $width_row5:  5%;
         .name {
           line-height: 16px;
           font-size: 12px;
-          display: none;
         }
 
         &:hover {
@@ -377,7 +375,7 @@ $width_row5:  5%;
 
     .bottomRow {
       display: block;
-      height: 32px;
+      height: 70px;
       margin-top: 10px;
       margin-bottom: 0px;
       text-align: center;
@@ -463,6 +461,13 @@ $width_row5:  5%;
           border: 2px solid $grey;
         }
       }
+
+      p.notice {
+        color: $white;
+        margin-left: 140px;
+        margin-top: 7px;
+      }
+
     }
 
     &::after {
