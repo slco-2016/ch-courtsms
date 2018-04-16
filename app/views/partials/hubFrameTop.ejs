@@ -51,7 +51,7 @@
         <% if (level == "user") { %>
           <%- rightTab('groups', 'users', level) %>
           <%- rightTab('templates', 'clipboard', level) %>
-          <%- rightTab('notifications', 'bell', level) %>
+          <%- disabledRightTab('notifications', 'bell') %>
         <% } %>
 
         <%- disabledRightTab('clients', 'user') %>

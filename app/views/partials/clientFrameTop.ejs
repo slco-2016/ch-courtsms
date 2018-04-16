@@ -30,7 +30,8 @@
     <div class="allRightParent">
       <div class="allRight">
         <%- rightTab('clients', 'mobile', level, 'contact method', `${client.clid}/communications/create`) %>
-        <%- rightTab('notifications', 'bell', level, 'notification', `create?client=${client.clid}&user=${client.cm}`) %> 
+        <%- disabledRightTab('notifications', 'bell') %>
+        <%- disabledRightTab('clients', 'comments') %>
       </div>
     </div>
 
